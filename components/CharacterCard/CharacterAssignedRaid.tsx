@@ -60,7 +60,7 @@ export default function CharacterCardAssignedRaid({
         </TooltipProvider>
       </div>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon">
             <EllipsisIcon className="h-4 w-4" />
           </Button>

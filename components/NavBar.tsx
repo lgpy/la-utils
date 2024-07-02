@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import Link from "next/link";
 import { Input } from "./ui/input";
 import ThemeToggle from "./ThemeToggle";
+import Logo from "./Logo";
 
 export default function NavBar() {
   return (
@@ -13,7 +14,7 @@ export default function NavBar() {
           href="/"
           className="flex items-center gap-2 text-lg font-semibold md:text-base"
         >
-          <Package2 className="h-6 w-6" />
+          <Logo />
           <span className="sr-only">Lost Ark Utils</span>
         </Link>
         <Link

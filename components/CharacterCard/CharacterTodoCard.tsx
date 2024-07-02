@@ -1,7 +1,7 @@
 import { hasReset } from "@/lib/dates";
 import { Character } from "@/stores/character";
 import clsx from "clsx";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import CharacterCardInfo from "./CharacterCardInfo";
 import { Separator } from "../ui/separator";
@@ -25,14 +25,14 @@ export default function CharacterTodoCard({ char }: Props) {
       const isCompleted = assigned.length === completed.length;
 
       return (
-        <>
+        <Fragment key={char.id + raidId}>
           <CardContent
             className={clsx("transition p-3", { "bg-primary/10": isCompleted })}
           >
             <TodoRaid char={char} raidId={raidId} />
           </CardContent>
           {i < keys.length - 1 && <Separator />}
-        </>
+        </Fragment>
       );
     });
   }, [char.raids]);

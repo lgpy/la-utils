@@ -10,7 +10,7 @@ import CharacterCardInfo from "./CharacterCardInfo";
 import { Character } from "@/stores/character";
 import { Separator } from "../ui/separator";
 import CharacterCardAssignedRaid from "./CharacterAssignedRaid";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 
 interface Props {
   char: Character;
@@ -26,7 +26,7 @@ export default function CharacterEditCard({
   const ar = useMemo(() => {
     return Object.keys(char.raids).map((raidId, i, keys) => {
       return (
-        <>
+        <Fragment key={char.id + raidId}>
           <CardContent className="p-3">
             <CharacterCardAssignedRaid
               char={char}
@@ -35,7 +35,7 @@ export default function CharacterEditCard({
             />
           </CardContent>
           {i < keys.length - 1 && <Separator />}
-        </>
+        </Fragment>
       );
     });
   }, [char.raids]);

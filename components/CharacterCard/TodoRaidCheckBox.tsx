@@ -65,7 +65,7 @@ export default function TodoRaidCheckbox({
 
   return (
     <div
-      className="w-16 h-8 flex"
+      className="w-16 h-8 flex cursor-pointer"
       onClick={handleClick}
       onContextMenu={handleClick}
     >
