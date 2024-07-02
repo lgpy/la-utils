@@ -1,17 +1,20 @@
 "use client";
 
-import CharacterTodoCard from "@/components/CharacterCard/CharacterTodoCard";
-import TodoRaid from "@/components/CharacterCard/TodoRaid";
+import CharacterEditCard from "@/components/CharacterCard/CharacterEditCard";
 import { useCharactersStore } from "@/providers/CharactersStoreProvider";
-import Image from "next/image";
 import { useMemo } from "react";
 
-export default function Home() {
+export default function CharactersPage() {
   const characters = useCharactersStore((store) => store);
 
   const charCards = useMemo(() => {
     return characters.characters.map((char) => (
-      <CharacterTodoCard char={char} key={char.id} />
+      <CharacterEditCard
+        char={char}
+        editCharacter={() => null}
+        openRaidDialog={() => null}
+        key={char.id}
+      />
     ));
   }, [characters.characters]);
 

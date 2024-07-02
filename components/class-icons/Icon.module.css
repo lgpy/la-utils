@@ -1,0 +1,4 @@
+.icon {
+    filter: drop-shadow(rgb(0, 0, 0) 0px 0px 10px);
+    position: relative;
+}
