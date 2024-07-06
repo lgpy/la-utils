@@ -18,10 +18,12 @@ export default function CharacterCardInfo({ char }: Props) {
     <div className="flex flex-row gap-2 items-center">
       {Icon}
       <div>
-        <span className="text-sm text-default-500">{char.class}</span>
-        <h2>{char.name}</h2>
+        <span className="text-xs text-default-500 text-muted-foreground">
+          {char.class}
+        </span>
+        <h2 className="text-primary">{char.name}</h2>
         <div
-          className={clsx("flex items-center gap-x-1 text-sm  font-semibold", {
+          className={clsx("flex items-center gap-x-1 text-sm font-semibold", {
             "text-[#eed49f]": theme === "dark",
             "text-[#df8e1d]": theme === "light",
           })}

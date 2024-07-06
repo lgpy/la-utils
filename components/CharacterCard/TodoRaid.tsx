@@ -22,12 +22,12 @@ export default function TodoRaid({ char, raidId }: Props) {
   return (
     <div className="flex flex-row justify-between items-center gap-2">
       <div className="flex flex-col grow min-w-0 items-start">
-        <span className="text-primary">{raid.name}</span>
+        <span className="text-secondary">{raid.name}</span>
 
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <span className="text-primary/30 text-xs truncate">
+              <span className="text-secondary/50 text-xs truncate">
                 {assignedRaid.gates
                   .map((g) => `${shortestDifficulty(g.difficulty)}`)
                   .join("")}

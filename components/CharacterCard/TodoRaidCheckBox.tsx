@@ -6,6 +6,7 @@ import { MouseEventHandler } from "react";
 import { Button } from "../ui/button";
 import { useCharactersStore } from "@/providers/CharactersStoreProvider";
 import { DateTime } from "luxon";
+import { useToast } from "../ui/use-toast";
 
 interface Props {
   charId: string;
@@ -20,6 +21,7 @@ export default function TodoRaidCheckbox({
 }: Props) {
   const store = useCharactersStore((store) => store);
   const raid = raids.find((r) => r.id === raidId);
+  const { toast } = useToast();
 
   if (!raid) return null;
 
@@ -42,12 +44,31 @@ export default function TodoRaidCheckbox({
       } else {
         if (completed.length === assignedGates.length)
           store.uncompleteRaid(charId, raidId);
-        else
-          store.completeRaid(
-            charId,
-            raidId,
-            Object.values(assignedGates)[completed.length].id,
-          );
+        else {
+          const firstResetedgate = assignedGates.find((ag) => {
+            const actualgate = raid.gates[ag.id];
+            const completedGate = completed.find((c) => c.id === ag.id);
+            if (
+              completedGate === undefined ||
+              completedGate.completedDate === undefined
+            )
+              return true;
+            if (actualgate.hasReset !== undefined)
+              return actualgate.hasReset(
+                DateTime.fromISO(completedGate.completedDate),
+              );
+            else return hasReset(DateTime.fromISO(completedGate.completedDate));
+          });
+          if (firstResetedgate === undefined) {
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "Error while trying to complete the gate.",
+            });
+            return;
+          }
+          store.completeRaid(charId, raidId, firstResetedgate.id);
+        }
       }
     } else if (event.button === 2) {
       if (event.shiftKey) {

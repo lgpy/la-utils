@@ -11,6 +11,8 @@ import { Character } from "@/stores/character";
 import { Separator } from "../ui/separator";
 import CharacterCardAssignedRaid from "./CharacterAssignedRaid";
 import { Fragment, useMemo } from "react";
+import { ChevronRight, PencilIcon, PlusIcon } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface Props {
   char: Character;
@@ -42,12 +44,28 @@ export default function CharacterEditCard({
 
   return (
     <Card className="h-fit w-56">
-      <CardHeader className="p-4">
+      <CardHeader className="p-4 w-full h-full relative">
         <CharacterCardInfo char={char} />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-2 right-2 !m-0"
+          onClick={() => editCharacter()}
+        >
+          <PencilIcon className="h-4 w-4" />
+        </Button>
       </CardHeader>
       <Separator />
       {ar}
-      {ar.length === 0 && <CardContent>No raids assigned</CardContent>}
+      <Separator />
+      <CardContent className="p-0">
+        <Button
+          className="w-full rounded-t-none"
+          onClick={() => openRaidDialog()}
+        >
+          <PlusIcon className="mr-2 h-4 w-4" /> Add raid
+        </Button>
+      </CardContent>
     </Card>
   );
 }

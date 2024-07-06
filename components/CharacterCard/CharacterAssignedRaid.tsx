@@ -2,7 +2,7 @@ import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { useCharactersStore } from "@/providers/CharactersStoreProvider";
 import { Character } from "@/stores/character";
 import { Button } from "../ui/button";
-import { DeleteIcon, EllipsisIcon, PencilIcon } from "lucide-react";
+import { DeleteIcon, EllipsisIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -36,14 +36,16 @@ export default function CharacterCardAssignedRaid({
 
   if (!assignedRaid || !raid) return null;
 
+  const deleteRaid = () => {};
+
   return (
     <div className="flex flex-row justify-between items-center gap-2">
       <div className="flex flex-col grow min-w-0 items-start">
-        <span className="text-primary">{raid.name}</span>
+        <span className="text-secondary">{raid.name}</span>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <span className="text-primary/30 text-xs truncate">
+              <span className="text-secondary/50 text-xs truncate">
                 {assignedRaid.gates
                   .map((g) => `${shortestDifficulty(g.difficulty)}`)
                   .join("")}
@@ -74,7 +76,7 @@ export default function CharacterCardAssignedRaid({
             className="text-destructive"
             onClick={() => characters.removeRaidFromCharacter(char.id, raid.id)}
           >
-            <DeleteIcon className="mr-2 h-4 w-4" />
+            <Trash2Icon className="mr-2 h-4 w-4" />
             <span>Delete Raid</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
