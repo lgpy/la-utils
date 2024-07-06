@@ -1,12 +1,12 @@
 import { hasReset } from "@/lib/dates";
 import { Character } from "@/stores/character";
-import clsx from "clsx";
 import { Fragment, useMemo } from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import CharacterCardInfo from "./CharacterCardInfo";
 import { Separator } from "../ui/separator";
 import { DateTime } from "luxon";
 import TodoRaid from "./TodoRaid";
+import { cn } from "@/lib/utils";
 
 interface Props {
   char: Character;
@@ -27,7 +27,7 @@ export default function CharacterTodoCard({ char }: Props) {
       return (
         <Fragment key={char.id + raidId}>
           <CardContent
-            className={clsx("transition p-3", { "bg-primary/10": isCompleted })}
+            className={cn("transition p-3", { "bg-primary/10": isCompleted })}
           >
             <TodoRaid char={char} raidId={raidId} />
           </CardContent>

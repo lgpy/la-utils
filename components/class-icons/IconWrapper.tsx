@@ -1,8 +1,7 @@
-import { useTheme } from "next-themes";
 import React from "react";
-import clsx from "clsx";
 
 import classes from "./Icon.module.css";
+import { cn } from "@/lib/utils";
 
 interface Props {
   size: number;
@@ -11,15 +10,8 @@ interface Props {
 }
 
 export default function IconWrapper({ svgProps, svgElement, size }: Props) {
-  const { theme } = useTheme();
-
   return (
-    <div
-      className={clsx({
-        "fill-white": theme === "dark",
-        "fill-black": theme === "light",
-      })}
-    >
+    <div className={cn("dark:fill-white fill-black")}>
       {React.createElement(svgElement, {
         ...svgProps,
         className: classes.icon,

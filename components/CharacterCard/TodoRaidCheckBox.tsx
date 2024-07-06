@@ -1,12 +1,12 @@
 import { hasReset } from "@/lib/dates";
 import { raids } from "@/lib/raids";
 import { Character } from "@/stores/character";
-import clsx from "clsx";
 import { MouseEventHandler } from "react";
 import { Button } from "../ui/button";
 import { useCharactersStore } from "@/providers/CharactersStoreProvider";
 import { DateTime } from "luxon";
 import { useToast } from "../ui/use-toast";
+import { cn } from "@/lib/utils";
 
 interface Props {
   charId: string;
@@ -93,7 +93,7 @@ export default function TodoRaidCheckbox({
       {assignedGates.map((ag, i) => (
         <div
           key={ag.id}
-          className={clsx("size-full transition", {
+          className={cn("size-full transition", {
             "border-r-[1px]":
               ag.id !== assignedGates[assignedGates.length - 1].id,
             "bg-primary border-white/60": completed.some((c) => c.id === ag.id),
