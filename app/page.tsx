@@ -2,6 +2,7 @@
 
 import CharacterTodoCard from "@/components/CharacterCard/CharacterTodoCard";
 import TodoRaid from "@/components/CharacterCard/TodoRaid";
+import FABActions from "@/components/FABActions";
 import { useCharactersStore } from "@/providers/CharactersStoreProvider";
 import Image from "next/image";
 import { useMemo } from "react";
@@ -18,6 +19,7 @@ export default function Home() {
   return (
     <main className="mt-6 flex flex-row flex-wrap gap-3 justify-center">
       {charCards}
+      <FABActions />
     </main>
   );
 }

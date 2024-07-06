@@ -1,8 +1,7 @@
-import { Menu, Package2, Search } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import Link from "next/link";
-import { Input } from "./ui/input";
 import ThemeToggle from "./ThemeToggle";
 import Logo from "./Logo";
 
@@ -10,9 +9,14 @@ export default function NavBar() {
   return (
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b-2 bg-background2 px-4 md:px-6 border-primary">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 h-full">
-        <Link href="/" className="mt-auto">
-          <Logo />
-          <span className="sr-only">Lost Ark Utils</span>
+        <Link
+          href="/"
+          className="flex flex-row gap-2 justify-center items-center h-full"
+        >
+          <Logo className="mt-auto" />
+          <span className="text-xl font-extrabold bg-[length:200%_auto] from-primary from-30% via-secondary via-50% to-primary to-70% bg-gradient-to-r bg-clip-text text-transparent animate-gradient">
+            Lost Ark Utils
+          </span>
         </Link>
         <Link
           href="/"
@@ -40,8 +44,10 @@ export default function NavBar() {
               href="/"
               className="flex items-center gap-2 text-lg font-semibold"
             >
-              <Package2 className="h-6 w-6" />
-              <span className="sr-only">Lost Ark Utils</span>
+              <Logo />
+              <span className="text-xl font-extrabold bg-[length:200%_auto] from-primary via-secondary to-primary bg-gradient-to-r bg-clip-text text-transparent animate-gradient">
+                Lost Ark Utils
+              </span>
             </Link>
             <Link
               href="/"
@@ -58,10 +64,8 @@ export default function NavBar() {
           </nav>
         </SheetContent>
       </Sheet>
-      <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <div className="ml-auto flex-1 sm:flex-initial">
-          <ThemeToggle />
-        </div>
+      <div className="ml-auto">
+        <ThemeToggle />
       </div>
     </header>
   );

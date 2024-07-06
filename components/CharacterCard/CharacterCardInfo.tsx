@@ -21,7 +21,7 @@ export default function CharacterCardInfo({ char }: Props) {
         <span className="text-xs text-default-500 text-muted-foreground">
           {char.class}
         </span>
-        <h2 className="text-primary">{char.name}</h2>
+        <h2 className="text-primary font-bold">{char.name}</h2>
         <div
           className={clsx("flex items-center text-sm font-semibold", {
             "text-[#eed49f]": theme === "dark",

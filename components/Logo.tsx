@@ -1,10 +1,11 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function Logo() {
+export default function Logo(props: { className?: string }) {
   const [logoNumber, setLogoNumber] = useState(0);
   const pathname = usePathname();
 
@@ -14,7 +15,7 @@ export default function Logo() {
   }, [pathname]);
 
   return (
-    <div className="w-[70px] items-center">
+    <div className={cn("flex items-center justify-center", props.className)}>
       <Image
         alt=""
         height={59}

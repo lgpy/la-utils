@@ -62,6 +62,7 @@ export default function CharacterEditCard({
         <Button
           className="w-full rounded-t-none"
           onClick={() => openRaidDialog()}
+          variant="ghost"
         >
           <PlusIcon className="mr-2 h-4 w-4" /> Add raid
         </Button>
