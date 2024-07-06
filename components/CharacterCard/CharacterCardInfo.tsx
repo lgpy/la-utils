@@ -23,12 +23,12 @@ export default function CharacterCardInfo({ char }: Props) {
         </span>
         <h2 className="text-primary">{char.name}</h2>
         <div
-          className={clsx("flex items-center gap-x-1 text-sm font-semibold", {
+          className={clsx("flex items-center text-sm font-semibold", {
             "text-[#eed49f]": theme === "dark",
             "text-[#df8e1d]": theme === "light",
           })}
         >
-          <SwordsIcon />
+          <SwordsIcon className="size-5 mr-1" />
           {char.itemLevel}
         </div>
       </div>

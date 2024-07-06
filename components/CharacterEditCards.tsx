@@ -5,17 +5,28 @@ import { useCharactersStore } from "@/providers/CharactersStoreProvider";
 import { Character } from "@/stores/character";
 import { Button } from "./ui/button";
 import { ChevronRight, PlusIcon } from "lucide-react";
+import CharacterRaidDialog from "./CharacterRaidDialog";
+import { set } from "react-hook-form";
 
 export default function CharacterEditCards() {
   const characters = useCharactersStore((store) => store);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<false | "raid" | "char">(false);
   const [selectedCharacter, setSelectedCharacter] = useState<
     Character | undefined
   >(undefined);
+  const [selectedRaid, setSelectedRaid] = useState<string | undefined>(
+    undefined,
+  );
 
   const openCharacterEditDialog = (char: Character | undefined) => {
     setSelectedCharacter(char);
-    setIsOpen(true);
+    setIsOpen("char");
+  };
+
+  const openRaidDialog = (char: Character, raidId: string | undefined) => {
+    setSelectedCharacter(char);
+    setSelectedRaid(raidId);
+    setIsOpen("raid");
   };
 
   const charCards = useMemo(() => {
@@ -23,7 +34,7 @@ export default function CharacterEditCards() {
       <CharacterEditCard
         char={char}
         editCharacter={() => openCharacterEditDialog(char)}
-        openRaidDialog={() => null}
+        openRaidDialog={(raidId) => openRaidDialog(char, raidId)}
         key={char.id}
       />
     ));
@@ -32,13 +43,23 @@ export default function CharacterEditCards() {
   return (
     <>
       {charCards}
-      <CharacterFormDialog
-        isOpen={isOpen}
-        close={() => setIsOpen(false)}
-        existingCharacter={selectedCharacter}
-      />
+      {isOpen === "char" && (
+        <CharacterFormDialog
+          isOpen={isOpen === "char"}
+          close={() => setIsOpen(false)}
+          existingCharacter={selectedCharacter}
+        />
+      )}
+      {selectedCharacter && isOpen === "raid" && (
+        <CharacterRaidDialog
+          character={selectedCharacter}
+          isOpen={isOpen === "raid"}
+          raidId={selectedRaid}
+          close={() => setIsOpen(false)}
+        />
+      )}
       <Button
-        className="absolute right-4 bottom-4"
+        className="right-4 bottom-4 fixed"
         variant="default"
         size="icon"
         onClick={() => openCharacterEditDialog(undefined)}

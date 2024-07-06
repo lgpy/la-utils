@@ -44,7 +44,9 @@ export default function CharacterTodoCard({ char }: Props) {
       </CardHeader>
       <Separator />
       {raidBodies}
-      {raidBodies.length === 0 && <CardContent>No raids assigned</CardContent>}
+      {raidBodies.length === 0 && (
+        <CardContent className="p-3 text-center">No raids assigned</CardContent>
+      )}
     </Card>
   );
 }

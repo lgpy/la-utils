@@ -8,12 +8,9 @@ import Logo from "./Logo";
 
 export default function NavBar() {
   return (
-    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-mantle px-4 md:px-6 border-mauve">
-      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-lg font-semibold md:text-base"
-        >
+    <header className="sticky top-0 flex h-16 items-center gap-4 border-b-2 bg-background2 px-4 md:px-6 border-primary">
+      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 h-full">
+        <Link href="/" className="mt-auto">
           <Logo />
           <span className="sr-only">Lost Ark Utils</span>
         </Link>

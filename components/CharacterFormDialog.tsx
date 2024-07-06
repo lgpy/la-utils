@@ -1,9 +1,3 @@
-interface Props {
-  isOpen: boolean;
-  close: () => void;
-  existingCharacter?: Character;
-}
-
 import { Class } from "@/lib/classes";
 import { useCharactersStore } from "@/providers/CharactersStoreProvider";
 import { Character } from "@/stores/character";
@@ -49,6 +43,12 @@ const formSchema = z.object({
 });
 
 const classes = Object.values(Class);
+
+interface Props {
+  isOpen: boolean;
+  close: () => void;
+  existingCharacter?: Character;
+}
 
 export default function CharacterFormDialog({
   isOpen,
@@ -100,7 +100,7 @@ export default function CharacterFormDialog({
       description: "Your character has been deleted successfully!",
       action: (
         <ToastAction
-          onClick={() => characters.createCharacter(existingCharacter)}
+          onClick={() => characters.restoreCharacter(existingCharacter)}
           className="hover:text-background"
           altText="Undo"
         >

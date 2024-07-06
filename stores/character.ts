@@ -28,6 +28,7 @@ export type CharactersActions = {
     class: Class;
     itemLevel: number;
   }) => void;
+  restoreCharacter: (char: Character) => void;
   updateCharacter: (
     id: string,
     char: {
@@ -115,6 +116,14 @@ export const createCharactersStore = () =>
                   completedRaids: {},
                 },
               ],
+            };
+          });
+        },
+        restoreCharacter: (char) => {
+          set((state) => {
+            return {
+              ...state,
+              characters: [...state.characters, char],
             };
           });
         },
