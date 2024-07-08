@@ -7,30 +7,30 @@
       --background: 220 23% 95%;
       --foreground: 234 16% 35%;
 
-      --card: 0 0% 100%;
+      --card: 223 16% 83%;
       --card-foreground: 234 16% 35%;
 
-      --popover: 0 0% 100%;
+      --popover: 225 14% 77%;
       --popover-foreground: 234 16% 35%;
 
-      --primary: 337 58% 48%;
+      --primary: 266 85% 58%;
       --primary-foreground: 220 23% 95%;
 
-      --secondary: 355 65% 67%;
+      --secondary: 316 73% 69%;
       --secondary-foreground: 220 23% 95%;
 
-      --muted: 210 40% 96.1%;
+      --muted: 231 10% 59%;
       --muted-foreground: 215.4 16.3% 46.9%;
 
-      --accent: 337 58% 48%;
+      --accent: 316 73% 69%;
       --accent-foreground: 220 23% 95%;
 
-      --destructive: 0 84.2% 60.2%;
-      --destructive-foreground: 220 23% 95%;
+      --destructive: 347 87% 44%;
+      --destructive-foreground: 346 74% 92%;
 
-      --border: 355 65% 67%;
-      --input: 355 65% 67%;
-      --ring: 231 10% 59%;
+      --border: 231 97% 72%;
+      --input: 316 73% 69%;
+      --ring: 220 91% 54%;
 
       --background2: 220 21% 89%;
       --select-background: 232, 10%, 53%;
@@ -48,24 +48,24 @@
       --popover: 231 16% 34%;
       --popover-foreground: 227 68% 88%;
 
-      --primary: 341.25 55.17% 45.49%;
-      --primary-foreground: 346 74% 92%;
+      --primary: 267 83% 80%;
+      --primary-foreground: 232 23% 18%;
 
-      --secondary: 354.81 59.77% 65.88%;
-      --secondary-foreground: 346 74% 92%;
+      --secondary: 316 74% 85%;
+      --secondary-foreground: 232 23% 18%;
 
-      --muted: 217.2 32.6% 17.5%;
+      --muted: 228 15% 57%;
       --muted-foreground: 215 20.2% 65.1%;
 
-      --accent: 354.81 59.77% 65.88%;
-      --accent-foreground: 346 74% 92%;
+      --accent: 316 74% 85%;
+      --accent-foreground: 232 23% 18%;
 
       --destructive: 351 74% 73%;
       --destructive-foreground: 232 23% 18%;
 
-      --border: 345.63 55.04% 74.71%;
-      --input: 345.63 55.04% 74.71%;
-      --ring: 354.81 59.77% 65.88%;
+      --border: 234 82% 85%;
+      --input: 316 74% 85%;
+      --ring: 220 83% 75%;
 
       --background2: 236 23% 12%;
       --select-background: 228, 20%, 65%;

@@ -40,7 +40,7 @@ export default function CharacterEditCard({
         </Fragment>
       );
     });
-  }, [char.raids]);
+  }, [char, openRaidDialog]);
 
   return (
     <Card className="h-fit w-56">

@@ -34,7 +34,6 @@ import {
 } from "./ui/select";
 import Link from "next/link";
 import { Trash2Icon, TrashIcon } from "lucide-react";
-import getClassIcon from "./class-icons/factory";
 import { Difficulty, getRaidsFilteredByIlvl, raids } from "@/lib/raids";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
@@ -169,7 +168,7 @@ export default function CharacterRaidDialog({
         />
       );
     });
-  }, [actualRaid]);
+  }, [actualRaid, character.itemLevel, form.control]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -183,7 +182,7 @@ export default function CharacterRaidDialog({
           )
         : [],
     });
-  }, [actualRaid, isOpen]);
+  }, [actualRaid, isOpen, character.raids, form]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>

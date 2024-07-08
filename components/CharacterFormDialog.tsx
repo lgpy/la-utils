@@ -11,6 +11,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  DialogDescription,
 } from "./ui/dialog";
 import {
   Form,
@@ -34,7 +35,7 @@ import {
 } from "./ui/select";
 import Link from "next/link";
 import { Trash2Icon, TrashIcon } from "lucide-react";
-import getClassIcon from "./class-icons/factory";
+import ClassIcon from "./class-icons/ClassIcon";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -117,7 +118,7 @@ export default function CharacterFormDialog({
       itemLevel: existingCharacter?.itemLevel,
       class: existingCharacter?.class,
     });
-  }, [existingCharacter, form.reset, isOpen]);
+  }, [existingCharacter, isOpen, form]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
@@ -126,6 +127,11 @@ export default function CharacterFormDialog({
           <DialogTitle className="text-primary">
             {existingCharacter ? "Update Character" : "Create Character"}
           </DialogTitle>
+          <DialogDescription>
+            {existingCharacter
+              ? "Update your character's information"
+              : "Create a new character"}
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -171,7 +177,7 @@ export default function CharacterFormDialog({
                             className="flex items-center"
                           >
                             <div className="flex items-center gap-2">
-                              {getClassIcon(c, { size: 24 })}
+                              <ClassIcon c={c} className="size-6" />
                               {c}
                             </div>
                           </SelectItem>

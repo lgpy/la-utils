@@ -35,7 +35,7 @@ export default function CharacterTodoCard({ char }: Props) {
         </Fragment>
       );
     });
-  }, [char.raids]);
+  }, [char]);
 
   return (
     <Card className="h-fit w-56">

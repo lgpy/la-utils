@@ -41,11 +41,11 @@ export default function CharacterCardAssignedRaid({
   return (
     <div className="flex flex-row justify-between items-center gap-2">
       <div className="flex flex-col grow min-w-0 items-start">
-        <span className="text-secondary">{raid.name}</span>
+        <span>{raid.name}</span>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <span className="text-secondary/50 text-xs truncate">
+              <span className="text-muted text-xs truncate">
                 {assignedRaid.gates
                   .map((g) => `${shortestDifficulty(g.difficulty)}`)
                   .join("")}
