@@ -45,7 +45,7 @@ export default function CharacterCardAssignedRaid({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <span className="text-muted text-xs truncate">
+              <span className="text-muted-foreground text-xs truncate">
                 {assignedRaid.gates
                   .map((g) => `${shortestDifficulty(g.difficulty)}`)
                   .join("")}
