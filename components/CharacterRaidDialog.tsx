@@ -132,7 +132,10 @@ export default function CharacterRaidDialog({
               key={"rgi" + gateId + difficulty}
             >
               <FormControl>
-                <RadioGroupItem value={difficulty} />
+                <RadioGroupItem
+                  value={difficulty}
+                  className="text-secondary border-secondary"
+                />
               </FormControl>
               <FormLabel className="font-normal">{difficulty}</FormLabel>
             </FormItem>
@@ -155,7 +158,10 @@ export default function CharacterRaidDialog({
                 >
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="none" />
+                      <RadioGroupItem
+                        value="none"
+                        className="text-secondary border-secondary"
+                      />
                     </FormControl>
                     <FormLabel className="font-normal">None</FormLabel>
                   </FormItem>

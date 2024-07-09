@@ -36,14 +36,14 @@ export default function CharacterEditCard({
               raidId={raidId}
             />
           </CardContent>
-          {i < keys.length - 1 && <Separator />}
+          {i < keys.length - 1 && <Separator className="opacity-75" />}
         </Fragment>
       );
     });
   }, [char, openRaidDialog]);
 
   return (
-    <Card className="h-fit w-56">
+    <Card className="h-fit w-56 border-card border-1">
       <CardHeader className="p-4 w-full h-full relative">
         <CharacterCardInfo char={char} />
         <Button

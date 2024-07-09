@@ -27,18 +27,21 @@ export default function CharacterTodoCard({ char }: Props) {
       return (
         <Fragment key={char.id + raidId}>
           <CardContent
-            className={cn("transition p-3", { "bg-primary/10": isCompleted })}
+            className={cn("transition p-3", {
+              "bg-primary/10": isCompleted,
+              "rounded-b-lg": i === keys.length - 1,
+            })}
           >
             <TodoRaid char={char} raidId={raidId} />
           </CardContent>
-          {i < keys.length - 1 && <Separator />}
+          {i < keys.length - 1 && <Separator className="opacity-75" />}
         </Fragment>
       );
     });
   }, [char]);
 
   return (
-    <Card className="h-fit w-56">
+    <Card className="h-fit w-56 border-card border-1">
       <CardHeader className="p-4">
         <CharacterCardInfo char={char} />
       </CardHeader>
