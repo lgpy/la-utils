@@ -25,22 +25,18 @@ export default function CharacterEditCard({
   editCharacter,
   openRaidDialog,
 }: Props) {
-  const ar = useMemo(() => {
-    return Object.keys(char.raids).map((raidId, i, keys) => {
-      return (
-        <Fragment key={char.id + raidId}>
-          <CardContent className="p-3">
-            <CharacterCardAssignedRaid
-              char={char}
-              openRaidDialog={() => openRaidDialog(raidId)}
-              raidId={raidId}
-            />
-          </CardContent>
-          {i < keys.length - 1 && <Separator className="opacity-75" />}
-        </Fragment>
-      );
-    });
-  }, [char, openRaidDialog]);
+  const ar = Object.keys(char.raids).map((raidId, i, keys) => (
+    <Fragment key={char.id + raidId}>
+      <CardContent className="p-3">
+        <CharacterCardAssignedRaid
+          char={char}
+          openRaidDialog={() => openRaidDialog(raidId)}
+          raidId={raidId}
+        />
+      </CardContent>
+      {i < keys.length - 1 && <Separator className="opacity-75" />}
+    </Fragment>
+  ));
 
   return (
     <Card className="h-fit w-56 border-card border-1">
