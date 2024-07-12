@@ -41,7 +41,7 @@ export default function CharacterTodoCard({ char }: Props) {
   }, [char]);
 
   return (
-    <Card className="h-fit w-56 border-card border-1">
+    <Card className="h-fit w-56 border-card border-1 select-none">
       <CardHeader className="p-4">
         <CharacterCardInfo char={char} />
       </CardHeader>
