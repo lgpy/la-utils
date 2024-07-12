@@ -13,32 +13,18 @@ interface Props {
 }
 
 export default function CharacterTodoCard({ char }: Props) {
-  const raidBodies = useMemo(() => {
-    return Object.keys(char.raids).map((raidId, i, keys) => {
-      const assigned = char.raids[raidId].gates;
-      const completed = assigned.filter((ag) => {
-        if (!ag.completedDate) return false;
-
-        return !hasReset(DateTime.fromISO(ag.completedDate));
-      });
-
-      const isCompleted = assigned.length === completed.length;
-
-      return (
-        <Fragment key={char.id + raidId}>
-          <CardContent
-            className={cn("transition p-3", {
-              "bg-primary/10": isCompleted,
-              "rounded-b-lg": i === keys.length - 1,
-            })}
-          >
-            <TodoRaid char={char} raidId={raidId} />
-          </CardContent>
-          {i < keys.length - 1 && <Separator className="opacity-75" />}
-        </Fragment>
-      );
-    });
-  }, [char]);
+  const raids = Object.keys(char.raids).map((raidId, i, keys) => (
+    <Fragment key={char.id + raidId}>
+      <CardContent
+        className={cn("transition p-0", {
+          "rounded-b-lg": i === keys.length - 1,
+        })}
+      >
+        <TodoRaid char={char} raidId={raidId} />
+      </CardContent>
+      {i < keys.length - 1 && <Separator className="opacity-75" />}
+    </Fragment>
+  ));
 
   return (
     <Card className="h-fit w-56 border-card border-1 select-none">
@@ -46,8 +32,8 @@ export default function CharacterTodoCard({ char }: Props) {
         <CharacterCardInfo char={char} />
       </CardHeader>
       <Separator />
-      {raidBodies}
-      {raidBodies.length === 0 && (
+      {raids}
+      {raids.length === 0 && (
         <CardContent className="p-3 text-center">No raids assigned</CardContent>
       )}
     </Card>
