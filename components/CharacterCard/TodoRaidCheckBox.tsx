@@ -37,49 +37,42 @@ export default function TodoRaidCheckbox({
 
   const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
     event.preventDefault();
+
     if (event.button === 0) {
-      if (event.shiftKey) {
-        if (isChecked) store.uncompleteRaid(charId, raidId);
-        else store.completeRaid(charId, raidId);
-      } else {
-        if (completed.length === assignedGates.length)
-          store.uncompleteRaid(charId, raidId);
-        else {
-          const firstResetedgate = assignedGates.find((ag) => {
-            const actualgate = raid.gates[ag.id];
-            const completedGate = completed.find((c) => c.id === ag.id);
-            if (
-              completedGate === undefined ||
-              completedGate.completedDate === undefined
-            )
-              return true;
-            if (actualgate.hasReset !== undefined)
-              return actualgate.hasReset(
-                DateTime.fromISO(completedGate.completedDate),
-              );
-            else return hasReset(DateTime.fromISO(completedGate.completedDate));
-          });
-          if (firstResetedgate === undefined) {
-            toast({
-              variant: "destructive",
-              title: "Error",
-              description: "Error while trying to complete the gate.",
-            });
-            return;
-          }
-          store.completeRaid(charId, raidId, firstResetedgate.id);
-        }
-      }
-    } else if (event.button === 2) {
-      if (event.shiftKey) {
-        store.uncompleteRaid(charId, raidId);
-      } else {
-        if (completed.length === 0) return;
-        store.uncompleteRaid(
+      if (completed.length === assignedGates.length) return;
+      try {
+        store.raidAction({
           charId,
           raidId,
-          completed[completed.length - 1].id,
-        );
+          mode: event.shiftKey ? "all" : "last",
+          type: "complete",
+        });
+      } catch (e) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: event.shiftKey
+            ? "Failed to complete all gates"
+            : "Failed to complete last gate",
+        });
+      }
+    } else if (event.button === 2) {
+      if (completed.length === 0) return;
+      try {
+        store.raidAction({
+          charId,
+          raidId,
+          mode: event.shiftKey ? "all" : "last",
+          type: "uncomplete",
+        });
+      } catch (e) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: event.shiftKey
+            ? "Failed to uncomplete all gates"
+            : "Failed to uncomplete last gate",
+        });
       }
     }
   };

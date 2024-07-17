@@ -3,43 +3,47 @@ import { Difficulty, raids } from "@/lib/raids";
 import { devtools, persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 import { v4 as uuidv4 } from "uuid";
+import { z } from "zod";
+import { hasReset } from "@/lib/dates";
+import { DateTime } from "luxon";
 
-export type CharactersState = {
-  characters: {
-    id: string;
-    name: string;
-    class: Class;
-    itemLevel: number;
-    raids: {
-      [key: string]: {
-        gates: {
-          id: string;
-          difficulty: Difficulty;
-          completedDate?: string;
-        }[];
-      };
-    };
-  }[];
-};
+const zodChar = z.object({
+  id: z.string(),
+  name: z.string(),
+  class: z.nativeEnum(Class),
+  itemLevel: z.number(),
+  raids: z.record(
+    z.object({
+      gates: z.array(
+        z.object({
+          id: z.string(),
+          difficulty: z.nativeEnum(Difficulty),
+          completedDate: z.string().optional(),
+        }),
+      ),
+    }),
+  ),
+});
+
+const zodChars = z.object({
+  characters: z.array(zodChar),
+});
+
+const zodNewChar = zodChar.pick({ name: true, class: true, itemLevel: true });
+const zodEditChar = zodChar.pick({ name: true, class: true, itemLevel: true });
+
+export type CharactersState = z.infer<typeof zodChars>;
+export type NewCharacter = z.infer<typeof zodNewChar>;
+export type EditCharacter = z.infer<typeof zodEditChar>;
+export type Character = z.infer<typeof zodChar>;
 
 export type CharactersActions = {
-  createCharacter: (char: {
-    name: string;
-    class: Class;
-    itemLevel: number;
-  }) => void;
+  createCharacter: (char: NewCharacter) => void;
   restoreCharacter: (char: Character) => void;
-  updateCharacter: (
-    id: string,
-    char: {
-      name: string;
-      class: Class;
-      itemLevel: number;
-    },
-  ) => void;
-  deleteCharacter: (id: string) => void;
+  updateCharacter: (charId: string, char: EditCharacter) => void;
+  deleteCharacter: (charId: string) => void;
   addRaidToCharacter: (
-    id: string,
+    charId: string,
     raid: {
       id: string;
       gates: {
@@ -49,7 +53,7 @@ export type CharactersActions = {
     },
   ) => void;
   updateRaidInCharacter: (
-    id: string,
+    charId: string,
     raid: {
       id: string;
       gates: {
@@ -59,25 +63,27 @@ export type CharactersActions = {
       }[];
     },
   ) => void;
-  removeRaidFromCharacter: (id: string, raidId: string) => void;
-  completeRaid: (id: string, raidId: string, gateId?: string) => void;
-  uncompleteRaid: (id: string, raidId: string, gateId?: string) => void;
+  removeRaidFromCharacter: (charId: string, raidId: string) => void;
+  raidAction: (action: {
+    type: "complete" | "uncomplete";
+    charId: string;
+    raidId: string;
+    mode?: "all" | "last";
+  }) => void;
 };
 
 export type CharactersStore = CharactersState & CharactersActions;
-
-export type Character = CharactersState["characters"][number];
 
 export const createCharactersStore = () =>
   createStore<CharactersStore>()(
     persist(
       (set) => ({
         characters: [],
-        updateCharacter: (id, char) => {
+        updateCharacter: (charId, char) => {
           set((state) => {
             let n = 0;
             const updatedChars = state.characters.map((c) => {
-              if (c.id === id) {
+              if (c.id === charId) {
                 n++;
 
                 return {
@@ -97,20 +103,17 @@ export const createCharactersStore = () =>
             return { ...state, characters: updatedChars };
           });
         },
-        createCharacter: (char: {
-          name: string;
-          class: Class;
-          itemLevel: number;
-        }) => {
+        createCharacter: (c: z.infer<typeof zodNewChar>) => {
           set((state) => {
+            const newc = zodNewChar.parse(c);
             return {
               ...state,
               characters: [
                 ...state.characters,
                 {
-                  name: char.name,
-                  class: char.class,
-                  itemLevel: char.itemLevel,
+                  name: newc.name,
+                  class: newc.class,
+                  itemLevel: newc.itemLevel,
                   id: uuidv4(),
                   raids: {},
                   completedRaids: {},
@@ -127,17 +130,19 @@ export const createCharactersStore = () =>
             };
           });
         },
-        deleteCharacter: (id) => {
+        deleteCharacter: (charId) => {
           set((state) => {
-            const updatedChars = state.characters.filter((c) => c.id !== id);
+            const updatedChars = state.characters.filter(
+              (c) => c.id !== charId,
+            );
 
             return { ...state, characters: updatedChars };
           });
         },
-        addRaidToCharacter: (id, raid) => {
+        addRaidToCharacter: (charId, raid) => {
           set((state) => {
             const updatedChars = state.characters.map((c) => {
-              if (c.id === id) {
+              if (c.id === charId) {
                 if (Object.keys(c.raids).includes(raid.id)) return c;
                 //insert the new raid in the correct order based on the raids object in the utils/raids.ts file
                 const newRaids = {
@@ -175,10 +180,10 @@ export const createCharactersStore = () =>
             return { ...state, characters: updatedChars };
           });
         },
-        updateRaidInCharacter: (id, raid) => {
+        updateRaidInCharacter: (charId, raid) => {
           set((state) => {
             const updatedChars = state.characters.map((c) => {
-              if (c.id === id) {
+              if (c.id === charId) {
                 return {
                   ...c,
                   raids: {
@@ -204,10 +209,10 @@ export const createCharactersStore = () =>
             return { ...state, characters: updatedChars };
           });
         },
-        removeRaidFromCharacter: (id, raidId) => {
+        removeRaidFromCharacter: (charId, raidId) => {
           set((state) => {
             const updatedChars = state.characters.map((c) => {
-              if (c.id === id) {
+              if (c.id === charId) {
                 const updatedRaids = { ...c.raids };
 
                 delete updatedRaids[raidId];
@@ -224,13 +229,22 @@ export const createCharactersStore = () =>
             return { ...state, characters: updatedChars };
           });
         },
-        completeRaid: (id, raidId, gateId) => {
+        raidAction: ({ type, charId, raidId, mode }) => {
           set((state) => {
             const updatedChars = state.characters.map((c) => {
-              if (c.id === id) {
+              if (c.id === charId) {
                 const gates = c.raids[raidId].gates;
 
-                if (!gateId)
+                const newCompletedDate = (() => {
+                  switch (type) {
+                    case "complete":
+                      return new Date().toISOString();
+                    case "uncomplete":
+                      return undefined;
+                  }
+                })();
+
+                if (mode === "all") {
                   return {
                     ...c,
                     raids: {
@@ -238,76 +252,59 @@ export const createCharactersStore = () =>
                       [raidId]: {
                         gates: gates.map((g) => ({
                           ...g,
-                          completedDate: new Date().toISOString(),
+                          completedDate: newCompletedDate,
                         })),
                       },
                     },
                   };
-                else
-                  return {
-                    ...c,
-                    raids: {
-                      ...c.raids,
-                      [raidId]: {
-                        gates: gates.map((g) => {
-                          if (g.id === gateId) {
-                            return {
-                              ...g,
-                              completedDate: new Date().toISOString(),
-                            };
-                          }
+                }
 
-                          return g;
-                        }),
-                      },
+                const raid = raids.find((r) => r.id === raidId);
+                if (!raid) throw new Error("Raid not found");
+                let gate;
+                if (type === "uncomplete") {
+                  //get last completed Gate
+                  gate = gates.findLast((g) => {
+                    const actualgate = raid.gates[g.id];
+                    if (g.completedDate === undefined) return false;
+                    return actualgate.hasReset
+                      ? !actualgate.hasReset(DateTime.fromISO(g.completedDate))
+                      : !hasReset(DateTime.fromISO(g.completedDate));
+                  });
+                } else {
+                  //get first uncompleted Gate
+                  gate = gates.find((g) => {
+                    const actualgate = raid.gates[g.id];
+                    if (g.completedDate === undefined) return true;
+                    return actualgate.hasReset
+                      ? actualgate.hasReset(DateTime.fromISO(g.completedDate))
+                      : hasReset(DateTime.fromISO(g.completedDate));
+                  });
+                }
+                if (!gate)
+                  throw new Error(
+                    type === "uncomplete"
+                      ? "No gates to uncomplete"
+                      : "No gates to complete",
+                  );
+                return {
+                  ...c,
+                  raids: {
+                    ...c.raids,
+                    [raidId]: {
+                      gates: gates.map((g) => {
+                        if (g.id === gate.id) {
+                          return {
+                            ...g,
+                            completedDate: newCompletedDate,
+                          };
+                        }
+
+                        return g;
+                      }),
                     },
-                  };
-              }
-
-              return c;
-            });
-
-            return { ...state, characters: updatedChars };
-          });
-        },
-        uncompleteRaid: (id, raidId, gateId) => {
-          set((state) => {
-            const updatedChars = state.characters.map((c) => {
-              if (c.id === id) {
-                const gates = c.raids[raidId].gates;
-
-                if (!gateId)
-                  return {
-                    ...c,
-                    raids: {
-                      ...c.raids,
-                      [raidId]: {
-                        gates: gates.map((g) => ({
-                          ...g,
-                          completedDate: undefined,
-                        })),
-                      },
-                    },
-                  };
-                else
-                  return {
-                    ...c,
-                    raids: {
-                      ...c.raids,
-                      [raidId]: {
-                        gates: gates.map((g) => {
-                          if (g.id === gateId) {
-                            return {
-                              ...g,
-                              completedDate: undefined,
-                            };
-                          }
-
-                          return g;
-                        }),
-                      },
-                    },
-                  };
+                  },
+                };
               }
 
               return c;
