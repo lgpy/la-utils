@@ -1,10 +1,9 @@
-import { Menu } from "lucide-react";
-import { Button } from "./ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Coffee, Menu } from "lucide-react";
 import Link from "next/link";
-import ThemeToggle from "./ThemeToggle";
 import Logo from "./Logo";
 import SettingsButton from "./SettingsButton";
+import { Button } from "./ui/button";
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
 
 export default function NavBar() {
   return (
@@ -41,31 +40,42 @@ export default function NavBar() {
         </SheetTrigger>
         <SheetContent side="left">
           <nav className="grid gap-6 text-lg font-medium">
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-lg font-semibold"
-            >
-              <Logo />
-              <span className="text-xl font-extrabold bg-[length:200%_auto] from-primary via-secondary to-primary bg-gradient-to-r bg-clip-text text-transparent animate-gradient">
-                Lost Ark Utils
-              </span>
-            </Link>
-            <Link
-              href="/"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Home
-            </Link>
-            <Link
-              href="/characters"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Characters
-            </Link>
+            <SheetClose asChild>
+              <Link
+                href="/"
+                className="flex items-center gap-2 text-lg font-semibold"
+              >
+                <Logo />
+                <span className="text-xl font-extrabold bg-[length:200%_auto] from-primary via-secondary to-primary bg-gradient-to-r bg-clip-text text-transparent animate-gradient">
+                  Lost Ark Utils
+                </span>
+              </Link>
+            </SheetClose>
+            <SheetClose asChild>
+              <Link
+                href="/"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Home
+              </Link>
+            </SheetClose>
+            <SheetClose asChild>
+              <Link
+                href="/characters"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Characters
+              </Link>
+            </SheetClose>
           </nav>
         </SheetContent>
       </Sheet>
-      <div className="ml-auto">
+      <div className="ml-auto flex flex-row gap-2">
+        <Button variant="ghost" size="icon">
+          <Link href="https://ko-fi.com/leo213" target="_blank">
+            <Coffee className="h-4 w-4" />
+          </Link>
+        </Button>
         <SettingsButton />
       </div>
     </header>
