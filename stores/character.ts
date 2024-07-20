@@ -70,6 +70,7 @@ export type CharactersActions = {
     raidId: string;
     mode?: "all" | "last";
   }) => void;
+  restoreData: (data: CharactersState) => void;
 };
 
 export type CharactersStore = CharactersState & CharactersActions;
@@ -313,7 +314,27 @@ export const createCharactersStore = () =>
             return { ...state, characters: updatedChars };
           });
         },
+        restoreData: (data) => {
+          const d = zodChars.safeParse(data);
+          if (d.success) set(d.data);
+          else throw new Error("Data is not valid");
+        },
       }),
-      { name: "characters" },
+      {
+        name: "characters",
+        version: 1,
+        migrate: (persistedState, version) => {
+          if (version === 0) {
+            for (const char of (persistedState as { characters: any[] })
+              .characters) {
+              if (typeof char.itemLevel === "string") {
+                char.itemLevel = parseInt(char.itemLevel);
+              }
+              delete char.completedRaids;
+            }
+          }
+          return persistedState;
+        },
+      },
     ),
   );

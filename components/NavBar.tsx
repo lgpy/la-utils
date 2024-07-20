@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 import Logo from "./Logo";
+import SettingsButton from "./SettingsButton";
 
 export default function NavBar() {
   return (
@@ -65,7 +66,7 @@ export default function NavBar() {
         </SheetContent>
       </Sheet>
       <div className="ml-auto">
-        <ThemeToggle />
+        <SettingsButton />
       </div>
     </header>
   );
