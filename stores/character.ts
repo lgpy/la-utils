@@ -156,15 +156,21 @@ export const createCharactersStore = () =>
       }),
       {
         name: "characters",
-        version: 1,
+        version: 2,
         migrate: (persistedState, version) => {
-          if (version === 0) {
+          if (version <= 0) {
             for (const char of (persistedState as { characters: any[] })
               .characters) {
               if (typeof char.itemLevel === "string") {
                 char.itemLevel = parseInt(char.itemLevel);
               }
               delete char.completedRaids;
+            }
+          }
+          if (version <= 1) {
+            for (const char of (persistedState as { characters: any[] })
+              .characters) {
+              char.tasks = [];
             }
           }
           return persistedState;
