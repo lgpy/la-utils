@@ -1,5 +1,8 @@
+import { getRaids } from "@/lib/chars";
 import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
+import { cn } from "@/lib/utils";
 import { Character } from "@/stores/character";
+import { ValueOf } from "next/dist/shared/lib/constants";
 import {
   Tooltip,
   TooltipContent,
@@ -7,51 +10,47 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import TodoRaidCheckbox from "./TodoRaidCheckBox";
-import { DateTime } from "luxon";
-import { hasReset } from "@/lib/dates";
-import { cn } from "@/lib/utils";
 
 interface Props {
   char: Character;
   raidId: string;
+  raid: ValueOf<ReturnType<typeof getRaids>>;
 }
 
-export default function TodoRaid({ char, raidId }: Props) {
-  const raid = raids.find((r) => r.id === raidId);
-  const assignedRaid = char.raids[raidId] ?? [];
+export default function TodoRaid({ char, raidId, raid }: Props) {
+  const actualraid = raids.find((r) => r.id === raidId);
 
-  if (!assignedRaid || !raid) return null;
+  if (!actualraid) {
+    console.error(`Raid ${raidId} not found`);
+    return null;
+  }
 
-  const completed = assignedRaid.gates.filter((ag) => {
-    if (!ag.completedDate) return false;
-    const actualgate = raid.gates[ag.id];
-
-    if (actualgate.hasReset !== undefined)
-      return !actualgate.hasReset(DateTime.fromISO(ag.completedDate));
-    else return !hasReset(DateTime.fromISO(ag.completedDate));
-  });
+  const completedlen = raid.gates.reduce(
+    (acc, ag) => (ag.completed ? acc + 1 : acc),
+    0,
+  );
 
   return (
     <div
       className={cn("flex flex-row justify-between items-center gap-2 p-3", {
-        "bg-primary/10": completed.length === assignedRaid.gates.length,
+        "bg-primary/10": completedlen === raid.gates.length,
       })}
     >
       <div className="flex flex-col grow min-w-0 items-start">
-        <span className="">{raid.name}</span>
+        <span className="">{actualraid.name}</span>
 
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
               <span className="text-muted-foreground text-xs truncate">
-                {assignedRaid.gates
+                {raid.gates
                   .map((g) => `${shortestDifficulty(g.difficulty)}`)
                   .join("")}
               </span>
             </TooltipTrigger>
             <TooltipContent>
               <p>
-                {assignedRaid.gates
+                {raid.gates
                   .map((g) => `${g.id} ${shortenDifficulty(g.difficulty)}`)
                   .join(", ")}
               </p>
@@ -60,7 +59,7 @@ export default function TodoRaid({ char, raidId }: Props) {
         </TooltipProvider>
       </div>
       <TodoRaidCheckbox
-        assignedGates={assignedRaid.gates}
+        assignedGates={raid.gates}
         charId={char.id}
         raidId={raidId}
       />

@@ -1,7 +1,6 @@
-import { Difficulty, raids } from "@/lib/raids";
-import { CharactersActions, SetType } from "./character";
+import { Difficulty, isGateCompleted, raids } from "@/lib/raids";
+import { SetType } from "./character";
 import { DateTime } from "luxon";
-import { hasReset } from "@/lib/dates";
 
 export function charAddRaid(
   set: SetType,
@@ -169,26 +168,26 @@ export function raidAction(
           };
         }
 
-        const raid = raids.find((r) => r.id === raidId);
-        if (!raid) throw new Error("Raid not found");
         let gate;
         if (type === "uncomplete") {
           //get last completed Gate
           gate = gates.findLast((g) => {
-            const actualgate = raid.gates[g.id];
             if (g.completedDate === undefined) return false;
-            return actualgate.hasReset
-              ? !actualgate.hasReset(DateTime.fromISO(g.completedDate))
-              : !hasReset(DateTime.fromISO(g.completedDate));
+            return isGateCompleted(
+              raidId,
+              g.id,
+              DateTime.fromISO(g.completedDate),
+            );
           });
         } else {
           //get first uncompleted Gate
           gate = gates.find((g) => {
-            const actualgate = raid.gates[g.id];
             if (g.completedDate === undefined) return true;
-            return actualgate.hasReset
-              ? actualgate.hasReset(DateTime.fromISO(g.completedDate))
-              : hasReset(DateTime.fromISO(g.completedDate));
+            return !isGateCompleted(
+              raidId,
+              g.id,
+              DateTime.fromISO(g.completedDate),
+            );
           });
         }
         if (!gate)

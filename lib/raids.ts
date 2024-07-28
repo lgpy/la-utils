@@ -29,32 +29,38 @@ export const getRaidsFilteredByIlvl = (itemLevel: number) => {
   const filteredGates = raids.map((r) => {
     return {
       ...r,
-      gates: Object.keys(r.gates).reduce(
-        (acc, key) => {
-          const gate = r.gates[key];
-          const itemLevels = gate.itemlevel.filter((il) => il !== null);
+      gates: Object.keys(r.gates).reduce((acc, key) => {
+        const gate = r.gates[key];
+        const itemLevels = gate.itemlevel.filter((il) => il !== null);
 
-          if (itemLevels.length === 0) return acc;
+        if (itemLevels.length === 0) return acc;
 
-          const filteredItemLevels = itemLevels.filter(
-            (il) => il! <= itemLevel,
-          );
+        const filteredItemLevels = itemLevels.filter((il) => il! <= itemLevel);
 
-          if (filteredItemLevels.length === 0) return acc;
+        if (filteredItemLevels.length === 0) return acc;
 
-          return {
-            ...acc,
-            [key]: {
-              itemlevel: filteredItemLevels,
-            },
-          };
-        },
-        {} as typeof r.gates,
-      ),
+        return {
+          ...acc,
+          [key]: {
+            itemlevel: filteredItemLevels,
+          },
+        };
+      }, {} as typeof r.gates),
     };
   });
 
   return filteredGates.filter((r) => Object.keys(r.gates).length > 0);
+};
+
+export const isGateCompleted = (
+  raidId: string,
+  gateId: string,
+  date: DateTime,
+) => {
+  const r = raids.find((r) => r.id === raidId);
+  if (!r) return false;
+  const g = r.gates[gateId];
+  return g.hasReset ? !g.hasReset(date) : !hasReset(date);
 };
 
 export const raids: {

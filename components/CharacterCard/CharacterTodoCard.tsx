@@ -1,18 +1,19 @@
-import { hasReset } from "@/lib/dates";
+import { getRaids } from "@/lib/chars";
+import { cn } from "@/lib/utils";
 import { Character } from "@/stores/character";
 import { Fragment, useMemo } from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
-import CharacterCardInfo from "./CharacterCardInfo";
 import { Separator } from "../ui/separator";
-import { DateTime } from "luxon";
+import CharacterCardInfo from "./CharacterCardInfo";
 import TodoRaid from "./TodoRaid";
-import { cn } from "@/lib/utils";
 
 interface Props {
   char: Character;
 }
 
 export default function CharacterTodoCard({ char }: Props) {
+  const simplifiedRaids = useMemo(() => getRaids(char.raids), [char.raids]);
+
   const raids = Object.keys(char.raids).map((raidId, i, keys) => (
     <Fragment key={char.id + raidId}>
       <CardContent
@@ -20,7 +21,7 @@ export default function CharacterTodoCard({ char }: Props) {
           "rounded-b-lg": i === keys.length - 1,
         })}
       >
-        <TodoRaid char={char} raidId={raidId} />
+        <TodoRaid char={char} raidId={raidId} raid={simplifiedRaids[raidId]} />
       </CardContent>
       {i < keys.length - 1 && <Separator className="opacity-75" />}
     </Fragment>
