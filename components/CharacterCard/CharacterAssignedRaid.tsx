@@ -74,7 +74,7 @@ export default function CharacterCardAssignedRaid({
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-destructive"
-            onClick={() => characters.removeRaidFromCharacter(char.id, raid.id)}
+            onClick={() => characters.charDelRaid(char.id, raid.id)}
           >
             <Trash2Icon className="mr-2 h-4 w-4" />
             <span>Delete Raid</span>

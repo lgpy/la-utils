@@ -88,12 +88,12 @@ export default function CharacterRaidDialog({
         }));
 
       if (raidId !== undefined)
-        characters.updateRaidInCharacter(character.id, {
+        characters.charEditRaid(character.id, {
           id: values.raidId,
           gates,
         });
       else
-        characters.addRaidToCharacter(character.id, {
+        characters.charAddRaid(character.id, {
           id: values.raidId,
           gates,
         });
