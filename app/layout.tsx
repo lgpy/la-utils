@@ -7,8 +7,12 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { CharactersStoreProvider } from "@/providers/CharactersStoreProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { CSPostHogProvider } from "./providers";
+import dynamic from "next/dynamic";
 
 const inter = Inter({ subsets: ["latin"] });
+const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: "Lost Ark Utils",
@@ -29,6 +33,7 @@ export default function RootLayout({
             inter.className,
           )}
         >
+          <PostHogPageView />
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
