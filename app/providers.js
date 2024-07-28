@@ -19,10 +19,10 @@ if (typeof window !== 'undefined') {
   const chars = getCharNames();
   if (chars.length > 0) {
     posthog.identify(
-        chars[0],
-        {
-            characters: chars
-        }
+      undefined,
+      {
+          characters: chars
+      }
     )
   }
 }
