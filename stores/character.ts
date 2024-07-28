@@ -66,7 +66,7 @@ export type Character = z.infer<typeof zodChar>;
 
 export type CharactersActions = {
   createCharacter: (char: NewCharacter) => void;
-  restoreCharacter: (char: Character) => void;
+  restoreCharacter: (char: Character, index: number) => void;
   updateCharacter: (charId: string, char: EditCharacter) => void;
   deleteCharacter: (charId: string) => void;
   charAddRaid: (
@@ -137,12 +137,15 @@ export const createCharactersStore = () =>
             return { ...state, characters: updatedChars };
           });
         },
-        restoreCharacter: (char) => {
+        restoreCharacter: (char, index) => {
           set((state) => {
-            return {
-              ...state,
-              characters: [...state.characters, char],
-            };
+            let updatedChars = state.characters;
+            updatedChars = [
+              ...updatedChars.slice(0, index),
+              char,
+              ...updatedChars.slice(index),
+            ];
+            return { ...state, characters: updatedChars };
           });
         },
         restoreData: (data) => {

@@ -94,6 +94,9 @@ export default function CharacterFormDialog({
     if (!existingCharacter) return;
     if (!window.confirm("Are you sure you want to delete this character?"))
       return;
+    const index = characters.characters.findIndex(
+      (c) => c.id === existingCharacter.id,
+    );
     characters.deleteCharacter(existingCharacter.id);
     close();
     toast({
@@ -101,7 +104,7 @@ export default function CharacterFormDialog({
       description: "Your character has been deleted successfully!",
       action: (
         <ToastAction
-          onClick={() => characters.restoreCharacter(existingCharacter)}
+          onClick={() => characters.restoreCharacter(existingCharacter, index)}
           className="hover:text-background"
           altText="Undo"
         >
