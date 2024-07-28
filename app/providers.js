@@ -14,12 +14,12 @@ if (typeof window !== 'undefined') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
     api_host: 'https://la-utilsv2.vercel.app/ingest',
     ui_host: 'https://eu.posthog.com',
-    person_profiles: 'always',
+    person_profiles: 'identified',
   })
   const chars = getCharNames();
   if (chars.length > 0) {
     posthog.identify(
-      undefined,
+      chars[0],
       {
           characters: chars
       }
