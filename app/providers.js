@@ -14,7 +14,7 @@ if (typeof window !== 'undefined') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
     api_host: 'https://la-utilsv2.vercel.app/ingest',
     ui_host: 'https://eu.posthog.com',
-    person_profiles: 'identified',
+    person_profiles: 'identified_only',
   })
   const chars = getCharNames();
   if (chars.length > 0) {
