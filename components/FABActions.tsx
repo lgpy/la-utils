@@ -1,9 +1,10 @@
+"use client";
+
 import { GavelIcon } from "lucide-react";
-import { Dialog, DialogContent } from "./ui/dialog";
 import { useState } from "react";
-import { on } from "events";
-import { Button } from "./ui/button";
 import AuctionCalculatorModalContent from "./AuctionCalculatorModalContent";
+import { Button } from "./ui/button";
+import { Dialog, DialogContent } from "./ui/dialog";
 
 export default function FABActions() {
   const [isOpen, onOpenChange] = useState(false);

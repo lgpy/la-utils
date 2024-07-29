@@ -1,22 +1,16 @@
-"use client";
-
-import CharacterTodoCard from "@/components/CharacterCard/CharacterTodoCard";
+import CharacterTodoCards from "@/components/CharacterTodoCards";
 import FABActions from "@/components/FABActions";
-import { useCharactersStore } from "@/providers/CharactersStoreProvider";
-import { useMemo } from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Home | Lost Ark Utils",
+  description: "",
+};
 
 export default function Home() {
-  const characters = useCharactersStore((store) => store);
-
-  const charCards = useMemo(() => {
-    return characters.characters.map((char) => (
-      <CharacterTodoCard char={char} key={char.id} />
-    ));
-  }, [characters.characters]);
-
   return (
     <main className="mt-6 flex flex-row flex-wrap gap-3 justify-center">
-      {charCards}
+      <CharacterTodoCards />
       <FABActions />
     </main>
   );

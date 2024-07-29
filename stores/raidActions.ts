@@ -1,5 +1,5 @@
 import { Difficulty, isGateCompleted, raids } from "@/lib/raids";
-import { SetType } from "./character";
+import { SetType } from "./main";
 import { DateTime } from "luxon";
 
 export function charAddRaid(

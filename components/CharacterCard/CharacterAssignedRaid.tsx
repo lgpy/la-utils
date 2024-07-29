@@ -1,22 +1,19 @@
+import { Character, useMainStore } from "@/hooks/mainstore";
 import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
-import { useCharactersStore } from "@/providers/CharactersStoreProvider";
-import { Character } from "@/stores/character";
+import { EllipsisIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { Button } from "../ui/button";
-import { DeleteIcon, EllipsisIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 
 interface Props {
   char: Character;
@@ -29,7 +26,7 @@ export default function CharacterCardAssignedRaid({
   raidId,
   openRaidDialog,
 }: Props) {
-  const characters = useCharactersStore((store) => store);
+  const characters = useMainStore();
 
   const assignedRaid = char.raids[raidId];
   const raid = raids.find((r) => r.id === raidId);

@@ -1,7 +1,7 @@
-import { Character } from "@/stores/character";
 import { SwordsIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ClassIcon from "../class-icons/ClassIcon";
+import { Character } from "@/hooks/mainstore";
 
 interface Props {
   char: Character;

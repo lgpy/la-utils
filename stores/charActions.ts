@@ -1,16 +1,11 @@
-import {
-  EditCharacter,
-  NewCharacter,
-  SetType,
-  zodEditChar,
-  zodNewChar,
-} from "./character";
+import { z } from "zod";
+import { SetType, zodEditChar, zodNewChar } from "./main";
 import { v4 as uuidv4 } from "uuid";
 
 export function updateCharacter(
   set: SetType,
   charId: string,
-  char: EditCharacter,
+  char: z.infer<typeof zodEditChar>,
 ) {
   const updatedChar = zodEditChar.parse(char);
   set((state) => {
@@ -37,7 +32,10 @@ export function updateCharacter(
   });
 }
 
-export function CreateCharacter(set: SetType, char: NewCharacter) {
+export function CreateCharacter(
+  set: SetType,
+  char: z.infer<typeof zodNewChar>,
+) {
   const newc = zodNewChar.parse(char);
   set((state) => {
     return {

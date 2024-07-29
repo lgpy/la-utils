@@ -58,16 +58,12 @@ export const zodEditChar = zodChar.pick({
 });
 export const zodNewTask = zodTask.pick({ name: true, type: true });
 
-export type NewCharacter = z.infer<typeof zodNewChar>;
-export type EditCharacter = z.infer<typeof zodEditChar>;
-export type newTask = z.infer<typeof zodNewTask>;
-export type CharactersState = z.infer<typeof zodChars>;
-export type Character = z.infer<typeof zodChar>;
+export type MainState = z.infer<typeof zodChars>;
 
-export type CharactersActions = {
-  createCharacter: (char: NewCharacter) => void;
-  restoreCharacter: (char: Character, index: number) => void;
-  updateCharacter: (charId: string, char: EditCharacter) => void;
+export type MainActions = {
+  createCharacter: (char: z.infer<typeof zodNewChar>) => void;
+  restoreCharacter: (char: z.infer<typeof zodChar>, index: number) => void;
+  updateCharacter: (charId: string, char: z.infer<typeof zodEditChar>) => void;
   deleteCharacter: (charId: string) => void;
   charAddRaid: (
     charId: string,
@@ -96,14 +92,17 @@ export type CharactersActions = {
     raidId: string;
     mode?: "all" | "last";
   }) => void;
-  restoreData: (data: CharactersState) => void;
-  addTaskToCharacter: (charId: string, task: newTask) => void;
+  restoreData: (data: MainState) => void;
+  addTaskToCharacter: (
+    charId: string,
+    task: z.infer<typeof zodNewTask>,
+  ) => void;
 };
 
-export type CharactersStore = CharactersState & CharactersActions;
+export type MainStore = MainState & MainActions;
 
-export const createCharactersStore = () =>
-  createStore<CharactersStore>()(
+export const createMainStore = () =>
+  createStore<MainStore>()(
     persist(
       (set) => ({
         characters: [],
@@ -181,8 +180,8 @@ export const createCharactersStore = () =>
 
 export type SetType = (
   partial:
-    | CharactersStore
-    | Partial<CharactersStore>
-    | ((state: CharactersStore) => CharactersStore | Partial<CharactersStore>),
+    | MainStore
+    | Partial<MainStore>
+    | ((state: MainStore) => MainStore | Partial<MainStore>),
   replace?: boolean | undefined,
 ) => void;

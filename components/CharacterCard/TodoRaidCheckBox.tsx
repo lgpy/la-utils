@@ -1,10 +1,10 @@
 import { getRaids } from "@/lib/chars";
 import { raids } from "@/lib/raids";
 import { cn } from "@/lib/utils";
-import { useCharactersStore } from "@/providers/CharactersStoreProvider";
 import { ValueOf } from "next/dist/shared/lib/constants";
 import { MouseEventHandler } from "react";
 import { useToast } from "../ui/use-toast";
+import { useMainStore } from "@/hooks/mainstore";
 
 interface Props {
   charId: string;
@@ -17,7 +17,7 @@ export default function TodoRaidCheckbox({
   raidId,
   assignedGates,
 }: Props) {
-  const store = useCharactersStore((store) => store);
+  const store = useMainStore();
   const raid = raids.find((r) => r.id === raidId);
   const { toast } = useToast();
 

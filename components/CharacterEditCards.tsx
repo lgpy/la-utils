@@ -1,15 +1,15 @@
+"use client";
+
 import { useMemo, useState } from "react";
 import CharacterFormDialog from "./CharacterFormDialog";
 import CharacterEditCard from "./CharacterCard/CharacterEditCard";
-import { useCharactersStore } from "@/providers/CharactersStoreProvider";
-import { Character } from "@/stores/character";
 import { Button } from "./ui/button";
-import { ChevronRight, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import CharacterRaidDialog from "./CharacterRaidDialog";
-import { set } from "react-hook-form";
+import { Character, useMainStore } from "@/hooks/mainstore";
 
 export default function CharacterEditCards() {
-  const characters = useCharactersStore((store) => store);
+  const mainStore = useMainStore();
   const [isOpen, setIsOpen] = useState<false | "raid" | "char">(false);
   const [selectedCharacter, setSelectedCharacter] = useState<
     Character | undefined
@@ -30,7 +30,7 @@ export default function CharacterEditCards() {
   };
 
   const charCards = useMemo(() => {
-    return characters.characters.map((char) => (
+    return mainStore.characters.map((char) => (
       <CharacterEditCard
         char={char}
         editCharacter={() => openCharacterEditDialog(char)}
@@ -38,7 +38,7 @@ export default function CharacterEditCards() {
         key={char.id}
       />
     ));
-  }, [characters.characters]);
+  }, [mainStore.characters]);
 
   return (
     <>

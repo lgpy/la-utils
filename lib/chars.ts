@@ -1,8 +1,8 @@
-import { Character } from "@/stores/character";
+import { Character, zodChar } from "@/stores/main";
 import { Difficulty, isGateCompleted, raids } from "./raids";
 import { DateTime } from "luxon";
 
-export function getRaids(cRaids: Character["raids"]) {
+export function getRaids(cRaids: z.infer<typeof zodChar>) {
   return Object.entries(cRaids).reduce(
     (acc, [raidId, raid]) => {
       const actualraid = raids.find((r) => r.id === raidId);

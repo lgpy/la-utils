@@ -1,30 +1,26 @@
-import { Class } from "@/lib/classes";
-import { useCharactersStore } from "@/providers/CharactersStoreProvider";
-import { Character } from "@/stores/character";
-import { Fragment, use, useEffect, useMemo } from "react";
+import { Character, useMainStore } from "@/hooks/mainstore";
+import { Difficulty, getRaidsFilteredByIlvl, raids } from "@/lib/raids";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "./ui/button";
 import {
-  DialogHeader,
-  DialogFooter,
   Dialog,
   DialogContent,
+  DialogFooter,
+  DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
-  FormDescription,
   FormMessage,
 } from "./ui/form";
-import { useToast } from "./ui/use-toast";
-import { ToastAction } from "./ui/toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "./ui/input";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -32,11 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import Link from "next/link";
-import { Trash2Icon, TrashIcon } from "lucide-react";
-import { Difficulty, getRaidsFilteredByIlvl, raids } from "@/lib/raids";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Label } from "./ui/label";
+import { useToast } from "./ui/use-toast";
 
 Difficulty;
 const formSchema = z.object({
@@ -57,7 +49,7 @@ export default function CharacterRaidDialog({
   close,
   raidId,
 }: Props) {
-  const characters = useCharactersStore((store) => store);
+  const mainStore = useMainStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -88,12 +80,12 @@ export default function CharacterRaidDialog({
         }));
 
       if (raidId !== undefined)
-        characters.charEditRaid(character.id, {
+        mainStore.charEditRaid(character.id, {
           id: values.raidId,
           gates,
         });
       else
-        characters.charAddRaid(character.id, {
+        mainStore.charAddRaid(character.id, {
           id: values.raidId,
           gates,
         });
