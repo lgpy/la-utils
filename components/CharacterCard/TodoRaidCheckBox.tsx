@@ -5,7 +5,9 @@ import { ValueOf } from "next/dist/shared/lib/constants";
 import { MouseEventHandler } from "react";
 import { useToast } from "../ui/use-toast";
 import { useMainStore } from "@/hooks/mainstore";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { CheckIcon } from "lucide-react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface Props {
   charId: string;
@@ -78,8 +80,26 @@ export default function TodoRaidCheckbox({
       onClick={handleClick}
       onContextMenu={handleClick}
     >
-      <div className="absolute left-0 right-0 text-center z-10">
-        <span className="text-white">{`${completedlen}/${assignedGates.length}`}</span>
+      <div className="absolute left-0 right-0 text-center z-10 text-white">
+        {isChecked ? (
+          <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+            >
+              <CheckIcon className="mx-auto" />
+            </motion.div>
+          </AnimatePresence>
+        ) : (
+          <AnimatePresence>
+            <motion.span
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+            >{`${completedlen}/${assignedGates.length}`}</motion.span>
+          </AnimatePresence>
+        )}
       </div>
       <motion.div
         animate={{
