@@ -5,6 +5,7 @@ import { ValueOf } from "next/dist/shared/lib/constants";
 import { MouseEventHandler } from "react";
 import { useToast } from "../ui/use-toast";
 import { useMainStore } from "@/hooks/mainstore";
+import { motion } from "framer-motion";
 
 interface Props {
   charId: string;
@@ -73,23 +74,22 @@ export default function TodoRaidCheckbox({
 
   return (
     <div
-      className="w-16 h-8 flex cursor-pointer"
+      className="border-white/30 bg-primary/30 w-16 h-8 rounded-lg flex items-center relative overflow-hidden"
       onClick={handleClick}
       onContextMenu={handleClick}
     >
-      {assignedGates.map((ag, i) => (
-        <div
-          key={ag.id}
-          className={cn("size-full transition", {
-            "border-r-[1px]":
-              ag.id !== assignedGates[assignedGates.length - 1].id,
-            "bg-primary border-white/60": ag.completed,
-            "border-white/30 bg-primary/30": !ag.completed,
-            "rounded-l-lg": i === 0,
-            "rounded-r-lg": i === assignedGates.length - 1,
-          })}
-        />
-      ))}
+      <div className="absolute left-0 right-0 text-center z-10">
+        <span className="text-white">{`${completedlen}/${assignedGates.length}`}</span>
+      </div>
+      <motion.div
+        animate={{
+          width: `${(completedlen / assignedGates.length) * 100}%`,
+        }}
+        initial={{
+          width: `${(completedlen / assignedGates.length) * 100}%`,
+        }}
+        className={cn("bg-primary h-full")}
+      />
     </div>
   );
 }

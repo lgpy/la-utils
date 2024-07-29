@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import CharacterCardAssignedRaid from "./CharacterAssignedRaid";
 import CharacterCardInfo from "./CharacterCardInfo";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface Props {
   char: Character;
@@ -18,6 +19,8 @@ export default function CharacterEditCard({
   editCharacter,
   openRaidDialog,
 }: Props) {
+  const [parent] = useAutoAnimate();
+
   const ar = Object.keys(char.raids).map((raidId, i, keys) => (
     <Fragment key={char.id + raidId}>
       <CardContent className="p-3">
@@ -45,7 +48,7 @@ export default function CharacterEditCard({
         </Button>
       </CardHeader>
       <Separator />
-      {ar}
+      <div ref={parent}>{ar}</div>
       <Separator />
       <CardContent className="p-0">
         <Button

@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { useToast } from "./ui/use-toast";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 Difficulty;
 const formSchema = z.object({
@@ -49,6 +50,7 @@ export default function CharacterRaidDialog({
   close,
   raidId,
 }: Props) {
+  const [parent] = useAutoAnimate();
   const mainStore = useMainStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -228,7 +230,9 @@ export default function CharacterRaidDialog({
             <div>
               <FormLabel>Gates</FormLabel>
             </div>
-            {checkBoxGroups}
+            <div className="space-y-4" ref={parent}>
+              {checkBoxGroups}
+            </div>
           </form>
         </Form>
         <DialogFooter>

@@ -7,6 +7,8 @@ import { Button } from "./ui/button";
 import { PlusIcon } from "lucide-react";
 import CharacterRaidDialog from "./CharacterRaidDialog";
 import { Character, useMainStore } from "@/hooks/mainstore";
+import { motion } from "framer-motion";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export default function CharacterEditCards() {
   const mainStore = useMainStore();
@@ -17,6 +19,7 @@ export default function CharacterEditCards() {
   const [selectedRaid, setSelectedRaid] = useState<string | undefined>(
     undefined,
   );
+  const [parent] = useAutoAnimate();
 
   const openCharacterEditDialog = (char: Character | undefined) => {
     setSelectedCharacter(char);
@@ -42,7 +45,12 @@ export default function CharacterEditCards() {
 
   return (
     <>
-      {charCards}
+      <main
+        className="mt-6 flex flex-row flex-wrap gap-3 justify-center"
+        ref={parent}
+      >
+        {charCards}
+      </main>
       {isOpen === "char" && (
         <CharacterFormDialog
           isOpen={isOpen === "char"}
@@ -58,14 +66,27 @@ export default function CharacterEditCards() {
           close={() => setIsOpen(false)}
         />
       )}
-      <Button
-        className="right-4 bottom-4 fixed"
-        variant="default"
-        size="icon"
-        onClick={() => openCharacterEditDialog(undefined)}
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          transition: {
+            type: "spring",
+            stiffness: 260,
+            damping: 20,
+          },
+        }}
+        className="fixed right-4 bottom-4"
       >
-        <PlusIcon className="h-6 w-6" />
-      </Button>
+        <Button
+          variant="default"
+          size="icon"
+          onClick={() => openCharacterEditDialog(undefined)}
+        >
+          <PlusIcon className="h-6 w-6" />
+        </Button>
+      </motion.div>
     </>
   );
 }

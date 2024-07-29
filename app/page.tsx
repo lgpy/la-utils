@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="mt-6 flex flex-row flex-wrap gap-3 justify-center">
+    <>
       <CharacterTodoCards />
       <FABActions />
-    </main>
+    </>
   );
 }

@@ -7,9 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function CharactersPage() {
-  return (
-    <main className="mt-6 flex flex-row flex-wrap gap-3 justify-center">
-      <CharacterEditCards />
-    </main>
-  );
+  return <CharacterEditCards />;
 }
