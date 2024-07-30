@@ -30,7 +30,7 @@ export default function OldWebsiteDeprecatedMessage() {
     if (window.location.hostname === "la-utilsv2.vercel.app") {
       setIsOpen(!value);
     }
-  }, []);
+  }, [value]);
 
   return (
     <AlertDialog open={isOpen}>
