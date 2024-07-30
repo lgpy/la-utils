@@ -27,6 +27,9 @@
 
       --destructive: 347 87% 44%;
       --destructive-foreground: 346 74% 92%;
+      
+      --success: 109 58% 40%;
+      --success-foreground: 346 74% 92%;
 
       --border: 231 97% 72%;
       --input: 316 73% 69%;
@@ -63,6 +66,9 @@
       --destructive: 351 74% 73%;
       --destructive-foreground: 232 23% 18%;
 
+      --success: 105 48% 72%;
+      --success-foreground: 232 23% 18%;
+
       --border: 234 82% 85%;
       --input: 316 74% 85%;
       --ring: 220 83% 75%;
@@ -73,6 +79,13 @@
   }
 
   @layer base {
+    :root {
+      font-family: Inter, sans-serif;
+      font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+    }
+    @supports (font-variation-settings: normal) {
+      :root { font-family: InterVariable, sans-serif; }
+    }
     * {
       @apply border-border;
     }

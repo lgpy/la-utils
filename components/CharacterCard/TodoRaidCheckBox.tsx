@@ -1,13 +1,12 @@
+import { useMainStore } from "@/hooks/mainstore";
 import { getRaids } from "@/lib/chars";
 import { raids } from "@/lib/raids";
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { CheckIcon } from "lucide-react";
 import { ValueOf } from "next/dist/shared/lib/constants";
 import { MouseEventHandler } from "react";
 import { useToast } from "../ui/use-toast";
-import { useMainStore } from "@/hooks/mainstore";
-import { AnimatePresence, motion } from "framer-motion";
-import { CheckIcon } from "lucide-react";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface Props {
   charId: string;
@@ -24,13 +23,14 @@ export default function TodoRaidCheckbox({
   const raid = raids.find((r) => r.id === raidId);
   const { toast } = useToast();
 
-  if (!raid) return null;
-
   const completedlen = assignedGates.reduce(
     (acc, ag) => (ag.completed ? acc + 1 : acc),
     0,
   );
+
   const isChecked = assignedGates.length === completedlen;
+
+  if (!raid) return null;
 
   const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
     event.preventDefault();
@@ -80,34 +80,45 @@ export default function TodoRaidCheckbox({
       onClick={handleClick}
       onContextMenu={handleClick}
     >
-      <div className="absolute left-0 right-0 text-center z-10 text-white">
-        {isChecked ? (
-          <AnimatePresence>
+      <div
+        className="absolute left-0 right-0 text-center z-10 text-white"
+        style={{ fontFeatureSettings: "'tnum' 1" }}
+      >
+        <AnimatePresence initial={false}>
+          <div className="flex flex-row justify-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
+              key={"ap" + completedlen}
+              className="w-fit"
+              initial={{
+                opacity: 0,
+                y: 30,
+                rotate: completedlen === assignedGates.length ? 120 : undefined,
+                scale: 1,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                rotate: completedlen === assignedGates.length ? 0 : undefined,
+              }}
+              exit={{
+                opacity: 0,
+              }}
             >
-              <CheckIcon className="mx-auto" />
+              {isChecked ? (
+                <CheckIcon />
+              ) : (
+                <span className="text-nowrap">{`${completedlen}`}</span>
+              )}
             </motion.div>
-          </AnimatePresence>
-        ) : (
-          <AnimatePresence>
-            <motion.span
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-            >{`${completedlen}/${assignedGates.length}`}</motion.span>
-          </AnimatePresence>
-        )}
+            {!isChecked && <span>{`/${assignedGates.length}`}</span>}
+          </div>
+        </AnimatePresence>
       </div>
       <motion.div
         animate={{
           width: `${(completedlen / assignedGates.length) * 100}%`,
         }}
-        initial={{
-          width: `${(completedlen / assignedGates.length) * 100}%`,
-        }}
+        initial={false}
         className={cn("bg-primary h-full")}
       />
     </div>

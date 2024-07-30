@@ -1,15 +1,17 @@
 import { CheckIcon, ClipboardIcon } from "lucide-react";
 import React, { RefAttributes, useState, useEffect } from "react";
 import { Button, ButtonProps } from "./ui/button";
+import { cn } from "@/lib/utils";
 
 type Props = {
   textToCopy: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  iconClassName?: string;
 } & React.HTMLAttributes<HTMLButtonElement> &
   ButtonProps;
 
 export default function CopyButton(props: Props) {
-  const { textToCopy, children, ...rest } = props;
+  const { textToCopy, children, iconClassName, ...rest } = props;
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -31,9 +33,25 @@ export default function CopyButton(props: Props) {
     <Button onClick={copyToClipboard} {...rest}>
       {children}
       {copied ? (
-        <CheckIcon className="ml-2 h-4 w-4" />
+        <CheckIcon
+          className={cn(
+            "size-4",
+            {
+              "ml-2": props.size !== "icon",
+            },
+            iconClassName,
+          )}
+        />
       ) : (
-        <ClipboardIcon className="ml-2 h-4 w-4" />
+        <ClipboardIcon
+          className={cn(
+            "size-4",
+            {
+              "ml-2": props.size !== "icon",
+            },
+            iconClassName,
+          )}
+        />
       )}
     </Button>
   );
