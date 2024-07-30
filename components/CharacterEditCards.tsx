@@ -90,6 +90,7 @@ export default function CharacterEditCards() {
           variant="default"
           size="icon"
           onClick={() => openCharacterEditDialog(undefined)}
+          aria-label="Create Character"
         >
           <PlusIcon className="h-6 w-6" />
         </Button>
