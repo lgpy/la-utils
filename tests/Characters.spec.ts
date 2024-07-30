@@ -107,6 +107,7 @@ test.describe("Characters", () => {
     await page.getByRole("button").first().click();
     await expect(page.getByRole("main")).not.toContainText("testtest");
     await page.getByRole("button", { name: "Undo" }).click();
+    await page.reload();
     await expect(page.getByRole("heading")).toContainText("testtest");
     await expect(page.getByRole("main")).toContainText("Breaker");
     await expect(page.getByRole("main")).toContainText("1640");
