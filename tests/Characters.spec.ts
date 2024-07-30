@@ -8,20 +8,20 @@ test.describe("Characters", () => {
   });
 
   test("navigate to Characters", async () => {
-    await page.goto("http://localhost:3000/");
+    await page.goto("/");
     await page.click("text=Characters");
     await page.getByRole("link", { name: "Characters" }).click();
-    await expect(page).toHaveURL("http://localhost:3000/characters");
+    await expect(page).toHaveURL("/characters");
   });
 
   test("no characters message", async () => {
-    await page.goto("http://localhost:3000/characters");
+    await page.goto("/characters");
     await page.getByText("You have no characters").isVisible();
     await expect(page.getByText("You have no characters")).toBeVisible();
   });
 
   test("create character", async () => {
-    await page.goto("http://localhost:3000/characters");
+    await page.goto("/characters");
     await page.getByRole("button", { name: "Create Character" }).click();
     await page.fill('input[name="name"]', "Test Character");
     await page.getByLabel("Class").click();
@@ -35,7 +35,7 @@ test.describe("Characters", () => {
   });
 
   test("edit character", async () => {
-    await page.goto("http://localhost:3000/characters");
+    await page.goto("/characters");
     await page.getByRole("main").getByRole("button").first().click();
     await page.getByPlaceholder("Your character's name...").fill("testtest");
     await page.getByLabel("Class").click();
@@ -48,7 +48,7 @@ test.describe("Characters", () => {
   });
 
   test("add raid", async () => {
-    await page.goto("http://localhost:3000/characters");
+    await page.goto("/characters");
     await page.getByRole("button", { name: "Add raid" }).click();
     await page.getByLabel("Raid", { exact: true }).click();
     await page.getByRole("option", { name: "Brelshaza" }).click();
@@ -70,7 +70,7 @@ test.describe("Characters", () => {
   });
 
   test("edit raid", async () => {
-    await page.goto("http://localhost:3000/characters");
+    await page.goto("/characters");
     await page.getByRole("main").getByRole("button").nth(2).click();
     await page.getByText("Edit").click();
     await page
@@ -91,7 +91,7 @@ test.describe("Characters", () => {
   });
 
   test("delete raid", async () => {
-    await page.goto("http://localhost:3000/characters");
+    await page.goto("/characters");
     await page.getByRole("main").getByRole("button").nth(2).click();
     await page.getByText("Delete Raid").click();
     await expect(page.getByRole("main")).not.toContainText("Brelshaza");
