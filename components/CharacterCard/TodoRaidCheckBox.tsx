@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon } from "lucide-react";
 import { ValueOf } from "next/dist/shared/lib/constants";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useState } from "react";
 import { useToast } from "../ui/use-toast";
+import { set } from "zod";
 
 interface Props {
   charId: string;
@@ -22,6 +23,7 @@ export default function TodoRaidCheckbox({
   const store = useMainStore();
   const raid = raids.find((r) => r.id === raidId);
   const { toast } = useToast();
+  const [increase, setIncrease] = useState(false);
 
   const completedlen = assignedGates.reduce(
     (acc, ag) => (ag.completed ? acc + 1 : acc),
@@ -36,6 +38,7 @@ export default function TodoRaidCheckbox({
     event.preventDefault();
 
     if (event.button === 0) {
+      setIncrease(true);
       if (isChecked) return;
       try {
         store.raidAction({
@@ -54,6 +57,7 @@ export default function TodoRaidCheckbox({
         });
       }
     } else if (event.button === 2) {
+      setIncrease(false);
       if (completedlen === 0) return;
       try {
         store.raidAction({
@@ -91,11 +95,16 @@ export default function TodoRaidCheckbox({
               className="w-fit"
               initial={{
                 opacity: 0,
-                rotate: completedlen === assignedGates.length ? 120 : undefined,
+                rotate:
+                  completedlen === assignedGates.length
+                    ? -120
+                    : increase
+                    ? -40
+                    : 40,
               }}
               animate={{
                 opacity: 1,
-                rotate: completedlen === assignedGates.length ? 0 : undefined,
+                rotate: 0,
               }}
               exit={{
                 opacity: 0,
