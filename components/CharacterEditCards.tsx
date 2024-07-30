@@ -9,6 +9,7 @@ import CharacterRaidDialog from "./CharacterRaidDialog";
 import { Character, useMainStore } from "@/hooks/mainstore";
 import { motion } from "framer-motion";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import CharacterPageNoCharactersCard from "./CharacterPageNoCharactersCard";
 
 export default function CharacterEditCards() {
   const mainStore = useMainStore();
@@ -50,6 +51,7 @@ export default function CharacterEditCards() {
         ref={parent}
       >
         {charCards}
+        {charCards.length === 0 && <CharacterPageNoCharactersCard />}
       </main>
       {isOpen === "char" && (
         <CharacterFormDialog

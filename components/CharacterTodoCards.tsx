@@ -4,6 +4,7 @@ import { useMainStore } from "@/hooks/mainstore";
 import { useMemo } from "react";
 import CharacterTodoCard from "./CharacterCard/CharacterTodoCard";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { NoCharactersCard } from "./NoCharactersCard";
 
 export default function CharacterTodoCards() {
   const characters = useMainStore();
@@ -21,6 +22,7 @@ export default function CharacterTodoCards() {
       ref={parent}
     >
       {charCards}
+      {characters.characters.length === 0 && <NoCharactersCard />}
     </main>
   );
 }
