@@ -4,10 +4,10 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import NavBar from "@/components/NavBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { CharactersStoreProvider } from "@/providers/CharactersStoreProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { CSPostHogProvider } from "./providers";
 import dynamic from "next/dynamic";
+import { MainStoreProvider } from "@/providers/MainStoreProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
@@ -42,7 +42,7 @@ export default function RootLayout({
           >
             <div className="flex min-h-screen w-full flex-col">
               <NavBar />
-              <CharactersStoreProvider>{children}</CharactersStoreProvider>
+              <MainStoreProvider>{children}</MainStoreProvider>
             </div>
           </ThemeProvider>
           <Toaster />

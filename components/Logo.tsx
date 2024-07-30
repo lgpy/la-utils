@@ -6,13 +6,13 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Logo(props: { className?: string }) {
-  const [logoNumber, setLogoNumber] = useState(0);
+  /*const [logoNumber, setLogoNumber] = useState(0);
   const pathname = usePathname();
 
   useEffect(() => {
     const newLogo = Math.floor(Math.random() * 3);
     setLogoNumber(newLogo);
-  }, [pathname]);
+  }, [pathname]);*/
 
   return (
     <div className={cn("flex items-center justify-center", props.className)}>
@@ -20,7 +20,7 @@ export default function Logo(props: { className?: string }) {
         alt=""
         height={59}
         quality={100}
-        src={`/logo-${logoNumber}.png`}
+        src={`/logo-0.png`}
         width={65.47}
       />
     </div>

@@ -1,33 +1,11 @@
 import { useAutionStore } from "@/stores/auction";
-import {
-  CheckIcon,
-  ClipboardIcon,
-  EqualIcon,
-  EqualNot,
-  EqualNotIcon,
-  GavelIcon,
-  UsersIcon,
-} from "lucide-react";
+import { CheckIcon, ClipboardIcon, GavelIcon, UsersIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import {
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
 import { Checkbox } from "./ui/checkbox";
-import { Separator } from "@radix-ui/react-dropdown-menu";
+import { DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Toggle } from "./ui/toggle";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
-import { use, useEffect, useState } from "react";
 
 function BidAmtButton({ bidAmt }: { bidAmt: number }) {
   const [copied, setCopied] = useState(false);

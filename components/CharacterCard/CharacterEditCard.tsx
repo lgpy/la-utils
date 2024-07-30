@@ -1,18 +1,12 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import CharacterCardInfo from "./CharacterCardInfo";
-import { Character } from "@/stores/character";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Character } from "@/hooks/mainstore";
+import { PencilIcon, PlusIcon } from "lucide-react";
+import { Fragment } from "react";
+import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import CharacterCardAssignedRaid from "./CharacterAssignedRaid";
-import { Fragment, useMemo } from "react";
-import { ChevronRight, PencilIcon, PlusIcon } from "lucide-react";
-import { Button } from "../ui/button";
+import CharacterCardInfo from "./CharacterCardInfo";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface Props {
   char: Character;
@@ -25,6 +19,8 @@ export default function CharacterEditCard({
   editCharacter,
   openRaidDialog,
 }: Props) {
+  const [parent] = useAutoAnimate();
+
   const ar = Object.keys(char.raids).map((raidId, i, keys) => (
     <Fragment key={char.id + raidId}>
       <CardContent className="p-3">
@@ -52,7 +48,7 @@ export default function CharacterEditCard({
         </Button>
       </CardHeader>
       <Separator />
-      {ar}
+      <div ref={parent}>{ar}</div>
       <Separator />
       <CardContent className="p-0">
         <Button

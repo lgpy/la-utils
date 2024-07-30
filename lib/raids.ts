@@ -43,6 +43,7 @@ export const getRaidsFilteredByIlvl = (itemLevel: number) => {
           ...acc,
           [key]: {
             itemlevel: filteredItemLevels,
+            rewards: gate.rewards,
           },
         };
       }, {} as typeof r.gates),
@@ -71,6 +72,9 @@ export const raids: {
     [key: string]: {
       itemlevel: (number | null)[];
       hasReset?: (date: DateTime) => boolean;
+      rewards: {
+        gold: number[];
+      };
     };
   };
 }[] = [
@@ -81,9 +85,15 @@ export const raids: {
     gates: {
       G1: {
         itemlevel: [1415, 1445],
+        rewards: {
+          gold: [300, 400],
+        },
       },
       G2: {
         itemlevel: [1415, 1445],
+        rewards: {
+          gold: [450, 700],
+        },
       },
     },
   },
@@ -94,9 +104,15 @@ export const raids: {
     gates: {
       G1: {
         itemlevel: [1430, 1460],
+        rewards: {
+          gold: [350, 500],
+        },
       },
       G2: {
         itemlevel: [1430, 1460],
+        rewards: {
+          gold: [650, 1000],
+        },
       },
     },
   },
@@ -107,12 +123,21 @@ export const raids: {
     gates: {
       G1: {
         itemlevel: [1475],
+        rewards: {
+          gold: [400],
+        },
       },
       G2: {
         itemlevel: [1475],
+        rewards: {
+          gold: [600],
+        },
       },
       G3: {
         itemlevel: [1475],
+        rewards: {
+          gold: [1000],
+        },
       },
     },
   },
@@ -123,15 +148,27 @@ export const raids: {
     gates: {
       G1: {
         itemlevel: [1490, 1540],
+        rewards: {
+          gold: [1000, 1200],
+        },
       },
       G2: {
         itemlevel: [1490, 1540],
+        rewards: {
+          gold: [1000, 1200],
+        },
       },
       G3: {
         itemlevel: [1500, 1550],
+        rewards: {
+          gold: [1000, 1200],
+        },
       },
       G4: {
         itemlevel: [1520, 1560],
+        rewards: {
+          gold: [1600, 2000],
+        },
         hasReset: (date) => hasReset(date, "even"),
       },
     },
@@ -143,12 +180,21 @@ export const raids: {
     gates: {
       G1: {
         itemlevel: [1540, 1580],
+        rewards: {
+          gold: [800, 1000],
+        },
       },
       G2: {
         itemlevel: [1540, 1580],
+        rewards: {
+          gold: [1200, 1600],
+        },
       },
       G3: {
         itemlevel: [1540, 1580],
+        rewards: {
+          gold: [1600, 2200],
+        },
       },
     },
   },
@@ -159,12 +205,21 @@ export const raids: {
     gates: {
       G1: {
         itemlevel: [1580, 1600],
+        rewards: {
+          gold: [1750, 2250],
+        },
       },
       G2: {
         itemlevel: [1580, 1600],
+        rewards: {
+          gold: [2250, 2750],
+        },
       },
       G3: {
         itemlevel: [1580, 1600],
+        rewards: {
+          gold: [4500, 6000],
+        },
       },
     },
   },
@@ -175,12 +230,21 @@ export const raids: {
     gates: {
       G1: {
         itemlevel: [1600, 1620],
+        rewards: {
+          gold: [2000, 3500],
+        },
       },
       G2: {
         itemlevel: [1600, 1620],
+        rewards: {
+          gold: [3000, 4500],
+        },
       },
       G3: {
         itemlevel: [1600, 1620],
+        rewards: {
+          gold: [4000, 6500],
+        },
       },
     },
   },
@@ -191,15 +255,27 @@ export const raids: {
     gates: {
       G1: {
         itemlevel: [1610, 1630],
+        rewards: {
+          gold: [3500, 5000],
+        },
       },
       G2: {
         itemlevel: [1610, 1630],
+        rewards: {
+          gold: [4000, 6000],
+        },
       },
       G3: {
         itemlevel: [1610, 1630],
+        rewards: {
+          gold: [5500, 9000],
+        },
       },
       G4: {
         itemlevel: [null, 1630],
+        rewards: {
+          gold: [0, 21000],
+        },
         hasReset: (date) => hasReset(date, "odd"),
       },
     },
@@ -211,9 +287,15 @@ export const raids: {
     gates: {
       G1: {
         itemlevel: [1620, 1630],
+        rewards: {
+          gold: [5000, 6000],
+        },
       },
       G2: {
         itemlevel: [1620, 1630],
+        rewards: {
+          gold: [9500, 12500],
+        },
       },
     },
   },

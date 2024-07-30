@@ -1,7 +1,7 @@
+import { Character } from "@/hooks/mainstore";
 import { getRaids } from "@/lib/chars";
 import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { cn } from "@/lib/utils";
-import { Character } from "@/stores/character";
 import { ValueOf } from "next/dist/shared/lib/constants";
 import {
   Tooltip,

@@ -1,7 +1,6 @@
-import { getRaids } from "@/lib/chars";
+import { Character } from "@/hooks/mainstore";
 import { cn } from "@/lib/utils";
-import { Character } from "@/stores/character";
-import { Fragment, useMemo } from "react";
+import { Fragment } from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Separator } from "../ui/separator";
 import CharacterCardInfo from "./CharacterCardInfo";
@@ -12,8 +11,6 @@ interface Props {
 }
 
 export default function CharacterTodoCard({ char }: Props) {
-  const simplifiedRaids = useMemo(() => getRaids(char.raids), [char.raids]);
-
   const raids = Object.keys(char.raids).map((raidId, i, keys) => (
     <Fragment key={char.id + raidId}>
       <CardContent
@@ -21,7 +18,7 @@ export default function CharacterTodoCard({ char }: Props) {
           "rounded-b-lg": i === keys.length - 1,
         })}
       >
-        <TodoRaid char={char} raidId={raidId} raid={simplifiedRaids[raidId]} />
+        <TodoRaid char={char} raidId={raidId} raid={char.raids[raidId]} />
       </CardContent>
       {i < keys.length - 1 && <Separator className="opacity-75" />}
     </Fragment>
