@@ -1,7 +1,14 @@
 "use client";
 
 import { createPriceStore, PricesStore } from "@/stores/prices";
-import { type ReactNode, createContext, useRef, useContext } from "react";
+import {
+  type ReactNode,
+  createContext,
+  useRef,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useStore } from "zustand";
 
 export type PriceStoreApi = ReturnType<typeof createPriceStore>;
@@ -27,12 +34,29 @@ export const PriceStoreProvider = ({ children }: PriceStoreProviderProps) => {
   );
 };
 
-export const usePriceStore = <T,>(selector: (store: PricesStore) => T): T => {
-  const counterStoreContext = useContext(PriceStoreContext);
+export const usePriceStore = <T,>(
+  selector: (store: PricesStore) => T,
+): { store: T; hasHydrated: boolean } => {
+  const priceStoreContext = useContext(PriceStoreContext);
+  const [hydrated, setHydrated] = useState(false);
 
-  if (!counterStoreContext) {
+  if (!priceStoreContext) {
     throw new Error(`usePriceStore must be used within PriceStoreProvider`);
   }
 
-  return useStore(counterStoreContext, selector);
+  useEffect(() => {
+    if (priceStoreContext.persist.hasHydrated) {
+      setHydrated(priceStoreContext.persist.hasHydrated());
+    }
+    priceStoreContext.persist.onFinishHydration(() => {
+      setHydrated(true);
+    });
+  }, [priceStoreContext.persist]);
+
+  const store = useStore(priceStoreContext, selector);
+
+  return {
+    store,
+    hasHydrated: hydrated,
+  };
 };

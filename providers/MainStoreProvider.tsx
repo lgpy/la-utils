@@ -38,23 +38,23 @@ export const MainStoreProvider = ({ children }: MainStoreProviderProps) => {
 export const _useMainStore = <T,>(
   selector: (store: MainStore) => T,
 ): { store: T; hasHydrated: boolean } => {
-  const counterStoreContext = useContext(MainStoreContext);
+  const mainStoreContext = useContext(MainStoreContext);
   const [hydrated, setHydrated] = useState(false);
 
-  if (!counterStoreContext) {
+  if (!mainStoreContext) {
     throw new Error(`useMainStore must be used within MainStoreProvider`);
   }
 
   useEffect(() => {
-    if (counterStoreContext.persist.hasHydrated) {
-      setHydrated(counterStoreContext.persist.hasHydrated());
+    if (mainStoreContext.persist.hasHydrated) {
+      setHydrated(mainStoreContext.persist.hasHydrated());
     }
-    counterStoreContext.persist.onFinishHydration(() => {
+    mainStoreContext.persist.onFinishHydration(() => {
       setHydrated(true);
     });
-  }, [counterStoreContext.persist]);
+  }, [mainStoreContext.persist]);
 
-  const store = useStore(counterStoreContext, selector);
+  const store = useStore(mainStoreContext, selector);
   return {
     store,
     hasHydrated: hydrated,
