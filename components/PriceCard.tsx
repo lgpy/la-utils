@@ -21,42 +21,23 @@ type Props = {
 
 const getHighestUnit = (lastUpdated: DateTime) => {
   const now = DateTime.now();
-  const diff = now.diff(lastUpdated, [
-    "years",
-    "months",
-    "days",
-    "hours",
-    "minutes",
-    "seconds",
-  ]);
-  let highestUnit = "";
-  let highestValue = 0;
+  const diff = now.diff(lastUpdated, ["days", "hours", "minutes", "seconds"]);
 
-  if (diff.years !== 0) {
-    highestUnit = "years";
-    highestValue = diff.years;
-  } else if (diff.months !== 0) {
-    highestUnit = "months";
-    highestValue = diff.months;
-  } else if (diff.days !== 0) {
-    highestUnit = "days";
-    highestValue = diff.days;
+  if (diff.days !== 0) {
+    return `${diff.days} day${diff.days < 2 ? "" : "s"} ago`;
   } else if (diff.hours !== 0) {
-    highestUnit = "hours";
-    highestValue = diff.hours;
+    return `${diff.hours} hour${diff.hours < 2 ? "" : "s"} ago`;
   } else if (diff.minutes !== 0) {
-    highestUnit = "minutes";
-    highestValue = diff.minutes;
+    return `${diff.minutes} minute${diff.minutes < 2 ? "" : "s"} ago`;
   } else if (diff.seconds !== 0) {
-    highestUnit = "seconds";
-    highestValue = Math.round(diff.seconds);
+    if (diff.seconds < 1) return "now";
+    else
+      return `${Math.round(diff.seconds)} second${
+        diff.seconds < 2 ? "" : "s"
+      } ago`;
   } else {
     return undefined;
   }
-  return {
-    highestUnit,
-    highestValue,
-  };
 };
 
 export default function PriceCard({
@@ -125,10 +106,7 @@ export default function PriceCard({
             onChange={onChange}
           />
           <p className="text-sm text-gray-500">
-            Last updated:{" "}
-            {daysSinceUpdate !== undefined
-              ? daysSinceUpdate.highestValue + " " + daysSinceUpdate.highestUnit
-              : "Never"}
+            Updated: {daysSinceUpdate !== undefined ? daysSinceUpdate : "Never"}
           </p>
         </div>
         {mari && (
