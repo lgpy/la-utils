@@ -21,7 +21,7 @@ export function NoCharactersCard() {
             width={910 / 8}
             className="mt-auto"
           />
-          <p>
+          <div>
             <CardTitle className="text-xl">
               Looks like you don&apos;t have any characters
             </CardTitle>
@@ -35,7 +35,7 @@ export function NoCharactersCard() {
               </Link>
               .
             </CardDescription>
-          </p>
+          </div>
         </div>
       </CardContent>
     </Card>

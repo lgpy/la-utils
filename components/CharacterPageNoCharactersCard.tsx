@@ -20,12 +20,12 @@ export default function CharacterPageNoCharactersCard() {
             width={910 / 8}
             className="mt-auto"
           />
-          <p>
+          <div>
             <CardTitle className="text-xl">You have no characters</CardTitle>
             <CardDescription className="text-muted-foreground pb-3">
               Add a character using the button on the bottom right.
             </CardDescription>
-          </p>
+          </div>
         </div>
       </CardContent>
     </Card>
