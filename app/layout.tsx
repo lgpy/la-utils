@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { CSPostHogProvider } from "./providers";
 import dynamic from "next/dynamic";
 import { MainStoreProvider } from "@/providers/MainStoreProvider";
+import OldWebsiteDeprecatedMessage from "@/components/OldWebsiteDeprecatedMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
@@ -46,6 +47,7 @@ export default function RootLayout({
             </div>
           </ThemeProvider>
           <Toaster />
+          <OldWebsiteDeprecatedMessage />
         </body>
       </CSPostHogProvider>
     </html>
