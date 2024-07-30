@@ -23,7 +23,7 @@ export function NoCharactersCard() {
           />
           <p>
             <CardTitle className="text-xl">
-              Looks like you don&apos;t have characters
+              Looks like you don&apos;t have any characters
             </CardTitle>
             <CardDescription className="text-muted-foreground pb-3">
               You can add characters using the{" "}
