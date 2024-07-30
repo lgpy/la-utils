@@ -30,6 +30,12 @@ export default function NavBar() {
         >
           Characters
         </Link>
+        <Link
+          href="/prices"
+          className="text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Prices
+        </Link>
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -65,6 +71,14 @@ export default function NavBar() {
                 className="text-muted-foreground hover:text-foreground"
               >
                 Characters
+              </Link>
+            </SheetClose>
+            <SheetClose asChild>
+              <Link
+                href="/prices"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Prices
               </Link>
             </SheetClose>
           </nav>
