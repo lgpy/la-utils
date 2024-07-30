@@ -19,7 +19,6 @@ export default function PriceCards() {
     >
       {items.map((item) => {
         const pSitem = pricesStore.prices.find((i) => i.id === item.id);
-        if (!pSitem) return null;
         return (
           <PriceCard
             key={item.id}

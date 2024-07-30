@@ -14,7 +14,7 @@ import CopyButton from "./CopyButton";
 
 type Props = {
   item: (typeof items)[number];
-  pSitem: PricesState["prices"][number];
+  pSitem?: PricesState["prices"][number];
   changeValue: (value: number) => void;
   bcValue: number;
 };
@@ -67,9 +67,8 @@ export default function PriceCard({
 }: Props) {
   const mari = useMemo(() => {
     if (!item.mari) return undefined;
-    console.log(bcValue, pSitem.price, item);
     const blueCrystalValue = bcValue * item.mari.bc;
-    const singleMarketValue = pSitem.price / item.mari.marketQty;
+    const singleMarketValue = (pSitem?.price || 0) / item.mari.marketQty;
     const singleMariValue = blueCrystalValue / item.mari.qty;
     const profit = singleMarketValue - singleMariValue;
     //diff is the saving percentage between the market value and the Mari value
@@ -83,7 +82,7 @@ export default function PriceCard({
       diff,
       isProfit: profit > 0,
     };
-  }, [bcValue, pSitem.price, item]);
+  }, [bcValue, pSitem?.price, item]);
 
   const daysSinceUpdate = useMemo(() => {
     if (!pSitem) return undefined;
@@ -122,7 +121,7 @@ export default function PriceCard({
             id={`p-${item.id}`}
             placeholder="Market Value"
             type="number"
-            value={pSitem.price}
+            value={pSitem?.price || 0}
             onChange={onChange}
           />
           <p className="text-sm text-gray-500">
