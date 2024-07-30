@@ -91,13 +91,10 @@ export default function TodoRaidCheckbox({
               className="w-fit"
               initial={{
                 opacity: 0,
-                y: 30,
                 rotate: completedlen === assignedGates.length ? 120 : undefined,
-                scale: 1,
               }}
               animate={{
                 opacity: 1,
-                y: 0,
                 rotate: completedlen === assignedGates.length ? 0 : undefined,
               }}
               exit={{
