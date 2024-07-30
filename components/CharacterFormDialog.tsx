@@ -63,14 +63,14 @@ export default function CharacterFormDialog({
       name: "",
     },
   });
-  const mainStore = useMainStore();
+  const { state, hasHydrated } = useMainStore();
   const { toast } = useToast();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       if (existingCharacter !== undefined)
-        mainStore.updateCharacter(existingCharacter.id, values);
-      else mainStore.createCharacter(values);
+        state.updateCharacter(existingCharacter.id, values);
+      else state.createCharacter(values);
       close();
       toast({
         title: `Character ${existingCharacter ? "Updated" : "Created"}!`,
@@ -93,17 +93,17 @@ export default function CharacterFormDialog({
     if (!existingCharacter) return;
     if (!window.confirm("Are you sure you want to delete this character?"))
       return;
-    const index = mainStore.characters.findIndex(
+    const index = state.characters.findIndex(
       (c) => c.id === existingCharacter.id,
     );
-    mainStore.deleteCharacter(existingCharacter.id);
+    state.deleteCharacter(existingCharacter.id);
     close();
     toast({
       title: "Character Deleted!",
       description: "Your character has been deleted successfully!",
       action: (
         <ToastAction
-          onClick={() => mainStore.restoreCharacter(existingCharacter, index)}
+          onClick={() => state.restoreCharacter(existingCharacter, index)}
           className="hover:text-background"
           altText="Undo"
         >

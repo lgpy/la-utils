@@ -20,7 +20,7 @@ export default function TodoRaidCheckbox({
   raidId,
   assignedGates,
 }: Props) {
-  const store = useMainStore();
+  const { state, hasHydrated } = useMainStore();
   const raid = raids.find((r) => r.id === raidId);
   const { toast } = useToast();
   const [increase, setIncrease] = useState(false);
@@ -41,7 +41,7 @@ export default function TodoRaidCheckbox({
       setIncrease(true);
       if (isChecked) return;
       try {
-        store.raidAction({
+        state.raidAction({
           charId,
           raidId,
           mode: event.shiftKey ? "all" : "last",
@@ -60,7 +60,7 @@ export default function TodoRaidCheckbox({
       setIncrease(false);
       if (completedlen === 0) return;
       try {
-        store.raidAction({
+        state.raidAction({
           charId,
           raidId,
           mode: event.shiftKey ? "all" : "last",

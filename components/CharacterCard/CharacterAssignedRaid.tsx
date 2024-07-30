@@ -26,7 +26,7 @@ export default function CharacterCardAssignedRaid({
   raidId,
   openRaidDialog,
 }: Props) {
-  const characters = useMainStore();
+  const { state, hasHydrated } = useMainStore();
 
   const assignedRaid = char.raids[raidId];
   const raid = raids.find((r) => r.id === raidId);
@@ -71,7 +71,7 @@ export default function CharacterCardAssignedRaid({
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-destructive"
-            onClick={() => characters.charDelRaid(char.id, raid.id)}
+            onClick={() => state.charDelRaid(char.id, raid.id)}
           >
             <Trash2Icon className="mr-2 h-4 w-4" />
             <span>Delete Raid</span>

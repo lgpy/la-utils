@@ -2,14 +2,19 @@ import { getRaids } from "@/lib/chars";
 import { _useMainStore } from "@/providers/MainStoreProvider";
 
 export const useMainStore = () => {
-  const mainStore = _useMainStore((store) => store);
+  const { store, hasHydrated } = _useMainStore((store) => store);
   return {
-    ...mainStore,
-    characters: mainStore.characters.map((character) => ({
-      ...character,
-      raids: getRaids(character.raids),
-    })),
+    state: {
+      ...store,
+      characters: store.characters.map((character) => ({
+        ...character,
+        raids: getRaids(character.raids),
+      })),
+    },
+    hasHydrated,
   };
 };
 
-export type Character = ReturnType<typeof useMainStore>["characters"][number];
+export type Character = ReturnType<
+  typeof useMainStore
+>["state"]["characters"][number];

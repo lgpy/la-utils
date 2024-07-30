@@ -51,7 +51,7 @@ export default function CharacterRaidDialog({
   raidId,
 }: Props) {
   const [parent] = useAutoAnimate();
-  const mainStore = useMainStore();
+  const { state, hasHydrated } = useMainStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -82,12 +82,12 @@ export default function CharacterRaidDialog({
         }));
 
       if (raidId !== undefined)
-        mainStore.charEditRaid(character.id, {
+        state.charEditRaid(character.id, {
           id: values.raidId,
           gates,
         });
       else
-        mainStore.charAddRaid(character.id, {
+        state.charAddRaid(character.id, {
           id: values.raidId,
           gates,
         });
