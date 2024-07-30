@@ -10,9 +10,10 @@ import { Character, useMainStore } from "@/hooks/mainstore";
 import { motion } from "framer-motion";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import CharacterPageNoCharactersCard from "./CharacterPageNoCharactersCard";
+import { _useMainStore } from "@/providers/MainStoreProvider";
 
 export default function CharacterEditCards() {
-  const mainStore = useMainStore();
+  const { state, hasHydrated } = useMainStore();
   const [isOpen, setIsOpen] = useState<false | "raid" | "char">(false);
   const [selectedCharacter, setSelectedCharacter] = useState<
     Character | undefined
@@ -34,7 +35,7 @@ export default function CharacterEditCards() {
   };
 
   const charCards = useMemo(() => {
-    return mainStore.characters.map((char) => (
+    return state.characters.map((char) => (
       <CharacterEditCard
         char={char}
         editCharacter={() => openCharacterEditDialog(char)}
@@ -42,7 +43,11 @@ export default function CharacterEditCards() {
         key={char.id}
       />
     ));
-  }, [mainStore.characters]);
+  }, [state.characters]);
+
+  if (!hasHydrated) {
+    return null;
+  }
 
   return (
     <>
@@ -85,6 +90,7 @@ export default function CharacterEditCards() {
           variant="default"
           size="icon"
           onClick={() => openCharacterEditDialog(undefined)}
+          aria-label="Create Character"
         >
           <PlusIcon className="h-6 w-6" />
         </Button>

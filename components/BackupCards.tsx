@@ -16,14 +16,14 @@ import { _useMainStore } from "@/providers/MainStoreProvider";
 import { useState } from "react";
 
 export default function BackupCards() {
-  const mainStore = _useMainStore((state) => state);
+  const { store } = _useMainStore((state) => state);
   const [jsonImport, setJsonImport] = useState("");
   const { toast } = useToast();
 
   const importData = () => {
     try {
       const data = JSON.parse(jsonImport);
-      mainStore.restoreData(data);
+      store.restoreData(data);
       toast({
         title: "Success!",
         description: `Data imported successfully.`,
@@ -67,10 +67,10 @@ export default function BackupCards() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Textarea value={JSON.stringify(mainStore)} onChange={() => {}} />
+          <Textarea value={JSON.stringify(store)} onChange={() => {}} />
         </CardContent>
         <CardFooter className="flex justify-end">
-          <CopyButton textToCopy={JSON.stringify(mainStore)}>Copy</CopyButton>
+          <CopyButton textToCopy={JSON.stringify(store)}>Copy</CopyButton>
         </CardFooter>
       </Card>
     </>

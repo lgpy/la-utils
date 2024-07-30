@@ -51,7 +51,7 @@ export default function CharacterRaidDialog({
   raidId,
 }: Props) {
   const [parent] = useAutoAnimate();
-  const mainStore = useMainStore();
+  const { state, hasHydrated } = useMainStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -82,12 +82,12 @@ export default function CharacterRaidDialog({
         }));
 
       if (raidId !== undefined)
-        mainStore.charEditRaid(character.id, {
+        state.charEditRaid(character.id, {
           id: values.raidId,
           gates,
         });
       else
-        mainStore.charAddRaid(character.id, {
+        state.charAddRaid(character.id, {
           id: values.raidId,
           gates,
         });
@@ -149,6 +149,7 @@ export default function CharacterRaidDialog({
                   onValueChange={field.onChange}
                   value={field.value}
                   className="flex flex-row justify-around w-full !mt-0 gap-2"
+                  aria-label={`Select difficulty for ${gateId}`}
                 >
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
@@ -204,7 +205,7 @@ export default function CharacterRaidDialog({
               name="raidId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Class</FormLabel>
+                  <FormLabel>Raid</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
