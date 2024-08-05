@@ -37,6 +37,11 @@
 
       --background2: 220 21% 89%;
       --select-background: 232, 10%, 53%;
+
+      --mauve: 266 85% 58%;
+      --green: 109 58% 40%;
+      --blue: 220 91% 54%;
+      --gray: 231 10% 59%;
       
       --radius: 0.5rem;
     }
@@ -75,6 +80,11 @@
 
       --background2: 236 23% 12%;
       --select-background: 228, 20%, 65%;
+
+      --mauve: 267 83% 80%;
+      --green: 105 48% 72%;
+      --blue: 220 83% 75%;
+      --gray: 228 39% 80%;
     }
   }
 

@@ -80,23 +80,45 @@ export default function PriceCard({
 
   return (
     <Card className="w-[350px]">
-      <CardHeader className="flex flex-row justify-between">
-        <div className="flex flex-row items-center gap-2">
-          <Image
-            src={`/assets/${item.id}.webp`}
-            width={48}
-            height={48}
-            alt=""
-            className="size-[48px]"
-          />
-          <CardTitle className="text-xl">{item.name}</CardTitle>
-        </div>
-        <div>
-          <CopyButton variant="ghost" size="icon" textToCopy={item.name} />
+      <CardHeader className="flex flex-row justify-between p-0">
+        <div
+          className={cn(
+            "flex flex-row items-center justify-between p-3 gap-2 w-full rounded-t-md",
+            {
+              "bg-gradient-to-b from-mauve/30 to-card": item.rarity === "epic",
+              "bg-gradient-to-b from-blue/30 to-card": item.rarity === "rare",
+              "bg-gradient-to-b from-green/30 to-card":
+                item.rarity === "uncommon",
+              "bg-gradient-to-b from-gray/30 to-card": item.rarity === "common",
+            },
+          )}
+        >
+          <div className="flex flex-row items-center gap-3">
+            <Image
+              src={`/assets/${item.id}.webp`}
+              width={48}
+              height={48}
+              alt=""
+              className="size-[48px]"
+            />
+            <CardTitle
+              className={cn("text-xl", {
+                "text-mauve": item.rarity === "epic",
+                "text-blue": item.rarity === "rare",
+                "text-green": item.rarity === "uncommon",
+                "text-gray": item.rarity === "common",
+              })}
+            >
+              {item.name}
+            </CardTitle>
+          </div>
+          <div>
+            <CopyButton variant="ghost" size="icon" textToCopy={item.name} />
+          </div>
         </div>
       </CardHeader>
-      <CardContent className="flex flex-row justify-between">
-        <div className="flex flex-col gap-1.5 max-w-44">
+      <CardContent className={cn("flex flex-row justify-between p-3")}>
+        <div className={cn("flex flex-col gap-1.5 max-w-44")}>
           <Label htmlFor={`p-${item.id}`}>Market Value</Label>
           <Input
             id={`p-${item.id}`}
@@ -109,7 +131,7 @@ export default function PriceCard({
             Updated: {daysSinceUpdate !== undefined ? daysSinceUpdate : "Never"}
           </p>
         </div>
-        {mari && (
+        {mari !== undefined && (
           <div className="flex flex-col items-end">
             <Label>Mari Value</Label>
             <p className="text-md mt-1.5">{+mari.singleMariValue.toFixed(2)}</p>
