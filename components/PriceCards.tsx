@@ -128,7 +128,7 @@ export default function PriceCards() {
   return (
     <div className="flex flex-row my-6 mx-12 gap-6">
       <div>
-        <div className="flex flex-col gap-1 sticky top-20">
+        <div className="flex flex-col gap-1 sticky top-[88px]">
           <h1 className="text-2xl font-bold mb-3">Navigation</h1>
           {types.map((type) => (
             <Fragment key={"na" + type.type}>
@@ -138,7 +138,7 @@ export default function PriceCards() {
                   key={"na" + type.type + subtype.type}
                   type={type.type}
                   subtype={subtype.type}
-                  className="ml-4"
+                  className="ml-3"
                 >
                   {subtype.name}
                 </NavigationAnchor>
