@@ -106,3 +106,15 @@
       background: hsla(var(--select-background),0.2);
     }
   }
+
+  @layer components {
+    .no-spinner {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+    .no-spinner::-webkit-outer-spin-button,
+    .no-spinner::-webkit-inner-spin-button {
+      margin: 0;
+      -webkit-appearance: none;
+    }
+  }

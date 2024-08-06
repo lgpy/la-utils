@@ -10,35 +10,31 @@ export const items = [
   },
   {
     type: "honing",
-    id: "prime-oreha-fusion-material",
-    name: "Prime Oreha Fusion Material",
-    rarity: "epic",
-    mari: {
-      qty: 50,
-      bc: 45,
-      marketQty: 1,
-    },
+    id: "oreha-fusion-material",
+    name: "Oreha Fusion Material",
+    rarity: "rare",
+    marketQty: 1,
   },
   {
     type: "honing",
     id: "superior-oreha-fusion-material",
     name: "Superior Oreha Fusion Material",
     rarity: "epic",
+    marketQty: 1,
     mari: {
       qty: 30,
       bc: 45,
-      marketQty: 1,
     },
   },
   {
     type: "honing",
-    id: "radiant-honor-leapstone",
-    name: "Radiant Honor Leapstone",
-    rarity: "rare",
+    id: "prime-oreha-fusion-material",
+    name: "Prime Oreha Fusion Material",
+    rarity: "epic",
+    marketQty: 1,
     mari: {
-      qty: 40,
-      bc: 120,
-      marketQty: 1,
+      qty: 50,
+      bc: 45,
     },
   },
   {
@@ -46,10 +42,21 @@ export const items = [
     id: "marvelous-honor-leapstone",
     name: "Marvelous Honor Leapstone",
     rarity: "rare",
+    marketQty: 1,
     mari: {
       qty: 50,
       bc: 32,
-      marketQty: 1,
+    },
+  },
+  {
+    type: "honing",
+    id: "radiant-honor-leapstone",
+    name: "Radiant Honor Leapstone",
+    rarity: "rare",
+    marketQty: 1,
+    mari: {
+      qty: 40,
+      bc: 120,
     },
   },
   {
@@ -57,10 +64,10 @@ export const items = [
     id: "honor-shard-pouch-s",
     name: "Honor Shard Pouch (S)",
     rarity: "uncommon",
+    marketQty: 1,
     mari: {
       qty: 30,
       bc: 150,
-      marketQty: 1,
     },
   },
   {
@@ -68,10 +75,10 @@ export const items = [
     id: "honor-shard-pouch-m",
     name: "Honor Shard Pouch (M)",
     rarity: "rare",
+    marketQty: 1,
     mari: {
       qty: 30,
       bc: 300,
-      marketQty: 1,
     },
   },
   {
@@ -79,10 +86,10 @@ export const items = [
     id: "honor-shard-pouch-l",
     name: "Honor Shard Pouch (L)",
     rarity: "epic",
+    marketQty: 1,
     mari: {
       qty: 25,
       bc: 375,
-      marketQty: 1,
     },
   },
   {
@@ -90,10 +97,10 @@ export const items = [
     id: "solar-grace",
     name: "Solar Grace",
     rarity: "uncommon",
+    marketQty: 1,
     mari: {
       qty: 60,
       bc: 120,
-      marketQty: 1,
     },
   },
   {
@@ -101,10 +108,10 @@ export const items = [
     id: "solar-blessing",
     name: "Solar Blessing",
     rarity: "rare",
+    marketQty: 1,
     mari: {
       qty: 50,
       bc: 250,
-      marketQty: 1,
     },
   },
   {
@@ -112,10 +119,10 @@ export const items = [
     id: "solar-protection",
     name: "Solar Protection",
     rarity: "epic",
+    marketQty: 1,
     mari: {
       qty: 30,
       bc: 300,
-      marketQty: 1,
     },
   },
   {
@@ -124,6 +131,7 @@ export const items = [
     id: "fish",
     name: "Fish",
     rarity: "common",
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -131,6 +139,7 @@ export const items = [
     id: "redflesh-fish",
     name: "Redflesh Fish",
     rarity: "uncommon",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -138,6 +147,7 @@ export const items = [
     id: "natural-pearl",
     name: "Natural Pearl",
     rarity: "uncommon",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -145,6 +155,7 @@ export const items = [
     id: "oreha-solar-carp",
     name: "Oreha Solar Carp",
     rarity: "rare",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -152,6 +163,7 @@ export const items = [
     id: "ancient-relic",
     name: "Ancient Relic",
     rarity: "common",
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -159,6 +171,7 @@ export const items = [
     id: "rare-relic",
     name: "Rare Relic",
     rarity: "uncommon",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -166,6 +179,7 @@ export const items = [
     id: "oreha-relic",
     name: "Oreha Relic",
     rarity: "rare",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -173,6 +187,7 @@ export const items = [
     id: "timber",
     name: "Timber",
     rarity: "common",
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -180,6 +195,7 @@ export const items = [
     id: "tender-timber",
     name: "Tender Timber",
     rarity: "uncommon",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -187,6 +203,7 @@ export const items = [
     id: "sturdy-timber",
     name: "Sturdy Timber",
     rarity: "rare",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -194,6 +211,7 @@ export const items = [
     id: "wild-flower",
     name: "Wild Flower",
     rarity: "common",
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -201,6 +219,7 @@ export const items = [
     id: "shy-wild-flower",
     name: "Shy Wild Flower",
     rarity: "uncommon",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -208,6 +227,7 @@ export const items = [
     id: "bright-wild-flower",
     name: "Bright Wild Flower",
     rarity: "rare",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -215,6 +235,7 @@ export const items = [
     id: "crude-mushroom",
     name: "Crude Mushroom",
     rarity: "common",
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -222,6 +243,7 @@ export const items = [
     id: "fresh-mushroom",
     name: "Fresh Mushroom",
     rarity: "uncommon",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -229,6 +251,7 @@ export const items = [
     id: "exquisite-mushroom",
     name: "Exquisite Mushroom",
     rarity: "rare",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -236,6 +259,7 @@ export const items = [
     id: "iron-ore",
     name: "Iron Ore",
     rarity: "common",
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -243,6 +267,7 @@ export const items = [
     id: "heavy-iron-ore",
     name: "Heavy Iron Ore",
     rarity: "uncommon",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -250,6 +275,7 @@ export const items = [
     id: "strong-iron-ore",
     name: "Strong Iron Ore",
     rarity: "rare",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -257,6 +283,7 @@ export const items = [
     id: "thick-raw-meat",
     name: "Thick Raw Meat",
     rarity: "common",
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -264,6 +291,7 @@ export const items = [
     id: "treated-meat",
     name: "Treated Meat",
     rarity: "uncommon",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -271,6 +299,7 @@ export const items = [
     id: "tough-leather",
     name: "Tough Leather",
     rarity: "uncommon",
+    marketQty: 10,
   },
   {
     type: "tradeskills",
@@ -278,6 +307,7 @@ export const items = [
     id: "oreha-thick-meat",
     name: "Oreha Thick Meat",
     rarity: "rare",
+    marketQty: 10,
   },
 ];
 

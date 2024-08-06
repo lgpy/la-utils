@@ -49,7 +49,7 @@ export default function PriceCard({
   const mari = useMemo(() => {
     if (!item.mari) return undefined;
     const blueCrystalValue = bcValue * item.mari.bc;
-    const singleMarketValue = (pSitem?.price || 0) / item.mari.marketQty;
+    const singleMarketValue = (pSitem?.price || 0) / item.marketQty;
     const singleMariValue = blueCrystalValue / item.mari.qty;
     const profit = singleMarketValue - singleMariValue;
     //diff is the saving percentage between the market value and the Mari value
