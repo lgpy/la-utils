@@ -36,6 +36,12 @@ export default function NavBar() {
         >
           Prices
         </Link>
+        <Link
+          href="/crafting"
+          className="text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Crafting
+        </Link>
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -79,6 +85,14 @@ export default function NavBar() {
                 className="text-muted-foreground hover:text-foreground"
               >
                 Prices
+              </Link>
+            </SheetClose>
+            <SheetClose asChild>
+              <Link
+                href="/crafting"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Crafting
               </Link>
             </SheetClose>
           </nav>

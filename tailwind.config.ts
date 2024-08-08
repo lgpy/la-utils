@@ -57,6 +57,10 @@ const config = {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
         },
+        green: "hsl(var(--green))",
+        mauve: "hsl(var(--mauve))",
+        blue: "hsl(var(--blue))",
+        gray: "hsl(var(--gray))",
       },
       borderRadius: {
         lg: "var(--radius)",

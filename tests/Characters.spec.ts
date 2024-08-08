@@ -101,7 +101,6 @@ test.describe("Characters", () => {
   test("delete character and undo", async () => {
     await page.getByRole("button").nth(2).click();
     page.once("dialog", (dialog) => {
-      console.log(`Dialog message: ${dialog.message()}`);
       dialog.accept().catch(() => {});
     });
     await page.getByRole("button").first().click();

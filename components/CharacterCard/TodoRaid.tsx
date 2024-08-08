@@ -32,9 +32,12 @@ export default function TodoRaid({ char, raidId, raid }: Props) {
 
   return (
     <div
-      className={cn("flex flex-row justify-between items-center gap-2 p-3", {
-        "bg-primary/10": completedlen === raid.gates.length,
-      })}
+      className={cn(
+        "flex flex-row justify-between items-center gap-2 p-3 transition",
+        {
+          "bg-primary/10": completedlen === raid.gates.length,
+        },
+      )}
     >
       <div className="flex flex-col grow min-w-0 items-start">
         <span className="">{actualraid.name}</span>

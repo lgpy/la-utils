@@ -1,5 +1,11 @@
 import PriceCards from "@/components/PriceCards";
 import { PriceStoreProvider } from "@/providers/PriceStoreProvider";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Prices | Lost Ark Utils",
+  description: "",
+};
 
 export default function PricesPage() {
   return (

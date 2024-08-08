@@ -200,6 +200,9 @@ export default function CharacterFormDialog({
                     <Input
                       placeholder="Your character's item level..."
                       type="number"
+                      max={3000}
+                      step={10}
+                      min={0}
                       {...field}
                       onChange={(event) => field.onChange(+event.target.value)}
                     />

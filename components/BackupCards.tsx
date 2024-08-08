@@ -40,7 +40,7 @@ export default function BackupCards() {
 
   return (
     <>
-      <Card className="w-[350px]">
+      <Card className="w-full h-full">
         <CardHeader>
           <CardTitle>Import data</CardTitle>
           <CardDescription>
@@ -53,13 +53,14 @@ export default function BackupCards() {
             placeholder="Paste your export here."
             value={jsonImport}
             onChange={(e) => setJsonImport(e.target.value)}
+            className="min-h-60"
           />
         </CardContent>
         <CardFooter className="flex justify-end">
           <Button onClick={() => importData()}>Import</Button>
         </CardFooter>
       </Card>
-      <Card className="w-[350px]">
+      <Card className="w-full h-full">
         <CardHeader>
           <CardTitle>Exported data</CardTitle>
           <CardDescription>
@@ -67,7 +68,11 @@ export default function BackupCards() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Textarea value={JSON.stringify(store)} onChange={() => {}} />
+          <Textarea
+            value={JSON.stringify(store)}
+            onChange={() => {}}
+            className="min-h-60"
+          />
         </CardContent>
         <CardFooter className="flex justify-end">
           <CopyButton textToCopy={JSON.stringify(store)}>Copy</CopyButton>
