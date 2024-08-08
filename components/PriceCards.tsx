@@ -62,7 +62,7 @@ function PricesType({
       ></div>
       <h1
         className={cn(
-          "text-2xl font-bold",
+          "text-2xl font-bold text-center md:text-start",
           {
             "text-xl": subtype !== undefined,
           },
@@ -73,7 +73,7 @@ function PricesType({
       </h1>
       <div
         className={cn(
-          "mt-6 flex flex-row flex-wrap gap-3",
+          "mt-6 flex flex-row flex-wrap gap-3 justify-center md:justify-start",
           className?.container,
         )}
         ref={parent}
@@ -126,8 +126,8 @@ export default function PriceCards() {
   }
 
   return (
-    <div className="flex flex-row my-6 mx-12 gap-6">
-      <div>
+    <div className="flex flex-row my-6 md:mx-12 gap-6">
+      <div className="hidden md:block">
         <div className="flex flex-col gap-1 sticky top-[88px]">
           <h1 className="text-2xl font-bold mb-3">Navigation</h1>
           {types.map((type) => (

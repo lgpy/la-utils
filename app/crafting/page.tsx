@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function CraftingPage() {
   return (
     <CraftingStoreProvider>
-      <div className="flex flex-col m-6 gap-6">
+      <div className="flex flex-col  my-6 mx-0 md:mx-6 gap-6">
         <CraftingHeader />
         <PriceStoreProvider>
           <CraftingTable />

@@ -128,6 +128,7 @@ function CraftingItem({
               {item.name}
             </CardTitle>
           </div>
+          {/*
           <div className="flex flex-col -space-y-4">
             {Object.keys(item.recipes[recipeIdx]).map((key) => {
               return (
@@ -145,6 +146,14 @@ function CraftingItem({
                 </Avatar>
               );
             })}
+          </div>*/}
+          <div className="">
+            <Image
+              src={`/assets/${Object.keys(item.recipes[recipeIdx]).at(0)}.webp`}
+              height={32}
+              width={32}
+              alt=""
+            />
           </div>
         </div>
       </CardHeader>
@@ -190,13 +199,18 @@ function CraftingType({
         id={subtype || type}
       ></div>
       <h1
-        className={cn("text-2xl font-bold", {
+        className={cn("text-2xl font-bold text-center md:text-start", {
           "text-xl": subtype !== undefined,
         })}
       >
         {children}
       </h1>
-      <div className={cn("mt-6 flex flex-row flex-wrap gap-3")} ref={parent}>
+      <div
+        className={cn(
+          "mt-6 flex flex-row flex-wrap gap-3 justify-center md:justify-start",
+        )}
+        ref={parent}
+      >
         {items.map((item) =>
           item.recipes.map((_, idx) => (
             <CraftingItem key={item.id + idx} item={item} recipeIdx={idx} />
@@ -215,8 +229,8 @@ export default function CraftingTable() {
   }
 
   return (
-    <div className="flex flex-row my-6 mx-12 gap-6">
-      <div>
+    <div className="flex flex-row my-6 md:mx-12 gap-6">
+      <div className="hidden md:block">
         <div className="flex flex-col gap-1 sticky top-[88px]">
           <h1 className="text-2xl font-bold mb-3">Navigation</h1>
           <NavigationAnchor>Special</NavigationAnchor>

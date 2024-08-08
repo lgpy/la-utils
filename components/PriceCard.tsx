@@ -1,16 +1,13 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { items, PricesState } from "@/stores/prices";
+import { DateTime } from "luxon";
+import Image from "next/image";
 import { ChangeEventHandler, useMemo } from "react";
 import { Input } from "./ui/input";
-import { items, PricesState } from "@/stores/prices";
-import { usePriceStore } from "@/providers/PriceStoreProvider";
-import Image from "next/image";
 import { Label } from "./ui/label";
-import { cn } from "@/lib/utils";
-import { DateTime, Interval } from "luxon";
-import { ClipboardIcon } from "lucide-react";
-import CopyButton from "./CopyButton";
 
 type Props = {
   item: (typeof items)[number];
@@ -79,11 +76,11 @@ export default function PriceCard({
   };
 
   return (
-    <Card className="w-[350px]">
+    <Card className="w-[350px] flex flex-col justify-between">
       <CardHeader className="flex flex-row justify-between p-0">
         <div
           className={cn(
-            "flex flex-row items-center justify-between p-3 gap-2 w-full rounded-t-md",
+            "flex flex-row items-center gap-3 p-3 w-full rounded-t-md relative",
             {
               "bg-gradient-to-b from-mauve/30 to-card": item.rarity === "epic",
               "bg-gradient-to-b from-blue/30 to-card": item.rarity === "rare",
@@ -93,28 +90,23 @@ export default function PriceCard({
             },
           )}
         >
-          <div className="flex flex-row items-center gap-3">
-            <Image
-              src={`/assets/${item.id}.webp`}
-              width={48}
-              height={48}
-              alt=""
-              className="size-[48px]"
-            />
-            <CardTitle
-              className={cn("text-xl", {
-                "text-mauve": item.rarity === "epic",
-                "text-blue": item.rarity === "rare",
-                "text-green": item.rarity === "uncommon",
-                "text-gray": item.rarity === "common",
-              })}
-            >
-              {item.name}
-            </CardTitle>
-          </div>
-          <div>
-            <CopyButton variant="ghost" size="icon" textToCopy={item.name} />
-          </div>
+          <Image
+            src={`/assets/${item.id}.webp`}
+            width={48}
+            height={48}
+            alt=""
+            className="size-[48px]"
+          />
+          <CardTitle
+            className={cn("text-xl cursor-pointer", {
+              "text-mauve": item.rarity === "epic",
+              "text-blue": item.rarity === "rare",
+              "text-green": item.rarity === "uncommon",
+              "text-gray": item.rarity === "common",
+            })}
+          >
+            {item.name}
+          </CardTitle>
         </div>
       </CardHeader>
       <CardContent className={cn("flex flex-row justify-between p-3")}>
@@ -127,7 +119,7 @@ export default function PriceCard({
             value={pSitem?.price || 0}
             onChange={onChange}
           />
-          <p className="text-sm text-gray-500">
+          <p className="text-xs text-muted-foreground">
             Updated: {daysSinceUpdate !== undefined ? daysSinceUpdate : "Never"}
           </p>
         </div>

@@ -30,9 +30,9 @@ function CraftingOptions({
 
   return (
     <div className="flex flex-col">
-      <div className="grid gap-4 items-center text-center grid-cols-[auto_100px]">
-        <h2 className="text-lg font-semibold col-span-2">{label}</h2>
-        <Label className="text-end">Cost Reduction</Label>
+      <div className="grid gap-4 items-center text-center grid-cols-[auto] md:grid-cols-[auto_100px]">
+        <h2 className="text-lg font-semibold md:col-span-2">{label}</h2>
+        <Label className="text-center md:text-end">Cost Reduction</Label>
         <Input
           type="number"
           min={0}
@@ -42,7 +42,7 @@ function CraftingOptions({
             store.changeKey(parent, "costReduction", Number(e.target.value))
           }
         />
-        <Label className="text-end">Great Success Chance</Label>
+        <Label className="text-center md:text-end">Great Success Chance</Label>
         <Input
           type="number"
           min={0}
