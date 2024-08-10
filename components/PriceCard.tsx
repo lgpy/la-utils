@@ -112,10 +112,13 @@ export default function PriceCard({
       <CardContent className={cn("flex flex-row justify-between p-3")}>
         <div className={cn("flex flex-col gap-1.5 max-w-44")}>
           <Label htmlFor={`p-${item.id}`}>
-            Market Value{" "}
-            <span className="text-muted-foreground text-xs">
-              (x{item.marketQty})
-            </span>
+            Market Value
+            {item.marketQty !== undefined && (
+              <span className="text-muted-foreground text-xs">
+                {" "}
+                (x{item.marketQty})
+              </span>
+            )}
           </Label>
           <Input
             id={`p-${item.id}`}
