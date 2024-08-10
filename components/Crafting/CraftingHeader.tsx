@@ -1,11 +1,12 @@
 "use client";
 
 import { useCraftingStore } from "@/providers/CraftStoreProvider";
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent, CardHeader } from "../ui/card";
 import { CraftingParents, CraftingStore } from "@/stores/crafting";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Skeleton } from "../ui/skeleton";
+import { Separator } from "../ui/separator";
 
 const getLabel = (parent: CraftingParents) => {
   switch (parent) {
@@ -29,9 +30,9 @@ function CraftingOptions({
   const label = getLabel(parent);
 
   return (
-    <div className="flex flex-col">
-      <div className="grid gap-4 items-center text-center grid-cols-[auto] md:grid-cols-[auto_100px]">
-        <h2 className="text-lg font-semibold md:col-span-2">{label}</h2>
+    <Card className="flex flex-col p-4 gap-4 max-w-[300px]">
+      <h2 className="text-lg font-semibold text-center">{label}</h2>
+      <div className="grid gap-4 items-center text-center grid-cols-[auto_100px]">
         <Label className="text-center md:text-end">Cost Reduction</Label>
         <Input
           type="number"
@@ -57,7 +58,7 @@ function CraftingOptions({
           }
         />
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -69,11 +70,9 @@ export default function CraftingHeader() {
   }
 
   return (
-    <Card>
-      <div className="flex flex-row p-6 gap-6 justify-center">
-        <CraftingOptions store={store} parent="general" />
-        <CraftingOptions store={store} parent="special" />
-      </div>
-    </Card>
+    <div className="flex flex-col md:flex-row gap-3 items-center justify-center">
+      <CraftingOptions store={store} parent="general" />
+      <CraftingOptions store={store} parent="special" />
+    </div>
   );
 }

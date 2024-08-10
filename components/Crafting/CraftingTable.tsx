@@ -190,7 +190,6 @@ function CraftingType({
   children: string;
 }) {
   const items = craftingItems.filter((item) => item.type === type);
-  const [parent] = useAutoAnimate();
 
   return (
     <div>
@@ -209,7 +208,6 @@ function CraftingType({
         className={cn(
           "mt-6 flex flex-row flex-wrap gap-3 justify-center md:justify-start",
         )}
-        ref={parent}
       >
         {items.map((item) =>
           item.recipes.map((_, idx) => (
