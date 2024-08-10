@@ -7,6 +7,7 @@ export const items = [
     type: "store",
     id: "blue-crystal",
     name: "Blue Crystals",
+    marketQty: 95,
   },
   {
     type: "honing",
