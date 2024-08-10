@@ -158,7 +158,9 @@ export default function PriceCards() {
                   id={type.type}
                 ></div>
                 <div className="flex flex-col gap-6" ref={parent}>
-                  <h1 className="text-2xl font-bold">{type.name}</h1>
+                  <h1 className="text-2xl font-bold text-center md:text-start">
+                    {type.name}
+                  </h1>
                   {type.subtypes.map((subtype) => (
                     <PricesType
                       key={subtype.type}
