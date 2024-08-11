@@ -1,12 +1,13 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Character } from "@/hooks/mainstore";
-import { PencilIcon, PlusIcon } from "lucide-react";
+import { PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
 import { Fragment } from "react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import CharacterCardAssignedRaid from "./CharacterAssignedRaid";
-import CharacterCardInfo from "./CharacterCardInfo";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import ClassIcon from "../class-icons/ClassIcon";
+import { cn } from "@/lib/utils";
 
 interface Props {
   char: Character;
@@ -36,8 +37,22 @@ export default function CharacterEditCard({
 
   return (
     <Card className="h-fit w-56 border-card border-1">
-      <CardHeader className="p-4 w-full h-full relative">
-        <CharacterCardInfo char={char} />
+      <CardHeader className="p-4 flex flex-row gap-2 items-center relative">
+        <ClassIcon c={char.class} className="size-10" />
+        <div className="flex flex-col">
+          <span className="text-xs text-default-500 text-muted-foreground">
+            {char.class}
+          </span>
+          <h2 className="font-bold">{char.name}</h2>
+          <div
+            className={cn(
+              "flex items-center text-sm font-semibold dark:text-[#eed49f] text-[#df8e1d]",
+            )}
+          >
+            <SwordsIcon className="size-5 mr-1" />
+            {char.itemLevel}
+          </div>
+        </div>
         <Button
           variant="ghost"
           size="icon"
