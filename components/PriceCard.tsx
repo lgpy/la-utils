@@ -1,11 +1,12 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { items, PricesState } from "@/stores/prices";
 import { DateTime } from "luxon";
 import Image from "next/image";
 import { ChangeEventHandler, useMemo } from "react";
+import TruncatedTooltip from "./TruncatedTooltip";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
@@ -97,16 +98,18 @@ export default function PriceCard({
             alt=""
             className="size-[48px]"
           />
-          <CardTitle
-            className={cn("text-xl cursor-pointer", {
-              "text-mauve": item.rarity === "epic",
-              "text-blue": item.rarity === "rare",
-              "text-green": item.rarity === "uncommon",
-              "text-gray": item.rarity === "common",
-            })}
-          >
-            {item.name}
-          </CardTitle>
+          <TruncatedTooltip
+            text={item.name}
+            className={{
+              text: cn("text-xl font-semibold tracking-tight truncate", {
+                "text-mauve": item.rarity === "epic",
+                "text-blue": item.rarity === "rare",
+                "text-green": item.rarity === "uncommon",
+                "text-gray": item.rarity === "common",
+              }),
+              tooltip: "text-center",
+            }}
+          />
         </div>
       </CardHeader>
       <CardContent className={cn("flex flex-row justify-between p-3")}>

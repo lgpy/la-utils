@@ -61,6 +61,7 @@ const config = {
         mauve: "hsl(var(--mauve))",
         blue: "hsl(var(--blue))",
         gray: "hsl(var(--gray))",
+        yellow: "hsl(var(--yellow))",
       },
       borderRadius: {
         lg: "var(--radius)",
