@@ -4,11 +4,7 @@ import { DateTime } from "luxon";
 export const isBadPriceItem = (
   item: PricesStore["prices"][number] | undefined,
 ) => {
-  if (item === undefined) {
-    return "This item does not exist";
-  }
-
-  if (item.price === 0) {
+  if (item === undefined || item.price === 0) {
     return "This item has a price of 0";
   }
 
