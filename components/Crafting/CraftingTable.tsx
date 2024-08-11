@@ -187,8 +187,8 @@ function CraftingItem({
           <Label className="text-end">Profit</Label>
           <p
             className={cn("text-xl", {
-              "text-destructive": marketdiff < 0,
-              "text-success": marketdiff > 0,
+              "text-destructive": marketdiff > 0,
+              "text-success": marketdiff < 0,
             })}
           >
             {marketdiff > 0 && "+"}
