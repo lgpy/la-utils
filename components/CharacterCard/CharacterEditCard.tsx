@@ -1,24 +1,26 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Character } from "@/hooks/mainstore";
-import { PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
 import { Fragment } from "react";
+import ClassIcon from "../class-icons/ClassIcon";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import CharacterCardAssignedRaid from "./CharacterAssignedRaid";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
-import ClassIcon from "../class-icons/ClassIcon";
-import { cn } from "@/lib/utils";
 
 interface Props {
   char: Character;
   editCharacter: () => void;
   openRaidDialog: (raidId?: string) => void;
+  movable?: boolean;
 }
 
 export default function CharacterEditCard({
   char,
   editCharacter,
   openRaidDialog,
+  movable = false,
 }: Props) {
   const [parent] = useAutoAnimate();
 
@@ -53,6 +55,9 @@ export default function CharacterEditCard({
             {char.itemLevel}
           </div>
         </div>
+        {movable && (
+          <MoveIcon className="mover size-4 absolute top-1 mx-auto right-0 left-0 !mt-0 cursor-move" />
+        )}
         <Button
           variant="ghost"
           size="icon"

@@ -1,16 +1,22 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import CharacterFormDialog from "./CharacterFormDialog";
-import CharacterEditCard from "./CharacterCard/CharacterEditCard";
-import { Button } from "./ui/button";
-import { PlusIcon } from "lucide-react";
-import CharacterRaidDialog from "./CharacterRaidDialog";
 import { Character, useMainStore } from "@/hooks/mainstore";
+import { dragAndDrop } from "@formkit/drag-and-drop/react";
 import { motion } from "framer-motion";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { isEqual } from "lodash";
+import { LockIcon, LockOpenIcon, PlusIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import CharacterEditCard from "./CharacterCard/CharacterEditCard";
+import CharacterFormDialog from "./CharacterFormDialog";
 import CharacterPageNoCharactersCard from "./CharacterPageNoCharactersCard";
-import { _useMainStore } from "@/providers/MainStoreProvider";
+import CharacterRaidDialog from "./CharacterRaidDialog";
+import { Button } from "./ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 export default function CharacterEditCards() {
   const { state, hasHydrated } = useMainStore();
@@ -21,7 +27,7 @@ export default function CharacterEditCards() {
   const [selectedRaid, setSelectedRaid] = useState<string | undefined>(
     undefined,
   );
-  const [parent] = useAutoAnimate();
+  const [isLocked, setIsLocked] = useState(true);
 
   const openCharacterEditDialog = (char: Character | undefined) => {
     setSelectedCharacter(char);
@@ -34,16 +40,36 @@ export default function CharacterEditCards() {
     setIsOpen("raid");
   };
 
-  const charCards = useMemo(() => {
-    return state.characters.map((char) => (
-      <CharacterEditCard
-        char={char}
-        editCharacter={() => openCharacterEditDialog(char)}
-        openRaidDialog={(raidId) => openRaidDialog(char, raidId)}
-        key={char.id}
-      />
-    ));
-  }, [state.characters]);
+  const parent = useRef() as React.MutableRefObject<HTMLUListElement>;
+  const [chars, setChars] = useState(state.characters);
+  const prevCharactersRef = useRef<Character[] | undefined>(undefined);
+
+  dragAndDrop({
+    parent: parent,
+    state: [chars, setChars],
+    dragHandle: ".mover",
+    handleEnd(data) {
+      const charId = data.targetData.node.data.value.id;
+      const oldIndex = state.characters.findIndex((c) => c.id === charId);
+      if (oldIndex === -1) return;
+      const newindex = data.targetData.node.data.index;
+      //change character to new index state.charaters
+      const newCharacters = [...state.characters];
+      newCharacters.splice(oldIndex, 1);
+      newCharacters.splice(newindex, 0, state.characters[oldIndex]);
+      prevCharactersRef.current = structuredClone(newCharacters);
+      state.reorderChars(newCharacters.map((c) => c.id));
+    },
+  });
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+
+    if (!isEqual(prevCharactersRef.current, state.characters)) {
+      setChars(structuredClone(state.characters));
+      prevCharactersRef.current = structuredClone(state.characters);
+    }
+  }, [state.characters, hasHydrated, setChars]);
 
   if (!hasHydrated) {
     return null;
@@ -51,13 +77,22 @@ export default function CharacterEditCards() {
 
   return (
     <>
-      <main
+      <ul
         className="mt-6 flex flex-row flex-wrap gap-3 justify-center"
         ref={parent}
       >
-        {charCards}
-        {charCards.length === 0 && <CharacterPageNoCharactersCard />}
-      </main>
+        {chars.map((char) => (
+          <li data-label={char.id} key={char.id}>
+            <CharacterEditCard
+              char={char}
+              editCharacter={() => openCharacterEditDialog(char)}
+              openRaidDialog={(raidId) => openRaidDialog(char, raidId)}
+              movable={!isLocked}
+            />
+          </li>
+        ))}
+        {chars.length === 0 && <CharacterPageNoCharactersCard />}
+      </ul>
       {isOpen === "char" && (
         <CharacterFormDialog
           isOpen={isOpen === "char"}
@@ -86,14 +121,37 @@ export default function CharacterEditCards() {
         }}
         className="fixed right-4 bottom-4"
       >
-        <Button
-          variant="default"
-          size="icon"
-          onClick={() => openCharacterEditDialog(undefined)}
-          aria-label="Create Character"
-        >
-          <PlusIcon className="h-6 w-6" />
-        </Button>
+        <div className="flex flex-col gap-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  onClick={() => setIsLocked(!isLocked)}
+                  aria-label="Lock/Unlock Characters"
+                >
+                  {isLocked ? (
+                    <LockIcon className="h-6 w-6" />
+                  ) : (
+                    <LockOpenIcon className="h-6 w-6" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                <p>Lock/Unlock Characters</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <Button
+            variant="default"
+            size="icon"
+            onClick={() => openCharacterEditDialog(undefined)}
+            aria-label="Create Character"
+          >
+            <PlusIcon className="h-6 w-6" />
+          </Button>
+        </div>
       </motion.div>
     </>
   );

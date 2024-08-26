@@ -97,6 +97,7 @@ export type MainActions = {
     charId: string,
     task: z.infer<typeof zodNewTask>,
   ) => void;
+  reorderChars: (charIds: string[]) => void;
 };
 
 export type MainStore = MainState & MainActions;
@@ -151,6 +152,14 @@ export const createMainStore = () =>
           const d = zodChars.safeParse(data);
           if (d.success) set(d.data);
           else throw new Error("Data is not valid");
+        },
+        reorderChars: (charIds) => {
+          set((state) => {
+            const updatedChars = state.characters.sort((a, b) => {
+              return charIds.indexOf(a.id) - charIds.indexOf(b.id);
+            });
+            return { ...state, characters: updatedChars };
+          });
         },
       }),
       {
