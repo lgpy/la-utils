@@ -1,114 +1,207 @@
-import { test, expect, type Page } from "@playwright/test";
+import { Character } from "@/hooks/mainstore";
+import { Class } from "@/lib/classes";
+import { Difficulty, raids } from "@/lib/raids";
+import { MainState } from "@/stores/main";
+import { test, expect, Page } from "@playwright/test";
+import { v4 as uuidv4 } from "uuid";
 
-test.describe("Characters", () => {
-  test.describe.configure({ mode: "serial" });
-  let page: Page;
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage();
-  });
+const setCharacterState = async (
+  page: Page,
+  ...characters: Partial<MainState["characters"][number]>[]
+) => {
+  console.log("characters", characters);
+  await page.evaluate((characters) => {
+    localStorage.setItem(
+      "characters",
+      JSON.stringify({
+        state: {
+          characters: characters.map((c, index) => ({
+            raids: {},
+            tasks: [],
+            ...c,
+            id: index.toFixed(0),
+          })),
+        },
+        version: 2,
+      }),
+    );
+  }, characters);
+  await page.reload();
+};
 
-  test("navigate to Characters", async () => {
-    await page.goto("/");
-    await page.click("text=Characters");
-    await page.getByRole("link", { name: "Characters" }).click();
-    await expect(page).toHaveURL("/characters");
-  });
+test("navigate to Characters", async ({ page }) => {
+  await page.goto("/");
+  await page.click("text=Characters");
+  await page.getByRole("link", { name: "Characters" }).click();
+  await expect(page).toHaveURL("/characters");
+});
 
-  test("no characters message", async () => {
-    await page.goto("/characters");
-    await page.getByText("You have no characters").isVisible();
-    await expect(page.getByText("You have no characters")).toBeVisible();
-  });
+test("no characters message", async ({ page }) => {
+  await page.goto("/characters");
+  await page.getByText("You have no characters").isVisible();
+  await expect(page.getByText("You have no characters")).toBeVisible();
+});
 
-  test("create character", async () => {
-    await page.goto("/characters");
-    await page.getByRole("button", { name: "Create Character" }).click();
-    await page.fill('input[name="name"]', "Test Character");
-    await page.getByLabel("Class").click();
-    await page.getByRole("option", { name: "Berserker" }).click();
-    await page.fill('input[name="itemLevel"]', "1600");
-    await page.click('text="Confirm"');
-    await expect(page.getByText("Test Character")).toBeVisible();
-    await expect(page.getByText("Berserker")).toBeVisible();
-    await expect(page.getByText("1600")).toBeVisible();
-    await expect(page.getByText("You have no characters")).not.toBeVisible();
-  });
+test("create character", async ({ page }) => {
+  await page.goto("/characters");
+  await page.getByTestId("create-character").click();
+  await page.getByTestId("char-name").fill("Test Character");
+  await page.getByLabel("Class").click();
+  await page.getByRole("option", { name: "Berserker" }).click();
+  await page.getByTestId("char-item-level").fill("1600");
+  await page.getByTestId("confirm-button").click();
+  const characterCard = await page.getByTestId("character-0");
+  await expect(characterCard.getByTestId("character-class")).toContainText(
+    "Berserker",
+  );
+  await expect(characterCard.getByTestId("character-name")).toContainText(
+    "Test Character",
+  );
+  await expect(characterCard.getByTestId("character-item-level")).toContainText(
+    "1600",
+  );
+  await expect(page.getByText("You have no characters")).not.toBeVisible();
+});
 
-  test("edit character", async () => {
-    await page.goto("/characters");
-    await page.getByRole("main").getByRole("button").first().click();
-    await page.getByPlaceholder("Your character's name...").fill("testtest");
-    await page.getByLabel("Class").click();
-    await page.getByRole("option", { name: "Breaker" }).click();
-    await page.getByPlaceholder("Your character's item level...").fill("1640");
-    await page.getByRole("button", { name: "Confirm" }).click();
-    await expect(page.getByRole("main")).toContainText("1640");
-    await expect(page.getByRole("heading")).toContainText("testtest");
-    await expect(page.getByRole("main")).toContainText("Breaker");
+test("edit character", async ({ page }) => {
+  await page.goto("/characters");
+  await setCharacterState(page, {
+    name: "Test Character",
+    class: Class.Berserker,
+    itemLevel: 1600,
   });
+  let characterCard = await page.getByTestId("character-0");
+  await characterCard.getByTestId("edit-character").click();
+  await page.getByTestId("char-name").fill("testtest");
+  await page.getByLabel("Class").click();
+  await page.getByRole("option", { name: "Breaker" }).click();
+  await page.getByTestId("char-item-level").fill("1640");
+  await page.getByTestId("confirm-button").click();
+  characterCard = await page.getByTestId("character-0");
+  await expect(characterCard.getByTestId("character-class")).toContainText(
+    "Breaker",
+  );
+  await expect(characterCard.getByTestId("character-name")).toContainText(
+    "testtest",
+  );
+  await expect(characterCard.getByTestId("character-item-level")).toContainText(
+    "1640",
+  );
+});
 
-  test("add raid", async () => {
-    await page.goto("/characters");
-    await page.getByRole("button", { name: "Add raid" }).click();
-    await page.getByLabel("Raid", { exact: true }).click();
-    await page.getByRole("option", { name: "Brelshaza" }).click();
-    await page
-      .getByLabel("Select difficulty for G1")
-      .getByLabel("Normal")
-      .click();
-    await page
-      .getByLabel("Select difficulty for G2")
-      .getByLabel("Hard")
-      .click();
-    await page
-      .getByLabel("Select difficulty for G3")
-      .getByLabel("Normal")
-      .click();
-    await page.getByRole("button", { name: "Confirm" }).click();
-    await expect(page.getByRole("main")).toContainText("Brelshaza");
-    await expect(page.getByRole("main")).toContainText("NHN");
+test("add raid", async ({ page }) => {
+  await page.goto("/characters");
+  await setCharacterState(page, {
+    name: "Test Character",
+    class: Class.Berserker,
+    itemLevel: 1600,
   });
+  let characterCard = await page.getByTestId("character-0");
+  await characterCard.getByTestId("character-add-raid").click();
+  await page.getByLabel("Raid", { exact: true }).click();
+  await page.getByRole("option", { name: "Brelshaza" }).click();
+  await page.getByTestId("difficulties-G1").getByLabel("Normal").click();
+  await page.getByTestId("difficulties-G2").getByLabel("Hard").click();
+  await page.getByTestId("difficulties-G3").getByLabel("Normal").click();
+  await page.getByTestId("form-submit").click();
+  characterCard = await page.getByTestId("character-0");
+  await expect(
+    characterCard.getByTestId("character-assigned-raid-0"),
+  ).toContainText("Brelshaza");
+  await expect(
+    characterCard.getByTestId("character-assigned-raid-0"),
+  ).toContainText("NHN");
+});
 
-  test("edit raid", async () => {
-    await page.goto("/characters");
-    await page.getByRole("main").getByRole("button").nth(2).click();
-    await page.getByText("Edit").click();
-    await page
-      .getByLabel("Select difficulty for G1")
-      .getByLabel("Hard")
-      .click();
-    await page
-      .getByLabel("Select difficulty for G3")
-      .getByLabel("Hard")
-      .click();
-    await page
-      .getByLabel("Select difficulty for G4")
-      .getByLabel("Normal")
-      .click();
-    await page.getByRole("button", { name: "Confirm" }).click();
-    await expect(page.getByRole("main")).toContainText("Brelshaza");
-    await expect(page.getByRole("main")).toContainText("HHHN");
+test("edit raid", async ({ page }) => {
+  await page.goto("/characters");
+  await setCharacterState(page, {
+    name: "Test Character",
+    class: Class.Berserker,
+    itemLevel: 1600,
+    raids: {
+      brel: {
+        gates: [
+          { id: "G1", difficulty: Difficulty.normal },
+          { id: "G2", difficulty: Difficulty.hard },
+          { id: "G3", difficulty: Difficulty.normal },
+        ],
+      },
+    },
   });
+  let characterCard = await page.getByTestId("character-0");
+  await characterCard
+    .getByTestId("character-assigned-raid-0")
+    .getByTestId("assigned-raid-ellipsis")
+    .click();
+  await page.getByTestId("assigned-raid-edit").click();
+  await page.getByTestId("difficulties-G1").getByLabel("Hard").click();
+  await page.getByTestId("difficulties-G3").getByLabel("Hard").click();
+  await page.getByTestId("difficulties-G4").getByLabel("Normal").click();
+  await page.getByTestId("form-submit").click();
+  characterCard = await page.getByTestId("character-0");
+  await expect(
+    characterCard.getByTestId("character-assigned-raid-0"),
+  ).toContainText("HHHN");
+  await expect(
+    characterCard.getByTestId("character-assigned-raid-0"),
+  ).toContainText("Brelshaza");
+});
 
-  test("delete raid", async () => {
-    await page.goto("/characters");
-    await page.getByRole("main").getByRole("button").nth(2).click();
-    await page.getByText("Delete Raid").click();
-    await expect(page.getByRole("main")).not.toContainText("Brelshaza");
-    await expect(page.getByRole("main")).not.toContainText("HHHN");
+test("delete raid", async ({ page }) => {
+  await page.goto("/characters");
+  await setCharacterState(page, {
+    name: "Test Character",
+    class: Class.Berserker,
+    itemLevel: 1600,
+    raids: {
+      brel: {
+        gates: [
+          { id: "G1", difficulty: Difficulty.normal },
+          { id: "G2", difficulty: Difficulty.hard },
+          { id: "G3", difficulty: Difficulty.normal },
+        ],
+      },
+    },
   });
+  let characterCard = await page.getByTestId("character-0");
+  await characterCard
+    .getByTestId("character-assigned-raid-0")
+    .getByTestId("assigned-raid-ellipsis")
+    .click();
+  await page.getByTestId("assigned-raid-delete").click();
+  await page.reload();
+  characterCard = await page.getByTestId("character-0");
+  await expect(
+    characterCard.getByTestId("character-assigned-raid-0"),
+  ).toHaveCount(0);
+});
 
-  test("delete character and undo", async () => {
-    await page.getByRole("button").nth(2).click();
-    page.once("dialog", (dialog) => {
-      dialog.accept().catch(() => {});
-    });
-    await page.getByRole("button").first().click();
-    await expect(page.getByRole("main")).not.toContainText("testtest");
-    await page.getByRole("button", { name: "Undo" }).click();
-    await page.reload();
-    await expect(page.getByRole("heading")).toContainText("testtest");
-    await expect(page.getByRole("main")).toContainText("Breaker");
-    await expect(page.getByRole("main")).toContainText("1640");
+test("delete character and undo", async ({ page }) => {
+  await page.goto("/characters");
+  let characterCard = await page.getByTestId("character-0");
+  await setCharacterState(page, {
+    name: "Test Character",
+    class: Class.Berserker,
+    itemLevel: 1600,
   });
+  await characterCard.getByTestId("edit-character").click();
+  page.once("dialog", (dialog) => {
+    dialog.accept().catch(() => {});
+  });
+  await page.getByTestId("char-delete-button").click();
+  characterCard = await page.getByTestId("character-0");
+  await expect(characterCard).toHaveCount(0);
+  await page.getByTestId("undo-char-delete").click();
+  await page.reload();
+  characterCard = await page.getByTestId("character-0");
+  await expect(characterCard.getByTestId("character-class")).toContainText(
+    "Berserker",
+  );
+  await expect(characterCard.getByTestId("character-name")).toContainText(
+    "Test Character",
+  );
+  await expect(characterCard.getByTestId("character-item-level")).toContainText(
+    "1600",
+  );
 });

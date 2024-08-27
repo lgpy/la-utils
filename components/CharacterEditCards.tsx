@@ -80,14 +80,16 @@ export default function CharacterEditCards() {
       <ul
         className="mt-6 flex flex-row flex-wrap gap-3 justify-center"
         ref={parent}
+        data-pw="character-list"
       >
-        {chars.map((char) => (
+        {chars.map((char, index) => (
           <li data-label={char.id} key={char.id}>
             <CharacterEditCard
               char={char}
               editCharacter={() => openCharacterEditDialog(char)}
               openRaidDialog={(raidId) => openRaidDialog(char, raidId)}
               movable={!isLocked}
+              data-pw={`character-${index}`}
             />
           </li>
         ))}
@@ -147,7 +149,7 @@ export default function CharacterEditCards() {
             variant="default"
             size="icon"
             onClick={() => openCharacterEditDialog(undefined)}
-            aria-label="Create Character"
+            data-pw={`create-character`}
           >
             <PlusIcon className="h-6 w-6" />
           </Button>
