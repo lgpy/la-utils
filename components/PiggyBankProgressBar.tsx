@@ -5,11 +5,11 @@ import { forwardRef, useRef } from "react";
 
 type Props = {
   progress: number;
-  classname?: string;
+  className?: string;
 };
 
 const PiggyBankProgressBar = forwardRef<HTMLDivElement, Props>(
-  ({ progress, classname, ...props }, ref) => {
+  ({ progress, className: classname, ...props }, ref) => {
     /* width starts at 6 for 0% and ends at 21 for 100% */
     const width = 6 + (progress / 100) * 16;
 
