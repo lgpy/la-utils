@@ -149,7 +149,7 @@ export default function CharacterRaidDialog({
                   onValueChange={field.onChange}
                   value={field.value}
                   className="flex flex-row justify-around w-full !mt-0 gap-2"
-                  aria-label={`Select difficulty for ${gateId}`}
+                  data-pw={`difficulties-${gateId}`}
                 >
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
@@ -237,10 +237,10 @@ export default function CharacterRaidDialog({
           </form>
         </Form>
         <DialogFooter>
-          <Button variant="ghost" onClick={close}>
+          <Button variant="ghost" onClick={close} data-pw="form-cancel">
             Cancel
           </Button>
-          <Button type="submit" form="char-form">
+          <Button type="submit" form="char-form" data-pw="form-submit">
             Confirm
           </Button>
         </DialogFooter>

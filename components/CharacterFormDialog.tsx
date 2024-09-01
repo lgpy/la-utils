@@ -106,6 +106,7 @@ export default function CharacterFormDialog({
           onClick={() => state.restoreCharacter(existingCharacter, index)}
           className="hover:text-background"
           altText="Undo"
+          data-pw="undo-char-delete"
         >
           Undo
         </ToastAction>
@@ -148,7 +149,11 @@ export default function CharacterFormDialog({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your character's name..." {...field} />
+                    <Input
+                      placeholder="Your character's name..."
+                      {...field}
+                      data-pw="char-name"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -166,7 +171,10 @@ export default function CharacterFormDialog({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Your character's class..." />
+                        <SelectValue
+                          placeholder="Your character's class..."
+                          data-pw="char-class-value"
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -205,6 +213,7 @@ export default function CharacterFormDialog({
                       min={0}
                       {...field}
                       onChange={(event) => field.onChange(+event.target.value)}
+                      data-pw="char-item-level"
                     />
                   </FormControl>
                   <FormMessage />
@@ -221,14 +230,15 @@ export default function CharacterFormDialog({
               disabled={!existingCharacter}
               size="icon"
               className=" mr-auto"
+              data-pw="char-delete-button"
             >
               <Trash2Icon />
             </Button>
           )}
-          <Button variant="ghost" onClick={close}>
+          <Button variant="ghost" onClick={close} data-pw="cancel-button">
             Cancel
           </Button>
-          <Button type="submit" form="char-form">
+          <Button type="submit" form="char-form" data-pw="confirm-button">
             Confirm
           </Button>
         </DialogFooter>

@@ -7,8 +7,8 @@ import {
 import { Character } from "@/hooks/mainstore";
 import { getGoldInfo } from "@/lib/chars";
 import { cn } from "@/lib/utils";
-import { PiggyBank } from "lucide-react";
 import { useMemo } from "react";
+import PiggyBankProgressBar from "./PiggyBankProgressBar";
 
 type Props = {
   char: Character;
@@ -27,11 +27,9 @@ export default function GoldEarningTooltip(props: Props) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <PiggyBank
-            className={cn(
-              "size-5 text-yellow !m-0 absolute top-2 right-2",
-              className,
-            )}
+          <PiggyBankProgressBar
+            progress={(gold.earned / gold.total) * 100}
+            className={cn("size-5 !m-0 absolute top-2 right-2", className)}
           />
         </TooltipTrigger>
         <TooltipContent>
