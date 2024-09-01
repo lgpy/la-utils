@@ -9,7 +9,6 @@ const setCharacterState = async (
   page: Page,
   ...characters: Partial<MainState["characters"][number]>[]
 ) => {
-  console.log("characters", characters);
   await page.evaluate((characters) => {
     localStorage.setItem(
       "characters",
@@ -179,12 +178,12 @@ test("delete raid", async ({ page }) => {
 
 test("delete character and undo", async ({ page }) => {
   await page.goto("/characters");
-  let characterCard = await page.getByTestId("character-0");
   await setCharacterState(page, {
     name: "Test Character",
     class: Class.Berserker,
     itemLevel: 1600,
   });
+  let characterCard = await page.getByTestId("character-0");
   await characterCard.getByTestId("edit-character").click();
   page.once("dialog", (dialog) => {
     dialog.accept().catch(() => {});
