@@ -1,13 +1,15 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { forwardRef, useRef } from "react";
 
 type Props = {
   progress: number;
+  classname?: string;
 };
 
 const PiggyBankProgressBar = forwardRef<HTMLDivElement, Props>(
-  ({ progress, ...props }, ref) => {
+  ({ progress, classname, ...props }, ref) => {
     /* width starts at 6 for 0% and ends at 21 for 100% */
     const width = 6 + (progress / 100) * 16;
 
@@ -19,7 +21,7 @@ const PiggyBankProgressBar = forwardRef<HTMLDivElement, Props>(
     const eyeColor = width < 15 ? "hsl(var(--yellow))" : "hsl(var(--card))";
 
     return (
-      <div {...props} ref={ref}>
+      <div {...props} ref={ref} className={cn(classname)}>
         <div className="relative aspect-square">
           <svg
             viewBox="0 0 24 24"
