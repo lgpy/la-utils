@@ -1,11 +1,25 @@
-import { Coffee, Menu } from "lucide-react";
+"use client";
+
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import Logo from "./Logo";
 import SettingsButton from "./SettingsButton";
 import { Button } from "./ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import "./NavBar.css";
+
+const links = [
+  { label: "Home", href: "/" },
+  { label: "Characters", href: "/characters" },
+  { label: "Prices", href: "/prices" },
+  { label: "Crafting", href: "/crafting" },
+];
 
 export default function NavBar() {
+  const currentPath = usePathname();
+
   return (
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b-2 bg-background2 px-4 md:px-6 border-primary z-50">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 h-full">
@@ -18,30 +32,23 @@ export default function NavBar() {
             Lost Ark Utils
           </span>
         </Link>
-        <Link
-          href="/"
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Home
-        </Link>
-        <Link
-          href="/characters"
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Characters
-        </Link>
-        <Link
-          href="/prices"
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Prices
-        </Link>
-        <Link
-          href="/crafting"
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Crafting
-        </Link>
+        {links.map(({ label, href }, index) => (
+          <div
+            key={"dl" + index}
+            className={cn("h-full flex items-center px-2 dlink", {
+              active: href === currentPath,
+            })}
+          >
+            <Link
+              href={href}
+              className={cn(
+                "text-muted-foreground transition-colors hover:text-foreground",
+              )}
+            >
+              {label}
+            </Link>
+          </div>
+        ))}
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -63,38 +70,21 @@ export default function NavBar() {
                 </span>
               </Link>
             </SheetClose>
-            <SheetClose asChild>
-              <Link
-                href="/"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Home
-              </Link>
-            </SheetClose>
-            <SheetClose asChild>
-              <Link
-                href="/characters"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Characters
-              </Link>
-            </SheetClose>
-            <SheetClose asChild>
-              <Link
-                href="/prices"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Prices
-              </Link>
-            </SheetClose>
-            <SheetClose asChild>
-              <Link
-                href="/crafting"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Crafting
-              </Link>
-            </SheetClose>
+            {links.map(({ label, href }, index) => (
+              <SheetClose asChild key={"ml" + index}>
+                <Link
+                  href={href}
+                  className={cn(
+                    "text-muted-foreground hover:text-foreground mlink",
+                    {
+                      active: href === currentPath,
+                    },
+                  )}
+                >
+                  {label}
+                </Link>
+              </SheetClose>
+            ))}
           </nav>
         </SheetContent>
       </Sheet>
