@@ -299,4 +299,23 @@ export const raids: {
       },
     },
   },
+  {
+    id: "behemoth",
+    name: "Behemoth",
+    difficulties: [Difficulty.normal],
+    gates: {
+      G1: {
+        itemlevel: [1620],
+        rewards: {
+          gold: [0],
+        },
+      },
+      G2: {
+        itemlevel: [1620],
+        rewards: {
+          gold: [0],
+        },
+      },
+    },
+  },
 ];
