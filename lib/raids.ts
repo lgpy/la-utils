@@ -307,13 +307,13 @@ export const raids: {
       G1: {
         itemlevel: [1620],
         rewards: {
-          gold: [0],
+          gold: [6500],
         },
       },
       G2: {
         itemlevel: [1620],
         rewards: {
-          gold: [0],
+          gold: [11500],
         },
       },
     },
