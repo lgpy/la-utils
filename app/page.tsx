@@ -1,5 +1,6 @@
 import CharacterTodoCards from "@/components/CharacterTodoCards";
 import FABActions from "@/components/FABActions";
+import RosterGold from "@/components/RosterGold";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export default function Home() {
     <>
       <CharacterTodoCards />
       <FABActions />
+      <RosterGold />
     </>
   );
 }

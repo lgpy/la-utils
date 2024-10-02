@@ -1,7 +1,13 @@
 import { DateTime } from "luxon";
 
-export function getLatestReset(BiWeekly?: "odd" | "even") {
-  const currentDate = DateTime.now().setZone("UTC");
+export function getLatestReset({
+  BiWeekly,
+  currentDateOverride,
+}: {
+  BiWeekly?: "odd" | "even";
+  currentDateOverride?: DateTime;
+}) {
+  const currentDate = currentDateOverride ?? DateTime.now().setZone("UTC");
 
   let latestWednesday = currentDate
     .set({ weekday: 3 })
@@ -21,8 +27,19 @@ export function getLatestReset(BiWeekly?: "odd" | "even") {
   return latestWednesday;
 }
 
-export function hasReset(date: DateTime, BiWeekly?: "odd" | "even") {
-  const latestReset = getLatestReset(BiWeekly);
+export function hasReset({
+  dateRaidWasComplete,
+  BiWeekly,
+  currentDateOverride,
+}: {
+  dateRaidWasComplete: DateTime;
+  BiWeekly?: "odd" | "even";
+  currentDateOverride?: DateTime;
+}) {
+  const latestReset = getLatestReset({
+    BiWeekly,
+    currentDateOverride,
+  });
 
-  return latestReset >= date;
+  return latestReset >= dateRaidWasComplete;
 }

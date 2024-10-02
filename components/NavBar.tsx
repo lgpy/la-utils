@@ -9,6 +9,11 @@ import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import "./NavBar.css";
+import {
+  ServerStoreProvider,
+  useServerStore,
+} from "@/providers/ServerProvider";
+import ServerStatus from "./ServerStatus";
 
 const links = [
   { label: "Home", href: "/" },
@@ -89,6 +94,9 @@ export default function NavBar() {
         </SheetContent>
       </Sheet>
       <div className="ml-auto flex flex-row gap-2">
+        <ServerStoreProvider>
+          <ServerStatus />
+        </ServerStoreProvider>
         <Button variant="ghost" size="icon">
           <Link href="https://ko-fi.com/leo213" target="_blank">
             <svg

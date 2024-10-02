@@ -9,6 +9,7 @@ import { CSPostHogProvider } from "./providers";
 import dynamic from "next/dynamic";
 import { MainStoreProvider } from "@/providers/MainStoreProvider";
 import OldWebsiteDeprecatedMessage from "@/components/OldWebsiteDeprecatedMessage";
+import { ServerStoreProvider } from "@/providers/ServerProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
