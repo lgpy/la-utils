@@ -56,12 +56,18 @@ export const getRaidsFilteredByIlvl = (itemLevel: number) => {
 export const isGateCompleted = (
   raidId: string,
   gateId: string,
-  date: DateTime,
+  dateRaidWasComplete: DateTime,
+  currentDateOverride?: DateTime,
 ) => {
   const r = raids.find((r) => r.id === raidId);
   if (!r) return false;
   const g = r.gates[gateId];
-  return g.hasReset ? !g.hasReset(date) : !hasReset(date);
+  return g.hasReset
+    ? !g.hasReset(dateRaidWasComplete, currentDateOverride)
+    : !hasReset({
+        dateRaidWasComplete,
+        currentDateOverride,
+      });
 };
 
 export const raids: {
@@ -71,7 +77,10 @@ export const raids: {
   gates: {
     [key: string]: {
       itemlevel: (number | null)[];
-      hasReset?: (date: DateTime) => boolean;
+      hasReset?: (
+        dateRaidWasComplete: DateTime,
+        currentDateOverride?: DateTime,
+      ) => boolean;
       rewards: {
         gold: number[];
       };
@@ -169,7 +178,12 @@ export const raids: {
         rewards: {
           gold: [1600, 2000],
         },
-        hasReset: (date) => hasReset(date, "even"),
+        hasReset: (dateRaidWasComplete, currentDateOverride) =>
+          hasReset({
+            dateRaidWasComplete,
+            BiWeekly: "even",
+            currentDateOverride,
+          }),
       },
     },
   },
@@ -276,7 +290,12 @@ export const raids: {
         rewards: {
           gold: [0, 21000],
         },
-        hasReset: (date) => hasReset(date, "odd"),
+        hasReset: (dateRaidWasComplete, currentDateOverride) =>
+          hasReset({
+            dateRaidWasComplete,
+            BiWeekly: "odd",
+            currentDateOverride,
+          }),
       },
     },
   },
