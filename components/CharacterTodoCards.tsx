@@ -5,14 +5,15 @@ import { useMemo } from "react";
 import CharacterTodoCard from "./CharacterCard/CharacterTodoCard";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { NoCharactersCard } from "./NoCharactersCard";
+import { _useMainStore } from "@/providers/MainStoreProvider";
 
 export default function CharacterTodoCards() {
   const { hasHydrated, state } = useMainStore();
   const [parent] = useAutoAnimate();
 
   const charCards = useMemo(() => {
-    return state.characters.map((char) => (
-      <CharacterTodoCard char={char} key={char.id} />
+    return state.characters.map((char, idx) => (
+      <CharacterTodoCard char={char} key={char.id} isGoldEarner={idx < 6} />
     ));
   }, [state.characters]);
 

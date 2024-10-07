@@ -1,19 +1,27 @@
 import { Character } from "@/hooks/mainstore";
+import { getHighest3, parseGoldInfo } from "@/lib/chars";
 import { cn } from "@/lib/utils";
+import { SwordsIcon } from "lucide-react";
 import { Fragment, useMemo } from "react";
+import ClassIcon from "../class-icons/ClassIcon";
+import GoldEarningTooltip from "../GoldEarningTooltip";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Separator } from "../ui/separator";
 import TodoRaid from "./TodoRaid";
-import ClassIcon from "../class-icons/ClassIcon";
-import { CoinsIcon, PiggyBank, SwordsIcon } from "lucide-react";
-import { getGoldInfo } from "@/lib/chars";
-import GoldEarningTooltip from "../GoldEarningTooltip";
 
 interface Props {
   char: Character;
+  isGoldEarner: boolean;
 }
 
-export default function CharacterTodoCard({ char }: Props) {
+export default function CharacterTodoCard({ char, isGoldEarner }: Props) {
+  const highest3 = useMemo(() => {
+    const goldInfo = parseGoldInfo(char.raids);
+    const highest3 = getHighest3(goldInfo);
+    if (char.name === "Slayersen") console.log(highest3);
+    return highest3;
+  }, [char]);
+
   const raids = Object.keys(char.raids).map((raidId, i, keys) => (
     <Fragment key={char.id + raidId}>
       <CardContent
@@ -21,7 +29,16 @@ export default function CharacterTodoCard({ char }: Props) {
           "rounded-b-lg": i === keys.length - 1,
         })}
       >
-        <TodoRaid char={char} raidId={raidId} raid={char.raids[raidId]} />
+        <TodoRaid
+          charId={char.id}
+          raidId={raidId}
+          raid={char.raids[raidId]}
+          goldEarner={
+            isGoldEarner &&
+            highest3[raidId] !== undefined &&
+            Object.keys(highest3).length < Object.keys(char.raids).length
+          }
+        />
       </CardContent>
       {i < keys.length - 1 && <Separator className="opacity-75" />}
     </Fragment>
@@ -46,7 +63,7 @@ export default function CharacterTodoCard({ char }: Props) {
           </div>
         </div>
 
-        <GoldEarningTooltip char={char} />
+        {isGoldEarner && <GoldEarningTooltip goldInfo={highest3} />}
       </CardHeader>
       <Separator />
       {raids}

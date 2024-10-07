@@ -55,6 +55,7 @@ export const _useMainStore = <T,>(
   }, [mainStoreContext.persist]);
 
   const store = useStore(mainStoreContext, selector);
+
   return {
     store,
     hasHydrated: hydrated,

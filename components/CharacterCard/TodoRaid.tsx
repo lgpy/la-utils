@@ -1,8 +1,6 @@
 import { Character } from "@/hooks/mainstore";
-import { getRaids } from "@/lib/chars";
 import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { cn } from "@/lib/utils";
-import { ValueOf } from "next/dist/shared/lib/constants";
 import {
   Tooltip,
   TooltipContent,
@@ -10,14 +8,16 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import TodoRaidCheckbox from "./TodoRaidCheckBox";
+import { HandCoins } from "lucide-react";
 
 interface Props {
-  char: Character;
+  charId: string;
   raidId: string;
-  raid: ValueOf<ReturnType<typeof getRaids>>;
+  raid: Character["raids"][string];
+  goldEarner: boolean;
 }
 
-export default function TodoRaid({ char, raidId, raid }: Props) {
+export default function TodoRaid({ charId, raidId, raid, goldEarner }: Props) {
   const actualraid = raids.find((r) => r.id === raidId);
 
   if (!actualraid) {
@@ -41,29 +41,31 @@ export default function TodoRaid({ char, raidId, raid }: Props) {
     >
       <div className="flex flex-col grow min-w-0 items-start">
         <span className="">{actualraid.name}</span>
-
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <span className="text-muted-foreground text-xs truncate">
-                {raid.gates
-                  .map((g) => `${shortestDifficulty(g.difficulty)}`)
-                  .join("")}
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>
-                {raid.gates
-                  .map((g) => `${g.id} ${shortenDifficulty(g.difficulty)}`)
-                  .join(", ")}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <div className="flex flex-row gap-1">
+          {goldEarner && <HandCoins className="size-4 stroke-yellow" />}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <p className="text-muted-foreground text-xs truncate">
+                  {raid.gates
+                    .map((g) => `${shortestDifficulty(g.difficulty)}`)
+                    .join("")}
+                </p>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>
+                  {raid.gates
+                    .map((g) => `${g.id} ${shortenDifficulty(g.difficulty)}`)
+                    .join(", ")}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
       <TodoRaidCheckbox
         assignedGates={raid.gates}
-        charId={char.id}
+        charId={charId}
         raidId={raidId}
       />
     </div>

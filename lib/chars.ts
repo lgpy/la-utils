@@ -1,83 +1,117 @@
-import { zodChar } from "@/stores/main";
-import { Difficulty, isGateCompleted, raids } from "./raids";
 import { DateTime } from "luxon";
-import { z } from "zod";
+import { Difficulty, isGateCompleted, raids } from "./raids";
 import { Character } from "@/hooks/mainstore";
-import { hasReset } from "./dates";
 
-export function getRaids(cRaids: z.infer<typeof zodChar>["raids"]) {
-  return Object.entries(cRaids).reduce(
-    (acc, [raidId, raid]) => {
-      const actualraid = raids.find((r) => r.id === raidId);
-      if (!actualraid) {
-        console.error(`Raid ${raidId} not found`);
-        return acc;
+export function parseGoldInfo(charRaids: Character["raids"]): Record<
+  string,
+  {
+    thisWeek: {
+      earnedGold: number;
+      totalGold: number;
+    };
+    nextWeek: {
+      earnableGold: number;
+    };
+  }
+> {
+  const ret = {} as Record<
+    string,
+    {
+      thisWeek: {
+        earnedGold: number;
+        totalGold: number;
+      };
+      nextWeek: {
+        earnableGold: number;
+      };
+    }
+  >;
+
+  Object.entries(charRaids).forEach(([assignedRaidId, assignedRaid]) => {
+    const raid = raids.find((r) => r.id === assignedRaidId);
+    if (!raid) return;
+
+    assignedRaid.gates.forEach((gate) => {
+      const DiffIdx = raid.difficulties.indexOf(gate.difficulty);
+      const actualGate = raid.gates[gate.id];
+      const gateGoldReward = actualGate.rewards.gold[DiffIdx];
+
+      if (ret[assignedRaidId] === undefined) {
+        ret[assignedRaidId] = {
+          thisWeek: {
+            earnedGold: 0,
+            totalGold: 0,
+          },
+          nextWeek: {
+            earnableGold: 0,
+          },
+        };
       }
-      const gates = raid.gates.map((gate) => ({
-        id: gate.id,
-        difficulty: gate.difficulty,
-        completed:
-          gate.completedDate !== undefined
-            ? isGateCompleted(
-                raidId,
-                gate.id,
-                DateTime.fromISO(gate.completedDate),
-              )
-            : false,
-      }));
 
-      acc[raidId] = { gates };
-      return acc;
+      ret[assignedRaidId].thisWeek.totalGold += gateGoldReward;
+
+      if (gate.completed) {
+        ret[assignedRaidId].thisWeek.earnedGold += gateGoldReward;
+      }
+      if (
+        actualGate.hasReset === undefined ||
+        gate.completedDate === undefined
+      ) {
+        //ignore weekly reset
+        ret[assignedRaidId].nextWeek.earnableGold += gateGoldReward;
+      } else {
+        const isGateComplete = isGateCompleted(
+          assignedRaidId,
+          gate.id,
+          DateTime.fromISO(gate.completedDate),
+          DateTime.now().plus({ week: 1 }),
+        );
+        if (!isGateComplete)
+          ret[assignedRaidId].nextWeek.earnableGold += gateGoldReward;
+      }
+    });
+  });
+  return ret;
+}
+
+export function getHighest3(
+  goldInfo: Record<
+    string,
+    {
+      thisWeek: {
+        earnedGold: number;
+        totalGold: number;
+      };
+      nextWeek: {
+        earnableGold: number;
+      };
+    }
+  >,
+) {
+  const sortedGold = Object.entries(goldInfo).sort(([aId, a], [bId, b]) => {
+    if (a.thisWeek.earnedGold === b.thisWeek.earnedGold) {
+      const aActualIndex = raids.findIndex((r) => r.id === aId);
+      const bActualIndex = raids.findIndex((r) => r.id === bId);
+      return bActualIndex - aActualIndex;
+    }
+    return b.thisWeek.earnedGold - a.thisWeek.earnedGold;
+  });
+
+  return sortedGold.slice(0, 3).reduce(
+    (acc, [raidId, info]) => {
+      return Object.assign(acc, { [raidId]: info });
     },
     {} as Record<
       string,
       {
-        gates: {
-          id: string;
-          difficulty: Difficulty;
-          completed: boolean;
-        }[];
+        thisWeek: {
+          earnedGold: number;
+          totalGold: number;
+        };
+        nextWeek: {
+          earnableGold: number;
+        };
       }
     >,
-  );
-}
-
-export function getGoldInfo(charRaids: Character["raids"]) {
-  return Object.entries(charRaids).reduce(
-    (acc, [raidId, raid]) => {
-      const actualraid = raids.find((r) => r.id === raidId);
-      if (!actualraid) {
-        console.error(`Raid ${raidId} not found`);
-        return acc;
-      }
-      const idk = raid.gates.reduce(
-        (acc, gate) => {
-          const diffIdx = actualraid.difficulties.indexOf(gate.difficulty);
-          const actualgate = actualraid.gates[gate.id];
-          if (!actualgate) {
-            console.error(`Gate ${gate.id} not found in raid ${raidId}`);
-            return acc;
-          }
-          return {
-            total: acc.total + actualgate.rewards.gold[diffIdx],
-            earned:
-              acc.earned +
-              (gate.completed ? actualgate.rewards.gold[diffIdx] : 0),
-          };
-        },
-        {
-          total: 0,
-          earned: 0,
-        },
-      );
-      return {
-        total: acc.total + idk.total,
-        earned: acc.earned + idk.earned,
-      };
-    },
-    {
-      total: 0,
-      earned: 0,
-    },
   );
 }
