@@ -19,17 +19,22 @@ export default function ServerStatus() {
   useEffect(() => {
     if (!hasHydrated) return;
     if (store.name === undefined) return;
-    axios.get(`/api/serverStatus`).then((res) => {
-      setServerStatus(res.data[store.name!].status);
-    });
+    if (serverStatus === null)
+      axios.get(`/api/serverStatus`).then((res) => {
+        setServerStatus(res.data[store.name!].status);
+      });
+    const delay =
+      serverStatus === "offline" || serverStatus === null
+        ? 1000 * 60 * 5
+        : 1000 * 60 * 60 * 3;
     const int = setInterval(async () => {
       const res = await axios.get(`/api/serverStatus`);
       setServerStatus(res.data[store.name!].status);
-    }, 1000 * 60 * 5);
+    }, delay);
     return () => {
       clearInterval(int);
     };
-  }, [store, hasHydrated]);
+  }, [store, hasHydrated, serverStatus]);
 
   if (!hasHydrated) return null;
   if (store.name === undefined) return null;
