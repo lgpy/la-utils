@@ -3,18 +3,18 @@ import { getHighest3, parseGoldInfo } from "@/lib/chars";
 import { cn } from "@/lib/utils";
 import { SwordsIcon } from "lucide-react";
 import { Fragment, useMemo } from "react";
-import ClassIcon from "../class-icons/ClassIcon";
-import GoldEarningTooltip from "../GoldEarningTooltip";
-import { Card, CardContent, CardHeader } from "../ui/card";
-import { Separator } from "../ui/separator";
-import TodoRaid from "./TodoRaid";
+import ClassIcon from "./class-icons/ClassIcon";
+import PiggyBank from "./PiggyBank";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { Separator } from "./ui/separator";
+import TodoCardRaid from "./TodoCardRaid";
 
 interface Props {
   char: Character;
   isGoldEarner: boolean;
 }
 
-export default function CharacterTodoCard({ char, isGoldEarner }: Props) {
+export default function TodoCard({ char, isGoldEarner }: Props) {
   const highest3 = useMemo(() => {
     const goldInfo = parseGoldInfo(char.raids);
     const highest3 = getHighest3(goldInfo);
@@ -29,7 +29,7 @@ export default function CharacterTodoCard({ char, isGoldEarner }: Props) {
           "rounded-b-lg": i === keys.length - 1,
         })}
       >
-        <TodoRaid
+        <TodoCardRaid
           charId={char.id}
           raidId={raidId}
           raid={char.raids[raidId]}
@@ -63,7 +63,7 @@ export default function CharacterTodoCard({ char, isGoldEarner }: Props) {
           </div>
         </div>
 
-        {isGoldEarner && <GoldEarningTooltip goldInfo={highest3} />}
+        {isGoldEarner && <PiggyBank goldInfo={highest3} />}
       </CardHeader>
       <Separator />
       {raids}

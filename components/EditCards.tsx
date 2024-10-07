@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { isEqual } from "lodash";
 import { LockIcon, LockOpenIcon, PlusIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import CharacterEditCard from "./CharacterCard/CharacterEditCard";
+import EditCard from "./EditCard";
 import CharacterFormDialog from "./CharacterFormDialog";
 import CharacterPageNoCharactersCard from "./CharacterPageNoCharactersCard";
 import CharacterRaidDialog from "./CharacterRaidDialog";
@@ -84,7 +84,7 @@ export default function CharacterEditCards() {
       >
         {chars.map((char, index) => (
           <li data-label={char.id} key={char.id}>
-            <CharacterEditCard
+            <EditCard
               char={char}
               editCharacter={() => openCharacterEditDialog(char)}
               openRaidDialog={(raidId) => openRaidDialog(char, raidId)}

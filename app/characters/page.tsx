@@ -1,4 +1,4 @@
-import CharacterEditCards from "@/components/CharacterEditCards";
+import CharacterEditCards from "@/components/EditCards";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

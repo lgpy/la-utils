@@ -23,7 +23,7 @@ type Props = {
   >;
 };
 
-export default function GoldEarningTooltip(props: Props) {
+export default function PiggyBank(props: Props) {
   const { goldInfo, className } = props;
 
   const gold = Object.values(goldInfo).reduce(

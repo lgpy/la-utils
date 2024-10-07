@@ -1,19 +1,19 @@
 import { Character, useMainStore } from "@/hooks/mainstore";
 import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { EllipsisIcon, PencilIcon, Trash2Icon } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "./ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../ui/tooltip";
+} from "./ui/tooltip";
 
 interface Props {
   char: Character;
@@ -21,7 +21,7 @@ interface Props {
   openRaidDialog: () => void;
 }
 
-export default function CharacterCardAssignedRaid({
+export default function EditCardAssignedRaid({
   char,
   raidId,
   openRaidDialog,

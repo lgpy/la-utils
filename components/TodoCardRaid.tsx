@@ -6,8 +6,8 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../ui/tooltip";
-import TodoRaidCheckbox from "./TodoRaidCheckBox";
+} from "./ui/tooltip";
+import TodoCardCompleteButton from "./TodoCardCompleteButton";
 import { HandCoins } from "lucide-react";
 
 interface Props {
@@ -17,7 +17,12 @@ interface Props {
   goldEarner: boolean;
 }
 
-export default function TodoRaid({ charId, raidId, raid, goldEarner }: Props) {
+export default function TodoCardRaid({
+  charId,
+  raidId,
+  raid,
+  goldEarner,
+}: Props) {
   const actualraid = raids.find((r) => r.id === raidId);
 
   if (!actualraid) {
@@ -63,7 +68,7 @@ export default function TodoRaid({ charId, raidId, raid, goldEarner }: Props) {
           </TooltipProvider>
         </div>
       </div>
-      <TodoRaidCheckbox
+      <TodoCardCompleteButton
         assignedGates={raid.gates}
         charId={charId}
         raidId={raidId}

@@ -2,7 +2,7 @@
 
 import { useMainStore } from "@/hooks/mainstore";
 import { useMemo } from "react";
-import CharacterTodoCard from "./CharacterCard/CharacterTodoCard";
+import TodoCard from "./TodoCard";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { NoCharactersCard } from "./NoCharactersCard";
 import { _useMainStore } from "@/providers/MainStoreProvider";
@@ -13,7 +13,7 @@ export default function CharacterTodoCards() {
 
   const charCards = useMemo(() => {
     return state.characters.map((char, idx) => (
-      <CharacterTodoCard char={char} key={char.id} isGoldEarner={idx < 6} />
+      <TodoCard char={char} key={char.id} isGoldEarner={idx < 6} />
     ));
   }, [state.characters]);
 

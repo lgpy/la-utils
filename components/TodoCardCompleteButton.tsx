@@ -1,21 +1,20 @@
-import { useMainStore } from "@/hooks/mainstore";
-import { getRaids } from "@/lib/chars";
+import { Character, useMainStore } from "@/hooks/mainstore";
 import { raids } from "@/lib/raids";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon } from "lucide-react";
 import { ValueOf } from "next/dist/shared/lib/constants";
 import { MouseEventHandler, useState } from "react";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "./ui/use-toast";
 import { set } from "zod";
 
 interface Props {
   charId: string;
   raidId: string;
-  assignedGates: ValueOf<ReturnType<typeof getRaids>>["gates"];
+  assignedGates: Character["raids"][string]["gates"];
 }
 
-export default function TodoRaidCheckbox({
+export default function TodoCardCompleteButton({
   charId,
   raidId,
   assignedGates,

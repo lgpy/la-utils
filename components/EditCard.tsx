@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
 import { Fragment } from "react";
-import ClassIcon from "../class-icons/ClassIcon";
-import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
-import CharacterCardAssignedRaid from "./CharacterAssignedRaid";
+import ClassIcon from "./class-icons/ClassIcon";
+import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
+import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
 
 type Props = {
   char: Character;
@@ -16,7 +16,7 @@ type Props = {
   movable?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-export default function CharacterEditCard(props: Props) {
+export default function EditCard(props: Props) {
   const [parent] = useAutoAnimate();
   const {
     char,
