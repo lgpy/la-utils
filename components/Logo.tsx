@@ -18,8 +18,9 @@ export default function Logo(props: { className?: string }) {
         alt=""
         height={59}
         quality={100}
-        src={`/logo-0.png`}
-        width={65.47}
+        src={`/logo.png`}
+        width={65}
+        priority={true}
       />
     </div>
   );
