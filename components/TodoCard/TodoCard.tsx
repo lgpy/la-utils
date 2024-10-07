@@ -18,7 +18,6 @@ export default function TodoCard({ char, isGoldEarner }: Props) {
   const highest3 = useMemo(() => {
     const goldInfo = parseGoldInfo(char.raids);
     const highest3 = getHighest3(goldInfo);
-    if (char.name === "Slayersen") console.log(highest3);
     return highest3;
   }, [char]);
 
