@@ -1,9 +1,7 @@
-import { Character } from "@/hooks/mainstore";
 import { Class } from "@/lib/classes";
-import { Difficulty, raids } from "@/lib/raids";
+import { Difficulty } from "@/lib/raids";
 import { MainState } from "@/stores/main";
-import { test, expect, Page } from "@playwright/test";
-import { v4 as uuidv4 } from "uuid";
+import { expect, Page, test } from "@playwright/test";
 
 const setCharacterState = async (
   page: Page,

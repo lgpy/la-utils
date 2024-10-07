@@ -2,7 +2,7 @@ import { Class } from "@/lib/classes";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   DialogHeader,
   DialogFooter,
@@ -10,7 +10,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from "./ui/dialog";
+} from "../ui/dialog";
 import {
   Form,
   FormField,
@@ -19,21 +19,21 @@ import {
   FormControl,
   FormDescription,
   FormMessage,
-} from "./ui/form";
-import { useToast } from "./ui/use-toast";
-import { ToastAction } from "./ui/toast";
+} from "../ui/form";
+import { useToast } from "../ui/use-toast";
+import { ToastAction } from "../ui/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../ui/select";
 import Link from "next/link";
 import { Trash2Icon, TrashIcon } from "lucide-react";
-import ClassIcon from "./class-icons/ClassIcon";
+import ClassIcon from "../class-icons/ClassIcon";
 import { Character, useMainStore } from "@/hooks/mainstore";
 
 const formSchema = z.object({
@@ -50,7 +50,7 @@ interface Props {
   existingCharacter?: Character;
 }
 
-export default function CharacterFormDialog({
+export default function EditCardCharacterDialog({
   isOpen,
   close,
   existingCharacter,

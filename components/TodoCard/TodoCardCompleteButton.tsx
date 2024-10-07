@@ -1,12 +1,10 @@
+import { useToast } from "@/components/ui/use-toast";
 import { Character, useMainStore } from "@/hooks/mainstore";
 import { raids } from "@/lib/raids";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon } from "lucide-react";
-import { ValueOf } from "next/dist/shared/lib/constants";
 import { MouseEventHandler, useState } from "react";
-import { useToast } from "./ui/use-toast";
-import { set } from "zod";
 
 interface Props {
   charId: string;

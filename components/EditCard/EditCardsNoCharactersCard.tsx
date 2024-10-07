@@ -6,9 +6,8 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
 
-export function NoCharactersCard() {
+export default function EditCardsNoCharactersCard() {
   return (
     <Card className="max-w-[350px]">
       <CardContent className="p-3 pb-0 pl-0">
@@ -17,23 +16,14 @@ export function NoCharactersCard() {
             alt=""
             height={820 / 8}
             quality={100}
-            src={`/logo-2.png`}
+            src={`/logo-1.png`}
             width={910 / 8}
             className="mt-auto"
           />
           <div>
-            <CardTitle className="text-xl">
-              Looks like you don&apos;t have any characters
-            </CardTitle>
+            <CardTitle className="text-xl">You have no characters</CardTitle>
             <CardDescription className="text-muted-foreground pb-3">
-              You can add characters using the{" "}
-              <Link
-                className="text-primary underline hover:text-primary/80"
-                href="/characters"
-              >
-                character page
-              </Link>
-              .
+              Add a character using the button on the bottom right.
             </CardDescription>
           </div>
         </div>

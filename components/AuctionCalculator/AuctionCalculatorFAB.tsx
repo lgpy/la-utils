@@ -1,15 +1,13 @@
 "use client";
 
-import { GavelIcon } from "lucide-react";
-import { use, useEffect, useState } from "react";
-import AuctionCalculatorModalContent from "./AuctionCalculatorModalContent";
-import { Button } from "./ui/button";
-import { Dialog, DialogContent } from "./ui/dialog";
-import { set } from "zod";
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { GavelIcon } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import AuctionCalculatorModalContent from "./AuctionCalculatorModalContent";
 
-export default function FABActions() {
+export default function AuctionCalculatorFAB() {
   const [isOpen, onOpenChange] = useState(false);
 
   return (

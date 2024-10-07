@@ -7,18 +7,18 @@ import { isEqual } from "lodash";
 import { LockIcon, LockOpenIcon, PlusIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import EditCard from "./EditCard";
-import CharacterFormDialog from "./CharacterFormDialog";
-import CharacterPageNoCharactersCard from "./CharacterPageNoCharactersCard";
-import CharacterRaidDialog from "./CharacterRaidDialog";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./ui/tooltip";
+} from "@/components/ui/tooltip";
+import EditCardsNoCharactersCard from "./EditCardsNoCharactersCard";
+import EditCardCharacterDialog from "./EditCardCharacterDialog";
+import EditCardRaidDialog from "./EditCardRaidDialog";
 
-export default function CharacterEditCards() {
+export default function EditCards() {
   const { state, hasHydrated } = useMainStore();
   const [isOpen, setIsOpen] = useState<false | "raid" | "char">(false);
   const [selectedCharacter, setSelectedCharacter] = useState<
@@ -93,17 +93,17 @@ export default function CharacterEditCards() {
             />
           </li>
         ))}
-        {chars.length === 0 && <CharacterPageNoCharactersCard />}
+        {chars.length === 0 && <EditCardsNoCharactersCard />}
       </ul>
       {isOpen === "char" && (
-        <CharacterFormDialog
+        <EditCardCharacterDialog
           isOpen={isOpen === "char"}
           close={() => setIsOpen(false)}
           existingCharacter={selectedCharacter}
         />
       )}
       {selectedCharacter && isOpen === "raid" && (
-        <CharacterRaidDialog
+        <EditCardRaidDialog
           character={selectedCharacter}
           isOpen={isOpen === "raid"}
           raidId={selectedRaid}

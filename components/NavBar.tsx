@@ -1,19 +1,16 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { ServerStoreProvider } from "@/providers/ServerProvider";
 import { Menu } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Logo from "./Logo";
+import "./NavBar.css";
+import ServerStatus from "./ServerStatus";
 import SettingsButton from "./SettingsButton";
 import { Button } from "./ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import "./NavBar.css";
-import {
-  ServerStoreProvider,
-  useServerStore,
-} from "@/providers/ServerProvider";
-import ServerStatus from "./ServerStatus";
 
 const links = [
   { label: "Home", href: "/" },

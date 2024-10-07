@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
 import { Fragment } from "react";
-import ClassIcon from "./class-icons/ClassIcon";
-import { Button } from "./ui/button";
-import { Separator } from "./ui/separator";
+import ClassIcon from "@/components/class-icons/ClassIcon";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
 
 type Props = {

@@ -1,7 +1,7 @@
-import { CheckIcon, ClipboardIcon } from "lucide-react";
-import React, { RefAttributes, useState, useEffect } from "react";
-import { Button, ButtonProps } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { CheckIcon, ClipboardIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Button, ButtonProps } from "./ui/button";
 
 type Props = {
   textToCopy: string;

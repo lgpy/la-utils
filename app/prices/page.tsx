@@ -1,4 +1,4 @@
-import PriceCards from "@/components/PriceCards";
+import PriceCards from "@/components/PriceCard/PriceCards";
 import { PriceStoreProvider } from "@/providers/PriceStoreProvider";
 import { Metadata } from "next";
 

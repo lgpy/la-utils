@@ -3,10 +3,10 @@ import { getHighest3, parseGoldInfo } from "@/lib/chars";
 import { cn } from "@/lib/utils";
 import { SwordsIcon } from "lucide-react";
 import { Fragment, useMemo } from "react";
-import ClassIcon from "./class-icons/ClassIcon";
-import PiggyBank from "./PiggyBank";
-import { Card, CardContent, CardHeader } from "./ui/card";
-import { Separator } from "./ui/separator";
+import ClassIcon from "@/components/class-icons/ClassIcon";
+import PiggyBank from "@/components/PiggyBank";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import TodoCardRaid from "./TodoCardRaid";
 
 interface Props {

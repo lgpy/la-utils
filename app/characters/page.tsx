@@ -1,4 +1,4 @@
-import CharacterEditCards from "@/components/EditCards";
+import EditCards from "@/components/EditCard/EditCards";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function CharactersPage() {
-  return <CharacterEditCards />;
+  return <EditCards />;
 }

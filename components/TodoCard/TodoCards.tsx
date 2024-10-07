@@ -4,10 +4,10 @@ import { useMainStore } from "@/hooks/mainstore";
 import { useMemo } from "react";
 import TodoCard from "./TodoCard";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { NoCharactersCard } from "./NoCharactersCard";
+import { TodoCardsNoCharactersCard } from "./TodoCardsNoCharactersCard";
 import { _useMainStore } from "@/providers/MainStoreProvider";
 
-export default function CharacterTodoCards() {
+export default function TodoCards() {
   const { hasHydrated, state } = useMainStore();
   const [parent] = useAutoAnimate();
 
@@ -27,7 +27,7 @@ export default function CharacterTodoCards() {
       ref={parent}
     >
       {charCards}
-      {state.characters.length === 0 && <NoCharactersCard />}
+      {state.characters.length === 0 && <TodoCardsNoCharactersCard />}
     </main>
   );
 }

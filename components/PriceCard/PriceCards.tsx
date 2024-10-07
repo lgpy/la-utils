@@ -1,14 +1,12 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { usePriceStore } from "@/providers/PriceStoreProvider";
-import PriceCard from "./PriceCard";
 import { items, PricesStore } from "@/stores/prices";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Link from "next/link";
-import { Separator } from "./ui/separator";
-import { cn } from "@/lib/utils";
-import { Link2Icon, LinkIcon } from "lucide-react";
 import { Fragment } from "react";
+import PriceCard from "./PriceCard";
 
 function NavigationAnchor({
   type,

@@ -1,6 +1,6 @@
-import { DateTime } from "luxon";
-import { Difficulty, isGateCompleted, raids } from "./raids";
 import { Character } from "@/hooks/mainstore";
+import { DateTime } from "luxon";
+import { isGateCompleted, raids } from "./raids";
 
 export function parseGoldInfo(charRaids: Character["raids"]): Record<
   string,

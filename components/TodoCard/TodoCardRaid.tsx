@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./ui/tooltip";
+} from "@/components/ui/tooltip";
 import TodoCardCompleteButton from "./TodoCardCompleteButton";
 import { HandCoins } from "lucide-react";
 

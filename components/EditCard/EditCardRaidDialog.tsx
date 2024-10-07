@@ -4,14 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
+} from "../ui/dialog";
 import {
   Form,
   FormControl,
@@ -19,16 +19,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+} from "../ui/form";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
-import { useToast } from "./ui/use-toast";
+} from "../ui/select";
+import { useToast } from "../ui/use-toast";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 Difficulty;
@@ -44,7 +44,7 @@ interface Props {
   raidId?: string;
 }
 
-export default function CharacterRaidDialog({
+export default function EditCardRaidDialog({
   character,
   isOpen,
   close,

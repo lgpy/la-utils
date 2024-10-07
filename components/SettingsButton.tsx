@@ -1,5 +1,5 @@
 "use client";
-import { Import, Link, Moon, SettingsIcon, Sun, SunMoon } from "lucide-react";
+import { Import, Moon, SettingsIcon, Sun, SunMoon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,9 +16,9 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useServerStore } from "@/providers/ServerProvider";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
-import { useServerStore } from "@/providers/ServerProvider";
 
 export default function SettingsButton() {
   const { setTheme, theme } = useTheme();

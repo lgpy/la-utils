@@ -2,8 +2,6 @@
 
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export default function Logo(props: { className?: string }) {
   /*const [logoNumber, setLogoNumber] = useState(0);
