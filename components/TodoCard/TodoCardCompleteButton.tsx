@@ -22,7 +22,6 @@ export default function TodoCardCompleteButton({
   const { toast } = useToast();
   const [increase, setIncrease] = useState(false);
 
-  console.log("assignedGates", assignedGates);
   const completedlen = Object.values(assignedGates).reduce(
     (acc, ag) => (ag.completed ? acc + 1 : acc),
     0,
