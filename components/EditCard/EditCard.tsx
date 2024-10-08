@@ -8,6 +8,7 @@ import ClassIcon from "@/components/class-icons/ClassIcon";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
+import { sortRaidKeys } from "@/lib/chars";
 
 type Props = {
   char: Character;
@@ -26,18 +27,20 @@ export default function EditCard(props: Props) {
     ...divProps
   } = props;
 
-  const ar = Object.keys(char.assignedRaids).map((raidId, i, keys) => (
-    <Fragment key={char.id + raidId}>
-      <CardContent data-pw={`character-assigned-raid-${i}`} className="p-0">
-        <CharacterCardAssignedRaid
-          char={char}
-          openRaidDialog={() => openRaidDialog(raidId)}
-          raidId={raidId}
-        />
-      </CardContent>
-      {i < keys.length - 1 && <Separator className="opacity-75" />}
-    </Fragment>
-  ));
+  const ar = Object.keys(char.assignedRaids)
+    .sort(sortRaidKeys)
+    .map((raidId, i, keys) => (
+      <Fragment key={char.id + raidId}>
+        <CardContent data-pw={`character-assigned-raid-${i}`} className="p-0">
+          <CharacterCardAssignedRaid
+            char={char}
+            openRaidDialog={() => openRaidDialog(raidId)}
+            raidId={raidId}
+          />
+        </CardContent>
+        {i < keys.length - 1 && <Separator className="opacity-75" />}
+      </Fragment>
+    ));
 
   return (
     <Card className="h-fit w-56 border-card border-1" {...divProps}>

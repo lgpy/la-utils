@@ -1,5 +1,5 @@
 import { Character } from "@/hooks/mainstore";
-import { getHighest3, parseGoldInfo } from "@/lib/chars";
+import { getHighest3, parseGoldInfo, sortRaidKeys } from "@/lib/chars";
 import { cn } from "@/lib/utils";
 import { SwordsIcon } from "lucide-react";
 import { Fragment, useMemo } from "react";
@@ -21,28 +21,30 @@ export default function TodoCard({ char, isGoldEarner }: Props) {
     return highest3;
   }, [char]);
 
-  const raids = Object.keys(char.assignedRaids).map((raidId, i, keys) => (
-    <Fragment key={char.id + raidId}>
-      <CardContent
-        className={cn("transition p-0", {
-          "rounded-b-lg": i === keys.length - 1,
-        })}
-      >
-        <TodoCardRaid
-          charId={char.id}
-          raidId={raidId}
-          raid={char.assignedRaids[raidId]}
-          goldEarner={
-            isGoldEarner &&
-            highest3[raidId] !== undefined &&
-            Object.keys(highest3).length <
-              Object.keys(char.assignedRaids).length
-          }
-        />
-      </CardContent>
-      {i < keys.length - 1 && <Separator className="opacity-75" />}
-    </Fragment>
-  ));
+  const assignedRaids = Object.keys(char.assignedRaids)
+    .sort(sortRaidKeys)
+    .map((raidId, i, keys) => (
+      <Fragment key={char.id + raidId}>
+        <CardContent
+          className={cn("transition p-0", {
+            "rounded-b-lg": i === keys.length - 1,
+          })}
+        >
+          <TodoCardRaid
+            charId={char.id}
+            raidId={raidId}
+            raid={char.assignedRaids[raidId]}
+            goldEarner={
+              isGoldEarner &&
+              highest3[raidId] !== undefined &&
+              Object.keys(highest3).length <
+                Object.keys(char.assignedRaids).length
+            }
+          />
+        </CardContent>
+        {i < keys.length - 1 && <Separator className="opacity-75" />}
+      </Fragment>
+    ));
 
   return (
     <Card className="h-fit w-56 border-card border-1 select-none">
@@ -66,8 +68,8 @@ export default function TodoCard({ char, isGoldEarner }: Props) {
         {isGoldEarner && <PiggyBank goldInfo={highest3} />}
       </CardHeader>
       <Separator />
-      {raids}
-      {raids.length === 0 && (
+      {assignedRaids}
+      {assignedRaids.length === 0 && (
         <CardContent className="p-3 text-center">No raids assigned</CardContent>
       )}
     </Card>

@@ -104,3 +104,8 @@ export function getHighest3(
     >,
   );
 }
+
+export function sortRaidKeys(a: string, b: string) {
+  const keys = Object.keys(raids);
+  return keys.indexOf(a) - keys.indexOf(b);
+}
