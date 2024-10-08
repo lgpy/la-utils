@@ -43,7 +43,7 @@ export default function RosterGold() {
     gold > 1000 ? `${(gold / 1000).toFixed(gold % 1000 === 0 ? 0 : 1)}k` : gold;
 
   return (
-    <div className="grid grid-cols-2 gap-x-2 fixed left-4 bottom-4 -z-10 text-yellow/60">
+    <div className="grid grid-cols-[auto_auto] gap-x-2 fixed left-4 bottom-4 -z-10 text-yellow/60">
       <h2 className="col-span-2 text-xl font-bold">Roster Gold</h2>
       <span className="font-extralight">This Week:</span>
       <span>
