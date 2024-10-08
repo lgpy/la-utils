@@ -23,7 +23,7 @@ export default function TodoCards() {
 
   return (
     <main
-      className="mt-6 flex flex-row flex-wrap gap-3 justify-center"
+      className="mt-6 grid grid-cols-[auto_auto_auto_auto_auto_auto] gap-3 justify-center"
       ref={parent}
     >
       {charCards}

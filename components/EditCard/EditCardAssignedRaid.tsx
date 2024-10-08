@@ -34,27 +34,29 @@ export default function EditCardAssignedRaid({
   if (!assignedRaid || !raid) return null;
 
   return (
-    <div className="flex flex-row justify-between items-center gap-2">
-      <div className="flex flex-col grow min-w-0 items-start">
-        <span>{raid.name}</span>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <span className="text-muted-foreground text-xs truncate">
-                {assignedRaid.gates
-                  .map((g) => `${shortestDifficulty(g.difficulty)}`)
-                  .join("")}
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>
-                {assignedRaid.gates
-                  .map((g) => `${g.id} ${shortenDifficulty(g.difficulty)}`)
-                  .join(", ")}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+    <div className="flex flex-row justify-between items-center gap-2 p-3">
+      <div className="flex flex-col grow min-w-0 items-start gap-1.5">
+        <p>{raid.name}</p>
+        <div className="flex flex-row gap-1">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <p className="text-muted-foreground text-xs truncate">
+                  {assignedRaid.gates
+                    .map((g) => `${shortestDifficulty(g.difficulty)}`)
+                    .join("")}
+                </p>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>
+                  {assignedRaid.gates
+                    .map((g) => `${g.id} ${shortenDifficulty(g.difficulty)}`)
+                    .join(", ")}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

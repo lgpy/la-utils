@@ -44,8 +44,8 @@ export default function TodoCardRaid({
         },
       )}
     >
-      <div className="flex flex-col grow min-w-0 items-start">
-        <span className="">{actualraid.name}</span>
+      <div className="flex flex-col grow min-w-0 items-start gap-1.5">
+        <p className="">{actualraid.name}</p>
         <div className="flex flex-row gap-1">
           {goldEarner && <HandCoins className="size-4 stroke-yellow" />}
           <TooltipProvider>

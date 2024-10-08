@@ -78,7 +78,7 @@ export default function EditCards() {
   return (
     <>
       <ul
-        className="mt-6 flex flex-row flex-wrap gap-3 justify-center"
+        className="mt-6 grid grid-cols-[auto_auto_auto_auto_auto_auto] gap-3 justify-center"
         ref={parent}
         data-pw="character-list"
       >

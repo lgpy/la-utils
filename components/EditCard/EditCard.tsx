@@ -28,7 +28,7 @@ export default function EditCard(props: Props) {
 
   const ar = Object.keys(char.raids).map((raidId, i, keys) => (
     <Fragment key={char.id + raidId}>
-      <CardContent className="p-3" data-pw={`character-assigned-raid-${i}`}>
+      <CardContent data-pw={`character-assigned-raid-${i}`} className="p-0">
         <CharacterCardAssignedRaid
           char={char}
           openRaidDialog={() => openRaidDialog(raidId)}
