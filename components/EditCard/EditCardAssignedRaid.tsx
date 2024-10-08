@@ -28,7 +28,7 @@ export default function EditCardAssignedRaid({
 }: Props) {
   const { state, hasHydrated } = useMainStore();
 
-  const assignedRaid = char.raids[raidId];
+  const assignedRaid = char.assignedRaids[raidId];
   const raid = raids[raidId];
 
   if (!assignedRaid || !raid) return null;
@@ -42,15 +42,17 @@ export default function EditCardAssignedRaid({
             <Tooltip>
               <TooltipTrigger>
                 <p className="text-muted-foreground text-xs truncate">
-                  {assignedRaid.gates
+                  {Object.values(assignedRaid)
                     .map((g) => `${shortestDifficulty(g.difficulty)}`)
                     .join("")}
                 </p>
               </TooltipTrigger>
               <TooltipContent>
                 <p>
-                  {assignedRaid.gates
-                    .map((g) => `${g.id} ${shortenDifficulty(g.difficulty)}`)
+                  {Object.entries(assignedRaid)
+                    .map(
+                      ([gId, g]) => `${gId} ${shortenDifficulty(g.difficulty)}`,
+                    )
                     .join(", ")}
                 </p>
               </TooltipContent>

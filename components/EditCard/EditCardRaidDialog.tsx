@@ -69,36 +69,33 @@ export default function EditCardRaidDialog({
         ),
       );
       if (
-        (character.raids[raidkey] === undefined && hasGatesbellowilvl) ||
+        (character.assignedRaids[raidkey] === undefined &&
+          hasGatesbellowilvl) ||
         raidkey === raidId
       )
         acc[raidkey] = raid;
       return acc;
     }, {} as typeof raids);
-  }, [raidId, character.raids]);
+  }, [raidId, character.assignedRaids, character.itemLevel]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const raid = raids[values.raidId];
       if (!raid) throw new Error("Raid not found!");
 
-      const gates = values.gates
-        .filter((d) => d !== "none")
-        .map((gate, index) => ({
-          id: Object.keys(raid.gates)[index],
-          difficulty: gate,
-        }));
+      const gates = values.gates.reduce((acc, diff, index) => {
+        acc[Object.keys(raid.gates)[index]] =
+          diff === "none" ? undefined : diff;
+        return acc;
+      }, {} as Record<string, Difficulty | undefined>);
+
+      const fgates = Object.fromEntries(
+        Object.entries(gates).filter(([, value]) => value !== undefined),
+      ) as Record<string, Difficulty>;
 
       if (raidId !== undefined)
-        state.charEditRaid(character.id, {
-          id: values.raidId,
-          gates,
-        });
-      else
-        state.charAddRaid(character.id, {
-          id: values.raidId,
-          gates,
-        });
+        state.charEditRaid(character.id, raidId, fgates);
+      else state.charAddRaid(character.id, values.raidId, fgates);
 
       close();
       toast({
@@ -186,12 +183,12 @@ export default function EditCardRaidDialog({
       gates: actualRaid
         ? Object.keys(actualRaid.gates).map(
             (gateId) =>
-              character.raids[watchRaidId]?.gates.find((g) => g.id === gateId)
-                ?.difficulty || "none",
+              character.assignedRaids[watchRaidId]?.[gateId]?.difficulty ||
+              "none",
           )
         : [],
     });
-  }, [actualRaid, isOpen, character.raids, form, watchRaidId]);
+  }, [actualRaid, isOpen, character.assignedRaids, form, watchRaidId]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>

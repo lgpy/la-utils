@@ -28,16 +28,13 @@ export const zodChar = z.object({
   name: z.string(),
   class: z.nativeEnum(Class),
   itemLevel: z.number(),
-  raids: z.record(
-    z.object({
-      gates: z.array(
-        z.object({
-          id: z.string(),
-          difficulty: z.nativeEnum(Difficulty),
-          completedDate: z.string().optional(),
-        }),
-      ),
-    }),
+  assignedRaids: z.record(
+    z.record(
+      z.object({
+        difficulty: z.nativeEnum(Difficulty),
+        completedDate: z.string().optional(),
+      }),
+    ),
   ),
   tasks: z.array(zodTask),
 });
@@ -67,23 +64,13 @@ export type MainActions = {
   deleteCharacter: (charId: string) => void;
   charAddRaid: (
     charId: string,
-    raid: {
-      id: string;
-      gates: {
-        id: string;
-        difficulty: Difficulty;
-      }[];
-    },
+    raidId: string,
+    gates: Record<string, Difficulty>,
   ) => void;
   charEditRaid: (
     charId: string,
-    raid: {
-      id: string;
-      gates: {
-        id: string;
-        difficulty: Difficulty;
-      }[];
-    },
+    raidId: string,
+    gates: Record<string, Difficulty>,
   ) => void;
   charDelRaid: (charId: string, raidId: string) => void;
   raidAction: (action: {
@@ -110,8 +97,10 @@ export const createMainStore = () =>
         updateCharacter: (charId, char) => updateCharacter(set, charId, char),
         createCharacter: (char) => CreateCharacter(set, char),
         deleteCharacter: (charId) => deleteCharacter(set, charId),
-        charAddRaid: (charId, raid) => charAddRaid(set, charId, raid),
-        charEditRaid: (charId, raid) => charEditRaid(set, charId, raid),
+        charAddRaid: (charId, raidId, gates) =>
+          charAddRaid(set, charId, raidId, gates),
+        charEditRaid: (charId, raidId, gates) =>
+          charEditRaid(set, charId, raidId, gates),
         charDelRaid: (charId, raidId) => charDelRaid(set, charId, raidId),
         raidAction: (action) => raidAction(set, action),
         addTaskToCharacter(charId, task) {
@@ -164,7 +153,7 @@ export const createMainStore = () =>
       }),
       {
         name: "characters",
-        version: 2,
+        version: 3,
         migrate: (persistedState, version) => {
           if (version <= 0) {
             for (const char of (persistedState as { characters: any[] })
@@ -179,6 +168,28 @@ export const createMainStore = () =>
             for (const char of (persistedState as { characters: any[] })
               .characters) {
               char.tasks = [];
+            }
+          }
+          if (version <= 2) {
+            for (const char of (persistedState as { characters: any[] })
+              .characters) {
+              char.assignedRaids = Object.entries(char.raids).reduce(
+                (accraids, [raidId, raid]) => {
+                  accraids[raidId] = (raid as any).gates.reduce(
+                    (accgates: any, gate: any) => {
+                      accgates[gate.id] = {
+                        difficulty: gate.difficulty,
+                        completedDate: gate.completedDate,
+                      };
+                      return accgates;
+                    },
+                    {} as any,
+                  );
+                  return accraids;
+                },
+                {} as any,
+              );
+              delete char.raids;
             }
           }
           return persistedState;

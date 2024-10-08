@@ -2,18 +2,7 @@ import { Character } from "@/hooks/mainstore";
 import { DateTime } from "luxon";
 import { isGateCompleted, raids } from "./raids";
 
-export function parseGoldInfo(charRaids: Character["raids"]): Record<
-  string,
-  {
-    thisWeek: {
-      earnedGold: number;
-      totalGold: number;
-    };
-    nextWeek: {
-      earnableGold: number;
-    };
-  }
-> {
+export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
   const ret = {} as Record<
     string,
     {
@@ -31,10 +20,10 @@ export function parseGoldInfo(charRaids: Character["raids"]): Record<
     const raid = raids[assignedRaidId];
     if (!raid) return;
 
-    assignedRaid.gates.forEach((gate) => {
-      const actualGate = raid.gates[gate.id];
+    Object.entries(assignedRaid).forEach(([assignedGateId, assignedGate]) => {
+      const actualGate = raid.gates[assignedGateId];
       const gateGoldReward =
-        actualGate.difficulties[gate.difficulty]?.rewards.gold || 0;
+        actualGate.difficulties[assignedGate.difficulty]?.rewards.gold || 0;
 
       if (ret[assignedRaidId] === undefined) {
         ret[assignedRaidId] = {
@@ -50,20 +39,20 @@ export function parseGoldInfo(charRaids: Character["raids"]): Record<
 
       ret[assignedRaidId].thisWeek.totalGold += gateGoldReward;
 
-      if (gate.completed) {
+      if (assignedGate.completed) {
         ret[assignedRaidId].thisWeek.earnedGold += gateGoldReward;
       }
       if (
         actualGate.hasReset === undefined ||
-        gate.completedDate === undefined
+        assignedGate.completedDate === undefined
       ) {
         //ignore weekly reset
         ret[assignedRaidId].nextWeek.earnableGold += gateGoldReward;
       } else {
         const isGateComplete = isGateCompleted(
           assignedRaidId,
-          gate.id,
-          DateTime.fromISO(gate.completedDate),
+          assignedGateId,
+          DateTime.fromISO(assignedGate.completedDate),
           DateTime.now().plus({ week: 1 }),
         );
         if (!isGateComplete)

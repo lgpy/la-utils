@@ -13,7 +13,7 @@ import { HandCoins } from "lucide-react";
 interface Props {
   charId: string;
   raidId: string;
-  raid: Character["raids"][string];
+  raid: Character["assignedRaids"][string];
   goldEarner: boolean;
 }
 
@@ -30,7 +30,7 @@ export default function TodoCardRaid({
     return null;
   }
 
-  const completedlen = raid.gates.reduce(
+  const completedlen = Object.values(raid).reduce(
     (acc, ag) => (ag.completed ? acc + 1 : acc),
     0,
   );
@@ -40,7 +40,7 @@ export default function TodoCardRaid({
       className={cn(
         "flex flex-row justify-between items-center gap-2 p-3 transition",
         {
-          "bg-primary/10": completedlen === raid.gates.length,
+          "bg-primary/10": completedlen === Object.keys(raid).length,
         },
       )}
     >
@@ -52,15 +52,17 @@ export default function TodoCardRaid({
             <Tooltip>
               <TooltipTrigger>
                 <p className="text-muted-foreground text-xs truncate">
-                  {raid.gates
+                  {Object.values(raid)
                     .map((g) => `${shortestDifficulty(g.difficulty)}`)
                     .join("")}
                 </p>
               </TooltipTrigger>
               <TooltipContent>
                 <p>
-                  {raid.gates
-                    .map((g) => `${g.id} ${shortenDifficulty(g.difficulty)}`)
+                  {Object.entries(raid)
+                    .map(
+                      ([gid, g]) => `${gid} ${shortenDifficulty(g.difficulty)}`,
+                    )
                     .join(", ")}
                 </p>
               </TooltipContent>
@@ -69,7 +71,7 @@ export default function TodoCardRaid({
         </div>
       </div>
       <TodoCardCompleteButton
-        assignedGates={raid.gates}
+        assignedGates={raid}
         charId={charId}
         raidId={raidId}
       />

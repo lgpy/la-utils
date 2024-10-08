@@ -116,13 +116,11 @@ test("edit raid", async ({ page }) => {
     name: "Test Character",
     class: Class.Berserker,
     itemLevel: 1600,
-    raids: {
+    assignedRaids: {
       brel: {
-        gates: [
-          { id: "G1", difficulty: Difficulty.normal },
-          { id: "G2", difficulty: Difficulty.hard },
-          { id: "G3", difficulty: Difficulty.normal },
-        ],
+        G1: { difficulty: Difficulty.normal },
+        G2: { difficulty: Difficulty.hard },
+        G3: { difficulty: Difficulty.normal },
       },
     },
   });
@@ -151,13 +149,11 @@ test("delete raid", async ({ page }) => {
     name: "Test Character",
     class: Class.Berserker,
     itemLevel: 1600,
-    raids: {
+    assignedRaids: {
       brel: {
-        gates: [
-          { id: "G1", difficulty: Difficulty.normal },
-          { id: "G2", difficulty: Difficulty.hard },
-          { id: "G3", difficulty: Difficulty.normal },
-        ],
+        G1: { difficulty: Difficulty.normal },
+        G2: { difficulty: Difficulty.hard },
+        G3: { difficulty: Difficulty.normal },
       },
     },
   });

@@ -26,7 +26,7 @@ export default function EditCard(props: Props) {
     ...divProps
   } = props;
 
-  const ar = Object.keys(char.raids).map((raidId, i, keys) => (
+  const ar = Object.keys(char.assignedRaids).map((raidId, i, keys) => (
     <Fragment key={char.id + raidId}>
       <CardContent data-pw={`character-assigned-raid-${i}`} className="p-0">
         <CharacterCardAssignedRaid

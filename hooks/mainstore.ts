@@ -1,17 +1,17 @@
-import { isGateCompleted } from "@/lib/raids";
+import { Difficulty, isGateCompleted } from "@/lib/raids";
 import { _useMainStore } from "@/providers/MainStoreProvider";
 import { DateTime } from "luxon";
 
 export const useMainStore = () => {
   const { store, hasHydrated } = _useMainStore((store) => store);
 
-  type Raids = (typeof store.characters)[number]["raids"];
+  type AssignedRaids = (typeof store.characters)[number]["assignedRaids"];
 
-  type CompletedRaids = {
-    [K in keyof Raids]: {
-      [P in keyof Raids[K]]: P extends "gates"
-        ? (Raids[K][P][number] & { completed: boolean })[]
-        : Raids[K][P];
+  type ExtendedAssignedRaids = {
+    [raidId in keyof AssignedRaids]: {
+      [gateId in keyof AssignedRaids[raidId]]: AssignedRaids[raidId][gateId] & {
+        completed: boolean;
+      };
     };
   };
 
@@ -20,21 +20,30 @@ export const useMainStore = () => {
       ...store,
       characters: store.characters.map((character) => ({
         ...character,
-        raids: Object.entries(character.raids).reduce((acc, [raidId, raid]) => {
-          const gates = raid.gates.map((gate) => ({
-            ...gate,
-            completed:
-              gate.completedDate !== undefined
-                ? isGateCompleted(
-                    raidId,
-                    gate.id,
-                    DateTime.fromISO(gate.completedDate),
-                  )
-                : false,
-          }));
-          acc[raidId] = { ...raid, gates };
-          return acc;
-        }, {} as CompletedRaids),
+        assignedRaids: Object.entries(character.assignedRaids).reduce(
+          (acc, [raidId, raid]) => {
+            const gates = Object.entries(raid).reduce(
+              (gateAcc, [gateId, gate]) => {
+                gateAcc[gateId] = {
+                  ...gate,
+                  completed:
+                    gate.completedDate !== undefined
+                      ? isGateCompleted(
+                          raidId,
+                          gateId,
+                          DateTime.fromISO(gate.completedDate),
+                        )
+                      : false,
+                };
+                return gateAcc;
+              },
+              {} as ExtendedAssignedRaids[string],
+            );
+            acc[raidId] = gates;
+            return acc;
+          },
+          {} as ExtendedAssignedRaids,
+        ),
       })),
     },
     hasHydrated,

@@ -9,7 +9,7 @@ import { MouseEventHandler, useState } from "react";
 interface Props {
   charId: string;
   raidId: string;
-  assignedGates: Character["raids"][string]["gates"];
+  assignedGates: Character["assignedRaids"][string];
 }
 
 export default function TodoCardCompleteButton({
@@ -22,12 +22,13 @@ export default function TodoCardCompleteButton({
   const { toast } = useToast();
   const [increase, setIncrease] = useState(false);
 
-  const completedlen = assignedGates.reduce(
+  console.log("assignedGates", assignedGates);
+  const completedlen = Object.values(assignedGates).reduce(
     (acc, ag) => (ag.completed ? acc + 1 : acc),
     0,
   );
 
-  const isChecked = assignedGates.length === completedlen;
+  const isChecked = Object.keys(assignedGates).length === completedlen;
 
   if (!raid) return null;
 
@@ -93,7 +94,7 @@ export default function TodoCardCompleteButton({
               initial={{
                 opacity: 0,
                 rotate:
-                  completedlen === assignedGates.length
+                  completedlen === Object.keys(assignedGates).length
                     ? -120
                     : increase
                     ? -40
@@ -113,13 +114,15 @@ export default function TodoCardCompleteButton({
                 <span className="text-nowrap">{`${completedlen}`}</span>
               )}
             </motion.div>
-            {!isChecked && <span>{`/${assignedGates.length}`}</span>}
+            {!isChecked && (
+              <span>{`/${Object.keys(assignedGates).length}`}</span>
+            )}
           </div>
         </AnimatePresence>
       </div>
       <motion.div
         animate={{
-          width: `${(completedlen / assignedGates.length) * 100}%`,
+          width: `${(completedlen / Object.keys(assignedGates).length) * 100}%`,
         }}
         initial={false}
         className={cn("bg-primary h-full")}

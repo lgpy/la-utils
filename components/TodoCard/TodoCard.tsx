@@ -16,12 +16,12 @@ interface Props {
 
 export default function TodoCard({ char, isGoldEarner }: Props) {
   const highest3 = useMemo(() => {
-    const goldInfo = parseGoldInfo(char.raids);
+    const goldInfo = parseGoldInfo(char.assignedRaids);
     const highest3 = getHighest3(goldInfo);
     return highest3;
   }, [char]);
 
-  const raids = Object.keys(char.raids).map((raidId, i, keys) => (
+  const raids = Object.keys(char.assignedRaids).map((raidId, i, keys) => (
     <Fragment key={char.id + raidId}>
       <CardContent
         className={cn("transition p-0", {
@@ -31,11 +31,12 @@ export default function TodoCard({ char, isGoldEarner }: Props) {
         <TodoCardRaid
           charId={char.id}
           raidId={raidId}
-          raid={char.raids[raidId]}
+          raid={char.assignedRaids[raidId]}
           goldEarner={
             isGoldEarner &&
             highest3[raidId] !== undefined &&
-            Object.keys(highest3).length < Object.keys(char.raids).length
+            Object.keys(highest3).length <
+              Object.keys(char.assignedRaids).length
           }
         />
       </CardContent>
