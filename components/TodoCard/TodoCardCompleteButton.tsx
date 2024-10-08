@@ -18,7 +18,7 @@ export default function TodoCardCompleteButton({
   assignedGates,
 }: Props) {
   const { state, hasHydrated } = useMainStore();
-  const raid = raids.find((r) => r.id === raidId);
+  const raid = raids[raidId];
   const { toast } = useToast();
   const [increase, setIncrease] = useState(false);
 

@@ -22,7 +22,7 @@ export function charAddRaid(
           ...c.raids,
           [raid.id]: {
             gates: raid.gates.sort((a, b) => {
-              const araid = raids.find((r) => r.id === raid.id);
+              const araid = raids[raid.id];
 
               if (!araid) return 0;
               const gateA = Object.keys(araid.gates).indexOf(a.id);
@@ -36,8 +36,7 @@ export function charAddRaid(
         const sortedRaids = Object.entries(newRaids)
           .sort(
             ([a], [b]) =>
-              raids.findIndex((r) => r.id === a) -
-              raids.findIndex((r) => r.id === b),
+              Object.keys(raids).indexOf(a) - Object.keys(raids).indexOf(b),
           )
           .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
 
@@ -75,7 +74,7 @@ export function charEditRaid(
             [raid.id]: {
               gates: raid.gates
                 .sort((a, b) => {
-                  const araid = raids.find((r) => r.id === raid.id);
+                  const araid = raids[raid.id];
 
                   if (!araid) return 0;
                   const gateA = Object.keys(araid.gates).indexOf(a.id);

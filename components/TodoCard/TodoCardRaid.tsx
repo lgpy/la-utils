@@ -23,7 +23,7 @@ export default function TodoCardRaid({
   raid,
   goldEarner,
 }: Props) {
-  const actualraid = raids.find((r) => r.id === raidId);
+  const actualraid = raids[raidId];
 
   if (!actualraid) {
     console.error(`Raid ${raidId} not found`);

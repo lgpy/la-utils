@@ -29,7 +29,7 @@ export default function EditCardAssignedRaid({
   const { state, hasHydrated } = useMainStore();
 
   const assignedRaid = char.raids[raidId];
-  const raid = raids.find((r) => r.id === raidId);
+  const raid = raids[raidId];
 
   if (!assignedRaid || !raid) return null;
 
@@ -76,7 +76,7 @@ export default function EditCardAssignedRaid({
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-destructive"
-            onClick={() => state.charDelRaid(char.id, raid.id)}
+            onClick={() => state.charDelRaid(char.id, raidId)}
             data-pw={`assigned-raid-delete`}
           >
             <Trash2Icon className="mr-2 h-4 w-4" />

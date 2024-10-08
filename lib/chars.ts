@@ -28,13 +28,13 @@ export function parseGoldInfo(charRaids: Character["raids"]): Record<
   >;
 
   Object.entries(charRaids).forEach(([assignedRaidId, assignedRaid]) => {
-    const raid = raids.find((r) => r.id === assignedRaidId);
+    const raid = raids[assignedRaidId];
     if (!raid) return;
 
     assignedRaid.gates.forEach((gate) => {
-      const DiffIdx = raid.difficulties.indexOf(gate.difficulty);
       const actualGate = raid.gates[gate.id];
-      const gateGoldReward = actualGate.rewards.gold[DiffIdx];
+      const gateGoldReward =
+        actualGate.difficulties[gate.difficulty]?.rewards.gold || 0;
 
       if (ret[assignedRaidId] === undefined) {
         ret[assignedRaidId] = {
@@ -90,8 +90,8 @@ export function getHighest3(
 ) {
   const sortedGold = Object.entries(goldInfo).sort(([aId, a], [bId, b]) => {
     if (a.thisWeek.earnedGold === b.thisWeek.earnedGold) {
-      const aActualIndex = raids.findIndex((r) => r.id === aId);
-      const bActualIndex = raids.findIndex((r) => r.id === bId);
+      const aActualIndex = Object.keys(raids).indexOf(aId);
+      const bActualIndex = Object.keys(raids).indexOf(bId);
       return bActualIndex - aActualIndex;
     }
     return b.thisWeek.earnedGold - a.thisWeek.earnedGold;
