@@ -60,7 +60,7 @@ export default function TodoCard({ char, isGoldEarner }: Props) {
               "flex items-center gap-1 text-sm font-semibold text-yellow",
             )}
           >
-            <SwordsIcon className="size-5 mr-1" />
+            <SwordsIcon className="size-5" />
             {char.itemLevel}
           </div>
         </div>

@@ -58,11 +58,11 @@ export default function EditCard(props: Props) {
           </h2>
           <div
             className={cn(
-              "flex items-center text-sm font-semibold dark:text-[#eed49f] text-[#df8e1d]",
+              "flex items-center gap-1 text-sm font-semibold dark:text-[#eed49f] text-[#df8e1d]",
             )}
             data-pw="character-item-level"
           >
-            <SwordsIcon className="size-5 mr-1" />
+            <SwordsIcon className="size-5" />
             {char.itemLevel}
           </div>
         </div>
