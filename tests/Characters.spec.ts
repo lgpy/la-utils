@@ -13,13 +13,13 @@ const setCharacterState = async (
       JSON.stringify({
         state: {
           characters: characters.map((c, index) => ({
-            raids: {},
+            assignedRaids: {},
             tasks: [],
             ...c,
             id: index.toFixed(0),
           })),
         },
-        version: 2,
+        version: 3,
       }),
     );
   }, characters);
