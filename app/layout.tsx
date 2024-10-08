@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { CSPostHogProvider } from "./providers";
+import { SettingsStoreProvider } from "@/providers/SettingsProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
@@ -41,8 +42,10 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <div className="flex min-h-screen w-full flex-col">
-              <NavBar />
-              <MainStoreProvider>{children}</MainStoreProvider>
+              <SettingsStoreProvider>
+                <NavBar />
+                <MainStoreProvider>{children}</MainStoreProvider>
+              </SettingsStoreProvider>
             </div>
           </ThemeProvider>
           <Toaster />
