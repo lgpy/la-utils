@@ -1,8 +1,8 @@
 "use client";
 
 import axios from "axios";
-import { Construction, Dot, Power } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Construction, Power } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -11,10 +11,48 @@ import {
 } from "./ui/tooltip";
 import { useSettingsStore } from "@/providers/SettingsProvider";
 
+function beep(ac: AudioContext, volume: number) {
+  return new Promise<void>((resolve, reject) => {
+    volume = volume || 100;
+
+    try {
+      // You're in charge of providing a valid AudioFile that can be reached by your web app
+      let soundSource = "/ringtone.mp3";
+      let sound = new Audio(soundSource);
+
+      // Set volume
+      sound.volume = volume / 100;
+
+      sound.onended = () => {
+        resolve();
+      };
+
+      sound.play();
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 export default function ServerStatus() {
   const { store, hasHydrated } = useSettingsStore((store) => store);
 
   const [serverStatus, setServerStatus] = useState<string | null>(null);
+  const [prevServerStatus, setPrevServerStatus] = useState<string | null>(null);
+
+  const audioContext = useRef(new AudioContext());
+
+  useEffect(() => {
+    if (serverStatus === prevServerStatus) return;
+    if (serverStatus === null) setPrevServerStatus(serverStatus);
+    if (serverStatus === "online" && prevServerStatus === "offline") {
+      setPrevServerStatus(serverStatus);
+      beep(audioContext.current, 30);
+      alert(`${store.server} is now online!`);
+    } else {
+      setPrevServerStatus(serverStatus);
+    }
+  }, [serverStatus, prevServerStatus, store.server]);
 
   useEffect(() => {
     if (!hasHydrated) return;
