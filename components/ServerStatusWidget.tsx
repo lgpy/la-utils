@@ -58,7 +58,9 @@ export default function ServerStatusWidget() {
         setServerStatus(status);
       });
     const delay =
-      serverStatus === ServerStatus.OFFLINE || serverStatus === null
+      serverStatus === ServerStatus.OFFLINE ||
+      serverStatus === ServerStatus.MAINTENANCE ||
+      serverStatus === null
         ? 1000 * 60 * 5
         : 1000 * 60 * 60 * 2;
     const int = setInterval(async () => {
