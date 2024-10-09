@@ -2,7 +2,7 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import _ from "lodash";
 
-//export const revalidate = 60 * 5;
+export const revalidate = 60 * 5;
 
 const servers: Record<
   string,
@@ -106,13 +106,11 @@ export async function GET(request: Request) {
       },
     );
 
-    ret["Gienah"].status = Math.random() < 0.5 ? "online" : "offline";
-
     return new Response(JSON.stringify(ret), {
       status: 200,
       headers: {
         "content-type": "application/json",
-        //"cache-control": `public, max-age=${revalidate}`,
+        "cache-control": `public, max-age=${revalidate}`,
       },
     });
   } catch (error) {

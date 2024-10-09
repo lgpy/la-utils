@@ -69,8 +69,8 @@ export default function ServerStatus() {
       });
     const delay =
       serverStatus === "offline" || serverStatus === null
-        ? 1000 * 10 * 1
-        : 1000 * 60 * 60 * 3;
+        ? 1000 * 60 * 5
+        : 1000 * 60 * 60 * 2;
     const int = setInterval(async () => {
       const res = await axios.get(`/api/serverStatus`);
       setServerStatus(res.data[store.server!].status);
