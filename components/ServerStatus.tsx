@@ -10,6 +10,7 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import { useSettingsStore } from "@/providers/SettingsProvider";
+import { useToast } from "./ui/use-toast";
 
 function beep(ac: AudioContext, volume: number) {
   return new Promise<void>((resolve, reject) => {
@@ -39,16 +40,21 @@ export default function ServerStatus() {
 
   const [serverStatus, setServerStatus] = useState<string | null>(null);
   const [prevServerStatus, setPrevServerStatus] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  const audioContext = useRef(new AudioContext());
+  const audioContext = useRef<AudioContext | null>(null);
 
   useEffect(() => {
     if (serverStatus === prevServerStatus) return;
     if (serverStatus === null) setPrevServerStatus(serverStatus);
     if (serverStatus === "online" && prevServerStatus === "offline") {
       setPrevServerStatus(serverStatus);
+      if (!audioContext.current) audioContext.current = new AudioContext();
       beep(audioContext.current, 30);
-      alert(`${store.server} is now online!`);
+      toast({
+        title: `Server ${store.server} is back online!`,
+        duration: 240000,
+      });
     } else {
       setPrevServerStatus(serverStatus);
     }
@@ -63,7 +69,7 @@ export default function ServerStatus() {
       });
     const delay =
       serverStatus === "offline" || serverStatus === null
-        ? 1000 * 60 * 5
+        ? 1000 * 10 * 1
         : 1000 * 60 * 60 * 3;
     const int = setInterval(async () => {
       const res = await axios.get(`/api/serverStatus`);
