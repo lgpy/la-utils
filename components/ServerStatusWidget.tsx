@@ -53,10 +53,12 @@ export default function ServerStatusWidget() {
     if (!hasHydrated) return;
     if (store.server === undefined) return;
     if (serverStatus === null)
-      axios.get<typeof servers>(`/api/serverStatus`).then((res) => {
-        const status = getServerStatus(res.data, store.server!);
-        setServerStatus(status);
-      });
+      fetch(`/api/serverStatus`).then((res) =>
+        res.json().then((data) => {
+          const status = getServerStatus(data, store.server!);
+          setServerStatus(status);
+        }),
+      );
     const delay =
       serverStatus === ServerStatus.OFFLINE ||
       serverStatus === ServerStatus.MAINTENANCE ||
@@ -64,8 +66,9 @@ export default function ServerStatusWidget() {
         ? 1000 * 60 * 5
         : 1000 * 60 * 60 * 2;
     const int = setInterval(async () => {
-      const res = await axios.get<typeof servers>(`/api/serverStatus`);
-      const status = getServerStatus(res.data, store.server!);
+      const res = await fetch(`/api/serverStatus`);
+      const data = await res.json();
+      const status = getServerStatus(data, store.server!);
       if (
         status === ServerStatus.ONLINE &&
         (serverStatus === ServerStatus.OFFLINE ||
