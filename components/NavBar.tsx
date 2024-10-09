@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import "./NavBar.css";
-import ServerStatus from "./ServerStatus";
+import ServerStatusWidget from "./ServerStatusWidget";
 import SettingsButton from "./SettingsButton";
 import { Button } from "./ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
@@ -90,7 +90,7 @@ export default function NavBar() {
         </SheetContent>
       </Sheet>
       <div className="ml-auto flex flex-row gap-2">
-        <ServerStatus />
+        <ServerStatusWidget />
         <Button variant="ghost" size="icon">
           <Link href="https://ko-fi.com/leo213" target="_blank">
             <svg

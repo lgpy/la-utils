@@ -1,68 +1,12 @@
+import { servers, ServerStatus, setServerStatus } from "@/lib/servers";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import _ from "lodash";
 
 export const revalidate = 60 * 5;
 
-const servers: Record<
-  string,
-  {
-    status: "online" | "offline" | "busy" | "full" | "maintenance";
-    region: "NAW" | "NAE" | "EUC";
-  }
-> = {
-  Thaemine: {
-    status: "offline",
-    region: "NAW",
-  },
-  Brelshaza: {
-    status: "offline",
-    region: "NAW",
-  },
-  Luterra: {
-    status: "offline",
-    region: "NAE",
-  },
-  Balthorr: {
-    status: "offline",
-    region: "NAE",
-  },
-  Nineveh: {
-    status: "offline",
-    region: "NAE",
-  },
-  Inanna: {
-    status: "offline",
-    region: "NAE",
-  },
-  Vairgrys: {
-    status: "offline",
-    region: "NAE",
-  },
-  Ortuus: {
-    status: "offline",
-    region: "EUC",
-  },
-  Elpon: {
-    status: "offline",
-    region: "EUC",
-  },
-  Ratik: {
-    status: "offline",
-    region: "EUC",
-  },
-  Arcturus: {
-    status: "offline",
-    region: "EUC",
-  },
-  Gienah: {
-    status: "offline",
-    region: "EUC",
-  },
-};
-
 export async function GET(request: Request) {
-  const ret = _.cloneDeep(servers);
+  const serversClone = _.cloneDeep(servers);
   try {
     const { data: html } = await axios.get(
       "https://www.playlostark.com/en-us/support/server-status",
@@ -83,30 +27,30 @@ export async function GET(request: Request) {
               "ags-ServerStatus-content-responses-response-server-status--good",
             )
           )
-            ret[name].status = "online";
+            setServerStatus(serversClone, name, ServerStatus.ONLINE);
           else if (
             status.hasClass(
               "ags-ServerStatus-content-responses-response-server-status--busy",
             )
           )
-            ret[name].status = "busy";
+            setServerStatus(serversClone, name, ServerStatus.BUSY);
           else if (
             status.hasClass(
               "ags-ServerStatus-content-responses-response-server-status--full",
             )
           )
-            ret[name].status = "full";
+            setServerStatus(serversClone, name, ServerStatus.FULL);
           else if (
             status.hasClass(
               "ags-ServerStatus-content-responses-response-server-status--maintenance",
             )
           )
-            ret[name].status = "maintenance";
+            setServerStatus(serversClone, name, ServerStatus.MAINTENANCE);
         }
       },
     );
 
-    return new Response(JSON.stringify(ret), {
+    return new Response(JSON.stringify(serversClone), {
       status: 200,
       headers: {
         "content-type": "application/json",
