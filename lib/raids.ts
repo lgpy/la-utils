@@ -25,35 +25,6 @@ export const shortestDifficulty = (difficulty: Difficulty) => {
   }
 };
 
-export const getRaidsFilteredByIlvl = (itemLevel: number) => {
-  return raids; //FIXME implement filtering
-  /*const filteredGates = raids.map((r) => {
-    return {
-      ...r,
-      gates: Object.keys(r.gates).reduce((acc, key) => {
-        const gate = r.gates[key];
-        const itemLevels = gate.itemlevel.filter((il) => il !== null);
-
-        if (itemLevels.length === 0) return acc;
-
-        const filteredItemLevels = itemLevels.filter((il) => il! <= itemLevel);
-
-        if (filteredItemLevels.length === 0) return acc;
-
-        return {
-          ...acc,
-          [key]: {
-            itemlevel: filteredItemLevels,
-            rewards: gate.rewards,
-          },
-        };
-      }, {} as typeof r.gates),
-    };
-  });
-
-  return filteredGates.filter((r) => Object.keys(r.gates).length > 0);*/
-};
-
 export const isGateCompleted = (
   raidId: string,
   gateId: string,
