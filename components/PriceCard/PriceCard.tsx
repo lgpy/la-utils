@@ -6,9 +6,9 @@ import { items, PricesState } from "@/stores/prices";
 import { DateTime } from "luxon";
 import Image from "next/image";
 import { ChangeEventHandler, useMemo } from "react";
-import TruncatedTooltip from "./TruncatedTooltip";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import TruncatedTooltip from "@/components/TruncatedTooltip";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 type Props = {
   item: (typeof items)[number];

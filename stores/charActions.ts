@@ -47,7 +47,7 @@ export function CreateCharacter(
           class: newc.class,
           itemLevel: newc.itemLevel,
           id: uuidv4(),
-          raids: {},
+          assignedRaids: {},
           completedRaids: {},
           tasks: [],
         },

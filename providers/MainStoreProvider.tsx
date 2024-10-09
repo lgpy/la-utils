@@ -4,11 +4,10 @@ import { createMainStore, MainStore } from "@/stores/main";
 import {
   type ReactNode,
   createContext,
-  useRef,
   useContext,
-  use,
   useEffect,
-  useState,
+  useRef,
+  useState
 } from "react";
 import { useStore } from "zustand";
 
@@ -55,6 +54,7 @@ export const _useMainStore = <T,>(
   }, [mainStoreContext.persist]);
 
   const store = useStore(mainStoreContext, selector);
+
   return {
     store,
     hasHydrated: hydrated,

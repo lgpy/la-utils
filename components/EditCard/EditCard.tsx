@@ -4,10 +4,11 @@ import { cn } from "@/lib/utils";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
 import { Fragment } from "react";
-import ClassIcon from "../class-icons/ClassIcon";
-import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
-import CharacterCardAssignedRaid from "./CharacterAssignedRaid";
+import ClassIcon from "@/components/class-icons/ClassIcon";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
+import { sortRaidKeys } from "@/lib/chars";
 
 type Props = {
   char: Character;
@@ -16,7 +17,7 @@ type Props = {
   movable?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-export default function CharacterEditCard(props: Props) {
+export default function EditCard(props: Props) {
   const [parent] = useAutoAnimate();
   const {
     char,
@@ -26,18 +27,20 @@ export default function CharacterEditCard(props: Props) {
     ...divProps
   } = props;
 
-  const ar = Object.keys(char.raids).map((raidId, i, keys) => (
-    <Fragment key={char.id + raidId}>
-      <CardContent className="p-3" data-pw={`character-assigned-raid-${i}`}>
-        <CharacterCardAssignedRaid
-          char={char}
-          openRaidDialog={() => openRaidDialog(raidId)}
-          raidId={raidId}
-        />
-      </CardContent>
-      {i < keys.length - 1 && <Separator className="opacity-75" />}
-    </Fragment>
-  ));
+  const ar = Object.keys(char.assignedRaids)
+    .sort(sortRaidKeys)
+    .map((raidId, i, keys) => (
+      <Fragment key={char.id + raidId}>
+        <CardContent data-pw={`character-assigned-raid-${i}`} className="p-0">
+          <CharacterCardAssignedRaid
+            char={char}
+            openRaidDialog={() => openRaidDialog(raidId)}
+            raidId={raidId}
+          />
+        </CardContent>
+        {i < keys.length - 1 && <Separator className="opacity-75" />}
+      </Fragment>
+    ));
 
   return (
     <Card className="h-fit w-56 border-card border-1" {...divProps}>
@@ -55,11 +58,11 @@ export default function CharacterEditCard(props: Props) {
           </h2>
           <div
             className={cn(
-              "flex items-center text-sm font-semibold dark:text-[#eed49f] text-[#df8e1d]",
+              "flex items-center gap-1 text-sm font-semibold dark:text-[#eed49f] text-[#df8e1d]",
             )}
             data-pw="character-item-level"
           >
-            <SwordsIcon className="size-5 mr-1" />
+            <SwordsIcon className="size-5" />
             {char.itemLevel}
           </div>
         </div>

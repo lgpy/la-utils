@@ -1,11 +1,11 @@
-import { TriangleAlertIcon, TriangleIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { TriangleAlertIcon } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { cn } from "@/lib/utils";
 
 type Props = {
   tooltip: string;

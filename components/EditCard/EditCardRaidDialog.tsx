@@ -1,17 +1,18 @@
 import { Character, useMainStore } from "@/hooks/mainstore";
-import { Difficulty, getRaidsFilteredByIlvl, raids } from "@/lib/raids";
+import { Difficulty, raids } from "@/lib/raids";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
+} from "../ui/dialog";
 import {
   Form,
   FormControl,
@@ -19,17 +20,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+} from "../ui/form";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
-import { useToast } from "./ui/use-toast";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
+} from "../ui/select";
+import { useToast } from "../ui/use-toast";
 
 Difficulty;
 const formSchema = z.object({
@@ -44,7 +44,7 @@ interface Props {
   raidId?: string;
 }
 
-export default function CharacterRaidDialog({
+export default function EditCardRaidDialog({
   character,
   isOpen,
   close,
@@ -62,35 +62,40 @@ export default function CharacterRaidDialog({
   const { toast } = useToast();
 
   const filteredRaids = useMemo(() => {
-    const ilvlfitered = getRaidsFilteredByIlvl(character.itemLevel);
-    const existingfiltered = ilvlfitered.filter((raid) => {
-      return raid.id === raidId || !character.raids[raid.id];
-    });
-    return existingfiltered;
-  }, [character.itemLevel, raidId, character.raids]);
+    return Object.entries(raids).reduce((acc, [raidkey, raid]) => {
+      const hasGatesbellowilvl = Object.values(raid.gates).some((gate) =>
+        Object.values(gate.difficulties).some(
+          (diff) => diff.itemlevel <= character.itemLevel,
+        ),
+      );
+      if (
+        (character.assignedRaids[raidkey] === undefined &&
+          hasGatesbellowilvl) ||
+        raidkey === raidId
+      )
+        acc[raidkey] = raid;
+      return acc;
+    }, {} as typeof raids);
+  }, [raidId, character.assignedRaids, character.itemLevel]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const raid = raids.find((raid) => raid.id === values.raidId);
+      const raid = raids[values.raidId];
       if (!raid) throw new Error("Raid not found!");
 
-      const gates = values.gates
-        .filter((d) => d !== "none")
-        .map((gate, index) => ({
-          id: Object.keys(raid.gates)[index],
-          difficulty: gate,
-        }));
+      const gates = values.gates.reduce((acc, diff, index) => {
+        acc[Object.keys(raid.gates)[index]] =
+          diff === "none" ? undefined : diff;
+        return acc;
+      }, {} as Record<string, Difficulty | undefined>);
+
+      const fgates = Object.fromEntries(
+        Object.entries(gates).filter(([, value]) => value !== undefined),
+      ) as Record<string, Difficulty>;
 
       if (raidId !== undefined)
-        state.charEditRaid(character.id, {
-          id: values.raidId,
-          gates,
-        });
-      else
-        state.charAddRaid(character.id, {
-          id: values.raidId,
-          gates,
-        });
+        state.charEditRaid(character.id, raidId, fgates);
+      else state.charAddRaid(character.id, values.raidId, fgates);
 
       close();
       toast({
@@ -110,16 +115,16 @@ export default function CharacterRaidDialog({
 
   const watchRaidId = form.watch("raidId");
   const actualRaid = useMemo(() => {
-    return raids.find((raid) => raid.id === watchRaidId);
+    return raids[watchRaidId];
   }, [watchRaidId]);
 
   const checkBoxGroups = useMemo(() => {
     if (!actualRaid) return [];
     return Object.entries(actualRaid.gates).map(([gateId, gate], gateIndex) => {
-      const checkBoxes = actualRaid.difficulties.map(
-        (difficulty, diffIndex) => {
-          if (gate.itemlevel[diffIndex] === null) return null;
-          if (gate.itemlevel[diffIndex] > character.itemLevel) return null;
+      const checkboxes = Object.entries(gate.difficulties).map(
+        ([difficulty, diffData]) => {
+          if (diffData.itemlevel === null) return null;
+          if (diffData.itemlevel > character.itemLevel) return null;
           return (
             <FormItem
               className="flex items-center space-x-3 space-y-0"
@@ -160,7 +165,7 @@ export default function CharacterRaidDialog({
                     </FormControl>
                     <FormLabel className="font-normal">None</FormLabel>
                   </FormItem>
-                  {checkBoxes}
+                  {checkboxes}
                 </RadioGroup>
               </FormControl>
               <FormMessage />
@@ -174,16 +179,16 @@ export default function CharacterRaidDialog({
   useEffect(() => {
     if (!isOpen) return;
     form.reset({
-      raidId: actualRaid ? actualRaid.id : "",
+      raidId: actualRaid ? watchRaidId : "",
       gates: actualRaid
         ? Object.keys(actualRaid.gates).map(
             (gateId) =>
-              character.raids[actualRaid.id]?.gates.find((g) => g.id === gateId)
-                ?.difficulty || "none",
+              character.assignedRaids[watchRaidId]?.[gateId]?.difficulty ||
+              "none",
           )
         : [],
     });
-  }, [actualRaid, isOpen, character.raids, form]);
+  }, [actualRaid, isOpen, character.assignedRaids, form, watchRaidId]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
@@ -217,8 +222,8 @@ export default function CharacterRaidDialog({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {filteredRaids.map((raid) => (
-                        <SelectItem key={raid.id} value={raid.id}>
+                      {Object.entries(filteredRaids).map(([raidId, raid]) => (
+                        <SelectItem key={raidId} value={raidId}>
                           {raid.name}
                         </SelectItem>
                       ))}

@@ -5,123 +5,61 @@ import { DateTime } from "luxon";
 export function charAddRaid(
   set: SetType,
   charId: string,
-  raid: {
-    id: string;
-    gates: {
-      id: string;
-      difficulty: Difficulty;
-    }[];
-  },
+  raidId: string,
+  gates: Record<string, Difficulty>,
 ) {
   set((state) => {
-    const updatedChars = state.characters.map((c) => {
-      if (c.id === charId) {
-        if (Object.keys(c.raids).includes(raid.id)) return c;
-        //insert the new raid in the correct order based on the raids object in the utils/raids.ts file
-        const newRaids = {
-          ...c.raids,
-          [raid.id]: {
-            gates: raid.gates.sort((a, b) => {
-              const araid = raids.find((r) => r.id === raid.id);
+    const char = state.characters.find((c) => c.id === charId);
+    if (!char) throw new Error("Character not found");
 
-              if (!araid) return 0;
-              const gateA = Object.keys(araid.gates).indexOf(a.id);
-              const gateB = Object.keys(araid.gates).indexOf(b.id);
-
-              return gateA - gateB;
-            }),
-          },
+    char.assignedRaids[raidId] = Object.entries(gates).reduce(
+      (acc, [gateId, Diff]) => {
+        acc[gateId] = {
+          difficulty: Diff,
+          completedDate: undefined,
         };
+        return acc;
+      },
+      {} as (typeof char.assignedRaids)[string],
+    );
 
-        const sortedRaids = Object.entries(newRaids)
-          .sort(
-            ([a], [b]) =>
-              raids.findIndex((r) => r.id === a) -
-              raids.findIndex((r) => r.id === b),
-          )
-          .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
-
-        return {
-          ...c,
-          raids: sortedRaids,
-        };
-      }
-
-      return c;
-    });
-
-    return { ...state, characters: updatedChars };
+    return { ...state };
   });
 }
 
 export function charEditRaid(
   set: SetType,
   charId: string,
-  raid: {
-    id: string;
-    gates: {
-      id: string;
-      difficulty: Difficulty;
-    }[];
-  },
+  raidId: string,
+  gates: Record<string, Difficulty>,
 ) {
   set((state) => {
-    const updatedChars = state.characters.map((c) => {
-      if (c.id === charId) {
-        return {
-          ...c,
-          raids: {
-            ...c.raids,
-            [raid.id]: {
-              gates: raid.gates
-                .sort((a, b) => {
-                  const araid = raids.find((r) => r.id === raid.id);
+    const char = state.characters.find((c) => c.id === charId);
+    if (!char) throw new Error("Character not found");
 
-                  if (!araid) return 0;
-                  const gateA = Object.keys(araid.gates).indexOf(a.id);
-                  const gateB = Object.keys(araid.gates).indexOf(b.id);
-
-                  return gateA - gateB;
-                })
-                .map((g) => {
-                  const oldGate = c.raids[raid.id].gates.find(
-                    (og) => og.id === g.id,
-                  );
-                  return {
-                    ...g,
-                    completedDate: oldGate?.completedDate,
-                  };
-                }),
-            },
-          },
+    char.assignedRaids[raidId] = Object.entries(gates).reduce(
+      (acc, [gateId, Diff]) => {
+        acc[gateId] = {
+          difficulty: Diff,
+          completedDate: char.assignedRaids[raidId]?.[gateId]?.completedDate,
         };
-      }
+        return acc;
+      },
+      {} as (typeof char.assignedRaids)[string],
+    );
 
-      return c;
-    });
-
-    return { ...state, characters: updatedChars };
+    return { ...state };
   });
 }
 
 export function charDelRaid(set: SetType, charId: string, raidId: string) {
   set((state) => {
-    const updatedChars = state.characters.map((c) => {
-      if (c.id === charId) {
-        const updatedRaids = { ...c.raids };
+    const char = state.characters.find((c) => c.id === charId);
+    if (!char) throw new Error("Character not found");
 
-        delete updatedRaids[raidId];
+    delete char.assignedRaids[raidId];
 
-        return {
-          ...c,
-          raids: updatedRaids,
-        };
-      }
-
-      return c;
-    });
-
-    return { ...state, characters: updatedChars };
+    return { ...state };
   });
 }
 
@@ -140,85 +78,44 @@ export function raidAction(
   },
 ) {
   set((state) => {
-    const updatedChars = state.characters.map((c) => {
-      if (c.id === charId) {
-        const gates = c.raids[raidId].gates;
+    const char = state.characters.find((c) => c.id === charId);
+    if (!char) throw new Error("Character not found");
 
-        const newCompletedDate = (() => {
-          switch (type) {
-            case "complete":
-              return new Date().toISOString();
-            case "uncomplete":
-              return undefined;
-          }
-        })();
-
-        if (mode === "all") {
-          return {
-            ...c,
-            raids: {
-              ...c.raids,
-              [raidId]: {
-                gates: gates.map((g) => ({
-                  ...g,
-                  completedDate: newCompletedDate,
-                })),
-              },
-            },
-          };
-        }
-
-        let gate;
-        if (type === "uncomplete") {
-          //get last completed Gate
-          gate = gates.findLast((g) => {
-            if (g.completedDate === undefined) return false;
-            return isGateCompleted(
-              raidId,
-              g.id,
-              DateTime.fromISO(g.completedDate),
-            );
-          });
-        } else {
-          //get first uncompleted Gate
-          gate = gates.find((g) => {
-            if (g.completedDate === undefined) return true;
-            return !isGateCompleted(
-              raidId,
-              g.id,
-              DateTime.fromISO(g.completedDate),
-            );
-          });
-        }
-        if (!gate)
-          throw new Error(
-            type === "uncomplete"
-              ? "No gates to uncomplete"
-              : "No gates to complete",
-          );
-        return {
-          ...c,
-          raids: {
-            ...c.raids,
-            [raidId]: {
-              gates: gates.map((g) => {
-                if (g.id === gate.id) {
-                  return {
-                    ...g,
-                    completedDate: newCompletedDate,
-                  };
-                }
-
-                return g;
-              }),
-            },
-          },
-        };
+    const newCompletedDate = (() => {
+      switch (type) {
+        case "complete":
+          return new Date().toISOString();
+        case "uncomplete":
+          return undefined;
       }
+    })();
 
-      return c;
-    });
+    if (mode === "all") {
+      Object.keys(char.assignedRaids[raidId]).forEach((gateId) => {
+        char.assignedRaids[raidId][gateId].completedDate = newCompletedDate;
+      });
+    } else if (mode === "last" && type === "uncomplete") {
+      const lastCompletedGate = Object.entries(
+        char.assignedRaids[raidId],
+      ).findLast(([gId, g]) => {
+        if (g.completedDate === undefined) return false;
+        return isGateCompleted(raidId, gId, DateTime.fromISO(g.completedDate));
+      });
+      if (!lastCompletedGate) throw new Error("No gates to uncomplete");
+      char.assignedRaids[raidId][lastCompletedGate[0]].completedDate =
+        newCompletedDate;
+    } else if (mode === "last" && type === "complete") {
+      const firstIncompleteGate = Object.entries(
+        char.assignedRaids[raidId],
+      ).find(([gId, g]) => {
+        if (g.completedDate === undefined) return true;
+        return !isGateCompleted(raidId, gId, DateTime.fromISO(g.completedDate));
+      });
+      if (!firstIncompleteGate) throw new Error("No gates to complete");
+      char.assignedRaids[raidId][firstIncompleteGate[0]].completedDate =
+        newCompletedDate;
+    }
 
-    return { ...state, characters: updatedChars };
+    return { ...state };
   });
 }

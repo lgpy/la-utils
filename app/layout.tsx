@@ -1,15 +1,14 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { cn } from "@/lib/utils";
 import NavBar from "@/components/NavBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/toaster";
-import { CSPostHogProvider } from "./providers";
-import dynamic from "next/dynamic";
+import { cn } from "@/lib/utils";
 import { MainStoreProvider } from "@/providers/MainStoreProvider";
-import OldWebsiteDeprecatedMessage from "@/components/OldWebsiteDeprecatedMessage";
-import { ServerStoreProvider } from "@/providers/ServerProvider";
+import type { Metadata } from "next";
+import dynamic from "next/dynamic";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { CSPostHogProvider } from "./providers";
+import { SettingsStoreProvider } from "@/providers/SettingsProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
@@ -43,8 +42,10 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <div className="flex min-h-screen w-full flex-col">
-              <NavBar />
-              <MainStoreProvider>{children}</MainStoreProvider>
+              <SettingsStoreProvider>
+                <NavBar />
+                <MainStoreProvider>{children}</MainStoreProvider>
+              </SettingsStoreProvider>
             </div>
           </ThemeProvider>
           <Toaster />

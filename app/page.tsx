@@ -1,7 +1,7 @@
-import CharacterTodoCards from "@/components/CharacterTodoCards";
-import FABActions from "@/components/FABActions";
 import RosterGold from "@/components/RosterGold";
 import type { Metadata } from "next";
+import AuctionCalculatorFAB from "@/components/AuctionCalculator/AuctionCalculatorFAB";
+import TodoCards from "@/components/TodoCard/TodoCards";
 
 export const metadata: Metadata = {
   title: "Home | Lost Ark Utils",
@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <CharacterTodoCards />
-      <FABActions />
+      <TodoCards />
+      <AuctionCalculatorFAB />
       <RosterGold />
     </>
   );

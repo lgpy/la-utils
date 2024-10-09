@@ -6,19 +6,19 @@ import { motion } from "framer-motion";
 import { isEqual } from "lodash";
 import { LockIcon, LockOpenIcon, PlusIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import CharacterEditCard from "./CharacterCard/CharacterEditCard";
-import CharacterFormDialog from "./CharacterFormDialog";
-import CharacterPageNoCharactersCard from "./CharacterPageNoCharactersCard";
-import CharacterRaidDialog from "./CharacterRaidDialog";
-import { Button } from "./ui/button";
+import EditCard from "./EditCard";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./ui/tooltip";
+} from "@/components/ui/tooltip";
+import EditCardsNoCharactersCard from "./EditCardsNoCharactersCard";
+import EditCardCharacterDialog from "./EditCardCharacterDialog";
+import EditCardRaidDialog from "./EditCardRaidDialog";
 
-export default function CharacterEditCards() {
+export default function EditCards() {
   const { state, hasHydrated } = useMainStore();
   const [isOpen, setIsOpen] = useState<false | "raid" | "char">(false);
   const [selectedCharacter, setSelectedCharacter] = useState<
@@ -78,13 +78,13 @@ export default function CharacterEditCards() {
   return (
     <>
       <ul
-        className="mt-6 flex flex-row flex-wrap gap-3 justify-center"
+        className="mt-6 grid grid-cols-[auto_auto_auto_auto_auto_auto] gap-3 justify-center"
         ref={parent}
         data-pw="character-list"
       >
         {chars.map((char, index) => (
           <li data-label={char.id} key={char.id}>
-            <CharacterEditCard
+            <EditCard
               char={char}
               editCharacter={() => openCharacterEditDialog(char)}
               openRaidDialog={(raidId) => openRaidDialog(char, raidId)}
@@ -93,17 +93,17 @@ export default function CharacterEditCards() {
             />
           </li>
         ))}
-        {chars.length === 0 && <CharacterPageNoCharactersCard />}
+        {chars.length === 0 && <EditCardsNoCharactersCard />}
       </ul>
       {isOpen === "char" && (
-        <CharacterFormDialog
+        <EditCardCharacterDialog
           isOpen={isOpen === "char"}
           close={() => setIsOpen(false)}
           existingCharacter={selectedCharacter}
         />
       )}
       {selectedCharacter && isOpen === "raid" && (
-        <CharacterRaidDialog
+        <EditCardRaidDialog
           character={selectedCharacter}
           isOpen={isOpen === "raid"}
           raidId={selectedRaid}

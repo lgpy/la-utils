@@ -1,9 +1,7 @@
-import { Character } from "@/hooks/mainstore";
 import { Class } from "@/lib/classes";
-import { Difficulty, raids } from "@/lib/raids";
+import { Difficulty } from "@/lib/raids";
 import { MainState } from "@/stores/main";
-import { test, expect, Page } from "@playwright/test";
-import { v4 as uuidv4 } from "uuid";
+import { expect, Page, test } from "@playwright/test";
 
 const setCharacterState = async (
   page: Page,
@@ -15,13 +13,13 @@ const setCharacterState = async (
       JSON.stringify({
         state: {
           characters: characters.map((c, index) => ({
-            raids: {},
+            assignedRaids: {},
             tasks: [],
             ...c,
             id: index.toFixed(0),
           })),
         },
-        version: 2,
+        version: 3,
       }),
     );
   }, characters);
@@ -118,13 +116,11 @@ test("edit raid", async ({ page }) => {
     name: "Test Character",
     class: Class.Berserker,
     itemLevel: 1600,
-    raids: {
+    assignedRaids: {
       brel: {
-        gates: [
-          { id: "G1", difficulty: Difficulty.normal },
-          { id: "G2", difficulty: Difficulty.hard },
-          { id: "G3", difficulty: Difficulty.normal },
-        ],
+        G1: { difficulty: Difficulty.normal },
+        G2: { difficulty: Difficulty.hard },
+        G3: { difficulty: Difficulty.normal },
       },
     },
   });
@@ -153,13 +149,11 @@ test("delete raid", async ({ page }) => {
     name: "Test Character",
     class: Class.Berserker,
     itemLevel: 1600,
-    raids: {
+    assignedRaids: {
       brel: {
-        gates: [
-          { id: "G1", difficulty: Difficulty.normal },
-          { id: "G2", difficulty: Difficulty.hard },
-          { id: "G3", difficulty: Difficulty.normal },
-        ],
+        G1: { difficulty: Difficulty.normal },
+        G2: { difficulty: Difficulty.hard },
+        G3: { difficulty: Difficulty.normal },
       },
     },
   });

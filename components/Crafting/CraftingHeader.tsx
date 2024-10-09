@@ -1,12 +1,11 @@
 "use client";
 
 import { useCraftingStore } from "@/providers/CraftStoreProvider";
-import { Card, CardContent, CardHeader } from "../ui/card";
 import { CraftingParents, CraftingStore } from "@/stores/crafting";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Skeleton } from "../ui/skeleton";
-import { Separator } from "../ui/separator";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const getLabel = (parent: CraftingParents) => {
   switch (parent) {

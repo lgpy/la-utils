@@ -1,36 +1,33 @@
-import { useMainStore } from "@/hooks/mainstore";
-import { getRaids } from "@/lib/chars";
+import { useToast } from "@/components/ui/use-toast";
+import { Character, useMainStore } from "@/hooks/mainstore";
 import { raids } from "@/lib/raids";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon } from "lucide-react";
-import { ValueOf } from "next/dist/shared/lib/constants";
 import { MouseEventHandler, useState } from "react";
-import { useToast } from "../ui/use-toast";
-import { set } from "zod";
 
 interface Props {
   charId: string;
   raidId: string;
-  assignedGates: ValueOf<ReturnType<typeof getRaids>>["gates"];
+  assignedGates: Character["assignedRaids"][string];
 }
 
-export default function TodoRaidCheckbox({
+export default function TodoCardCompleteButton({
   charId,
   raidId,
   assignedGates,
 }: Props) {
   const { state, hasHydrated } = useMainStore();
-  const raid = raids.find((r) => r.id === raidId);
+  const raid = raids[raidId];
   const { toast } = useToast();
   const [increase, setIncrease] = useState(false);
 
-  const completedlen = assignedGates.reduce(
+  const completedlen = Object.values(assignedGates).reduce(
     (acc, ag) => (ag.completed ? acc + 1 : acc),
     0,
   );
 
-  const isChecked = assignedGates.length === completedlen;
+  const isChecked = Object.keys(assignedGates).length === completedlen;
 
   if (!raid) return null;
 
@@ -96,7 +93,7 @@ export default function TodoRaidCheckbox({
               initial={{
                 opacity: 0,
                 rotate:
-                  completedlen === assignedGates.length
+                  completedlen === Object.keys(assignedGates).length
                     ? -120
                     : increase
                     ? -40
@@ -116,13 +113,15 @@ export default function TodoRaidCheckbox({
                 <span className="text-nowrap">{`${completedlen}`}</span>
               )}
             </motion.div>
-            {!isChecked && <span>{`/${assignedGates.length}`}</span>}
+            {!isChecked && (
+              <span>{`/${Object.keys(assignedGates).length}`}</span>
+            )}
           </div>
         </AnimatePresence>
       </div>
       <motion.div
         animate={{
-          width: `${(completedlen / assignedGates.length) * 100}%`,
+          width: `${(completedlen / Object.keys(assignedGates).length) * 100}%`,
         }}
         initial={false}
         className={cn("bg-primary h-full")}
