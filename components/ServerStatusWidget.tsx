@@ -54,7 +54,8 @@ export default function ServerStatusWidget() {
     if (store.server === undefined) return;
     if (serverStatus === null)
       axios.get<typeof servers>(`/api/serverStatus`).then((res) => {
-        getServerStatus(res.data, store.server!);
+        const status = getServerStatus(res.data, store.server!);
+        setServerStatus(status);
       });
     const delay =
       serverStatus === ServerStatus.OFFLINE || serverStatus === null
