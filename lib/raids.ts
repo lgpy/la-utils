@@ -341,7 +341,7 @@ export const raids: Record<
             rewards: { gold: 3500 },
           },
           [Difficulty.hard]: {
-            itemlevel: 1630,
+            itemlevel: 1620,
             rewards: { gold: 5000 },
           },
         },
@@ -353,7 +353,7 @@ export const raids: Record<
             rewards: { gold: 4000 },
           },
           [Difficulty.hard]: {
-            itemlevel: 1630,
+            itemlevel: 1620,
             rewards: { gold: 6000 },
           },
         },
@@ -365,7 +365,7 @@ export const raids: Record<
             rewards: { gold: 5500 },
           },
           [Difficulty.hard]: {
-            itemlevel: 1630,
+            itemlevel: 1620,
             rewards: { gold: 9000 },
           },
         },
@@ -373,7 +373,7 @@ export const raids: Record<
       G4: {
         difficulties: {
           [Difficulty.hard]: {
-            itemlevel: 1630,
+            itemlevel: 1620,
             rewards: { gold: 21000 },
           },
         },
@@ -398,7 +398,7 @@ export const raids: Record<
           },
           [Difficulty.hard]: {
             itemlevel: 1630,
-            rewards: { gold: 6000 },
+            rewards: { gold: 7000 },
           },
         },
       },
