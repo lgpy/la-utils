@@ -19,12 +19,16 @@ const zodSettings = z.object({
       "Gienah",
     ])
     .optional(),
+  rosterGoldTotal: z.enum(["total", "remaining"]),
 });
 
 export type SettingsState = z.infer<typeof zodSettings>;
 
 export type SettingsActions = {
   setServer: (server: SettingsState["server"]) => void;
+  setRosterGoldTotal: (
+    rosterGoldTotal: SettingsState["rosterGoldTotal"],
+  ) => void;
 };
 
 export type SettingsStore = SettingsState & SettingsActions;
@@ -34,12 +38,22 @@ export const createSettingsStore = () =>
     persist(
       (set) => ({
         server: undefined,
+        rosterGoldTotal: "total",
         setServer(server) {
           set({ server });
+        },
+        setRosterGoldTotal(rosterGoldTotal) {
+          set({ rosterGoldTotal });
         },
       }),
       {
         name: "settings",
+        version: 1,
+        migrate: (persistedState: any, version) => {
+          if (version <= 0) {
+            persistedState.rosterGoldTotal = "total";
+          }
+        },
       },
     ),
   );
