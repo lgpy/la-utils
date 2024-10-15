@@ -22,10 +22,6 @@ export const items = [
     name: "Superior Oreha Fusion Material",
     rarity: "epic",
     marketQty: 1,
-    mari: {
-      qty: 30,
-      bc: 45,
-    },
   },
   {
     type: "honing",
@@ -33,10 +29,13 @@ export const items = [
     name: "Prime Oreha Fusion Material",
     rarity: "epic",
     marketQty: 1,
-    mari: {
-      qty: 50,
-      bc: 45,
-    },
+  },
+  {
+    type: "honing-t4",
+    id: "abidos-fusion-material",
+    name: "Abidos Fusion Material",
+    rarity: "rare",
+    marketQty: 1,
   },
   {
     type: "honing",
@@ -44,10 +43,6 @@ export const items = [
     name: "Marvelous Honor Leapstone",
     rarity: "rare",
     marketQty: 1,
-    mari: {
-      qty: 50,
-      bc: 32,
-    },
   },
   {
     type: "honing",
@@ -55,10 +50,6 @@ export const items = [
     name: "Radiant Honor Leapstone",
     rarity: "rare",
     marketQty: 1,
-    mari: {
-      qty: 40,
-      bc: 120,
-    },
   },
   {
     type: "honing",
@@ -66,10 +57,6 @@ export const items = [
     name: "Honor Shard Pouch (S)",
     rarity: "uncommon",
     marketQty: 1,
-    mari: {
-      qty: 30,
-      bc: 150,
-    },
   },
   {
     type: "honing",
@@ -77,10 +64,6 @@ export const items = [
     name: "Honor Shard Pouch (M)",
     rarity: "rare",
     marketQty: 1,
-    mari: {
-      qty: 30,
-      bc: 300,
-    },
   },
   {
     type: "honing",
@@ -88,9 +71,16 @@ export const items = [
     name: "Honor Shard Pouch (L)",
     rarity: "epic",
     marketQty: 1,
+  },
+  {
+    type: "honing-t4",
+    id: "destiny-shard-pouch-s",
+    name: "Destiny Shard Pouch (S)",
+    rarity: "uncommon",
+    marketQty: 1,
     mari: {
-      qty: 25,
-      bc: 375,
+      qty: 7,
+      bc: 154,
     },
   },
   {
@@ -99,10 +89,6 @@ export const items = [
     name: "Solar Grace",
     rarity: "uncommon",
     marketQty: 1,
-    mari: {
-      qty: 60,
-      bc: 120,
-    },
   },
   {
     type: "honing",
@@ -110,10 +96,6 @@ export const items = [
     name: "Solar Blessing",
     rarity: "rare",
     marketQty: 1,
-    mari: {
-      qty: 50,
-      bc: 250,
-    },
   },
   {
     type: "honing",
@@ -121,10 +103,13 @@ export const items = [
     name: "Solar Protection",
     rarity: "epic",
     marketQty: 1,
-    mari: {
-      qty: 30,
-      bc: 300,
-    },
+  },
+  {
+    type: "honing-t4",
+    id: "glaciers-breath",
+    name: "Glacier's Breath",
+    rarity: "epic",
+    marketQty: 1,
   },
   {
     type: "tradeskills",
@@ -140,15 +125,7 @@ export const items = [
     id: "redflesh-fish",
     name: "Redflesh Fish",
     rarity: "uncommon",
-    marketQty: 10,
-  },
-  {
-    type: "tradeskills",
-    subtype: "fishing",
-    id: "natural-pearl",
-    name: "Natural Pearl",
-    rarity: "uncommon",
-    marketQty: 10,
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -156,7 +133,15 @@ export const items = [
     id: "oreha-solar-carp",
     name: "Oreha Solar Carp",
     rarity: "rare",
-    marketQty: 10,
+    marketQty: 100,
+  },
+  {
+    type: "tradeskills",
+    subtype: "fishing",
+    id: "abidos-solar-carp",
+    name: "Abidos Solar Carp",
+    rarity: "rare",
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -172,7 +157,7 @@ export const items = [
     id: "rare-relic",
     name: "Rare Relic",
     rarity: "uncommon",
-    marketQty: 10,
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -180,7 +165,15 @@ export const items = [
     id: "oreha-relic",
     name: "Oreha Relic",
     rarity: "rare",
-    marketQty: 10,
+    marketQty: 100,
+  },
+  {
+    type: "tradeskills",
+    subtype: "excavating",
+    id: "abidos-relic",
+    name: "Abidos Relic",
+    rarity: "rare",
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -196,7 +189,7 @@ export const items = [
     id: "tender-timber",
     name: "Tender Timber",
     rarity: "uncommon",
-    marketQty: 10,
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -204,7 +197,15 @@ export const items = [
     id: "sturdy-timber",
     name: "Sturdy Timber",
     rarity: "rare",
-    marketQty: 10,
+    marketQty: 100,
+  },
+  {
+    type: "tradeskills",
+    subtype: "logging",
+    id: "abidos-timber",
+    name: "Abidos Timber",
+    rarity: "rare",
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -220,7 +221,7 @@ export const items = [
     id: "shy-wild-flower",
     name: "Shy Wild Flower",
     rarity: "uncommon",
-    marketQty: 10,
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -228,31 +229,15 @@ export const items = [
     id: "bright-wild-flower",
     name: "Bright Wild Flower",
     rarity: "rare",
-    marketQty: 10,
-  },
-  {
-    type: "tradeskills",
-    subtype: "foraging",
-    id: "crude-mushroom",
-    name: "Crude Mushroom",
-    rarity: "common",
     marketQty: 100,
   },
   {
     type: "tradeskills",
     subtype: "foraging",
-    id: "fresh-mushroom",
-    name: "Fresh Mushroom",
-    rarity: "uncommon",
-    marketQty: 10,
-  },
-  {
-    type: "tradeskills",
-    subtype: "foraging",
-    id: "exquisite-mushroom",
-    name: "Exquisite Mushroom",
+    id: "abidos-wild-flower",
+    name: "Abidos Wild Flower",
     rarity: "rare",
-    marketQty: 10,
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -268,7 +253,7 @@ export const items = [
     id: "heavy-iron-ore",
     name: "Heavy Iron Ore",
     rarity: "uncommon",
-    marketQty: 10,
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -276,7 +261,15 @@ export const items = [
     id: "strong-iron-ore",
     name: "Strong Iron Ore",
     rarity: "rare",
-    marketQty: 10,
+    marketQty: 100,
+  },
+  {
+    type: "tradeskills",
+    subtype: "mining",
+    id: "abidos-iron-ore",
+    name: "Abidos Iron Ore",
+    rarity: "rare",
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -292,15 +285,7 @@ export const items = [
     id: "treated-meat",
     name: "Treated Meat",
     rarity: "uncommon",
-    marketQty: 10,
-  },
-  {
-    type: "tradeskills",
-    subtype: "hunting",
-    id: "tough-leather",
-    name: "Tough Leather",
-    rarity: "uncommon",
-    marketQty: 10,
+    marketQty: 100,
   },
   {
     type: "tradeskills",
@@ -308,7 +293,15 @@ export const items = [
     id: "oreha-thick-meat",
     name: "Oreha Thick Meat",
     rarity: "rare",
-    marketQty: 10,
+    marketQty: 100,
+  },
+  {
+    type: "tradeskills",
+    subtype: "hunting",
+    id: "abidos-thick-raw-meat",
+    name: "Abidos Thick Raw Meat",
+    rarity: "rare",
+    marketQty: 100,
   },
 ];
 

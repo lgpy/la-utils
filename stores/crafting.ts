@@ -96,6 +96,48 @@ export const craftingItems: {
       },
     ],
   },
+  {
+    name: "Abidos Fusion Material",
+    id: "abidos-fusion-material",
+    rarity: "rare",
+    type: "special",
+    craftCost: 400,
+    craftTime: 60 * 60,
+    craftEnergy: 288,
+    returns: 10,
+    recipes: [
+      {
+        "abidos-wild-flower": 33,
+        "shy-wild-flower": 45,
+        "wild-flower": 86,
+      },
+      {
+        "abidos-relic": 33,
+        "rare-relic": 45,
+        "ancient-relic": 86,
+      },
+      {
+        "abidos-solar-carp": 33,
+        "redflesh-fish": 45,
+        fish: 86,
+      },
+      {
+        "abidos-timber": 33,
+        "tender-timber": 45,
+        timber: 86,
+      },
+      {
+        "abidos-iron-ore": 33,
+        "heavy-iron-ore": 45,
+        "iron-ore": 86,
+      },
+      {
+        "abidos-thick-raw-meat": 33,
+        "treated-meat": 45,
+        "thick-raw-meat": 86,
+      },
+    ],
+  },
 ];
 
 const zodCrafting = z.object({
