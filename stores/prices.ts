@@ -22,6 +22,10 @@ export const items = [
     name: "Superior Oreha Fusion Material",
     rarity: "epic",
     marketQty: 1,
+    mari: {
+      qty: 100,
+      bc: 40,
+    },
   },
   {
     type: "honing",
@@ -29,6 +33,10 @@ export const items = [
     name: "Prime Oreha Fusion Material",
     rarity: "epic",
     marketQty: 1,
+    mari: {
+      qty: 100,
+      bc: 80,
+    },
   },
   {
     type: "honing-t4",
@@ -36,6 +44,10 @@ export const items = [
     name: "Abidos Fusion Material",
     rarity: "rare",
     marketQty: 1,
+    mari: {
+      qty: 30,
+      bc: 80,
+    },
   },
   {
     type: "honing",
@@ -50,6 +62,10 @@ export const items = [
     name: "Radiant Honor Leapstone",
     rarity: "rare",
     marketQty: 1,
+    mari: {
+      qty: 80,
+      bc: 220,
+    },
   },
   {
     type: "honing",
@@ -71,6 +87,10 @@ export const items = [
     name: "Honor Shard Pouch (L)",
     rarity: "epic",
     marketQty: 1,
+    mari: {
+      qty: 20,
+      bc: 154,
+    },
   },
   {
     type: "honing-t4",
@@ -89,6 +109,10 @@ export const items = [
     name: "Solar Grace",
     rarity: "uncommon",
     marketQty: 1,
+    mari: {
+      qty: 100,
+      bc: 107,
+    },
   },
   {
     type: "honing",
@@ -96,6 +120,10 @@ export const items = [
     name: "Solar Blessing",
     rarity: "rare",
     marketQty: 1,
+    mari: {
+      qty: 50,
+      bc: 137,
+    },
   },
   {
     type: "honing",
@@ -110,6 +138,21 @@ export const items = [
     name: "Glacier's Breath",
     rarity: "epic",
     marketQty: 1,
+    mari: {
+      qty: 20,
+      bc: 140,
+    },
+  },
+  {
+    type: "honing-t4",
+    id: "lavas-breath",
+    name: "Lava's Breath",
+    rarity: "epic",
+    marketQty: 1,
+    mari: {
+      qty: 10,
+      bc: 150,
+    },
   },
   {
     type: "tradeskills",
