@@ -9,11 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
 import { sortRaidKeys } from "@/lib/chars";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Props = {
   char: Character;
   editCharacter: () => void;
   openRaidDialog: (raidId?: string) => void;
+  openTaskDialog: (taskId?: string) => void;
   movable?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
@@ -23,6 +25,7 @@ export default function EditCard(props: Props) {
     char,
     editCharacter,
     openRaidDialog,
+    openTaskDialog,
     movable = false,
     ...divProps
   } = props;
@@ -79,19 +82,43 @@ export default function EditCard(props: Props) {
           <PencilIcon className="h-4 w-4" />
         </Button>
       </CardHeader>
-      <Separator />
-      <div ref={parent}>{ar}</div>
-      <Separator />
-      <CardContent className="p-0">
-        <Button
-          className="w-full rounded-t-none"
-          onClick={() => openRaidDialog()}
-          variant="ghost"
-          data-pw={`character-add-raid`}
-        >
-          <PlusIcon className="mr-2 h-4 w-4" /> Add raid
-        </Button>
-      </CardContent>
+      <Tabs defaultValue="raids">
+        <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">
+          <TabsTrigger value="raids" className="w-full rounded-none">
+            Raids ({Object.keys(char.assignedRaids).length})
+          </TabsTrigger>
+          <TabsTrigger value="tasks" className="w-full rounded-none">
+            Tasks ({char.tasks.length})
+          </TabsTrigger>
+        </TabsList>
+        <Separator />
+        <TabsContent value="raids" className="m-0">
+          <div ref={parent}>{ar}</div>
+          <Separator />
+          <CardContent className="p-0">
+            <Button
+              className="w-full rounded-t-none p-2"
+              onClick={() => openRaidDialog()}
+              variant="ghost"
+              data-pw={`character-add-raid`}
+            >
+              <PlusIcon className="mr-1 h-4 w-4" /> Add Raid
+            </Button>
+          </CardContent>
+        </TabsContent>
+        <TabsContent value="tasks" className="m-0">
+          <CardContent className="p-0">
+            <Button
+              className="w-full rounded-t-none px-0"
+              onClick={() => openTaskDialog()}
+              variant="ghost"
+              data-pw={`character-add-task`}
+            >
+              <PlusIcon className="mr-1 h-4 w-4" /> Add Task
+            </Button>
+          </CardContent>
+        </TabsContent>
+      </Tabs>
     </Card>
   );
 }

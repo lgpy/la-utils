@@ -15,6 +15,8 @@ import {
   charEditRaid,
   raidAction,
 } from "./raidActions";
+import { isTaskCompleted } from "@/lib/tasks";
+import { DateTime } from "luxon";
 
 export const zodTask = z.object({
   id: z.string(),
@@ -80,10 +82,14 @@ export type MainActions = {
     mode?: "all" | "last";
   }) => void;
   restoreData: (data: MainState) => void;
-  addTaskToCharacter: (
+  charAddTask: (charId: string, task: z.infer<typeof zodNewTask>) => void;
+  charEditTask: (
     charId: string,
+    taskId: string,
     task: z.infer<typeof zodNewTask>,
   ) => void;
+  charDelTask: (charId: string, taskId: string) => void;
+  charToggleTask: (charId: string, taskId: string) => void;
   reorderChars: (charIds: string[]) => void;
 };
 
@@ -103,27 +109,71 @@ export const createMainStore = () =>
           charEditRaid(set, charId, raidId, gates),
         charDelRaid: (charId, raidId) => charDelRaid(set, charId, raidId),
         raidAction: (action) => raidAction(set, action),
-        addTaskToCharacter(charId, task) {
+        charAddTask(charId, task) {
           set((state) => {
-            const updatedChars = state.characters.map((c) => {
-              if (c.id === charId) {
-                return {
-                  ...c,
-                  tasks: [
-                    ...c.tasks,
-                    {
-                      ...task,
-                      id: uuidv4(),
-                      completedDate: undefined,
-                    },
-                  ],
-                };
-              }
+            const char = state.characters.find((c) => c.id === charId);
+            if (!char) throw new Error("Character not found");
 
-              return c;
+            const parsedTask = zodNewTask.parse(task);
+
+            char.tasks.push({
+              ...parsedTask,
+              id: uuidv4(),
+              completedDate: undefined,
             });
 
-            return { ...state, characters: updatedChars };
+            return state;
+          });
+        },
+        charEditTask(charId, taskId, task) {
+          set((state) => {
+            const char = state.characters.find((c) => c.id === charId);
+            if (!char) throw new Error("Character not found");
+
+            const parsedTask = zodNewTask.parse(task);
+
+            const taskIndex = char.tasks.findIndex((t) => t.id === taskId);
+            if (taskIndex === -1) throw new Error("Task not found");
+
+            char.tasks[taskIndex] = {
+              ...parsedTask,
+              id: taskId,
+              completedDate: char.tasks[taskIndex].completedDate,
+            };
+
+            return state;
+          });
+        },
+        charDelTask(charId, taskId) {
+          set((state) => {
+            const char = state.characters.find((c) => c.id === charId);
+            if (!char) throw new Error("Character not found");
+
+            const taskIndex = char.tasks.findIndex((t) => t.id === taskId);
+            if (taskIndex === -1) throw new Error("Task not found");
+
+            char.tasks.splice(taskIndex, 1);
+
+            return state;
+          });
+        },
+        charToggleTask(charId, taskId) {
+          set((state) => {
+            const char = state.characters.find((c) => c.id === charId);
+            if (!char) throw new Error("Character not found");
+
+            const task = char.tasks.find((t) => t.id === taskId);
+            if (!task) throw new Error("Task not found");
+
+            const isCompleted = isTaskCompleted(task);
+            if (isCompleted) {
+              task.completedDate = undefined;
+            }
+            if (!isCompleted) {
+              task.completedDate = DateTime.now().toISO();
+            }
+
+            return state;
           });
         },
         restoreCharacter: (char, index) => {

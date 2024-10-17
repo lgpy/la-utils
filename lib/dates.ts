@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-export function getLatestReset({
+export function getLatestWeeklyReset({
   BiWeekly,
   currentDateOverride,
 }: {
@@ -27,6 +27,24 @@ export function getLatestReset({
   return latestWednesday;
 }
 
+export function getLatestDailyReset({
+  currentDateOverride,
+}: {
+  currentDateOverride?: DateTime;
+}) {
+  const currentDate = currentDateOverride ?? DateTime.now().setZone("UTC");
+  const reset = currentDate.set({
+    hour: 8,
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+  });
+  if (reset > currentDate) {
+    return reset.minus({ days: 1 });
+  }
+  return reset;
+}
+
 export function hasReset({
   dateRaidWasComplete,
   BiWeekly,
@@ -36,7 +54,7 @@ export function hasReset({
   BiWeekly?: "odd" | "even";
   currentDateOverride?: DateTime;
 }) {
-  const latestReset = getLatestReset({
+  const latestReset = getLatestWeeklyReset({
     BiWeekly,
     currentDateOverride,
   });
