@@ -89,7 +89,7 @@ export default function TodoCard({ char, isGoldEarner }: Props) {
   }, [char.tasks, char.id, state]);
 
   return (
-    <Card className="h-fit w-56 border-card border-1 select-none">
+    <Card className="h-fit w-56 border-card border-1 select-none overflow-hidden">
       <CardHeader className="p-4 flex flex-row gap-2 items-center relative">
         <ClassIcon c={char.class} className="size-10 min-w-10" />
         <div className="flex flex-col w-full">
@@ -128,13 +128,25 @@ export default function TodoCard({ char, isGoldEarner }: Props) {
           )}
         </TabsContent>
         <TabsContent value="tasks" className="m-0">
-          <CardContent className="p-1 text-center text-sm">Daily</CardContent>
-          <Separator />
-          {tasks.daily}
-          <Separator />
-          <CardContent className="p-1 text-center text-sm">Weekly</CardContent>
-          <Separator />
-          {tasks.weekly}
+          {tasks.daily.length > 0 && (
+            <>
+              <CardContent className="p-1 text-center text-sm bg-background/60">
+                Daily
+              </CardContent>
+              <Separator />
+              {tasks.daily}
+              <Separator />
+            </>
+          )}
+          {tasks.weekly.length > 0 && (
+            <>
+              <CardContent className="p-1 text-center text-sm bg-background/60">
+                Weekly
+              </CardContent>
+              <Separator />
+              {tasks.weekly}
+            </>
+          )}
           {char.tasks.length === 0 && (
             <CardContent className="p-3 text-center">
               No tasks assigned

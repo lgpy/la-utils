@@ -3,7 +3,7 @@ import { Character } from "@/hooks/mainstore";
 import { cn } from "@/lib/utils";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import ClassIcon from "@/components/class-icons/ClassIcon";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -46,6 +46,44 @@ export default function EditCard(props: Props) {
         {i < keys.length - 1 && <Separator className="opacity-75" />}
       </Fragment>
     ));
+
+  const tasks = useMemo(() => {
+    const filteredTasks = {
+      daily: char.tasks.filter((t) => t.type === "daily"),
+      weekly: char.tasks.filter((t) => t.type === "weekly"),
+    };
+
+    return Object.entries(filteredTasks).reduce<{
+      daily: JSX.Element[];
+      weekly: JSX.Element[];
+    }>(
+      (acc, [type, tasks]) => {
+        if (tasks.length === 0) return acc;
+
+        acc[type as "daily" | "weekly"] = tasks.map((task, i) => (
+          <Fragment key={task.id}>
+            <CardContent
+              key={task.id}
+              data-pw={`character-task-${i}`}
+              className="p-0"
+            >
+              <EditCardTask
+                task={task}
+                openTaskDialog={() => openTaskDialog(task.id)}
+              />
+            </CardContent>
+            {i < tasks.length - 1 && <Separator className="opacity-75" />}
+          </Fragment>
+        ));
+
+        return acc;
+      },
+      {
+        daily: [],
+        weekly: [],
+      },
+    );
+  }, [char.tasks, openTaskDialog]);
 
   return (
     <Card className="h-fit w-56 border-card border-1" {...divProps}>
@@ -110,23 +148,25 @@ export default function EditCard(props: Props) {
         </TabsContent>
         <TabsContent value="tasks" className="m-0">
           <div ref={parent2}>
-            {char.tasks.map((task, i) => (
+            {tasks.daily.length > 0 && (
               <>
-                <CardContent
-                  key={task.id}
-                  data-pw={`character-task-${i}`}
-                  className="p-0"
-                >
-                  <EditCardTask
-                    task={task}
-                    openTaskDialog={() => openTaskDialog(task.id)}
-                  />
+                <CardContent className="p-1 text-center text-sm bg-background/60">
+                  Daily
                 </CardContent>
-                {i < char.tasks.length - 1 && (
-                  <Separator className="opacity-75" />
-                )}
+                <Separator />
+                {tasks.daily}
+                <Separator />
               </>
-            ))}
+            )}
+            {tasks.weekly.length > 0 && (
+              <>
+                <CardContent className="p-1 text-center text-sm bg-background/60">
+                  Weekly
+                </CardContent>
+                <Separator />
+                {tasks.weekly}
+              </>
+            )}
           </div>
           <Separator />
           <CardContent className="p-0">
