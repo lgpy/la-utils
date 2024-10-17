@@ -133,7 +133,14 @@ export default function EditCard(props: Props) {
         </TabsList>
         <Separator />
         <TabsContent value="raids" className="m-0">
-          <div ref={parent}>{ar}</div>
+          <div ref={parent}>
+            {ar}
+            {ar.length === 0 && (
+              <CardContent className="p-3 text-center">
+                No raids assigned
+              </CardContent>
+            )}
+          </div>
           <Separator />
           <CardContent className="p-0">
             <Button
@@ -155,9 +162,9 @@ export default function EditCard(props: Props) {
                 </CardContent>
                 <Separator />
                 {tasks.daily}
-                <Separator />
               </>
             )}
+            {tasks.weekly.length > 0 && tasks.daily.length > 0 && <Separator />}
             {tasks.weekly.length > 0 && (
               <>
                 <CardContent className="p-1 text-center text-sm bg-background/60">
@@ -166,6 +173,11 @@ export default function EditCard(props: Props) {
                 <Separator />
                 {tasks.weekly}
               </>
+            )}
+            {char.tasks.length === 0 && (
+              <CardContent className="p-3 text-center">
+                No tasks assigned
+              </CardContent>
             )}
           </div>
           <Separator />
