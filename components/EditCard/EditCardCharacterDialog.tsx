@@ -229,7 +229,7 @@ export default function EditCardCharacterDialog({
               onClick={deleteCharacter}
               disabled={!existingCharacter}
               size="icon"
-              className=" mr-auto"
+              className="mr-auto"
               data-pw="char-delete-button"
             >
               <Trash2Icon />
