@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { z } from "zod";
 import { getLatestWeeklyReset, hasReset } from "./dates";
 
-type Task = z.infer<typeof zodTask>;
+export type Task = z.infer<typeof zodTask>;
 
 export function isTaskCompleted(
   task: Task,

@@ -1,4 +1,4 @@
-import { Character } from "@/hooks/mainstore";
+import { Character, useMainStore } from "@/hooks/mainstore";
 import { getHighest3, parseGoldInfo, sortRaidKeys } from "@/lib/chars";
 import { cn } from "@/lib/utils";
 import { SwordsIcon } from "lucide-react";
@@ -8,6 +8,9 @@ import PiggyBank from "@/components/PiggyBank";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import TodoCardRaid from "./TodoCardRaid";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import TodoCardTask from "./TodoCardTask";
+import { date } from "zod";
 
 interface Props {
   char: Character;
@@ -15,6 +18,7 @@ interface Props {
 }
 
 export default function TodoCard({ char, isGoldEarner }: Props) {
+  const { state } = useMainStore();
   const highest3 = useMemo(() => {
     const goldInfo = parseGoldInfo(char.assignedRaids);
     const highest3 = getHighest3(goldInfo);
@@ -46,6 +50,44 @@ export default function TodoCard({ char, isGoldEarner }: Props) {
       </Fragment>
     ));
 
+  const tasks = useMemo(() => {
+    const filteredTasks = {
+      daily: char.tasks.filter((t) => t.type === "daily"),
+      weekly: char.tasks.filter((t) => t.type === "weekly"),
+    };
+
+    return Object.entries(filteredTasks).reduce<{
+      daily: JSX.Element[];
+      weekly: JSX.Element[];
+    }>(
+      (acc, [type, tasks]) => {
+        if (tasks.length === 0) return acc;
+
+        acc[type as "daily" | "weekly"] = tasks.map((task, i) => (
+          <Fragment key={task.id}>
+            <CardContent
+              key={task.id}
+              data-pw={`character-task-${i}`}
+              className="p-0"
+            >
+              <TodoCardTask
+                task={task}
+                toggleTask={() => state.charToggleTask(char.id, task.id)}
+              />
+            </CardContent>
+            {i < tasks.length - 1 && <Separator className="opacity-75" />}
+          </Fragment>
+        ));
+
+        return acc;
+      },
+      {
+        daily: [],
+        weekly: [],
+      },
+    );
+  }, [char.tasks, char.id, state]);
+
   return (
     <Card className="h-fit w-56 border-card border-1 select-none">
       <CardHeader className="p-4 flex flex-row gap-2 items-center relative">
@@ -67,11 +109,39 @@ export default function TodoCard({ char, isGoldEarner }: Props) {
 
         {isGoldEarner && <PiggyBank goldInfo={highest3} />}
       </CardHeader>
-      <Separator />
-      {assignedRaids}
-      {assignedRaids.length === 0 && (
-        <CardContent className="p-3 text-center">No raids assigned</CardContent>
-      )}
+      <Tabs defaultValue="raids">
+        <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">
+          <TabsTrigger value="raids" className="w-full rounded-none">
+            Raids ({Object.keys(char.assignedRaids).length})
+          </TabsTrigger>
+          <TabsTrigger value="tasks" className="w-full rounded-none">
+            Tasks ({char.tasks.length})
+          </TabsTrigger>
+        </TabsList>
+        <Separator />
+        <TabsContent value="raids" className="m-0">
+          {assignedRaids}
+          {assignedRaids.length === 0 && (
+            <CardContent className="p-3 text-center">
+              No raids assigned
+            </CardContent>
+          )}
+        </TabsContent>
+        <TabsContent value="tasks" className="m-0">
+          <CardContent className="p-1 text-center text-sm">Daily</CardContent>
+          <Separator />
+          {tasks.daily}
+          <Separator />
+          <CardContent className="p-1 text-center text-sm">Weekly</CardContent>
+          <Separator />
+          {tasks.weekly}
+          {char.tasks.length === 0 && (
+            <CardContent className="p-3 text-center">
+              No tasks assigned
+            </CardContent>
+          )}
+        </TabsContent>
+      </Tabs>
     </Card>
   );
 }

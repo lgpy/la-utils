@@ -122,7 +122,7 @@ export const createMainStore = () =>
               completedDate: undefined,
             });
 
-            return state;
+            return { ...state };
           });
         },
         charEditTask(charId, taskId, task) {
@@ -141,7 +141,7 @@ export const createMainStore = () =>
               completedDate: char.tasks[taskIndex].completedDate,
             };
 
-            return state;
+            return { ...state };
           });
         },
         charDelTask(charId, taskId) {
@@ -154,7 +154,7 @@ export const createMainStore = () =>
 
             char.tasks.splice(taskIndex, 1);
 
-            return state;
+            return { ...state };
           });
         },
         charToggleTask(charId, taskId) {
@@ -173,7 +173,7 @@ export const createMainStore = () =>
               task.completedDate = DateTime.now().toISO();
             }
 
-            return state;
+            return { ...state };
           });
         },
         restoreCharacter: (char, index) => {

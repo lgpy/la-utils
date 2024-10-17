@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
 import { sortRaidKeys } from "@/lib/chars";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import EditCardTask from "./EditCardTask";
 
 type Props = {
   char: Character;
@@ -21,6 +22,7 @@ type Props = {
 
 export default function EditCard(props: Props) {
   const [parent] = useAutoAnimate();
+  const [parent2] = useAutoAnimate();
   const {
     char,
     editCharacter,
@@ -107,6 +109,26 @@ export default function EditCard(props: Props) {
           </CardContent>
         </TabsContent>
         <TabsContent value="tasks" className="m-0">
+          <div ref={parent2}>
+            {char.tasks.map((task, i) => (
+              <>
+                <CardContent
+                  key={task.id}
+                  data-pw={`character-task-${i}`}
+                  className="p-0"
+                >
+                  <EditCardTask
+                    task={task}
+                    openTaskDialog={() => openTaskDialog(task.id)}
+                  />
+                </CardContent>
+                {i < char.tasks.length - 1 && (
+                  <Separator className="opacity-75" />
+                )}
+              </>
+            ))}
+          </div>
+          <Separator />
           <CardContent className="p-0">
             <Button
               className="w-full rounded-t-none px-0"

@@ -32,13 +32,14 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Trash2Icon } from "lucide-react";
 
 const formSchema = z.object({
-  taskId: z.string().min(2).max(50),
   name: z.string().min(2).max(50),
   type: z.enum(["daily", "weekly"]),
 });
@@ -76,7 +77,6 @@ export default function EditCardTaskDialog({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      taskId: taskId || "",
       name: "",
       type: "daily",
     },
@@ -88,6 +88,17 @@ export default function EditCardTaskDialog({
       /*if (taskId !== undefined)
         state.charEditRaid(character.id, taskId, fgates);
       else state.charAddRaid(character.id, values.raidId, fgates);*/
+      if (taskId !== undefined)
+        state.charEditTask(character.id, taskId, {
+          name: values.name,
+          type: values.type,
+        });
+      else
+        state.charAddTask(character.id, {
+          name: values.name,
+          type: values.type,
+        });
+
       close();
       toast({
         title: `Task ${taskId ? "Updated" : "Added"}!`,
@@ -106,7 +117,12 @@ export default function EditCardTaskDialog({
 
   useEffect(() => {
     if (!isOpen) return;
-  }, [isOpen]);
+    const task = character.tasks.find((t) => t.id === taskId);
+    form.reset({
+      name: task?.name || "",
+      type: task?.type || "daily",
+    });
+  }, [isOpen, taskId, character.tasks, form]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
@@ -163,26 +179,39 @@ export default function EditCardTaskDialog({
           </form>
         </Form>
         <DialogFooter>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">Presets</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {presets.map((preset, idx) => (
-                <DropdownMenuCheckboxItem
-                  key={"preset" + idx}
-                  onClick={() => {
-                    form.setValue("name", preset.name);
-                    form.setValue("type", preset.type);
-                  }}
-                >
-                  {preset.name}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="mr-auto flex flex-row justify-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">Presets</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                {presets.map((preset, idx) => (
+                  <DropdownMenuItem
+                    key={"preset" + idx}
+                    onClick={() => {
+                      form.setValue("name", preset.name);
+                      form.setValue("type", preset.type);
+                    }}
+                  >
+                    {preset.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {taskId !== undefined && (
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  state.charDelTask(character.id, taskId);
+                  close();
+                }}
+                size="icon"
+                data-pw="char-delete-button"
+              >
+                <Trash2Icon />
+              </Button>
+            )}
+          </div>
           <Button variant="ghost" onClick={close} data-pw="form-cancel">
             Cancel
           </Button>

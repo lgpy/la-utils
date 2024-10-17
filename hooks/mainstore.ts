@@ -1,4 +1,5 @@
 import { Difficulty, isGateCompleted } from "@/lib/raids";
+import { isTaskCompleted } from "@/lib/tasks";
 import { _useMainStore } from "@/providers/MainStoreProvider";
 import { DateTime } from "luxon";
 
@@ -44,6 +45,11 @@ export const useMainStore = () => {
           },
           {} as ExtendedAssignedRaids,
         ),
+        tasks: character.tasks.map((task) => ({
+          ...task,
+          completed:
+            task.completedDate !== undefined ? isTaskCompleted(task) : false,
+        })),
       })),
     },
     hasHydrated,
