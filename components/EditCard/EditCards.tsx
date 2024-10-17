@@ -17,14 +17,18 @@ import {
 import EditCardsNoCharactersCard from "./EditCardsNoCharactersCard";
 import EditCardCharacterDialog from "./EditCardCharacterDialog";
 import EditCardRaidDialog from "./EditCardRaidDialog";
+import EditCardTaskDialog from "./EditCardTaskDialog";
 
 export default function EditCards() {
   const { state, hasHydrated } = useMainStore();
-  const [isOpen, setIsOpen] = useState<false | "raid" | "char">(false);
+  const [isOpen, setIsOpen] = useState<false | "raid" | "char" | "task">(false);
   const [selectedCharacter, setSelectedCharacter] = useState<
     Character | undefined
   >(undefined);
   const [selectedRaid, setSelectedRaid] = useState<string | undefined>(
+    undefined,
+  );
+  const [selectedTask, setSelectedTask] = useState<string | undefined>(
     undefined,
   );
   const [isLocked, setIsLocked] = useState(true);
@@ -38,6 +42,12 @@ export default function EditCards() {
     setSelectedCharacter(char);
     setSelectedRaid(raidId);
     setIsOpen("raid");
+  };
+
+  const openTaskDialog = (char: Character, taskId: string | undefined) => {
+    setSelectedCharacter(char);
+    setSelectedTask(taskId);
+    setIsOpen("task");
   };
 
   const parent = useRef() as React.MutableRefObject<HTMLUListElement>;
@@ -88,6 +98,7 @@ export default function EditCards() {
               char={char}
               editCharacter={() => openCharacterEditDialog(char)}
               openRaidDialog={(raidId) => openRaidDialog(char, raidId)}
+              openTaskDialog={(taskId) => openTaskDialog(char, taskId)}
               movable={!isLocked}
               data-pw={`character-${index}`}
             />
@@ -108,6 +119,14 @@ export default function EditCards() {
           isOpen={isOpen === "raid"}
           raidId={selectedRaid}
           close={() => setIsOpen(false)}
+        />
+      )}
+      {selectedCharacter && isOpen === "task" && (
+        <EditCardTaskDialog
+          character={selectedCharacter}
+          isOpen={isOpen === "task"}
+          close={() => setIsOpen(false)}
+          taskId={selectedTask}
         />
       )}
       <motion.div

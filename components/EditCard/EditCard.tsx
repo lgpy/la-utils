@@ -3,26 +3,31 @@ import { Character } from "@/hooks/mainstore";
 import { cn } from "@/lib/utils";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import ClassIcon from "@/components/class-icons/ClassIcon";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
 import { sortRaidKeys } from "@/lib/chars";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import EditCardTask from "./EditCardTask";
 
 type Props = {
   char: Character;
   editCharacter: () => void;
   openRaidDialog: (raidId?: string) => void;
+  openTaskDialog: (taskId?: string) => void;
   movable?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export default function EditCard(props: Props) {
   const [parent] = useAutoAnimate();
+  const [parent2] = useAutoAnimate();
   const {
     char,
     editCharacter,
     openRaidDialog,
+    openTaskDialog,
     movable = false,
     ...divProps
   } = props;
@@ -41,6 +46,44 @@ export default function EditCard(props: Props) {
         {i < keys.length - 1 && <Separator className="opacity-75" />}
       </Fragment>
     ));
+
+  const tasks = useMemo(() => {
+    const filteredTasks = {
+      daily: char.tasks.filter((t) => t.type === "daily"),
+      weekly: char.tasks.filter((t) => t.type === "weekly"),
+    };
+
+    return Object.entries(filteredTasks).reduce<{
+      daily: JSX.Element[];
+      weekly: JSX.Element[];
+    }>(
+      (acc, [type, tasks]) => {
+        if (tasks.length === 0) return acc;
+
+        acc[type as "daily" | "weekly"] = tasks.map((task, i) => (
+          <Fragment key={task.id}>
+            <CardContent
+              key={task.id}
+              data-pw={`character-task-${i}`}
+              className="p-0"
+            >
+              <EditCardTask
+                task={task}
+                openTaskDialog={() => openTaskDialog(task.id)}
+              />
+            </CardContent>
+            {i < tasks.length - 1 && <Separator className="opacity-75" />}
+          </Fragment>
+        ));
+
+        return acc;
+      },
+      {
+        daily: [],
+        weekly: [],
+      },
+    );
+  }, [char.tasks, openTaskDialog]);
 
   return (
     <Card className="h-fit w-56 border-card border-1" {...divProps}>
@@ -79,19 +122,77 @@ export default function EditCard(props: Props) {
           <PencilIcon className="h-4 w-4" />
         </Button>
       </CardHeader>
-      <Separator />
-      <div ref={parent}>{ar}</div>
-      <Separator />
-      <CardContent className="p-0">
-        <Button
-          className="w-full rounded-t-none"
-          onClick={() => openRaidDialog()}
-          variant="ghost"
-          data-pw={`character-add-raid`}
-        >
-          <PlusIcon className="mr-2 h-4 w-4" /> Add raid
-        </Button>
-      </CardContent>
+      <Tabs defaultValue="raids">
+        <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">
+          <TabsTrigger value="raids" className="w-full rounded-none">
+            Raids ({Object.keys(char.assignedRaids).length})
+          </TabsTrigger>
+          <TabsTrigger value="tasks" className="w-full rounded-none">
+            Tasks ({char.tasks.length})
+          </TabsTrigger>
+        </TabsList>
+        <Separator />
+        <TabsContent value="raids" className="m-0">
+          <div ref={parent}>
+            {ar}
+            {ar.length === 0 && (
+              <CardContent className="p-3 text-center">
+                No raids assigned
+              </CardContent>
+            )}
+          </div>
+          <Separator />
+          <CardContent className="p-0">
+            <Button
+              className="w-full rounded-t-none p-2"
+              onClick={() => openRaidDialog()}
+              variant="ghost"
+              data-pw={`character-add-raid`}
+            >
+              <PlusIcon className="mr-1 h-4 w-4" /> Add Raid
+            </Button>
+          </CardContent>
+        </TabsContent>
+        <TabsContent value="tasks" className="m-0">
+          <div ref={parent2}>
+            {tasks.daily.length > 0 && (
+              <>
+                <CardContent className="p-1 text-center text-sm bg-background/60">
+                  Daily
+                </CardContent>
+                <Separator />
+                {tasks.daily}
+              </>
+            )}
+            {tasks.weekly.length > 0 && tasks.daily.length > 0 && <Separator />}
+            {tasks.weekly.length > 0 && (
+              <>
+                <CardContent className="p-1 text-center text-sm bg-background/60">
+                  Weekly
+                </CardContent>
+                <Separator />
+                {tasks.weekly}
+              </>
+            )}
+            {char.tasks.length === 0 && (
+              <CardContent className="p-3 text-center">
+                No tasks assigned
+              </CardContent>
+            )}
+          </div>
+          <Separator />
+          <CardContent className="p-0">
+            <Button
+              className="w-full rounded-t-none px-0"
+              onClick={() => openTaskDialog()}
+              variant="ghost"
+              data-pw={`character-add-task`}
+            >
+              <PlusIcon className="mr-1 h-4 w-4" /> Add Task
+            </Button>
+          </CardContent>
+        </TabsContent>
+      </Tabs>
     </Card>
   );
 }
