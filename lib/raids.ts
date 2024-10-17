@@ -256,11 +256,11 @@ export const raids: Record<
         difficulties: {
           [Difficulty.normal]: {
             itemlevel: 1580,
-            rewards: { gold: 1750 },
+            rewards: { gold: 1000 },
           },
           [Difficulty.hard]: {
             itemlevel: 1600,
-            rewards: { gold: 2250 },
+            rewards: { gold: 2250 }, //TODO: Check this value
           },
         },
       },
@@ -268,11 +268,11 @@ export const raids: Record<
         difficulties: {
           [Difficulty.normal]: {
             itemlevel: 1580,
-            rewards: { gold: 2250 },
+            rewards: { gold: 1800 },
           },
           [Difficulty.hard]: {
             itemlevel: 1600,
-            rewards: { gold: 2750 },
+            rewards: { gold: 2750 }, //TODO: Check this value
           },
         },
       },
@@ -280,11 +280,11 @@ export const raids: Record<
         difficulties: {
           [Difficulty.normal]: {
             itemlevel: 1580,
-            rewards: { gold: 4500 },
+            rewards: { gold: 2600 },
           },
           [Difficulty.hard]: {
             itemlevel: 1600,
-            rewards: { gold: 6000 },
+            rewards: { gold: 6000 }, //TODO: Check this value
           },
         },
       },
@@ -297,11 +297,11 @@ export const raids: Record<
         difficulties: {
           [Difficulty.normal]: {
             itemlevel: 1600,
-            rewards: { gold: 2000 },
+            rewards: { gold: 1500 },
           },
           [Difficulty.hard]: {
-            itemlevel: 1620,
-            rewards: { gold: 3500 },
+            itemlevel: 1610,
+            rewards: { gold: 3000 },
           },
         },
       },
@@ -309,11 +309,11 @@ export const raids: Record<
         difficulties: {
           [Difficulty.normal]: {
             itemlevel: 1600,
-            rewards: { gold: 3000 },
+            rewards: { gold: 2000 },
           },
           [Difficulty.hard]: {
-            itemlevel: 1620,
-            rewards: { gold: 4500 },
+            itemlevel: 1610,
+            rewards: { gold: 4000 },
           },
         },
       },
@@ -321,11 +321,11 @@ export const raids: Record<
         difficulties: {
           [Difficulty.normal]: {
             itemlevel: 1600,
-            rewards: { gold: 4000 },
+            rewards: { gold: 3000 },
           },
           [Difficulty.hard]: {
-            itemlevel: 1620,
-            rewards: { gold: 6500 },
+            itemlevel: 1610,
+            rewards: { gold: 6000 },
           },
         },
       },
@@ -394,7 +394,7 @@ export const raids: Record<
         difficulties: {
           [Difficulty.normal]: {
             itemlevel: 1620,
-            rewards: { gold: 5000 },
+            rewards: { gold: 6000 },
           },
           [Difficulty.hard]: {
             itemlevel: 1630,
@@ -406,7 +406,7 @@ export const raids: Record<
         difficulties: {
           [Difficulty.normal]: {
             itemlevel: 1620,
-            rewards: { gold: 9500 },
+            rewards: { gold: 10000 },
           },
           [Difficulty.hard]: {
             itemlevel: 1630,

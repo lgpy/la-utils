@@ -135,8 +135,14 @@ export default function PriceCard({
           </p>
         </div>
         {mari !== undefined && (
-          <div className="flex flex-col items-end">
-            <Label>Mari Value</Label>
+          <div className="flex flex-col items-end justify-between">
+            <Label>
+              Mari Value
+              <span className="text-muted-foreground text-xs">
+                {" "}
+                (x{item.mari?.qty})
+              </span>
+            </Label>
             <p className="text-md mt-1.5">{+mari.singleMariValue.toFixed(2)}</p>
             <p
               className={cn("text-xs", {
@@ -147,6 +153,18 @@ export default function PriceCard({
               {mari.diff > 0 && "+"}
               {+mari.diff.toFixed(2)}%
             </p>
+            <div className="flex flex-row gap-3 text-muted">
+              <div className="flex flex-row gap-1 items-center">
+                <p className="text-xs">{item.mari?.bc}</p>
+                <Image
+                  src="/assets/blue-crystal.webp"
+                  height={16}
+                  width={16}
+                  alt=""
+                  className="size-[16px]"
+                />
+              </div>
+            </div>
           </div>
         )}
       </CardContent>

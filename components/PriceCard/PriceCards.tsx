@@ -98,17 +98,18 @@ function PricesType({
 
 const types = [
   { type: "store", name: "Store" },
-  { type: "honing", name: "Honing" },
+  { type: "honing-t4", name: "Honing T4" },
+  { type: "honing", name: "Honing T3" },
   {
     type: "tradeskills",
     name: "Trade Skills",
     subtypes: [
-      { type: "fishing", name: "Fishing" },
-      { type: "hunting", name: "Hunting" },
-      { type: "excavating", name: "Excavating" },
       { type: "foraging", name: "Foraging" },
       { type: "logging", name: "Logging" },
       { type: "mining", name: "Mining" },
+      { type: "hunting", name: "Hunting" },
+      { type: "fishing", name: "Fishing" },
+      { type: "excavating", name: "Excavating" },
     ],
   },
 ];
