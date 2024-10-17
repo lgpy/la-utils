@@ -1,7 +1,7 @@
 import { zodTask } from "@/stores/main";
 import { DateTime } from "luxon";
 import { z } from "zod";
-import { getLatestWeeklyReset, hasReset } from "./dates";
+import { getLatestDailyReset, getLatestWeeklyReset, hasReset } from "./dates";
 
 export type Task = z.infer<typeof zodTask>;
 
@@ -18,7 +18,7 @@ export function isTaskCompleted(
       return latestReset < taskDate;
     }
     case "daily": {
-      const latestReset = getLatestWeeklyReset({ currentDateOverride });
+      const latestReset = getLatestDailyReset({ currentDateOverride });
       return latestReset < taskDate;
     }
   }
