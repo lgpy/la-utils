@@ -125,10 +125,20 @@ export default function EditCard(props: Props) {
       <Tabs defaultValue="raids">
         <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">
           <TabsTrigger value="raids" className="w-full rounded-none">
-            Raids ({Object.keys(char.assignedRaids).length})
+            <p>
+              Raids{" "}
+              <span className="text-xs text-muted-foreground">
+                ({Object.keys(char.assignedRaids).length})
+              </span>
+            </p>
           </TabsTrigger>
           <TabsTrigger value="tasks" className="w-full rounded-none">
-            Tasks ({char.tasks.length})
+            <p>
+              Tasks{" "}
+              <span className="text-xs text-muted-foreground">
+                ({char.tasks.length})
+              </span>
+            </p>
           </TabsTrigger>
         </TabsList>
         <Separator />
