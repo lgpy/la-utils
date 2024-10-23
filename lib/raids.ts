@@ -437,4 +437,33 @@ export const raids: Record<
       },
     },
   },
+  aegir: {
+    name: "Aegir",
+    gates: {
+      G1: {
+        difficulties: {
+          [Difficulty.normal]: {
+            itemlevel: 1660,
+            rewards: { gold: 7500 },
+          },
+          [Difficulty.hard]: {
+            itemlevel: 1680,
+            rewards: { gold: 9000 },
+          },
+        },
+      },
+      G2: {
+        difficulties: {
+          [Difficulty.normal]: {
+            itemlevel: 1660,
+            rewards: { gold: 15500 },
+          },
+          [Difficulty.hard]: {
+            itemlevel: 1680,
+            rewards: { gold: 18500 },
+          },
+        },
+      },
+    },
+  },
 };
