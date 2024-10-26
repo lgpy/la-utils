@@ -16,8 +16,8 @@ export default function RosterGold() {
       return;
     }
     const ret = state.characters.reduce(
-      (acc, char, idx) => {
-        if (idx >= 6) return acc;
+      (acc, char) => {
+        if (!char.isGoldEarner) return acc;
         const goldInfo = parseGoldInfo(char.assignedRaids);
         const highest3 = getHighest3(goldInfo);
         Object.values(highest3).forEach((nfo) => {

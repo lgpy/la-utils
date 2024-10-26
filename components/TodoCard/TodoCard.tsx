@@ -10,14 +10,12 @@ import { Separator } from "@/components/ui/separator";
 import TodoCardRaid from "./TodoCardRaid";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import TodoCardTask from "./TodoCardTask";
-import { date } from "zod";
 
 interface Props {
   char: Character;
-  isGoldEarner: boolean;
 }
 
-export default function TodoCard({ char, isGoldEarner }: Props) {
+export default function TodoCard({ char }: Props) {
   const { state } = useMainStore();
   const highest3 = useMemo(() => {
     const goldInfo = parseGoldInfo(char.assignedRaids);
@@ -39,7 +37,7 @@ export default function TodoCard({ char, isGoldEarner }: Props) {
             raidId={raidId}
             raid={char.assignedRaids[raidId]}
             goldEarner={
-              isGoldEarner &&
+              char.isGoldEarner &&
               highest3[raidId] !== undefined &&
               Object.keys(highest3).length <
                 Object.keys(char.assignedRaids).length
@@ -107,7 +105,7 @@ export default function TodoCard({ char, isGoldEarner }: Props) {
           </div>
         </div>
 
-        {isGoldEarner && <PiggyBank goldInfo={highest3} />}
+        {char.isGoldEarner && <PiggyBank goldInfo={highest3} />}
       </CardHeader>
       <Tabs defaultValue="raids">
         <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">

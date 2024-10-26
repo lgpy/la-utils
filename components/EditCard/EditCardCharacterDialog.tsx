@@ -31,15 +31,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import Link from "next/link";
 import { Trash2Icon, TrashIcon } from "lucide-react";
 import ClassIcon from "../class-icons/ClassIcon";
 import { Character, useMainStore } from "@/hooks/mainstore";
+import { Checkbox } from "../ui/checkbox";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
   itemLevel: z.number().int().min(0).max(9999),
   class: z.nativeEnum(Class),
+  isGoldEarner: z.boolean(),
 });
 
 const classes = Object.values(Class);
@@ -61,6 +62,7 @@ export default function EditCardCharacterDialog({
       class: undefined,
       itemLevel: undefined,
       name: "",
+      isGoldEarner: false,
     },
   });
   const { state, hasHydrated } = useMainStore();
@@ -120,6 +122,7 @@ export default function EditCardCharacterDialog({
       name: existingCharacter?.name ?? "",
       itemLevel: existingCharacter?.itemLevel,
       class: existingCharacter?.class,
+      isGoldEarner: existingCharacter?.isGoldEarner ?? false,
     });
   }, [existingCharacter, isOpen, form]);
 
@@ -217,6 +220,23 @@ export default function EditCardCharacterDialog({
                     />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="isGoldEarner"
+              render={({ field }) => (
+                <FormItem className="flex flex-row gap-2 items-center space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Is Gold Earner?
+                  </label>
                 </FormItem>
               )}
             />

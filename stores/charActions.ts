@@ -46,6 +46,7 @@ export function CreateCharacter(
           name: newc.name,
           class: newc.class,
           itemLevel: newc.itemLevel,
+          isGoldEarner: newc.isGoldEarner,
           id: uuidv4(),
           assignedRaids: {},
           completedRaids: {},

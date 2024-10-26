@@ -30,6 +30,7 @@ export const zodChar = z.object({
   name: z.string(),
   class: z.nativeEnum(Class),
   itemLevel: z.number(),
+  isGoldEarner: z.boolean(),
   assignedRaids: z.record(
     z.record(
       z.object({
@@ -49,11 +50,13 @@ export const zodNewChar = zodChar.pick({
   name: true,
   class: true,
   itemLevel: true,
+  isGoldEarner: true,
 });
 export const zodEditChar = zodChar.pick({
   name: true,
   class: true,
   itemLevel: true,
+  isGoldEarner: true,
 });
 export const zodNewTask = zodTask.pick({ name: true, type: true });
 
@@ -203,7 +206,7 @@ export const createMainStore = () =>
       }),
       {
         name: "characters",
-        version: 3,
+        version: 4,
         migrate: (persistedState, version) => {
           if (version <= 0) {
             for (const char of (persistedState as { characters: any[] })
@@ -241,6 +244,13 @@ export const createMainStore = () =>
               );
               delete char.raids;
             }
+          }
+          if (version <= 3) {
+            (persistedState as { characters: any[] }).characters.forEach(
+              (char, idx) => {
+                char.isGoldEarner = idx < 6;
+              },
+            );
           }
           return persistedState;
         },

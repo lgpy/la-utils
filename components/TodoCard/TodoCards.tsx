@@ -12,8 +12,8 @@ export default function TodoCards() {
   const [parent] = useAutoAnimate();
 
   const charCards = useMemo(() => {
-    return state.characters.map((char, idx) => (
-      <TodoCard char={char} key={char.id} isGoldEarner={idx < 6} />
+    return state.characters.map((char) => (
+      <TodoCard char={char} key={char.id} />
     ));
   }, [state.characters]);
 
