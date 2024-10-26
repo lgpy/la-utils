@@ -201,45 +201,49 @@ export default function EditCardCharacterDialog({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="itemLevel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Item level</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Your character's item level..."
-                      type="number"
-                      max={3000}
-                      step={10}
-                      min={0}
-                      {...field}
-                      onChange={(event) => field.onChange(+event.target.value)}
-                      data-pw="char-item-level"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="isGoldEarner"
-              render={({ field }) => (
-                <FormItem className="flex flex-row gap-2 items-center space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    Is Gold Earner?
-                  </label>
-                </FormItem>
-              )}
-            />
+
+            <div className="flex flex-row items-end gap-5">
+              <FormField
+                control={form.control}
+                name="itemLevel"
+                render={({ field }) => (
+                  <FormItem className="w-1/2">
+                    <FormLabel>Item level</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Your character's item level..."
+                        type="number"
+                        max={3000}
+                        step={10}
+                        min={0}
+                        {...field}
+                        onChange={(event) =>
+                          field.onChange(+event.target.value)
+                        }
+                        data-pw="char-item-level"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="isGoldEarner"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row gap-2 items-center space-y-0 mb-2.5">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="size-5"
+                      />
+                    </FormControl>
+                    <FormLabel>Is Gold Earner?</FormLabel>
+                  </FormItem>
+                )}
+              />
+            </div>
           </form>
         </Form>
         <DialogFooter>
