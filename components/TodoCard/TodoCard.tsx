@@ -1,7 +1,7 @@
 import { Character, useMainStore } from "@/hooks/mainstore";
 import { getHighest3, parseGoldInfo, sortRaidKeys } from "@/lib/chars";
 import { cn } from "@/lib/utils";
-import { SwordsIcon } from "lucide-react";
+import { Check, SwordsIcon } from "lucide-react";
 import { Fragment, useMemo } from "react";
 import ClassIcon from "@/components/class-icons/ClassIcon";
 import PiggyBank from "@/components/PiggyBank";
@@ -86,6 +86,15 @@ export default function TodoCard({ char }: Props) {
     );
   }, [char.tasks, char.id, state]);
 
+  const completedTasks = char.tasks.reduce(
+    (acc, t) => (t.completed ? acc + 1 : acc),
+    0,
+  );
+  const completedRaids = Object.values(char.assignedRaids).reduce((acc, r) => {
+    if (Object.values(r).some((b) => !b.completed)) return acc;
+    return acc + 1;
+  }, 0);
+
   return (
     <Card className="h-fit w-56 border-card border-1 select-none overflow-hidden">
       <CardHeader className="p-4 flex flex-row gap-2 items-center relative">
@@ -107,61 +116,87 @@ export default function TodoCard({ char }: Props) {
 
         {char.isGoldEarner && <PiggyBank goldInfo={highest3} />}
       </CardHeader>
-      <Tabs defaultValue="raids">
-        <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">
-          <TabsTrigger value="raids" className="w-full rounded-none">
-            <p>
-              Raids{" "}
-              <span className="text-xs text-muted-foreground">
-                ({Object.keys(char.assignedRaids).length})
-              </span>
-            </p>
-          </TabsTrigger>
-          <TabsTrigger value="tasks" className="w-full rounded-none">
-            <p>
-              Tasks{" "}
-              <span className="text-xs text-muted-foreground">
-                ({char.tasks.length})
-              </span>
-            </p>
-          </TabsTrigger>
-        </TabsList>
-        <Separator />
-        <TabsContent value="raids" className="m-0">
+      {char.tasks.length > 0 && (
+        <Tabs defaultValue="raids">
+          <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">
+            <TabsTrigger value="raids" className="w-full rounded-none">
+              <p>
+                Raids{" "}
+                {completedRaids !== Object.keys(char.assignedRaids).length && (
+                  <span className="text-xs text-muted-foreground">
+                    ({completedRaids}/{Object.keys(char.assignedRaids).length})
+                  </span>
+                )}
+                {completedRaids === Object.keys(char.assignedRaids).length && (
+                  <Check className="inline size-4" />
+                )}
+              </p>
+            </TabsTrigger>
+            <TabsTrigger value="tasks" className="w-full rounded-none">
+              <p>
+                Tasks{" "}
+                {completedTasks !== char.tasks.length && (
+                  <span className="text-xs text-muted-foreground">
+                    ({completedTasks}/{char.tasks.length})
+                  </span>
+                )}
+                {completedTasks === char.tasks.length && (
+                  <Check className="inline size-4" />
+                )}
+              </p>
+            </TabsTrigger>
+          </TabsList>
+          <Separator />
+          <TabsContent value="raids" className="m-0">
+            {assignedRaids}
+            {assignedRaids.length === 0 && (
+              <CardContent className="p-3 text-center">
+                No raids assigned
+              </CardContent>
+            )}
+          </TabsContent>
+          <TabsContent value="tasks" className="m-0">
+            {tasks.daily.length > 0 && (
+              <>
+                <CardContent className="p-1 text-center text-sm bg-background/60">
+                  Daily
+                </CardContent>
+                <Separator />
+                {tasks.daily}
+                <Separator />
+              </>
+            )}
+            {tasks.weekly.length > 0 && (
+              <>
+                <CardContent className="p-1 text-center text-sm bg-background/60">
+                  Weekly
+                </CardContent>
+                <Separator />
+                {tasks.weekly}
+              </>
+            )}
+            {char.tasks.length === 0 && (
+              <CardContent className="p-3 text-center">
+                No tasks assigned
+              </CardContent>
+            )}
+          </TabsContent>
+        </Tabs>
+      )}
+      {char.tasks.length === 0 && assignedRaids.length > 0 && (
+        <>
+          <Separator />
           {assignedRaids}
-          {assignedRaids.length === 0 && (
-            <CardContent className="p-3 text-center">
-              No raids assigned
-            </CardContent>
-          )}
-        </TabsContent>
-        <TabsContent value="tasks" className="m-0">
-          {tasks.daily.length > 0 && (
-            <>
-              <CardContent className="p-1 text-center text-sm bg-background/60">
-                Daily
-              </CardContent>
-              <Separator />
-              {tasks.daily}
-              <Separator />
-            </>
-          )}
-          {tasks.weekly.length > 0 && (
-            <>
-              <CardContent className="p-1 text-center text-sm bg-background/60">
-                Weekly
-              </CardContent>
-              <Separator />
-              {tasks.weekly}
-            </>
-          )}
-          {char.tasks.length === 0 && (
-            <CardContent className="p-3 text-center">
-              No tasks assigned
-            </CardContent>
-          )}
-        </TabsContent>
-      </Tabs>
+        </>
+      )}
+      {char.tasks.length === 0 && assignedRaids.length === 0 && (
+        <>
+          <Separator />
+          <CardContent className="p-3 text-center">
+            No raids assigned
+          </CardContent>
+        </>
+      )}
     </Card>
   );
 }
