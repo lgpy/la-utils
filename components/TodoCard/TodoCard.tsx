@@ -10,6 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import TodoCardRaid from "./TodoCardRaid";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import TodoCardTask from "./TodoCardTask";
+import TodoCardRaidV2 from "./TodoCardRaidV2";
+import { useSettingsStore } from "@/providers/SettingsProvider";
 
 interface Props {
   char: Character;
@@ -17,6 +19,7 @@ interface Props {
 
 export default function TodoCard({ char }: Props) {
   const { state } = useMainStore();
+  const settings = useSettingsStore((s) => s);
   const highest3 = useMemo(() => {
     const goldInfo = parseGoldInfo(char.assignedRaids);
     const highest3 = getHighest3(goldInfo);
@@ -32,17 +35,31 @@ export default function TodoCard({ char }: Props) {
             "rounded-b-lg": i === keys.length - 1,
           })}
         >
-          <TodoCardRaid
-            charId={char.id}
-            raidId={raidId}
-            raid={char.assignedRaids[raidId]}
-            goldEarner={
-              char.isGoldEarner &&
-              highest3[raidId] !== undefined &&
-              Object.keys(highest3).length <
-                Object.keys(char.assignedRaids).length
-            }
-          />
+          {settings.store.experiments.buttonV2 ? (
+            <TodoCardRaidV2
+              charId={char.id}
+              raidId={raidId}
+              raid={char.assignedRaids[raidId]}
+              goldEarner={
+                char.isGoldEarner &&
+                highest3[raidId] !== undefined &&
+                Object.keys(highest3).length <
+                  Object.keys(char.assignedRaids).length
+              }
+            />
+          ) : (
+            <TodoCardRaid
+              charId={char.id}
+              raidId={raidId}
+              raid={char.assignedRaids[raidId]}
+              goldEarner={
+                char.isGoldEarner &&
+                highest3[raidId] !== undefined &&
+                Object.keys(highest3).length <
+                  Object.keys(char.assignedRaids).length
+              }
+            />
+          )}
         </CardContent>
         {i < keys.length - 1 && <Separator className="opacity-75" />}
       </Fragment>

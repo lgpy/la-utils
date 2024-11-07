@@ -1,5 +1,12 @@
 "use client";
-import { Import, Moon, SettingsIcon, Sun, SunMoon } from "lucide-react";
+import {
+  FlaskConical,
+  Import,
+  Moon,
+  SettingsIcon,
+  Sun,
+  SunMoon,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -193,6 +200,29 @@ export default function SettingsButton() {
                     </DropdownMenuSubContent>
                   </DropdownMenuPortal>
                 </DropdownMenuSub>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+        </DropdownMenuGroup>
+        <DropdownMenuGroup>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className="focus:text-background data-[state=open]:text-background">
+              <FlaskConical className="mr-2 h-4 w-4" />
+              <span>Experiments</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuCheckboxItem
+                  checked={store.experiments.buttonV2}
+                  onCheckedChange={() =>
+                    store.toggleExperiments(
+                      "buttonV2",
+                      !store.experiments.buttonV2,
+                    )
+                  }
+                >
+                  <span>Raid Button V2</span>
+                </DropdownMenuCheckboxItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>

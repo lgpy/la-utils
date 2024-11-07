@@ -1,5 +1,5 @@
 import { Class } from "@/lib/classes";
-import { Difficulty } from "@/lib/raids";
+import { Difficulty, isGateCompleted, raids } from "@/lib/raids";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { persist } from "zustand/middleware";
@@ -17,6 +17,7 @@ import {
 } from "./raidActions";
 import { isTaskCompleted } from "@/lib/tasks";
 import { DateTime } from "luxon";
+import { getLatestWeeklyReset } from "@/lib/dates";
 
 export const zodTask = z.object({
   id: z.string(),
@@ -84,6 +85,10 @@ export type MainActions = {
     raidId: string;
     mode?: "all" | "last";
   }) => void;
+  toggleGate: (charId: string, raidId: string, gateId: string) => void;
+  untoggleGate: (charId: string, raidId: string, gateId: string) => void;
+  toggleAllGates: (charId: string, raidId: string) => void;
+  untoggleAllGates: (charId: string, raidId: string) => void;
   restoreData: (data: MainState) => void;
   charAddTask: (charId: string, task: z.infer<typeof zodNewTask>) => void;
   charEditTask: (
@@ -112,6 +117,189 @@ export const createMainStore = () =>
           charEditRaid(set, charId, raidId, gates),
         charDelRaid: (charId, raidId) => charDelRaid(set, charId, raidId),
         raidAction: (action) => raidAction(set, action),
+        toggleGate: (charId, raidId, gateId) => {
+          set((state) => {
+            const charIndex = state.characters.findIndex(
+              (c) => c.id === charId,
+            );
+            if (charIndex === -1) throw new Error("Character not found");
+            const assignedRaid =
+              state.characters[charIndex].assignedRaids[raidId];
+            if (assignedRaid === undefined) throw new Error("Raid not found");
+            const gate = assignedRaid[gateId];
+            if (gate === undefined) throw new Error("Gate not found");
+
+            const isCompleted =
+              gate.completedDate !== undefined
+                ? isGateCompleted(
+                    raidId,
+                    gateId,
+                    DateTime.fromISO(gate.completedDate),
+                  )
+                : false;
+
+            if (isCompleted && !raids[raidId].gates[gateId].isBiWeekly) {
+              const gateIndex = Object.keys(assignedRaid).findIndex(
+                (g) => g === gateId,
+              );
+              Object.keys(assignedRaid).forEach((gateId, index) => {
+                if (index <= gateIndex) return;
+                const actualGate = raids[raidId].gates[gateId];
+                if (actualGate.isBiWeekly) {
+                  const lastreset = getLatestWeeklyReset({});
+                  const biweeklyGateIsCompleted =
+                    assignedRaid[gateId].completedDate !== undefined
+                      ? isGateCompleted(
+                          raidId,
+                          gateId,
+                          DateTime.fromISO(assignedRaid[gateId].completedDate),
+                        )
+                      : false;
+                  if (
+                    biweeklyGateIsCompleted &&
+                    DateTime.fromISO(assignedRaid[gateId].completedDate!) <
+                      lastreset
+                  ) {
+                    return;
+                  }
+                }
+                assignedRaid[gateId].completedDate = undefined;
+              });
+            } else {
+              const gateKeys = Object.keys(assignedRaid);
+              const gateIndex = gateKeys.findIndex((gate) => gate === gateId);
+              for (let i = 0; i <= gateIndex; i++) {
+                if (raids[raidId].gates[gateKeys[i]].isBiWeekly) {
+                  const biweeklyGateIsCompleted =
+                    assignedRaid[gateKeys[i]].completedDate !== undefined
+                      ? isGateCompleted(
+                          raidId,
+                          gateId,
+                          DateTime.fromISO(
+                            assignedRaid[gateKeys[i]].completedDate!,
+                          ),
+                        )
+                      : false;
+                  if (biweeklyGateIsCompleted) {
+                    continue;
+                  }
+                }
+                assignedRaid[gateKeys[i]].completedDate =
+                  DateTime.now().toISO();
+              }
+            }
+
+            return { ...state };
+          });
+        },
+        untoggleGate: (charId, raidId, gateId) => {
+          set((state) => {
+            const charIndex = state.characters.findIndex(
+              (c) => c.id === charId,
+            );
+            if (charIndex === -1) throw new Error("Character not found");
+            const assignedRaid =
+              state.characters[charIndex].assignedRaids[raidId];
+            if (assignedRaid === undefined) throw new Error("Raid not found");
+            const gate = assignedRaid[gateId];
+            if (gate === undefined) throw new Error("Gate not found");
+
+            const gateKeys = Object.keys(assignedRaid);
+            const gateIndex = gateKeys.findIndex((gate) => gate === gateId);
+            for (let i = gateIndex; i < gateKeys.length; i++) {
+              const gateKey = gateKeys[i];
+              const aGate = assignedRaid[gateKey];
+              if (
+                raids[raidId].gates[gateKey].isBiWeekly &&
+                gateKey !== gateId
+              ) {
+                const lastreset = getLatestWeeklyReset({});
+                if (aGate.completedDate !== undefined) {
+                  const biWeeklyDate = DateTime.fromISO(aGate.completedDate!);
+                  const biweeklyGateIsCompleted = isGateCompleted(
+                    raidId,
+                    gateKey,
+                    biWeeklyDate,
+                  );
+                  if (biweeklyGateIsCompleted && biWeeklyDate < lastreset) {
+                    continue;
+                  }
+                }
+              }
+              aGate.completedDate = undefined;
+            }
+
+            return { ...state };
+          });
+        },
+        toggleAllGates: (charId, raidId) => {
+          set((state) => {
+            const charIndex = state.characters.findIndex(
+              (c) => c.id === charId,
+            );
+            if (charIndex === -1) throw new Error("Character not found");
+            const assignedRaid =
+              state.characters[charIndex].assignedRaids[raidId];
+            if (assignedRaid === undefined) throw new Error("Raid not found");
+
+            const gateKeys = Object.keys(assignedRaid);
+            for (let i = 0; i < gateKeys.length; i++) {
+              const gateKey = gateKeys[i];
+              const aGate = assignedRaid[gateKey];
+              if (raids[raidId].gates[gateKey].isBiWeekly) {
+                const lastreset = getLatestWeeklyReset({});
+                if (aGate.completedDate !== undefined) {
+                  const biWeeklyDate = DateTime.fromISO(aGate.completedDate!);
+                  const biweeklyGateIsCompleted = isGateCompleted(
+                    raidId,
+                    gateKey,
+                    biWeeklyDate,
+                  );
+                  if (biweeklyGateIsCompleted && biWeeklyDate < lastreset) {
+                    continue;
+                  }
+                }
+              }
+              aGate.completedDate = DateTime.now().toISO();
+            }
+
+            return { ...state };
+          });
+        },
+        untoggleAllGates: (charId, raidId) => {
+          set((state) => {
+            const charIndex = state.characters.findIndex(
+              (c) => c.id === charId,
+            );
+            if (charIndex === -1) throw new Error("Character not found");
+            const assignedRaid =
+              state.characters[charIndex].assignedRaids[raidId];
+            if (assignedRaid === undefined) throw new Error("Raid not found");
+
+            const gateKeys = Object.keys(assignedRaid);
+            for (let i = 0; i < gateKeys.length; i++) {
+              const gateKey = gateKeys[i];
+              const aGate = assignedRaid[gateKey];
+              if (raids[raidId].gates[gateKey].isBiWeekly) {
+                const lastreset = getLatestWeeklyReset({});
+                if (aGate.completedDate !== undefined) {
+                  const biWeeklyDate = DateTime.fromISO(aGate.completedDate!);
+                  const biweeklyGateIsCompleted = isGateCompleted(
+                    raidId,
+                    gateKey,
+                    biWeeklyDate,
+                  );
+                  if (biweeklyGateIsCompleted && biWeeklyDate < lastreset) {
+                    continue;
+                  }
+                }
+              }
+              aGate.completedDate = undefined;
+            }
+
+            return { ...state };
+          });
+        },
         charAddTask(charId, task) {
           set((state) => {
             const char = state.characters.find((c) => c.id === charId);

@@ -20,6 +20,9 @@ const zodSettings = z.object({
     ])
     .optional(),
   rosterGoldTotal: z.enum(["total", "remaining"]),
+  experiments: z.object({
+    buttonV2: z.boolean(),
+  }),
 });
 
 export type SettingsState = z.infer<typeof zodSettings>;
@@ -28,6 +31,10 @@ export type SettingsActions = {
   setServer: (server: SettingsState["server"]) => void;
   setRosterGoldTotal: (
     rosterGoldTotal: SettingsState["rosterGoldTotal"],
+  ) => void;
+  toggleExperiments: (
+    key: keyof SettingsState["experiments"],
+    value: boolean,
   ) => void;
 };
 
@@ -39,19 +46,34 @@ export const createSettingsStore = () =>
       (set) => ({
         server: undefined,
         rosterGoldTotal: "total",
+        experiments: {
+          buttonV2: false,
+        },
         setServer(server) {
           set({ server });
         },
         setRosterGoldTotal(rosterGoldTotal) {
           set({ rosterGoldTotal });
         },
+        toggleExperiments(key, value) {
+          set({
+            experiments: {
+              [key]: value,
+            },
+          });
+        },
       }),
       {
         name: "settings",
-        version: 1,
+        version: 2,
         migrate: (persistedState: any, version) => {
           if (version <= 0) {
             persistedState.rosterGoldTotal = "total";
+          }
+          if (version <= 1) {
+            persistedState.experiments = {
+              buttonV2: false,
+            };
           }
         },
       },

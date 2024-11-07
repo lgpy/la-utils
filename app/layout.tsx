@@ -35,12 +35,7 @@ export default function RootLayout({
           )}
         >
           <PostHogPageView />
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="flex min-h-screen w-full flex-col">
               <SettingsStoreProvider>
                 <NavBar />
