@@ -130,11 +130,7 @@ export default function EditCards() {
         />
       )}
       <motion.div
-        style={{
-          position: "fixed",
-          right: "1rem",
-          bottom: "1rem",
-        }}
+        className="fixed right-4 bottom-4"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{
           scale: 1,

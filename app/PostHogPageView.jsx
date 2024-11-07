@@ -1,10 +1,10 @@
 'use client'
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { usePostHog } from 'posthog-js/react';
 
-export default function PostHogPageView() {
+function PostHogPageView() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const posthog = usePostHog();
@@ -26,3 +26,13 @@ export default function PostHogPageView() {
   
   return null
 }
+
+const phpv = () => {
+  return (
+    <Suspense>
+      <PostHogPageView />
+    </Suspense>
+    );
+}
+
+export default phpv

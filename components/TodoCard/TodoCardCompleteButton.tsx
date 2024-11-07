@@ -1,7 +1,6 @@
 import { useToast } from "@/components/ui/use-toast";
 import { Character, useMainStore } from "@/hooks/mainstore";
 import { raids } from "@/lib/raids";
-import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon } from "lucide-react";
 import { MouseEventHandler, useState } from "react";
@@ -89,7 +88,7 @@ export default function TodoCardCompleteButton({
           <div className="flex flex-row justify-center">
             <motion.div
               key={"ap" + completedlen}
-              style={{ width: "fit-content" }}
+              className="w-fit"
               initial={{
                 opacity: 0,
                 rotate:
@@ -124,7 +123,7 @@ export default function TodoCardCompleteButton({
           width: `${(completedlen / Object.keys(assignedGates).length) * 100}%`,
         }}
         initial={false}
-        style={{ backgroundColor: "hsl(var(--mauve))", height: "100%" }}
+        className="bg-primary h-full"
       />
     </div>
   );

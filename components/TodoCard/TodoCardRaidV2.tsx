@@ -45,15 +45,7 @@ export default function TodoCardRaidV2({
       )}
     >
       <motion.div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "100%",
-          zIndex: 0,
-          backgroundColor: "hsl(var(--mauve) / 0.1)",
-        }}
+        className="absolute left-0 right-0 top-0 z-0 h-full bg-mauve/10"
         initial={false}
         animate={{
           width: `${progress * 100}%`,
