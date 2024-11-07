@@ -12,7 +12,7 @@ import { SettingsStoreProvider } from "@/providers/SettingsProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const metadata: Metadata = {
