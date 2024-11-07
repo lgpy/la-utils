@@ -24,7 +24,7 @@ export interface SettingsStoreProviderProps {
 export const SettingsStoreProvider = ({
   children,
 }: SettingsStoreProviderProps) => {
-  const storeRef = useRef<SettingsStoreApi>();
+  const storeRef = useRef<SettingsStoreApi>(null);
   if (!storeRef.current) {
     storeRef.current = createSettingsStore();
   }

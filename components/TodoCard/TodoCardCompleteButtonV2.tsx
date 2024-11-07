@@ -25,7 +25,12 @@ function SingularButton({
       <AnimatePresence>
         {active && (
           <motion.div
-            className="size-3 bg-mauve rounded-full"
+            style={{
+              width: "0.75rem",
+              height: "0.75rem",
+              backgroundColor: "hsl(var(--mauve))",
+              borderRadius: "9999px",
+            }}
             initial={{
               scale: 0,
               opacity: 0,

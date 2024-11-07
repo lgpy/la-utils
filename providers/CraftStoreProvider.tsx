@@ -24,7 +24,7 @@ export interface CraftingStoreProviderProps {
 export const CraftingStoreProvider = ({
   children,
 }: CraftingStoreProviderProps) => {
-  const storeRef = useRef<CraftingStoreApi>();
+  const storeRef = useRef<CraftingStoreApi>(null);
   if (!storeRef.current) {
     storeRef.current = createCraftingStore();
   }

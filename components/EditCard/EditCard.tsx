@@ -3,7 +3,7 @@ import { Character } from "@/hooks/mainstore";
 import { cn } from "@/lib/utils";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
-import { Fragment, useMemo } from "react";
+import { Fragment, JSX, useMemo } from "react";
 import ClassIcon from "@/components/class-icons/ClassIcon";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";

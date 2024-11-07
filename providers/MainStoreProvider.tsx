@@ -7,7 +7,7 @@ import {
   useContext,
   useEffect,
   useRef,
-  useState
+  useState,
 } from "react";
 import { useStore } from "zustand";
 
@@ -22,7 +22,7 @@ export interface MainStoreProviderProps {
 }
 
 export const MainStoreProvider = ({ children }: MainStoreProviderProps) => {
-  const storeRef = useRef<MainStoreApi>();
+  const storeRef = useRef<MainStoreApi>(null);
   if (!storeRef.current) {
     storeRef.current = createMainStore();
   }

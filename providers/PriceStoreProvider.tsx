@@ -22,7 +22,7 @@ export interface PriceStoreProviderProps {
 }
 
 export const PriceStoreProvider = ({ children }: PriceStoreProviderProps) => {
-  const storeRef = useRef<PriceStoreApi>();
+  const storeRef = useRef<PriceStoreApi>(null);
   if (!storeRef.current) {
     storeRef.current = createPriceStore();
   }

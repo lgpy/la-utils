@@ -1,6 +1,6 @@
 import { useState, useLayoutEffect, RefObject } from "react";
 
-export const useTruncatedElement = (ref: RefObject<HTMLElement>) => {
+export const useTruncatedElement = (ref: RefObject<HTMLElement | null>) => {
   const [isTruncated, setIsTruncated] = useState(false);
 
   useLayoutEffect(() => {

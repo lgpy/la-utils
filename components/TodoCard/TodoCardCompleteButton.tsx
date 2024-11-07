@@ -89,7 +89,7 @@ export default function TodoCardCompleteButton({
           <div className="flex flex-row justify-center">
             <motion.div
               key={"ap" + completedlen}
-              className="w-fit"
+              style={{ width: "fit-content" }}
               initial={{
                 opacity: 0,
                 rotate:
@@ -124,7 +124,7 @@ export default function TodoCardCompleteButton({
           width: `${(completedlen / Object.keys(assignedGates).length) * 100}%`,
         }}
         initial={false}
-        className={cn("bg-primary h-full")}
+        style={{ backgroundColor: "hsl(var(--mauve))", height: "100%" }}
       />
     </div>
   );

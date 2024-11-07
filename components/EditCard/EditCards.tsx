@@ -5,7 +5,7 @@ import { dragAndDrop } from "@formkit/drag-and-drop/react";
 import { motion } from "framer-motion";
 import { isEqual } from "lodash";
 import { LockIcon, LockOpenIcon, PlusIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import EditCard from "./EditCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,7 +50,7 @@ export default function EditCards() {
     setIsOpen("task");
   };
 
-  const parent = useRef() as React.MutableRefObject<HTMLUListElement>;
+  const parent = useRef(null) as RefObject<HTMLUListElement | null>;
   const [chars, setChars] = useState(state.characters);
   const prevCharactersRef = useRef<Character[] | undefined>(undefined);
 
@@ -130,6 +130,11 @@ export default function EditCards() {
         />
       )}
       <motion.div
+        style={{
+          position: "fixed",
+          right: "1rem",
+          bottom: "1rem",
+        }}
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{
           scale: 1,
@@ -140,7 +145,6 @@ export default function EditCards() {
             damping: 20,
           },
         }}
-        className="fixed right-4 bottom-4"
       >
         <div className="flex flex-col gap-2">
           <TooltipProvider>
