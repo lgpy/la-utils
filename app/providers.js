@@ -10,7 +10,7 @@ const getCharNames = () => {
   return characters.map((char) => char.name) || []
 }
 
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
     api_host: window.location.origin+'/ingest',
     ui_host: 'https://eu.posthog.com',
@@ -27,5 +27,8 @@ if (typeof window !== 'undefined') {
   }
 }
 export function CSPostHogProvider({ children }) {
-    return <PostHogProvider client={posthog}>{children}</PostHogProvider>
+  if (process.env.NODE_ENV !== 'production') {
+    return <>{children}</>
+  }
+  return <PostHogProvider client={posthog}>{children}</PostHogProvider>
 }
