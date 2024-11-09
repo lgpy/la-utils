@@ -50,6 +50,9 @@ export default function TodoCardRaidV2({
         animate={{
           width: `${progress * 100}%`,
         }}
+        transition={{
+          duration: 0.4,
+        }}
       ></motion.div>
       <div className="z-10 flex flex-col grow min-w-0 items-start gap-1.5">
         <p>{actualraid.name}</p>
