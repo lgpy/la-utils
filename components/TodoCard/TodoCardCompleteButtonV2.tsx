@@ -1,6 +1,6 @@
 import { Character, useMainStore } from "@/hooks/mainstore";
 import { raids } from "@/lib/raids";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { MouseEventHandler } from "react";
 
 interface Props {
@@ -22,25 +22,11 @@ function SingularButton({
       onClick={onClick}
       onContextMenu={onClick}
     >
-      <AnimatePresence>
-        {active && (
-          <motion.div
-            className="size-3 bg-mauve rounded-full"
-            initial={{
-              scale: 0,
-              opacity: 0,
-            }}
-            animate={{
-              scale: 1,
-              opacity: 1,
-            }}
-            exit={{
-              scale: 0,
-              opacity: 0,
-            }}
-          ></motion.div>
-        )}
-      </AnimatePresence>
+      <motion.div
+        className="size-3 bg-mauve rounded-full"
+        initial={false}
+        animate={active ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+      ></motion.div>
     </div>
   );
 }
