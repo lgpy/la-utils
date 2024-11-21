@@ -22,23 +22,25 @@ function SingularButton({
 }) {
   return (
     <div
-      className="size-5 bg-surface1 rounded-full flex items-center justify-center cursor-pointer shadow-lg"
+      className="px-0.5 py-3 cursor-pointer"
       onMouseDown={onClick}
       onContextMenu={(e) => {
         e.preventDefault();
       }}
     >
-      <motion.div
-        className="size-3 bg-mauve rounded-full"
-        initial={false}
-        animate={active ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-        transition={{
-          delay: active
-            ? index * (0.2 / total)
-            : (total - index) * (0.2 / total),
-          duration: 0.2,
-        }}
-      ></motion.div>
+      <div className="size-5 bg-surface1 rounded-full shadow-lg flex justify-center items-center">
+        <motion.div
+          className="size-3 bg-mauve rounded-full"
+          initial={false}
+          animate={active ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+          transition={{
+            delay: active
+              ? index * (0.2 / total)
+              : (total - index) * (0.2 / total),
+            duration: 0.2,
+          }}
+        ></motion.div>
+      </div>
     </div>
   );
 }
@@ -58,7 +60,11 @@ export default function TodoCardCompleteButtonV2({
       const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
         event.preventDefault();
         console.log(event);
-        if (event.shiftKey && event.button === 0) {
+        if (event.altKey && event.button === 0) {
+          state.toggleSingleGate(charId, raidId, gateId);
+        } else if (event.altKey && event.button === 2) {
+          state.untoggleSingleGate(charId, raidId, gateId);
+        } else if (event.shiftKey && event.button === 0) {
           state.toggleAllGates(charId, raidId);
         } else if (event.shiftKey && event.button === 2) {
           state.untoggleAllGates(charId, raidId);
@@ -70,18 +76,13 @@ export default function TodoCardCompleteButtonV2({
       };
 
       return (
-        <div
-          className="flex flex-col items-center justify-center"
+        <SingularButton
           key={raidId + gateId}
-        >
-          <SingularButton
-            key={gateId}
-            active={gate.completed}
-            onClick={handleClick}
-            index={idx}
-            total={arr.length}
-          />
-        </div>
+          active={gate.completed}
+          onClick={handleClick}
+          index={idx}
+          total={arr.length}
+        />
       );
     },
   );

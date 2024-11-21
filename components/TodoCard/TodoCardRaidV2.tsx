@@ -80,7 +80,7 @@ export default function TodoCardRaidV2({
           </TooltipProvider>
         </div>
       </div>
-      <div className="z-10 flex flex-row items-center justify-end gap-1">
+      <div className="z-10 flex flex-row items-center justify-end">
         <TodoCardCompleteButtonV2
           assignedGates={raid}
           charId={charId}

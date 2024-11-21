@@ -89,6 +89,8 @@ export type MainActions = {
   untoggleGate: (charId: string, raidId: string, gateId: string) => void;
   toggleAllGates: (charId: string, raidId: string) => void;
   untoggleAllGates: (charId: string, raidId: string) => void;
+  toggleSingleGate: (charId: string, raidId: string, gateId: string) => void;
+  untoggleSingleGate: (charId: string, raidId: string, gateId: string) => void;
   restoreData: (data: MainState) => void;
   charAddTask: (charId: string, task: z.infer<typeof zodNewTask>) => void;
   charEditTask: (
@@ -296,6 +298,40 @@ export const createMainStore = () =>
               }
               aGate.completedDate = undefined;
             }
+
+            return { ...state };
+          });
+        },
+        toggleSingleGate: (charId, raidId, gateId) => {
+          set((state) => {
+            const charIndex = state.characters.findIndex(
+              (c) => c.id === charId,
+            );
+            if (charIndex === -1) throw new Error("Character not found");
+            const assignedRaid =
+              state.characters[charIndex].assignedRaids[raidId];
+            if (assignedRaid === undefined) throw new Error("Raid not found");
+            const gate = assignedRaid[gateId];
+            if (gate === undefined) throw new Error("Gate not found");
+
+            gate.completedDate = DateTime.now().toISO();
+
+            return { ...state };
+          });
+        },
+        untoggleSingleGate: (charId, raidId, gateId) => {
+          set((state) => {
+            const charIndex = state.characters.findIndex(
+              (c) => c.id === charId,
+            );
+            if (charIndex === -1) throw new Error("Character not found");
+            const assignedRaid =
+              state.characters[charIndex].assignedRaids[raidId];
+            if (assignedRaid === undefined) throw new Error("Raid not found");
+            const gate = assignedRaid[gateId];
+            if (gate === undefined) throw new Error("Gate not found");
+
+            gate.completedDate = undefined;
 
             return { ...state };
           });
