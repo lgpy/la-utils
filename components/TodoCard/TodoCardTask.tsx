@@ -20,7 +20,7 @@ export default function TodoCardTask({ task, toggleTask }: Props) {
     >
       <p>{task.name}</p>
       <Checkbox
-        className="size-5"
+        className="size-5 border-primary"
         checked={task.completed}
         onMouseDown={toggleTask}
       />
