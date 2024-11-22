@@ -28,7 +28,7 @@ function SingularButton({
         e.preventDefault();
       }}
     >
-      <div className="size-5 bg-surface1 rounded-full shadow-lg flex justify-center items-center">
+      <div className="size-5 bg-surface1 rounded-full drop-shadow flex justify-center items-center">
         <motion.div
           className="size-3 bg-mauve rounded-full"
           initial={false}
