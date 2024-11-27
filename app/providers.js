@@ -21,8 +21,6 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
     posthog.identify(
       undefined,
       {
-        name: chars[0],
-        main: chars[0],
         characters: chars
       }
     )
