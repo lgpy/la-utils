@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import TodoCardTask from "./TodoCardTask";
 import TodoCardRaidV2 from "./TodoCardRaidV2";
 import { useSettingsStore } from "@/providers/SettingsProvider";
+import { motion } from "framer-motion";
 
 interface Props {
   char: Character;
@@ -112,6 +113,20 @@ export default function TodoCard({ char }: Props) {
     return acc + 1;
   }, 0);
 
+  const completedGateCount = Object.values(char.assignedRaids).reduce(
+    (acc, r) => {
+      Object.values(r).forEach((b) => {
+        if (b.completed) acc++;
+      });
+      return acc;
+    },
+    0,
+  );
+
+  const totalGateCount = Object.values(char.assignedRaids).reduce((acc, r) => {
+    return acc + Object.values(r).length;
+  }, 0);
+
   return (
     <Card className="h-fit w-56 border-card border-1 select-none overflow-hidden">
       <CardHeader className="p-4 flex flex-row gap-2 items-center relative">
@@ -136,9 +151,14 @@ export default function TodoCard({ char }: Props) {
       {char.tasks.length > 0 && (
         <Tabs defaultValue="raids">
           <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">
-            <TabsTrigger value="raids" className="w-full rounded-none">
+            <TabsTrigger
+              value="raids"
+              className="w-full rounded-none relative group"
+            >
               <p>
-                Raids{" "}
+                <span className="group-data-[state=active]:underline">
+                  Raids
+                </span>{" "}
                 {completedRaids !== Object.keys(char.assignedRaids).length && (
                   <span className="text-xs text-muted-foreground">
                     ({completedRaids}/{Object.keys(char.assignedRaids).length})
@@ -148,10 +168,25 @@ export default function TodoCard({ char }: Props) {
                   <Check className="inline size-4" />
                 )}
               </p>
+              <motion.div
+                className="absolute left-0 right-0 top-0 z-0 h-full bg-primary/10"
+                initial={false}
+                animate={{
+                  width: `${(completedGateCount / totalGateCount) * 100}%`,
+                }}
+                transition={{
+                  duration: 0.4,
+                }}
+              />
             </TabsTrigger>
-            <TabsTrigger value="tasks" className="w-full rounded-none">
+            <TabsTrigger
+              value="tasks"
+              className="w-full rounded-none relative group"
+            >
               <p>
-                Tasks{" "}
+                <span className="group-data-[state=active]:underline">
+                  Tasks
+                </span>{" "}
                 {completedTasks !== char.tasks.length && (
                   <span className="text-xs text-muted-foreground">
                     ({completedTasks}/{char.tasks.length})
@@ -161,6 +196,16 @@ export default function TodoCard({ char }: Props) {
                   <Check className="inline size-4" />
                 )}
               </p>
+              <motion.div
+                className="absolute left-0 right-0 top-0 z-0 h-full bg-primary/10"
+                initial={false}
+                animate={{
+                  width: `${(completedTasks / char.tasks.length) * 100}%`,
+                }}
+                transition={{
+                  duration: 0.4,
+                }}
+              ></motion.div>
             </TabsTrigger>
           </TabsList>
           <Separator />
