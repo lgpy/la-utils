@@ -48,9 +48,31 @@ export default function ServerStatusWidget() {
 
   const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
+  const [tooltipLastUpdated, setTooltipLastUpdated] = useState<string | null>(
+    null,
+  );
   const { toast } = useToast();
 
   const audioContext = useRef<AudioContext | null>(null);
+
+  useEffect(() => {
+    if (lastUpdated === null) return;
+    setTooltipLastUpdated(
+      DateTime.fromMillis(lastUpdated).toRelative({
+        unit: "minutes",
+      }),
+    );
+    const int = setInterval(() => {
+      setTooltipLastUpdated(
+        DateTime.fromMillis(lastUpdated).toRelative({
+          unit: "minutes",
+        }),
+      );
+    }, 1000 * 60);
+    return () => {
+      clearInterval(int);
+    };
+  }, [lastUpdated]);
 
   useEffect(() => {
     if (!hasHydrated) return;
@@ -111,7 +133,9 @@ export default function ServerStatusWidget() {
   })();
 
   const tooltipServerStatus =
-    serverStatus !== null ? getServerStatusString(serverStatus) : "not set";
+    tooltipLastUpdated !== null
+      ? getServerStatusString(serverStatus)
+      : "not set";
 
   return (
     <TooltipProvider>
@@ -131,9 +155,7 @@ export default function ServerStatusWidget() {
             </p>
             <p>
               Last updated:{" "}
-              {lastUpdated
-                ? DateTime.fromMillis(lastUpdated).toRelative()
-                : "never"}
+              {tooltipLastUpdated !== null ? tooltipLastUpdated : "never"}
             </p>
           </div>
         </TooltipContent>
