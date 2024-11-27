@@ -2,8 +2,14 @@ import { servers, ServerStatus, setServerStatus } from "@/lib/servers";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import _ from "lodash";
+import { DateTime } from "luxon";
 
 export const revalidate = 300;
+
+export type ServerStatusResponse = {
+  lastUpdated: number;
+  servers: typeof servers;
+};
 
 export async function GET(request: Request) {
   const serversClone = _.cloneDeep(servers);
@@ -54,12 +60,18 @@ export async function GET(request: Request) {
       },
     );
 
-    return new Response(JSON.stringify(serversClone), {
-      status: 200,
-      headers: {
-        "content-type": "application/json",
+    return new Response(
+      JSON.stringify({
+        lastUpdated: DateTime.now().toMillis(),
+        servers: serversClone,
+      }),
+      {
+        status: 200,
+        headers: {
+          "content-type": "application/json",
+        },
       },
-    });
+    );
   } catch (error) {
     return new Response("Error fetching data", { status: 500 });
   }

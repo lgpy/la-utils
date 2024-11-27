@@ -17,6 +17,8 @@ import {
   servers,
   ServerStatus,
 } from "@/lib/servers";
+import { ServerStatusResponse } from "@/app/api/serverStatus/route";
+import { DateTime } from "luxon";
 
 function beep(ac: AudioContext, volume: number) {
   return new Promise<void>((resolve, reject) => {
@@ -45,6 +47,7 @@ export default function ServerStatusWidget() {
   const { store, hasHydrated } = useSettingsStore((store) => store);
 
   const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<number | null>(null);
   const { toast } = useToast();
 
   const audioContext = useRef<AudioContext | null>(null);
@@ -54,9 +57,10 @@ export default function ServerStatusWidget() {
     if (store.server === undefined) return;
     if (serverStatus === null)
       fetch(`/api/serverStatus`).then((res) =>
-        res.json().then((data) => {
-          const status = getServerStatus(data, store.server!);
+        res.json().then((data: ServerStatusResponse) => {
+          const status = getServerStatus(data.servers, store.server!);
           setServerStatus(status);
+          setLastUpdated(data.lastUpdated);
         }),
       );
     const delay =
@@ -106,7 +110,7 @@ export default function ServerStatusWidget() {
     }
   })();
 
-  const tooltip =
+  const tooltipServerStatus =
     serverStatus !== null ? getServerStatusString(serverStatus) : "not set";
 
   return (
@@ -120,7 +124,19 @@ export default function ServerStatusWidget() {
             </span>
           </div>
         </TooltipTrigger>
-        <TooltipContent>{tooltip}</TooltipContent>
+        <TooltipContent>
+          <div>
+            <p>
+              Server status: <span>{tooltipServerStatus}</span>
+            </p>
+            <p>
+              Last updated:{" "}
+              {lastUpdated
+                ? DateTime.fromMillis(lastUpdated).toRelative()
+                : "never"}
+            </p>
+          </div>
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
