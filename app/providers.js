@@ -19,9 +19,11 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
   const chars = getCharNames();
   if (chars.length > 0) {
     posthog.identify(
-      chars[0],
+      undefined,
       {
-          characters: chars
+        name: chars[0],
+        main: chars[0],
+        characters: chars
       }
     )
   }
