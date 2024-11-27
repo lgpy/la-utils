@@ -1,6 +1,5 @@
 "use client";
 
-import axios from "axios";
 import { Construction, Power } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -14,7 +13,6 @@ import { useToast } from "./ui/use-toast";
 import {
   getServerStatus,
   getServerStatusString,
-  servers,
   ServerStatus,
 } from "@/lib/servers";
 import { ServerStatusResponse } from "@/app/api/serverStatus/route";
@@ -133,9 +131,7 @@ export default function ServerStatusWidget() {
   })();
 
   const tooltipServerStatus =
-    tooltipLastUpdated !== null
-      ? getServerStatusString(serverStatus)
-      : "not set";
+    serverStatus !== null ? getServerStatusString(serverStatus) : "not set";
 
   return (
     <TooltipProvider>
