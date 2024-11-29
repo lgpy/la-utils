@@ -169,7 +169,7 @@ export default function TodoCard({ char }: Props) {
                 )}
               </p>
               <motion.div
-                className="absolute left-0 right-0 top-0 z-0 h-full bg-primary/10"
+                className="absolute left-0 bottom-0 z-0 h-1 bg-primary/10 group-data-[state=active]:bg-primary/15"
                 initial={false}
                 animate={{
                   width: `${(completedGateCount / totalGateCount) * 100}%`,
@@ -197,7 +197,7 @@ export default function TodoCard({ char }: Props) {
                 )}
               </p>
               <motion.div
-                className="absolute left-0 right-0 top-0 z-0 h-full bg-primary/10"
+                className="absolute left-0 bottom-0 h-1 z-0 bg-primary/10  group-data-[state=active]:bg-primary/15"
                 initial={false}
                 animate={{
                   width: `${(completedTasks / char.tasks.length) * 100}%`,
