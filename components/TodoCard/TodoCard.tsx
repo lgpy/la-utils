@@ -168,8 +168,9 @@ export default function TodoCard({ char }: Props) {
                   <Check className="inline size-4" />
                 )}
               </p>
+              <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/15"></div>
               <motion.div
-                className="absolute left-0 bottom-0 z-0 h-1 bg-primary/10 group-data-[state=active]:bg-primary/15"
+                className="absolute left-0 bottom-0 z-0 h-1 bg-primary/30"
                 initial={false}
                 animate={{
                   width: `${(completedGateCount / totalGateCount) * 100}%`,
@@ -196,8 +197,9 @@ export default function TodoCard({ char }: Props) {
                   <Check className="inline size-4" />
                 )}
               </p>
+              <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/15"></div>
               <motion.div
-                className="absolute left-0 bottom-0 h-1 z-0 bg-primary/10  group-data-[state=active]:bg-primary/15"
+                className="absolute left-0 bottom-0 h-1 z-0 bg-primary/30"
                 initial={false}
                 animate={{
                   width: `${(completedTasks / char.tasks.length) * 100}%`,
