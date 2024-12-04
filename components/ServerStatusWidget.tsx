@@ -17,6 +17,7 @@ import {
 } from "@/lib/servers";
 import { ServerStatusResponse } from "@/app/api/serverStatus/route";
 import { DateTime } from "luxon";
+import { stubArray } from "lodash";
 
 function beep(ac: AudioContext, volume: number) {
   return new Promise<void>((resolve, reject) => {
@@ -105,7 +106,7 @@ export default function ServerStatusWidget() {
           duration: 240000,
         });
       }
-      setServerStatus(status);
+      if (serverStatus !== status) setServerStatus(status);
     }, delay);
     return () => {
       clearInterval(int);
