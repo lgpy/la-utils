@@ -66,12 +66,14 @@ export default function TodoCard({ char }: Props) {
       </Fragment>
     ));
 
-  const tasks = useMemo(() => {
-    const filteredTasks = {
+  const filteredTasks = useMemo(() => {
+    return {
       daily: char.tasks.filter((t) => t.type === "daily"),
       weekly: char.tasks.filter((t) => t.type === "weekly"),
     };
+  }, [char.tasks]);
 
+  const tasks = useMemo(() => {
     return Object.entries(filteredTasks).reduce<{
       daily: JSX.Element[];
       weekly: JSX.Element[];
@@ -102,12 +104,23 @@ export default function TodoCard({ char }: Props) {
         weekly: [],
       },
     );
-  }, [char.tasks, char.id, state]);
+  }, [char.id, state, filteredTasks]);
 
   const completedTasks = char.tasks.reduce(
     (acc, t) => (t.completed ? acc + 1 : acc),
     0,
   );
+
+  const completedDailyTasks = filteredTasks.daily.reduce(
+    (acc, t) => (t.completed ? acc + 1 : acc),
+    0,
+  );
+
+  const completedWeeklyTasks = filteredTasks.weekly.reduce(
+    (acc, t) => (t.completed ? acc + 1 : acc),
+    0,
+  );
+
   const completedRaids = Object.values(char.assignedRaids).reduce((acc, r) => {
     if (Object.values(r).some((b) => !b.completed)) return acc;
     return acc + 1;
@@ -199,10 +212,30 @@ export default function TodoCard({ char }: Props) {
               </p>
               <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/15"></div>
               <motion.div
-                className="absolute left-0 bottom-0 h-1 z-0 bg-primary/30"
+                className={cn("absolute left-0 bottom-0 z-0 bg-primary/30", {
+                  "h-0.5 bottom-0.5": filteredTasks.weekly.length > 0,
+                  "h-1": filteredTasks.weekly.length === 0,
+                })}
                 initial={false}
                 animate={{
-                  width: `${(completedTasks / char.tasks.length) * 100}%`,
+                  width: `${
+                    (completedDailyTasks / filteredTasks.daily.length) * 100
+                  }%`,
+                }}
+                transition={{
+                  duration: 0.4,
+                }}
+              ></motion.div>
+              <motion.div
+                className={cn("absolute left-0 bottom-0 z-0 bg-primary/30", {
+                  "h-0.5": filteredTasks.daily.length > 0,
+                  "h-1": filteredTasks.daily.length === 0,
+                })}
+                initial={false}
+                animate={{
+                  width: `${
+                    (completedWeeklyTasks / filteredTasks.weekly.length) * 100
+                  }%`,
                 }}
                 transition={{
                   duration: 0.4,
