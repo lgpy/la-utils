@@ -78,6 +78,7 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
 }
 
 export function getHighest3(
+  charRaids: Character["assignedRaids"],
   goldInfo: Record<
     string,
     {
@@ -90,8 +91,22 @@ export function getHighest3(
       };
     }
   >,
+  ignoreThaemineIfNoG4: boolean,
 ) {
   const sortedGold = Object.entries(goldInfo).sort(([aId, a], [bId, b]) => {
+    if (
+      ignoreThaemineIfNoG4 &&
+      charRaids["thaemine"]?.["G4"]?.completedDate !== undefined &&
+      (aId === "thaemine" || bId === "thaemine")
+    ) {
+      const lastReset = getLatestWeeklyReset({});
+      if (
+        charRaids["thaemine"]["G4"].completed &&
+        DateTime.fromISO(charRaids["thaemine"]["G4"].completedDate) < lastReset
+      )
+        return aId === "thaemine" ? 1 : -1;
+    }
+
     if (a.thisWeek.totalGold === b.thisWeek.totalGold) {
       const aActualIndex = Object.keys(raids).indexOf(aId);
       const bActualIndex = Object.keys(raids).indexOf(bId);

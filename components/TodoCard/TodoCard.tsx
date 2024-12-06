@@ -23,9 +23,13 @@ export default function TodoCard({ char }: Props) {
   const settings = useSettingsStore((s) => s);
   const highest3 = useMemo(() => {
     const goldInfo = parseGoldInfo(char.assignedRaids);
-    const highest3 = getHighest3(goldInfo);
+    const highest3 = getHighest3(
+      char.assignedRaids,
+      goldInfo,
+      settings.store.experiments.ignoreThaemineIfNoG4,
+    );
     return highest3;
-  }, [char]);
+  }, [char, settings.store.experiments.ignoreThaemineIfNoG4]);
 
   const assignedRaids = Object.keys(char.assignedRaids)
     .sort(sortRaidKeys)

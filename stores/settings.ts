@@ -22,6 +22,7 @@ const zodSettings = z.object({
   rosterGoldTotal: z.enum(["total", "remaining"]),
   experiments: z.object({
     buttonV2: z.boolean(),
+    ignoreThaemineIfNoG4: z.boolean(),
   }),
 });
 
@@ -48,6 +49,7 @@ export const createSettingsStore = () =>
         rosterGoldTotal: "total",
         experiments: {
           buttonV2: false,
+          ignoreThaemineIfNoG4: false,
         },
         setServer(server) {
           set({ server });
@@ -56,16 +58,17 @@ export const createSettingsStore = () =>
           set({ rosterGoldTotal });
         },
         toggleExperiments(key, value) {
-          set({
+          set((state) => ({
             experiments: {
+              ...state.experiments,
               [key]: value,
             },
-          });
+          }));
         },
       }),
       {
         name: "settings",
-        version: 2,
+        version: 3,
         migrate: (persistedState: any, version) => {
           if (version <= 0) {
             persistedState.rosterGoldTotal = "total";
@@ -75,6 +78,10 @@ export const createSettingsStore = () =>
               buttonV2: false,
             };
           }
+          if (version <= 2) {
+            persistedState.experiments.ignoreThaemineIfNoG4 = false;
+          }
+          return persistedState;
         },
       },
     ),

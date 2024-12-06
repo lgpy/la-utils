@@ -223,6 +223,17 @@ export default function SettingsButton() {
                 >
                   <span>Raid Button V2</span>
                 </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={store.experiments.ignoreThaemineIfNoG4}
+                  onCheckedChange={() =>
+                    store.toggleExperiments(
+                      "ignoreThaemineIfNoG4",
+                      !store.experiments.ignoreThaemineIfNoG4,
+                    )
+                  }
+                >
+                  <span>Ignore Thaemine if no G4</span>
+                </DropdownMenuCheckboxItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>

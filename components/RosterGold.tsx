@@ -20,7 +20,11 @@ export default function RosterGold() {
       (acc, char) => {
         if (!char.isGoldEarner) return acc;
         const goldInfo = parseGoldInfo(char.assignedRaids);
-        const highest3 = getHighest3(goldInfo);
+        const highest3 = getHighest3(
+          char.assignedRaids,
+          goldInfo,
+          settingsStore.experiments.ignoreThaemineIfNoG4,
+        );
         Object.values(highest3).forEach((nfo) => {
           acc.thisWeek.earnedGold += nfo.thisWeek.earnedGold;
           acc.thisWeek.totalGold += nfo.thisWeek.totalGold;
@@ -44,6 +48,7 @@ export default function RosterGold() {
     hasHydrated,
     settingsStoreHidrated,
     settingsStore.rosterGoldTotal,
+    settingsStore.experiments.ignoreThaemineIfNoG4,
   ]);
 
   if (!hasHydrated || !settingsStoreHidrated) {
