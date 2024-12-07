@@ -1,13 +1,13 @@
 import { formatGold } from "@/lib/utils";
 import { animate } from "framer-motion";
-import { has } from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 
 interface Props {
   n: number;
+  format?: "gold" | "number";
 }
 
-export default function NumberThingy({ n }: Props) {
+export default function AnimatedNumber({ n, format = "number" }: Props) {
   const nodeRef = useRef<HTMLSpanElement>(null);
   const [oldn, setOldn] = useState(n);
 
@@ -17,7 +17,8 @@ export default function NumberThingy({ n }: Props) {
     const controls = animate(oldn, n, {
       duration: 0.2,
       onUpdate(value) {
-        node!.textContent = formatGold(value);
+        node!.textContent =
+          format === "gold" ? formatGold(value) : String(value);
       },
       onComplete: () => {
         setOldn(n);
@@ -25,7 +26,7 @@ export default function NumberThingy({ n }: Props) {
     });
 
     return () => controls.stop();
-  }, [n, oldn]);
+  }, [n, oldn, format]);
 
   return <span ref={nodeRef} />;
 }

@@ -5,7 +5,7 @@ import { getHighest3, parseGoldInfo } from "@/lib/chars";
 import { _useMainStore } from "@/providers/MainStoreProvider";
 import { useSettingsStore } from "@/providers/SettingsProvider";
 import { useMemo } from "react";
-import NumberThingy from "./NumberThingy";
+import AnimatedNumber from "./AnimatedNumber";
 
 export default function RosterGold() {
   const { hasHydrated, state } = useMainStore();
@@ -71,13 +71,14 @@ export default function RosterGold() {
           )
         }
       >
-        <NumberThingy n={rosterGold.thisWeek.earnedGold} />/
-        <NumberThingy n={rosterGold.thisWeek.totalGold} />
+        <AnimatedNumber n={rosterGold.thisWeek.earnedGold} format="gold" />
+        /
+        <AnimatedNumber n={rosterGold.thisWeek.totalGold} format="gold" />
       </p>
       <p className="font-extralight">Next Week:</p>
 
       <p>
-        <NumberThingy n={rosterGold.nextWeek.earnableGold} />
+        <AnimatedNumber n={rosterGold.nextWeek.earnableGold} format="gold" />
       </p>
     </div>
   );
