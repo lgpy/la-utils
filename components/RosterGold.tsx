@@ -59,11 +59,6 @@ export default function RosterGold() {
     return null;
   }
 
-  const fmt = (gold: number) =>
-    Math.abs(gold) > 1000
-      ? `${(gold / 1000).toFixed(gold % 1000 === 0 ? 0 : 1)}k`
-      : gold;
-
   return (
     <div className="grid grid-cols-[auto_auto] gap-x-2 fixed left-4 bottom-4 text-yellow/60 select-none">
       <h2 className="col-span-2 text-xl font-bold">Roster Gold</h2>

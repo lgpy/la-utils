@@ -4,7 +4,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn, formatGold } from "@/lib/utils";
 import PiggyBankProgressBar from "./PiggyBankProgressBar";
 
 type Props = {
@@ -39,9 +39,6 @@ export default function PiggyBank(props: Props) {
     },
   );
 
-  const fmt = (gold: number) =>
-    gold > 1000 ? `${(gold / 1000).toFixed(gold % 1000 === 0 ? 0 : 1)}k` : gold;
-
   return (
     <TooltipProvider>
       <Tooltip>
@@ -55,10 +52,11 @@ export default function PiggyBank(props: Props) {
           <div className="grid grid-cols-[auto_auto] gap-1">
             <span className="font-extralight">This Week:</span>
             <span>
-              {fmt(gold.thisWeek.earned)}/{fmt(gold.thisWeek.total)}
+              {formatGold(gold.thisWeek.earned)}/
+              {formatGold(gold.thisWeek.total)}
             </span>
             <span className="font-extralight">Next Week:</span>
-            <span>{fmt(gold.nextWeek.earnable)}</span>
+            <span>{formatGold(gold.nextWeek.earnable)}</span>
           </div>
         </TooltipContent>
       </Tooltip>

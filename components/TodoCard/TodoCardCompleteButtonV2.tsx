@@ -59,7 +59,6 @@ export default function TodoCardCompleteButtonV2({
 
       const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
         event.preventDefault();
-        console.log(event);
         if (event.altKey && event.button === 0) {
           state.toggleSingleGate(charId, raidId, gateId);
         } else if (event.altKey && event.button === 2) {
