@@ -7,9 +7,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { HandCoins } from "lucide-react";
+import { CircleDollarSign, HandCoins } from "lucide-react";
 import TodoCardCompleteButtonV2 from "./TodoCardCompleteButtonV2";
 import { motion } from "framer-motion";
+import { useSettingsStore } from "@/providers/SettingsProvider";
 
 interface Props {
   charId: string;
@@ -24,10 +25,16 @@ export default function TodoCardRaidV2({
   raid,
   goldEarner,
 }: Props) {
+  const { store: compactRaidCard, hasHydrated: settingsHasHydrated } =
+    useSettingsStore((s) => s.experiments.compactRaidCard);
   const actualraid = raids[raidId];
 
   if (!actualraid) {
     console.error(`Raid ${raidId} not found`);
+    return null;
+  }
+
+  if (!settingsHasHydrated) {
     return null;
   }
 
@@ -42,6 +49,9 @@ export default function TodoCardRaidV2({
     <div
       className={cn(
         "relative flex flex-row items-center justify-between gap-2 p-3 transition",
+        {
+          "p-1 px-3": compactRaidCard,
+        },
       )}
     >
       <motion.div
@@ -54,31 +64,51 @@ export default function TodoCardRaidV2({
           duration: 0.4,
         }}
       ></motion.div>
+
+      {goldEarner && (
+        <HandCoins
+          className={cn(
+            "transition-opacity size-4 stroke-yellow absolute right-0.5 bottom-0.5 opacity-80",
+            {
+              "opacity-40": completedRaids === Object.keys(raid).length,
+              "right-[1px] bottom-[1px]": compactRaidCard,
+            },
+          )}
+        />
+      )}
       <div className="z-10 flex flex-col grow min-w-0 items-start gap-1.5">
-        <p>{actualraid.name}</p>
-        <div className="flex flex-row gap-1">
-          {goldEarner && <HandCoins className="size-4 stroke-yellow" />}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <p className="text-muted-foreground text-xs truncate">
-                  {Object.values(raid)
-                    .map((g) => `${shortestDifficulty(g.difficulty)}`)
-                    .join("")}
-                </p>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  {Object.entries(raid)
-                    .map(
-                      ([gid, g]) => `${gid} ${shortenDifficulty(g.difficulty)}`,
-                    )
-                    .join(", ")}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+        <p
+          className={cn("transition-all", {
+            "opacity-80": completedRaids === Object.keys(raid).length,
+          })}
+        >
+          {actualraid.name}
+        </p>
+        {!compactRaidCard && (
+          <div className="flex flex-row gap-1">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <p className="text-muted-foreground text-xs truncate">
+                    {Object.values(raid)
+                      .map((g) => `${shortestDifficulty(g.difficulty)}`)
+                      .join("")}
+                  </p>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {Object.entries(raid)
+                      .map(
+                        ([gid, g]) =>
+                          `${gid} ${shortenDifficulty(g.difficulty)}`,
+                      )
+                      .join(", ")}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        )}
       </div>
       <div className="z-10 flex flex-row items-center justify-end">
         <TodoCardCompleteButtonV2

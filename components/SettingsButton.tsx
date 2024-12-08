@@ -234,6 +234,17 @@ export default function SettingsButton() {
                 >
                   <span>Ignore Thaemine if no G4</span>
                 </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={store.experiments.compactRaidCard}
+                  onCheckedChange={() =>
+                    store.toggleExperiments(
+                      "compactRaidCard",
+                      !store.experiments.compactRaidCard,
+                    )
+                  }
+                >
+                  <span>Compact Raid Card</span>
+                </DropdownMenuCheckboxItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>

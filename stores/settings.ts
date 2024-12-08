@@ -23,6 +23,7 @@ const zodSettings = z.object({
   experiments: z.object({
     buttonV2: z.boolean(),
     ignoreThaemineIfNoG4: z.boolean(),
+    compactRaidCard: z.boolean(),
   }),
 });
 
@@ -50,6 +51,7 @@ export const createSettingsStore = () =>
         experiments: {
           buttonV2: false,
           ignoreThaemineIfNoG4: false,
+          compactRaidCard: false,
         },
         setServer(server) {
           set({ server });
@@ -68,20 +70,14 @@ export const createSettingsStore = () =>
       }),
       {
         name: "settings",
-        version: 3,
-        migrate: (persistedState: any, version) => {
-          if (version <= 0) {
-            persistedState.rosterGoldTotal = "total";
-          }
-          if (version <= 1) {
-            persistedState.experiments = {
-              buttonV2: false,
-            };
-          }
-          if (version <= 2) {
-            persistedState.experiments.ignoreThaemineIfNoG4 = false;
-          }
-          return persistedState;
+        version: 4,
+        migrate: (ps: any, version) => {
+          if (version <= 0) ps.rosterGoldTotal = "total";
+          if (ps.experiments === undefined) ps.experiments = {};
+          if (version <= 1) ps.experiments.buttonV2 = false;
+          if (version <= 2) ps.experiments.ignoreThaemineIfNoG4 = false;
+          if (version <= 3) ps.experiments.compactRaidCard = false;
+          return ps;
         },
       },
     ),
