@@ -1,12 +1,22 @@
 import { DateTime } from "luxon";
+import { raids } from "./raids";
+import { Task } from "./tasks";
 
-export function getLatestWeeklyReset({
-  BiWeekly,
-  currentDateOverride,
-}: {
-  BiWeekly?: "odd" | "even";
-  currentDateOverride?: DateTime;
-}) {
+export function getLatestBiWeeklyReset(
+  BiWeekly: "odd" | "even",
+  currentDateOverride?: DateTime,
+): DateTime {
+  return _getLatestWeeklyReset(BiWeekly, currentDateOverride);
+}
+
+export function getLatestWeeklyReset(currentDateOverride?: DateTime): DateTime {
+  return _getLatestWeeklyReset(undefined, currentDateOverride);
+}
+
+function _getLatestWeeklyReset(
+  BiWeekly?: "odd" | "even",
+  currentDateOverride?: DateTime,
+) {
   const currentDate = currentDateOverride ?? DateTime.now().setZone("UTC");
 
   let latestWednesday = currentDate
@@ -27,11 +37,7 @@ export function getLatestWeeklyReset({
   return latestWednesday;
 }
 
-export function getLatestDailyReset({
-  currentDateOverride,
-}: {
-  currentDateOverride?: DateTime;
-}) {
+export function getLatestDailyReset(currentDateOverride?: DateTime) {
   const currentDate = currentDateOverride ?? DateTime.now().setZone("UTC");
   const reset = currentDate.set({
     hour: 8,
@@ -45,19 +51,18 @@ export function getLatestDailyReset({
   return reset;
 }
 
-export function hasReset({
-  dateRaidWasComplete,
-  BiWeekly,
-  currentDateOverride,
-}: {
-  dateRaidWasComplete: DateTime;
-  BiWeekly?: "odd" | "even";
-  currentDateOverride?: DateTime;
-}) {
-  const latestReset = getLatestWeeklyReset({
-    BiWeekly,
-    currentDateOverride,
-  });
+export function getGateResetDate(raidId: string, gateId: string) {
+  const isBiWeekly = raids[raidId].gates[gateId].isBiWeekly;
+  if (isBiWeekly === undefined) return getLatestWeeklyReset();
+  else if (isBiWeekly === "odd") return getLatestBiWeeklyReset("odd");
+  else return getLatestBiWeeklyReset("even");
+}
 
-  return latestReset >= dateRaidWasComplete;
+export function getTaskResetDate(taskType: Task["type"]) {
+  switch (taskType) {
+    case "daily":
+      return getLatestDailyReset();
+    case "weekly":
+      return getLatestWeeklyReset();
+  }
 }

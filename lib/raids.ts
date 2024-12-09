@@ -1,7 +1,5 @@
 import { DateTime } from "luxon";
 
-import { hasReset } from "./dates";
-
 export enum Difficulty {
   normal = "Normal",
   hard = "Hard",
@@ -26,20 +24,10 @@ export const shortestDifficulty = (difficulty: Difficulty) => {
 };
 
 export const isGateCompleted = (
-  raidId: string,
-  gateId: string,
   dateRaidWasComplete: DateTime,
-  currentDateOverride?: DateTime,
+  latestReset: DateTime,
 ) => {
-  const r = raids[raidId];
-  if (!r) return false;
-  const g = r.gates[gateId];
-  return g.hasReset
-    ? !g.hasReset(dateRaidWasComplete, currentDateOverride)
-    : !hasReset({
-        dateRaidWasComplete,
-        currentDateOverride,
-      });
+  return latestReset < dateRaidWasComplete;
 };
 
 export const raids: Record<
@@ -52,11 +40,7 @@ export const raids: Record<
         difficulties: Partial<
           Record<Difficulty, { itemlevel: number; rewards: { gold: number } }>
         >;
-        hasReset?: (
-          dateRaidWasComplete: DateTime,
-          currentDateOverride?: DateTime,
-        ) => boolean;
-        isBiWeekly?: boolean;
+        isBiWeekly?: "odd" | "even";
       }
     >;
   }
@@ -198,13 +182,7 @@ export const raids: Record<
             rewards: { gold: 2000 },
           },
         },
-        hasReset: (dateRaidWasComplete, currentDateOverride) =>
-          hasReset({
-            dateRaidWasComplete,
-            BiWeekly: "even",
-            currentDateOverride,
-          }),
-        isBiWeekly: true,
+        isBiWeekly: "even",
       },
     },
   },
@@ -377,13 +355,7 @@ export const raids: Record<
             rewards: { gold: 21000 },
           },
         },
-        hasReset: (dateRaidWasComplete, currentDateOverride) =>
-          hasReset({
-            dateRaidWasComplete,
-            BiWeekly: "odd",
-            currentDateOverride,
-          }),
-        isBiWeekly: true,
+        isBiWeekly: "odd",
       },
     },
   },

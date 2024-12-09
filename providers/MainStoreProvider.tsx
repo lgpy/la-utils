@@ -1,6 +1,11 @@
 "use client";
 
-import { isGateCompleted } from "@/lib/raids";
+import {
+  getLatestBiWeeklyReset,
+  getLatestDailyReset,
+  getLatestWeeklyReset,
+} from "@/lib/dates";
+import { isGateCompleted, raids } from "@/lib/raids";
 import { isTaskCompleted } from "@/lib/tasks";
 import { createMainStore, MainStore } from "@/stores/main";
 import { DateTime } from "luxon";
@@ -68,7 +73,12 @@ export const useMainStore = () => {
   const store = useStore(mainStoreContext, (s) => s);
 
   const characters = useMemo(() => {
-    return store.characters.map((character) => ({
+    const weeklyReset = getLatestWeeklyReset();
+    const dailyReset = getLatestDailyReset();
+    const oddBiWeeklyReset = getLatestBiWeeklyReset("odd");
+    const evenBiWeeklyReset = getLatestBiWeeklyReset("even");
+
+    const ret = store.characters.map((character) => ({
       ...character,
       assignedRaids: Object.entries(character.assignedRaids).reduce(
         (acc, [raidId, raid]) => {
@@ -79,9 +89,12 @@ export const useMainStore = () => {
                 completed:
                   gate.completedDate !== undefined
                     ? isGateCompleted(
-                        raidId,
-                        gateId,
                         DateTime.fromISO(gate.completedDate),
+                        raids[raidId].gates[gateId].isBiWeekly === undefined
+                          ? weeklyReset
+                          : raids[raidId].gates[gateId].isBiWeekly === "odd"
+                          ? oddBiWeeklyReset
+                          : evenBiWeeklyReset,
                       )
                     : false,
               };
@@ -97,10 +110,16 @@ export const useMainStore = () => {
       tasks: character.tasks.map((task) => ({
         ...task,
         completed:
-          task.completedDate !== undefined ? isTaskCompleted(task) : false,
+          task.completedDate !== undefined
+            ? isTaskCompleted(
+                task,
+                task.type === "daily" ? dailyReset : weeklyReset,
+              )
+            : false,
       })),
     }));
-  }, [store.characters]);
+    return ret;
+  }, [store]);
 
   return {
     ...store,

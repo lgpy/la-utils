@@ -1,7 +1,7 @@
 import { Character } from "@/providers/MainStoreProvider";
 import { DateTime } from "luxon";
 import { isGateCompleted, raids } from "./raids";
-import { getLatestWeeklyReset } from "./dates";
+import { getLatestBiWeeklyReset, getLatestWeeklyReset } from "./dates";
 
 export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
   const ret = {} as Record<
@@ -17,6 +17,7 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
     }
   >;
 
+  const lastWeeklyReset = getLatestWeeklyReset();
   Object.entries(charRaids).forEach(([assignedRaidId, assignedRaid]) => {
     const raid = raids[assignedRaidId];
     if (!raid) return;
@@ -42,12 +43,11 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
 
       if (
         assignedGate.completed &&
-        actualGate.hasReset !== undefined &&
+        actualGate.isBiWeekly !== undefined &&
         assignedGate.completedDate !== undefined
       ) {
         //check if was completed this reset
-        const lastReset = getLatestWeeklyReset({});
-        if (DateTime.fromISO(assignedGate.completedDate) > lastReset) {
+        if (DateTime.fromISO(assignedGate.completedDate) > lastWeeklyReset) {
           ret[assignedRaidId].thisWeek.earnedGold += gateGoldReward;
         } else {
           ret[assignedRaidId].thisWeek.totalGold -= gateGoldReward;
@@ -57,17 +57,18 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
       }
 
       if (
-        actualGate.hasReset === undefined ||
+        actualGate.isBiWeekly === undefined ||
         assignedGate.completedDate === undefined
       ) {
         //ignore weekly reset
         ret[assignedRaidId].nextWeek.earnableGold += gateGoldReward;
       } else {
         const isGateComplete = isGateCompleted(
-          assignedRaidId,
-          assignedGateId,
           DateTime.fromISO(assignedGate.completedDate),
-          DateTime.now().plus({ week: 1 }),
+          getLatestBiWeeklyReset(
+            actualGate.isBiWeekly,
+            DateTime.now().plus({ week: 1 }),
+          ),
         );
         if (!isGateComplete)
           ret[assignedRaidId].nextWeek.earnableGold += gateGoldReward;
@@ -99,7 +100,7 @@ export function getHighest3(
       charRaids["thaemine"]?.["G4"]?.completedDate !== undefined &&
       (aId === "thaemine" || bId === "thaemine")
     ) {
-      const lastReset = getLatestWeeklyReset({});
+      const lastReset = getLatestWeeklyReset();
       if (
         charRaids["thaemine"]["G4"].completed &&
         DateTime.fromISO(charRaids["thaemine"]["G4"].completedDate) < lastReset

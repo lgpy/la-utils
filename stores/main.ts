@@ -17,12 +17,16 @@ import {
 } from "./raidActions";
 import { isTaskCompleted } from "@/lib/tasks";
 import { DateTime } from "luxon";
-import { getLatestWeeklyReset } from "@/lib/dates";
+import {
+  getGateResetDate,
+  getLatestWeeklyReset,
+  getTaskResetDate,
+} from "@/lib/dates";
 
 export const zodTask = z.object({
   id: z.string(),
   name: z.string(),
-  type: z.enum(["daily", "weekly"]),
+  type: z.enum(["daily", "weekly"]), //! IF YOU ADD A NEW TASK TYPE, FIX THE CODE TO HANDLE IT
   completedDate: z.string().optional(),
 });
 
@@ -134,9 +138,8 @@ export const createMainStore = () =>
             const isCompleted =
               gate.completedDate !== undefined
                 ? isGateCompleted(
-                    raidId,
-                    gateId,
                     DateTime.fromISO(gate.completedDate),
+                    getGateResetDate(raidId, gateId),
                   )
                 : false;
 
@@ -148,13 +151,12 @@ export const createMainStore = () =>
                 if (index <= gateIndex) return;
                 const actualGate = raids[raidId].gates[gateId];
                 if (actualGate.isBiWeekly) {
-                  const lastreset = getLatestWeeklyReset({});
+                  const lastreset = getLatestWeeklyReset();
                   const biweeklyGateIsCompleted =
                     assignedRaid[gateId].completedDate !== undefined
                       ? isGateCompleted(
-                          raidId,
-                          gateId,
                           DateTime.fromISO(assignedRaid[gateId].completedDate),
+                          getGateResetDate(raidId, gateId),
                         )
                       : false;
                   if (
@@ -175,11 +177,10 @@ export const createMainStore = () =>
                   const biweeklyGateIsCompleted =
                     assignedRaid[gateKeys[i]].completedDate !== undefined
                       ? isGateCompleted(
-                          raidId,
-                          gateId,
                           DateTime.fromISO(
                             assignedRaid[gateKeys[i]].completedDate!,
                           ),
+                          getGateResetDate(raidId, gateId),
                         )
                       : false;
                   if (biweeklyGateIsCompleted) {
@@ -215,13 +216,12 @@ export const createMainStore = () =>
                 raids[raidId].gates[gateKey].isBiWeekly &&
                 gateKey !== gateId
               ) {
-                const lastreset = getLatestWeeklyReset({});
+                const lastreset = getLatestWeeklyReset();
                 if (aGate.completedDate !== undefined) {
                   const biWeeklyDate = DateTime.fromISO(aGate.completedDate!);
                   const biweeklyGateIsCompleted = isGateCompleted(
-                    raidId,
-                    gateKey,
                     biWeeklyDate,
+                    getGateResetDate(raidId, gateKey),
                   );
                   if (biweeklyGateIsCompleted && biWeeklyDate < lastreset) {
                     continue;
@@ -249,13 +249,12 @@ export const createMainStore = () =>
               const gateKey = gateKeys[i];
               const aGate = assignedRaid[gateKey];
               if (raids[raidId].gates[gateKey].isBiWeekly) {
-                const lastreset = getLatestWeeklyReset({});
+                const lastreset = getLatestWeeklyReset();
                 if (aGate.completedDate !== undefined) {
                   const biWeeklyDate = DateTime.fromISO(aGate.completedDate!);
                   const biweeklyGateIsCompleted = isGateCompleted(
-                    raidId,
-                    gateKey,
                     biWeeklyDate,
+                    getGateResetDate(raidId, gateKey),
                   );
                   if (biweeklyGateIsCompleted && biWeeklyDate < lastreset) {
                     continue;
@@ -283,13 +282,12 @@ export const createMainStore = () =>
               const gateKey = gateKeys[i];
               const aGate = assignedRaid[gateKey];
               if (raids[raidId].gates[gateKey].isBiWeekly) {
-                const lastreset = getLatestWeeklyReset({});
+                const lastreset = getLatestWeeklyReset();
                 if (aGate.completedDate !== undefined) {
                   const biWeeklyDate = DateTime.fromISO(aGate.completedDate!);
                   const biweeklyGateIsCompleted = isGateCompleted(
-                    raidId,
-                    gateKey,
                     biWeeklyDate,
+                    getGateResetDate(raidId, gateKey),
                   );
                   if (biweeklyGateIsCompleted && biWeeklyDate < lastreset) {
                     continue;
@@ -392,7 +390,10 @@ export const createMainStore = () =>
             const task = char.tasks.find((t) => t.id === taskId);
             if (!task) throw new Error("Task not found");
 
-            const isCompleted = isTaskCompleted(task);
+            const isCompleted = isTaskCompleted(
+              task,
+              getTaskResetDate(task.type),
+            );
             if (isCompleted) {
               task.completedDate = undefined;
             }
