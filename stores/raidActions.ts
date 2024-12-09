@@ -1,6 +1,7 @@
 import { Difficulty, isGateCompleted, raids } from "@/lib/raids";
 import { SetType } from "./main";
 import { DateTime } from "luxon";
+import { getGateResetDate } from "@/lib/dates";
 
 export function charAddRaid(
   set: SetType,
@@ -99,7 +100,10 @@ export function raidAction(
         char.assignedRaids[raidId],
       ).findLast(([gId, g]) => {
         if (g.completedDate === undefined) return false;
-        return isGateCompleted(raidId, gId, DateTime.fromISO(g.completedDate));
+        return isGateCompleted(
+          DateTime.fromISO(g.completedDate),
+          getGateResetDate(raidId, gId),
+        );
       });
       if (!lastCompletedGate) throw new Error("No gates to uncomplete");
       char.assignedRaids[raidId][lastCompletedGate[0]].completedDate =
@@ -109,7 +113,10 @@ export function raidAction(
         char.assignedRaids[raidId],
       ).find(([gId, g]) => {
         if (g.completedDate === undefined) return true;
-        return !isGateCompleted(raidId, gId, DateTime.fromISO(g.completedDate));
+        return !isGateCompleted(
+          DateTime.fromISO(g.completedDate),
+          getGateResetDate(raidId, gId),
+        );
       });
       if (!firstIncompleteGate) throw new Error("No gates to complete");
       char.assignedRaids[raidId][firstIncompleteGate[0]].completedDate =
