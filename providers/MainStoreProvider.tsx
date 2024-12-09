@@ -8,7 +8,6 @@ import {
 import { isGateCompleted, raids } from "@/lib/raids";
 import { isTaskCompleted } from "@/lib/tasks";
 import { createMainStore, MainStore } from "@/stores/main";
-import { DateTime } from "luxon";
 import {
   type ReactNode,
   createContext,
@@ -89,7 +88,7 @@ export const useMainStore = () => {
                 completed:
                   gate.completedDate !== undefined
                     ? isGateCompleted(
-                        DateTime.fromISO(gate.completedDate),
+                        new Date(gate.completedDate),
                         raids[raidId].gates[gateId].isBiWeekly === undefined
                           ? weeklyReset
                           : raids[raidId].gates[gateId].isBiWeekly === "odd"

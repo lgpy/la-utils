@@ -1,5 +1,3 @@
-import { DateTime } from "luxon";
-
 export enum Difficulty {
   normal = "Normal",
   hard = "Hard",
@@ -24,8 +22,8 @@ export const shortestDifficulty = (difficulty: Difficulty) => {
 };
 
 export const isGateCompleted = (
-  dateRaidWasComplete: DateTime,
-  latestReset: DateTime,
+  dateRaidWasComplete: Date,
+  latestReset: Date,
 ) => {
   return latestReset < dateRaidWasComplete;
 };

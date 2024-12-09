@@ -1,52 +1,58 @@
-import { DateTime } from "luxon";
 import { raids } from "./raids";
 import { Task } from "./tasks";
 
 export function getLatestBiWeeklyReset(
   BiWeekly: "odd" | "even",
-  currentDateOverride?: DateTime,
-): DateTime {
+  currentDateOverride?: Date,
+): Date {
   return _getLatestWeeklyReset(BiWeekly, currentDateOverride);
 }
 
-export function getLatestWeeklyReset(currentDateOverride?: DateTime): DateTime {
+export function getLatestWeeklyReset(currentDateOverride?: Date): Date {
   return _getLatestWeeklyReset(undefined, currentDateOverride);
 }
 
 function _getLatestWeeklyReset(
   BiWeekly?: "odd" | "even",
-  currentDateOverride?: DateTime,
-) {
-  const currentDate = currentDateOverride ?? DateTime.now().setZone("UTC");
+  currentDateOverride?: Date,
+): Date {
+  const currentDate = currentDateOverride ?? new Date();
+  const currentDay = currentDate.getUTCDay();
+  const currentHour = currentDate.getUTCHours();
 
-  let latestWednesday = currentDate
-    .set({ weekday: 3 })
-    .set({ hour: 8, minute: 0, second: 0, millisecond: 0 });
+  let latestWednesday = new Date(currentDate);
+  latestWednesday.setUTCDate(currentDate.getUTCDate() - ((currentDay + 4) % 7));
+  latestWednesday.setUTCHours(8, 0, 0, 0);
 
-  if (latestWednesday > currentDate) {
-    latestWednesday = latestWednesday.minus({ weeks: 1 });
+  if (
+    latestWednesday > currentDate ||
+    (latestWednesday.getUTCDay() === currentDay && currentHour < 8)
+  ) {
+    latestWednesday.setUTCDate(latestWednesday.getUTCDate() - 7);
   }
+
   if (BiWeekly) {
-    if (BiWeekly === "odd" && latestWednesday.weekNumber % 2 !== 0) {
-      latestWednesday = latestWednesday.minus({ weeks: 1 });
-    } else if (BiWeekly === "even" && latestWednesday.weekNumber % 2 === 0) {
-      latestWednesday = latestWednesday.minus({ weeks: 1 });
+    const weekNumber = Math.floor(
+      (latestWednesday.getTime() -
+        new Date(latestWednesday.getUTCFullYear(), 0, 1).getTime()) /
+        (7 * 24 * 60 * 60 * 1000),
+    );
+    if (BiWeekly === "odd" && weekNumber % 2 === 0) {
+      latestWednesday.setUTCDate(latestWednesday.getUTCDate() - 7);
+    } else if (BiWeekly === "even" && weekNumber % 2 !== 0) {
+      latestWednesday.setUTCDate(latestWednesday.getUTCDate() - 7);
     }
   }
 
   return latestWednesday;
 }
 
-export function getLatestDailyReset(currentDateOverride?: DateTime) {
-  const currentDate = currentDateOverride ?? DateTime.now().setZone("UTC");
-  const reset = currentDate.set({
-    hour: 8,
-    minute: 0,
-    second: 0,
-    millisecond: 0,
-  });
+export function getLatestDailyReset(currentDateOverride?: Date): Date {
+  const currentDate = currentDateOverride ?? new Date();
+  const reset = new Date(currentDate);
+  reset.setUTCHours(8, 0, 0, 0);
   if (reset > currentDate) {
-    return reset.minus({ days: 1 });
+    reset.setUTCDate(reset.getUTCDate() - 1);
   }
   return reset;
 }

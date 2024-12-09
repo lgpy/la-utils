@@ -2,7 +2,6 @@ import { servers, ServerStatus, setServerStatus } from "@/lib/servers";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import _ from "lodash";
-import { DateTime } from "luxon";
 
 export const revalidate = 300;
 
@@ -62,7 +61,7 @@ export async function GET(request: Request) {
 
     return new Response(
       JSON.stringify({
-        lastUpdated: DateTime.now().toMillis(),
+        lastUpdated: new Date().getTime(),
         servers: serversClone,
       }),
       {

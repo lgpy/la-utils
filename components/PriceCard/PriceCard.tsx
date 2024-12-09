@@ -17,27 +17,6 @@ type Props = {
   bcValue: number;
 };
 
-const getHighestUnit = (lastUpdated: DateTime) => {
-  const now = DateTime.now();
-  const diff = now.diff(lastUpdated, ["days", "hours", "minutes", "seconds"]);
-
-  if (diff.days !== 0) {
-    return `${diff.days} day${diff.days < 2 ? "" : "s"} ago`;
-  } else if (diff.hours !== 0) {
-    return `${diff.hours} hour${diff.hours < 2 ? "" : "s"} ago`;
-  } else if (diff.minutes !== 0) {
-    return `${diff.minutes} minute${diff.minutes < 2 ? "" : "s"} ago`;
-  } else if (diff.seconds !== 0) {
-    if (diff.seconds < 1) return "now";
-    else
-      return `${Math.round(diff.seconds)} second${
-        diff.seconds < 2 ? "" : "s"
-      } ago`;
-  } else {
-    return undefined;
-  }
-};
-
 export default function PriceCard({
   changeValue,
   bcValue,
@@ -66,7 +45,7 @@ export default function PriceCard({
   const daysSinceUpdate = useMemo(() => {
     if (!pSitem) return undefined;
     if (!pSitem.updatedOn) return undefined;
-    return getHighestUnit(DateTime.fromISO(pSitem.updatedOn));
+    return DateTime.fromISO(pSitem.updatedOn).toRelative();
   }, [pSitem]);
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {

@@ -1,6 +1,5 @@
 import { Difficulty, isGateCompleted, raids } from "@/lib/raids";
 import { SetType } from "./main";
-import { DateTime } from "luxon";
 import { getGateResetDate } from "@/lib/dates";
 
 export function charAddRaid(
@@ -101,7 +100,7 @@ export function raidAction(
       ).findLast(([gId, g]) => {
         if (g.completedDate === undefined) return false;
         return isGateCompleted(
-          DateTime.fromISO(g.completedDate),
+          new Date(g.completedDate),
           getGateResetDate(raidId, gId),
         );
       });
@@ -114,7 +113,7 @@ export function raidAction(
       ).find(([gId, g]) => {
         if (g.completedDate === undefined) return true;
         return !isGateCompleted(
-          DateTime.fromISO(g.completedDate),
+          new Date(g.completedDate),
           getGateResetDate(raidId, gId),
         );
       });

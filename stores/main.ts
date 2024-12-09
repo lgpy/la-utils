@@ -16,7 +16,6 @@ import {
   raidAction,
 } from "./raidActions";
 import { isTaskCompleted } from "@/lib/tasks";
-import { DateTime } from "luxon";
 import {
   getGateResetDate,
   getLatestWeeklyReset,
@@ -138,7 +137,7 @@ export const createMainStore = () =>
             const isCompleted =
               gate.completedDate !== undefined
                 ? isGateCompleted(
-                    DateTime.fromISO(gate.completedDate),
+                    new Date(gate.completedDate),
                     getGateResetDate(raidId, gateId),
                   )
                 : false;
@@ -155,14 +154,13 @@ export const createMainStore = () =>
                   const biweeklyGateIsCompleted =
                     assignedRaid[gateId].completedDate !== undefined
                       ? isGateCompleted(
-                          DateTime.fromISO(assignedRaid[gateId].completedDate),
+                          new Date(assignedRaid[gateId].completedDate),
                           getGateResetDate(raidId, gateId),
                         )
                       : false;
                   if (
                     biweeklyGateIsCompleted &&
-                    DateTime.fromISO(assignedRaid[gateId].completedDate!) <
-                      lastreset
+                    new Date(assignedRaid[gateId].completedDate!) < lastreset
                   ) {
                     return;
                   }
@@ -177,9 +175,7 @@ export const createMainStore = () =>
                   const biweeklyGateIsCompleted =
                     assignedRaid[gateKeys[i]].completedDate !== undefined
                       ? isGateCompleted(
-                          DateTime.fromISO(
-                            assignedRaid[gateKeys[i]].completedDate!,
-                          ),
+                          new Date(assignedRaid[gateKeys[i]].completedDate!),
                           getGateResetDate(raidId, gateId),
                         )
                       : false;
@@ -188,7 +184,7 @@ export const createMainStore = () =>
                   }
                 }
                 assignedRaid[gateKeys[i]].completedDate =
-                  DateTime.now().toISO();
+                  new Date().toISOString();
               }
             }
 
@@ -218,7 +214,7 @@ export const createMainStore = () =>
               ) {
                 const lastreset = getLatestWeeklyReset();
                 if (aGate.completedDate !== undefined) {
-                  const biWeeklyDate = DateTime.fromISO(aGate.completedDate!);
+                  const biWeeklyDate = new Date(aGate.completedDate!);
                   const biweeklyGateIsCompleted = isGateCompleted(
                     biWeeklyDate,
                     getGateResetDate(raidId, gateKey),
@@ -251,7 +247,7 @@ export const createMainStore = () =>
               if (raids[raidId].gates[gateKey].isBiWeekly) {
                 const lastreset = getLatestWeeklyReset();
                 if (aGate.completedDate !== undefined) {
-                  const biWeeklyDate = DateTime.fromISO(aGate.completedDate!);
+                  const biWeeklyDate = new Date(aGate.completedDate!);
                   const biweeklyGateIsCompleted = isGateCompleted(
                     biWeeklyDate,
                     getGateResetDate(raidId, gateKey),
@@ -261,7 +257,7 @@ export const createMainStore = () =>
                   }
                 }
               }
-              aGate.completedDate = DateTime.now().toISO();
+              aGate.completedDate = new Date().toISOString();
             }
 
             return { ...state };
@@ -284,7 +280,7 @@ export const createMainStore = () =>
               if (raids[raidId].gates[gateKey].isBiWeekly) {
                 const lastreset = getLatestWeeklyReset();
                 if (aGate.completedDate !== undefined) {
-                  const biWeeklyDate = DateTime.fromISO(aGate.completedDate!);
+                  const biWeeklyDate = new Date(aGate.completedDate!);
                   const biweeklyGateIsCompleted = isGateCompleted(
                     biWeeklyDate,
                     getGateResetDate(raidId, gateKey),
@@ -312,7 +308,7 @@ export const createMainStore = () =>
             const gate = assignedRaid[gateId];
             if (gate === undefined) throw new Error("Gate not found");
 
-            gate.completedDate = DateTime.now().toISO();
+            gate.completedDate = new Date().toISOString();
 
             return { ...state };
           });
@@ -398,7 +394,7 @@ export const createMainStore = () =>
               task.completedDate = undefined;
             }
             if (!isCompleted) {
-              task.completedDate = DateTime.now().toISO();
+              task.completedDate = new Date().toISOString();
             }
 
             return { ...state };
