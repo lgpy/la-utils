@@ -2,6 +2,7 @@ import { servers, ServerStatus, setServerStatus } from "@/lib/servers";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import _ from "lodash";
+import { gzip } from "zlib";
 
 export const revalidate = 300;
 
@@ -16,7 +17,7 @@ export async function GET(request: Request) {
     const { data: html } = await axios.get(
       "https://www.playlostark.com/en-us/support/server-status",
     );
-    const $ = cheerio.load(html);
+    const $ = cheerio.load(html, { xml: true });
     $("div.ags-ServerStatus-content-responses-response-server").each(
       (i, el) => {
         const name = $(el)
@@ -59,18 +60,26 @@ export async function GET(request: Request) {
       },
     );
 
-    return new Response(
-      JSON.stringify({
-        lastUpdated: new Date().getTime(),
-        servers: serversClone,
-      }),
-      {
-        status: 200,
-        headers: {
-          "content-type": "application/json",
+    const gziped = await new Promise<Buffer>((resolve, reject) => {
+      gzip(
+        JSON.stringify({
+          lastUpdated: new Date().getTime(),
+          servers: serversClone,
+        }),
+        (err, buffer) => {
+          if (err) reject(err);
+          else resolve(buffer);
         },
+      );
+    });
+
+    return new Response(gziped, {
+      status: 200,
+      headers: {
+        "Content-Encoding": "gzip",
+        "Content-Type": "application/json",
       },
-    );
+    });
   } catch (error) {
     return new Response("Error fetching data", { status: 500 });
   }
