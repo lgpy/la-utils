@@ -101,6 +101,7 @@ test("add raid", async ({ page }) => {
   await page.getByTestId("difficulties-G2").getByLabel("Hard").click();
   await page.getByTestId("difficulties-G3").getByLabel("Normal").click();
   await page.getByTestId("form-submit").click();
+  await page.reload();
   characterCard = await page.getByTestId("character-0");
   await expect(
     characterCard.getByTestId("character-assigned-raid-0"),
@@ -134,6 +135,7 @@ test("edit raid", async ({ page }) => {
   await page.getByTestId("difficulties-G3").getByLabel("Hard").click();
   await page.getByTestId("difficulties-G4").getByLabel("Normal").click();
   await page.getByTestId("form-submit").click();
+  await page.reload();
   characterCard = await page.getByTestId("character-0");
   await expect(
     characterCard.getByTestId("character-assigned-raid-0"),

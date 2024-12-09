@@ -1,4 +1,3 @@
-import { Character, useMainStore } from "@/hooks/mainstore";
 import { Difficulty, raids } from "@/lib/raids";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,6 +29,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useToast } from "../ui/use-toast";
+import { Character, useMainStore } from "@/providers/MainStoreProvider";
 
 Difficulty;
 const formSchema = z.object({
@@ -51,7 +51,7 @@ export default function EditCardRaidDialog({
   raidId,
 }: Props) {
   const [parent] = useAutoAnimate();
-  const { state, hasHydrated } = useMainStore();
+  const mainStore = useMainStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -94,8 +94,8 @@ export default function EditCardRaidDialog({
       ) as Record<string, Difficulty>;
 
       if (raidId !== undefined)
-        state.charEditRaid(character.id, raidId, fgates);
-      else state.charAddRaid(character.id, values.raidId, fgates);
+        mainStore.charEditRaid(character.id, raidId, fgates);
+      else mainStore.charAddRaid(character.id, values.raidId, fgates);
 
       close();
       toast({

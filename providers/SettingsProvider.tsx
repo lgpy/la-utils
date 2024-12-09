@@ -36,9 +36,9 @@ export const SettingsStoreProvider = ({
   );
 };
 
-export const useSettingsStore = <T,>(
-  selector: (store: SettingsStore) => T,
-): { store: T; hasHydrated: boolean } => {
+export const useSettingsStore = (): SettingsStore & {
+  hasHydrated: boolean;
+} => {
   const settingsStoreContext = useContext(SettingsStoreContext);
   const [hydrated, setHydrated] = useState(false);
 
@@ -57,10 +57,10 @@ export const useSettingsStore = <T,>(
     });
   }, [settingsStoreContext.persist]);
 
-  const store = useStore(settingsStoreContext, selector);
+  const store = useStore(settingsStoreContext, (s) => s);
 
   return {
-    store,
+    ...store,
     hasHydrated: hydrated,
   };
 };

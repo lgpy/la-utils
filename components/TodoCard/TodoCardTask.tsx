@@ -1,6 +1,5 @@
-import { Task } from "@/lib/tasks";
 import { Checkbox } from "../ui/checkbox";
-import { Character } from "@/hooks/mainstore";
+import { Character } from "@/providers/MainStoreProvider";
 import { cn } from "@/lib/utils";
 
 type Props = {

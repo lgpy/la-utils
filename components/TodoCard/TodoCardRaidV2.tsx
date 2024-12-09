@@ -1,4 +1,4 @@
-import { Character } from "@/hooks/mainstore";
+import { Character } from "@/providers/MainStoreProvider";
 import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { cn } from "@/lib/utils";
 import {
@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { CircleDollarSign, HandCoins } from "lucide-react";
+import { HandCoins } from "lucide-react";
 import TodoCardCompleteButtonV2 from "./TodoCardCompleteButtonV2";
 import { motion } from "framer-motion";
 import { useSettingsStore } from "@/providers/SettingsProvider";
@@ -25,8 +25,7 @@ export default function TodoCardRaidV2({
   raid,
   goldEarner,
 }: Props) {
-  const { store: compactRaidCard, hasHydrated: settingsHasHydrated } =
-    useSettingsStore((s) => s.experiments.compactRaidCard);
+  const settingsStore = useSettingsStore();
   const actualraid = raids[raidId];
 
   if (!actualraid) {
@@ -34,7 +33,7 @@ export default function TodoCardRaidV2({
     return null;
   }
 
-  if (!settingsHasHydrated) {
+  if (!settingsStore.hasHydrated) {
     return null;
   }
 
@@ -45,12 +44,14 @@ export default function TodoCardRaidV2({
 
   const progress = completedRaids / Object.keys(raid).length;
 
+  const isCompactCardEnabled = settingsStore.experiments.compactRaidCard;
+
   return (
     <div
       className={cn(
         "relative flex flex-row items-center justify-between gap-2 p-3 transition",
         {
-          "p-1 px-3": compactRaidCard,
+          "p-1 px-3": isCompactCardEnabled,
         },
       )}
     >
@@ -71,7 +72,7 @@ export default function TodoCardRaidV2({
             "transition-opacity size-4 stroke-yellow absolute right-0.5 bottom-0.5 opacity-80",
             {
               "opacity-40": completedRaids === Object.keys(raid).length,
-              "right-[1px] bottom-[1px]": compactRaidCard,
+              "right-[1px] bottom-[1px]": isCompactCardEnabled,
             },
           )}
         />
@@ -84,7 +85,7 @@ export default function TodoCardRaidV2({
         >
           {actualraid.name}
         </p>
-        {!compactRaidCard && (
+        {!isCompactCardEnabled && (
           <div className="flex flex-row gap-1">
             <TooltipProvider>
               <Tooltip>

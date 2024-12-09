@@ -17,7 +17,6 @@ import {
 } from "@/lib/servers";
 import { ServerStatusResponse } from "@/app/api/serverStatus/route";
 import { DateTime } from "luxon";
-import { stubArray } from "lodash";
 
 function beep(ac: AudioContext, volume: number) {
   return new Promise<void>((resolve, reject) => {
@@ -43,7 +42,7 @@ function beep(ac: AudioContext, volume: number) {
 }
 
 export default function ServerStatusWidget() {
-  const { store, hasHydrated } = useSettingsStore((store) => store);
+  const settingsStore = useSettingsStore();
 
   const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
@@ -74,12 +73,12 @@ export default function ServerStatusWidget() {
   }, [lastUpdated]);
 
   useEffect(() => {
-    if (!hasHydrated) return;
-    if (store.server === undefined) return;
+    if (!settingsStore.hasHydrated) return;
+    if (settingsStore.server === undefined) return;
     if (serverStatus === null)
       fetch(`/api/serverStatus`).then((res) =>
         res.json().then((data: ServerStatusResponse) => {
-          const status = getServerStatus(data.servers, store.server!);
+          const status = getServerStatus(data.servers, settingsStore.server!);
           setServerStatus(status);
           setLastUpdated(data.lastUpdated);
         }),
@@ -93,7 +92,7 @@ export default function ServerStatusWidget() {
     const int = setInterval(async () => {
       const res = await fetch(`/api/serverStatus`);
       const data = await res.json();
-      const status = getServerStatus(data, store.server!);
+      const status = getServerStatus(data, settingsStore.server!);
       if (
         status === ServerStatus.ONLINE &&
         (serverStatus === ServerStatus.OFFLINE ||
@@ -102,7 +101,7 @@ export default function ServerStatusWidget() {
         if (!audioContext.current) audioContext.current = new AudioContext();
         beep(audioContext.current, 30);
         toast({
-          title: `Server ${store.server} is back online!`,
+          title: `Server ${settingsStore.server} is back online!`,
           duration: 240000,
         });
       }
@@ -111,10 +110,10 @@ export default function ServerStatusWidget() {
     return () => {
       clearInterval(int);
     };
-  }, [store, hasHydrated, serverStatus]);
+  }, [settingsStore, settingsStore.hasHydrated, serverStatus]);
 
-  if (!hasHydrated) return null;
-  if (store.server === undefined) return null;
+  if (!settingsStore.hasHydrated) return null;
+  if (settingsStore.server === undefined) return null;
 
   const icon = (() => {
     switch (serverStatus) {
@@ -141,7 +140,7 @@ export default function ServerStatusWidget() {
           <div className="flex gap-1 items-center select-none">
             {icon}
             <span className="text-muted-foreground text-xs">
-              {store.server}
+              {settingsStore.server}
             </span>
           </div>
         </TooltipTrigger>

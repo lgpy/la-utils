@@ -1,4 +1,3 @@
-import { Character, useMainStore } from "@/hooks/mainstore";
 import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { EllipsisIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Character, useMainStore } from "@/providers/MainStoreProvider";
 
 interface Props {
   char: Character;
@@ -26,7 +26,7 @@ export default function EditCardAssignedRaid({
   raidId,
   openRaidDialog,
 }: Props) {
-  const { state, hasHydrated } = useMainStore();
+  const mainStore = useMainStore();
 
   const assignedRaid = char.assignedRaids[raidId];
   const raid = raids[raidId];
@@ -80,7 +80,7 @@ export default function EditCardAssignedRaid({
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-destructive"
-            onClick={() => state.charDelRaid(char.id, raidId)}
+            onClick={() => mainStore.charDelRaid(char.id, raidId)}
             data-pw={`assigned-raid-delete`}
           >
             <Trash2Icon className="mr-2 h-4 w-4" />

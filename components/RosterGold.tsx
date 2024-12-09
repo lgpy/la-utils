@@ -1,22 +1,20 @@
 "use client";
 
-import { useMainStore } from "@/hooks/mainstore";
 import { getHighest3, parseGoldInfo } from "@/lib/chars";
-import { _useMainStore } from "@/providers/MainStoreProvider";
 import { useSettingsStore } from "@/providers/SettingsProvider";
 import { useMemo } from "react";
 import AnimatedNumber from "./AnimatedNumber";
+import { useMainStore } from "@/providers/MainStoreProvider";
 
 export default function RosterGold() {
-  const { hasHydrated, state } = useMainStore();
-  const { hasHydrated: settingsStoreHidrated, store: settingsStore } =
-    useSettingsStore((s) => s);
+  const mainStore = useMainStore();
+  const settingsStore = useSettingsStore();
 
   const rosterGold = useMemo(() => {
-    if (!hasHydrated || !settingsStoreHidrated) {
+    if (!mainStore.hasHydrated || !settingsStore.hasHydrated) {
       return;
     }
-    const ret = state.characters.reduce(
+    const ret = mainStore.characters.reduce(
       (acc, char) => {
         if (!char.isGoldEarner) return acc;
         const goldInfo = parseGoldInfo(char.assignedRaids);
@@ -44,14 +42,14 @@ export default function RosterGold() {
     }
     return ret;
   }, [
-    state.characters,
-    hasHydrated,
-    settingsStoreHidrated,
+    mainStore.characters,
+    mainStore.hasHydrated,
+    settingsStore.hasHydrated,
     settingsStore.rosterGoldTotal,
     settingsStore.experiments.ignoreThaemineIfNoG4,
   ]);
 
-  if (!hasHydrated || !settingsStoreHidrated) {
+  if (!mainStore.hasHydrated || !settingsStore.hasHydrated) {
     return null;
   }
 

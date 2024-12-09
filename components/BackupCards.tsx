@@ -12,18 +12,18 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { _useMainStore } from "@/providers/MainStoreProvider";
+import { useMainStore } from "@/providers/MainStoreProvider";
 import { useState } from "react";
 
 export default function BackupCards() {
-  const { store } = _useMainStore((state) => state);
+  const mainStore = useMainStore();
   const [jsonImport, setJsonImport] = useState("");
   const { toast } = useToast();
 
   const importData = () => {
     try {
       const data = JSON.parse(jsonImport);
-      store.restoreData(data);
+      mainStore.restoreData(data);
       toast({
         title: "Success!",
         description: `Data imported successfully.`,
@@ -69,13 +69,13 @@ export default function BackupCards() {
         </CardHeader>
         <CardContent>
           <Textarea
-            value={JSON.stringify(store)}
+            value={JSON.stringify(mainStore)}
             onChange={() => {}}
             className="min-h-60"
           />
         </CardContent>
         <CardFooter className="flex justify-end">
-          <CopyButton textToCopy={JSON.stringify(store)}>Copy</CopyButton>
+          <CopyButton textToCopy={JSON.stringify(mainStore)}>Copy</CopyButton>
         </CardFooter>
       </Card>
     </>

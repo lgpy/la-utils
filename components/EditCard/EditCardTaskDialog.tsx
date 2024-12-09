@@ -1,4 +1,4 @@
-import { Character, useMainStore } from "@/hooks/mainstore";
+import { Character, useMainStore } from "@/providers/MainStoreProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -30,11 +30,8 @@ import {
 import { useToast } from "../ui/use-toast";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Trash2Icon } from "lucide-react";
@@ -73,7 +70,7 @@ export default function EditCardTaskDialog({
   close,
   taskId,
 }: Props) {
-  const { state, hasHydrated } = useMainStore();
+  const mainStore = useMainStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -89,12 +86,12 @@ export default function EditCardTaskDialog({
         state.charEditRaid(character.id, taskId, fgates);
       else state.charAddRaid(character.id, values.raidId, fgates);*/
       if (taskId !== undefined)
-        state.charEditTask(character.id, taskId, {
+        mainStore.charEditTask(character.id, taskId, {
           name: values.name,
           type: values.type,
         });
       else
-        state.charAddTask(character.id, {
+        mainStore.charAddTask(character.id, {
           name: values.name,
           type: values.type,
         });
@@ -202,7 +199,7 @@ export default function EditCardTaskDialog({
               <Button
                 variant="destructive"
                 onClick={() => {
-                  state.charDelTask(character.id, taskId);
+                  mainStore.charDelTask(character.id, taskId);
                   close();
                 }}
                 size="icon"

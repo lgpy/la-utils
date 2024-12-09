@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Character } from "@/hooks/mainstore";
 import { cn } from "@/lib/utils";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
@@ -11,6 +10,7 @@ import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
 import { sortRaidKeys } from "@/lib/chars";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EditCardTask from "./EditCardTask";
+import { Character } from "@/providers/MainStoreProvider";
 
 type Props = {
   char: Character;

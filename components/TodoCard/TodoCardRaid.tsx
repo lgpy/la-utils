@@ -1,4 +1,4 @@
-import { Character } from "@/hooks/mainstore";
+import { Character } from "@/providers/MainStoreProvider";
 import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { cn } from "@/lib/utils";
 import {

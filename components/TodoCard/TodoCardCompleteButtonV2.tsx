@@ -1,4 +1,4 @@
-import { Character, useMainStore } from "@/hooks/mainstore";
+import { Character, useMainStore } from "@/providers/MainStoreProvider";
 import { raids } from "@/lib/raids";
 import { motion } from "framer-motion";
 import { MouseEventHandler } from "react";
@@ -50,7 +50,7 @@ export default function TodoCardCompleteButtonV2({
   raidId,
   assignedGates,
 }: Props) {
-  const { state, hasHydrated } = useMainStore();
+  const mainStore = useMainStore();
 
   const buttons = Object.entries(assignedGates).map(
     ([gateId, gate], idx, arr) => {
@@ -60,17 +60,17 @@ export default function TodoCardCompleteButtonV2({
       const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
         event.preventDefault();
         if (event.altKey && event.button === 0) {
-          state.toggleSingleGate(charId, raidId, gateId);
+          mainStore.toggleSingleGate(charId, raidId, gateId);
         } else if (event.altKey && event.button === 2) {
-          state.untoggleSingleGate(charId, raidId, gateId);
+          mainStore.untoggleSingleGate(charId, raidId, gateId);
         } else if (event.shiftKey && event.button === 0) {
-          state.toggleAllGates(charId, raidId);
+          mainStore.toggleAllGates(charId, raidId);
         } else if (event.shiftKey && event.button === 2) {
-          state.untoggleAllGates(charId, raidId);
+          mainStore.untoggleAllGates(charId, raidId);
         } else if (event.button === 0) {
-          state.toggleGate(charId, raidId, gateId);
+          mainStore.toggleGate(charId, raidId, gateId);
         } else if (event.button === 2) {
-          state.untoggleGate(charId, raidId, gateId);
+          mainStore.untoggleGate(charId, raidId, gateId);
         }
       };
 

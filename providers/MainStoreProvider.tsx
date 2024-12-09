@@ -1,11 +1,15 @@
 "use client";
 
+import { isGateCompleted } from "@/lib/raids";
+import { isTaskCompleted } from "@/lib/tasks";
 import { createMainStore, MainStore } from "@/stores/main";
+import { DateTime } from "luxon";
 import {
   type ReactNode,
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -34,9 +38,17 @@ export const MainStoreProvider = ({ children }: MainStoreProviderProps) => {
   );
 };
 
-export const _useMainStore = <T,>(
-  selector: (store: MainStore) => T,
-): { store: T; hasHydrated: boolean } => {
+type AssignedRaids = MainStore["characters"][number]["assignedRaids"];
+
+type ExtendedAssignedRaids = {
+  [raidId in keyof AssignedRaids]: {
+    [gateId in keyof AssignedRaids[raidId]]: AssignedRaids[raidId][gateId] & {
+      completed: boolean;
+    };
+  };
+};
+
+export const useMainStore = () => {
   const mainStoreContext = useContext(MainStoreContext);
   const [hydrated, setHydrated] = useState(false);
 
@@ -53,10 +65,48 @@ export const _useMainStore = <T,>(
     });
   }, [mainStoreContext.persist]);
 
-  const store = useStore(mainStoreContext, selector);
+  const store = useStore(mainStoreContext, (s) => s);
+
+  const characters = useMemo(() => {
+    return store.characters.map((character) => ({
+      ...character,
+      assignedRaids: Object.entries(character.assignedRaids).reduce(
+        (acc, [raidId, raid]) => {
+          const gates = Object.entries(raid).reduce(
+            (gateAcc, [gateId, gate]) => {
+              gateAcc[gateId] = {
+                ...gate,
+                completed:
+                  gate.completedDate !== undefined
+                    ? isGateCompleted(
+                        raidId,
+                        gateId,
+                        DateTime.fromISO(gate.completedDate),
+                      )
+                    : false,
+              };
+              return gateAcc;
+            },
+            {} as ExtendedAssignedRaids[string],
+          );
+          acc[raidId] = gates;
+          return acc;
+        },
+        {} as ExtendedAssignedRaids,
+      ),
+      tasks: character.tasks.map((task) => ({
+        ...task,
+        completed:
+          task.completedDate !== undefined ? isTaskCompleted(task) : false,
+      })),
+    }));
+  }, [store.characters]);
 
   return {
-    store,
+    ...store,
+    characters,
     hasHydrated: hydrated,
   };
 };
+
+export type Character = ReturnType<typeof useMainStore>["characters"][number];

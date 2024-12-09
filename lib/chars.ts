@@ -1,4 +1,4 @@
-import { Character } from "@/hooks/mainstore";
+import { Character } from "@/providers/MainStoreProvider";
 import { DateTime } from "luxon";
 import { isGateCompleted, raids } from "./raids";
 import { getLatestWeeklyReset } from "./dates";

@@ -17,7 +17,6 @@ import {
   FormItem,
   FormLabel,
   FormControl,
-  FormDescription,
   FormMessage,
 } from "../ui/form";
 import { useToast } from "../ui/use-toast";
@@ -33,8 +32,8 @@ import {
 } from "../ui/select";
 import { Trash2Icon, TrashIcon } from "lucide-react";
 import ClassIcon from "../class-icons/ClassIcon";
-import { Character, useMainStore } from "@/hooks/mainstore";
 import { Checkbox } from "../ui/checkbox";
+import { Character, useMainStore } from "@/providers/MainStoreProvider";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -65,14 +64,14 @@ export default function EditCardCharacterDialog({
       isGoldEarner: false,
     },
   });
-  const { state, hasHydrated } = useMainStore();
+  const mainStore = useMainStore();
   const { toast } = useToast();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       if (existingCharacter !== undefined)
-        state.updateCharacter(existingCharacter.id, values);
-      else state.createCharacter(values);
+        mainStore.updateCharacter(existingCharacter.id, values);
+      else mainStore.createCharacter(values);
       close();
       toast({
         title: `Character ${existingCharacter ? "Updated" : "Created"}!`,
@@ -95,17 +94,17 @@ export default function EditCardCharacterDialog({
     if (!existingCharacter) return;
     if (!window.confirm("Are you sure you want to delete this character?"))
       return;
-    const index = state.characters.findIndex(
+    const index = mainStore.characters.findIndex(
       (c) => c.id === existingCharacter.id,
     );
-    state.deleteCharacter(existingCharacter.id);
+    mainStore.deleteCharacter(existingCharacter.id);
     close();
     toast({
       title: "Character Deleted!",
       description: "Your character has been deleted successfully!",
       action: (
         <ToastAction
-          onClick={() => state.restoreCharacter(existingCharacter, index)}
+          onClick={() => mainStore.restoreCharacter(existingCharacter, index)}
           className="hover:text-background"
           altText="Undo"
           data-pw="undo-char-delete"

@@ -1,5 +1,6 @@
 import { useToast } from "@/components/ui/use-toast";
-import { Character, useMainStore } from "@/hooks/mainstore";
+
+import { Character, useMainStore } from "@/providers/MainStoreProvider";
 import { raids } from "@/lib/raids";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon } from "lucide-react";
@@ -16,7 +17,7 @@ export default function TodoCardCompleteButton({
   raidId,
   assignedGates,
 }: Props) {
-  const { state, hasHydrated } = useMainStore();
+  const mainStore = useMainStore();
   const raid = raids[raidId];
   const { toast } = useToast();
   const [increase, setIncrease] = useState(false);
@@ -37,7 +38,7 @@ export default function TodoCardCompleteButton({
       setIncrease(true);
       if (isChecked) return;
       try {
-        state.raidAction({
+        mainStore.raidAction({
           charId,
           raidId,
           mode: event.shiftKey ? "all" : "last",
@@ -56,7 +57,7 @@ export default function TodoCardCompleteButton({
       setIncrease(false);
       if (completedlen === 0) return;
       try {
-        state.raidAction({
+        mainStore.raidAction({
           charId,
           raidId,
           mode: event.shiftKey ? "all" : "last",

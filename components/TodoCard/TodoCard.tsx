@@ -1,4 +1,3 @@
-import { Character, useMainStore } from "@/hooks/mainstore";
 import { getHighest3, parseGoldInfo, sortRaidKeys } from "@/lib/chars";
 import { cn } from "@/lib/utils";
 import { Check, SwordsIcon } from "lucide-react";
@@ -13,23 +12,24 @@ import TodoCardTask from "./TodoCardTask";
 import TodoCardRaidV2 from "./TodoCardRaidV2";
 import { useSettingsStore } from "@/providers/SettingsProvider";
 import { motion } from "framer-motion";
+import { Character, useMainStore } from "@/providers/MainStoreProvider";
 
 interface Props {
   char: Character;
 }
 
 export default function TodoCard({ char }: Props) {
-  const { state } = useMainStore();
-  const settings = useSettingsStore((s) => s);
+  const mainStore = useMainStore();
+  const settingsStore = useSettingsStore();
   const highest3 = useMemo(() => {
     const goldInfo = parseGoldInfo(char.assignedRaids);
     const highest3 = getHighest3(
       char.assignedRaids,
       goldInfo,
-      settings.store.experiments.ignoreThaemineIfNoG4,
+      settingsStore.experiments.ignoreThaemineIfNoG4,
     );
     return highest3;
-  }, [char, settings.store.experiments.ignoreThaemineIfNoG4]);
+  }, [char, settingsStore.experiments.ignoreThaemineIfNoG4]);
 
   const assignedRaids = Object.keys(char.assignedRaids)
     .sort(sortRaidKeys)
@@ -40,7 +40,7 @@ export default function TodoCard({ char }: Props) {
             "rounded-b-lg": i === keys.length - 1,
           })}
         >
-          {settings.store.experiments.buttonV2 ? (
+          {settingsStore.experiments.buttonV2 ? (
             <TodoCardRaidV2
               charId={char.id}
               raidId={raidId}
@@ -94,7 +94,7 @@ export default function TodoCard({ char }: Props) {
             >
               <TodoCardTask
                 task={task}
-                toggleTask={() => state.charToggleTask(char.id, task.id)}
+                toggleTask={() => mainStore.charToggleTask(char.id, task.id)}
               />
             </CardContent>
             {i < tasks.length - 1 && <Separator className="opacity-75" />}
@@ -108,7 +108,7 @@ export default function TodoCard({ char }: Props) {
         weekly: [],
       },
     );
-  }, [char.id, state, filteredTasks]);
+  }, [char.id, mainStore, filteredTasks]);
 
   const completedTasks = char.tasks.reduce(
     (acc, t) => (t.completed ? acc + 1 : acc),

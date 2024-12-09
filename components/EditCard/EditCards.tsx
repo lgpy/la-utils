@@ -1,6 +1,6 @@
 "use client";
 
-import { Character, useMainStore } from "@/hooks/mainstore";
+import { Character, useMainStore } from "@/providers/MainStoreProvider";
 import { dragAndDrop } from "@formkit/drag-and-drop/react";
 import { motion } from "framer-motion";
 import { isEqual } from "lodash";
@@ -20,7 +20,7 @@ import EditCardRaidDialog from "./EditCardRaidDialog";
 import EditCardTaskDialog from "./EditCardTaskDialog";
 
 export default function EditCards() {
-  const { state, hasHydrated } = useMainStore();
+  const mainStore = useMainStore();
   const [isOpen, setIsOpen] = useState<false | "raid" | "char" | "task">(false);
   const [selectedCharacter, setSelectedCharacter] = useState<
     Character | undefined
@@ -51,7 +51,7 @@ export default function EditCards() {
   };
 
   const parent = useRef(null) as RefObject<HTMLUListElement | null>;
-  const [chars, setChars] = useState(state.characters);
+  const [chars, setChars] = useState(mainStore.characters);
   const prevCharactersRef = useRef<Character[] | undefined>(undefined);
 
   dragAndDrop({
@@ -60,28 +60,28 @@ export default function EditCards() {
     dragHandle: ".mover",
     handleEnd(data) {
       const charId = data.targetData.node.data.value.id;
-      const oldIndex = state.characters.findIndex((c) => c.id === charId);
+      const oldIndex = mainStore.characters.findIndex((c) => c.id === charId);
       if (oldIndex === -1) return;
       const newindex = data.targetData.node.data.index;
       //change character to new index state.charaters
-      const newCharacters = [...state.characters];
+      const newCharacters = [...mainStore.characters];
       newCharacters.splice(oldIndex, 1);
-      newCharacters.splice(newindex, 0, state.characters[oldIndex]);
+      newCharacters.splice(newindex, 0, mainStore.characters[oldIndex]);
       prevCharactersRef.current = structuredClone(newCharacters);
-      state.reorderChars(newCharacters.map((c) => c.id));
+      mainStore.reorderChars(newCharacters.map((c) => c.id));
     },
   });
 
   useEffect(() => {
-    if (!hasHydrated) return;
+    if (!mainStore.hasHydrated) return;
 
-    if (!isEqual(prevCharactersRef.current, state.characters)) {
-      setChars(structuredClone(state.characters));
-      prevCharactersRef.current = structuredClone(state.characters);
+    if (!isEqual(prevCharactersRef.current, mainStore.characters)) {
+      setChars(structuredClone(mainStore.characters));
+      prevCharactersRef.current = structuredClone(mainStore.characters);
     }
-  }, [state.characters, hasHydrated, setChars]);
+  }, [mainStore.characters, mainStore.hasHydrated, setChars]);
 
-  if (!hasHydrated) {
+  if (!mainStore.hasHydrated) {
     return null;
   }
 

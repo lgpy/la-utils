@@ -29,7 +29,7 @@ import { useSettingsStore } from "@/providers/SettingsProvider";
 
 export default function SettingsButton() {
   const { setTheme, theme } = useTheme();
-  const { store, hasHydrated } = useSettingsStore((store) => store);
+  const settingsStore = useSettingsStore();
   const router = useRouter();
 
   const ThemeIcon = (() => {
@@ -47,7 +47,7 @@ export default function SettingsButton() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild disabled={!hasHydrated}>
+      <DropdownMenuTrigger asChild disabled={!settingsStore.hasHydrated}>
         <Button variant="outline" size="icon">
           <SettingsIcon className="h-4 w-4" />
         </Button>
@@ -108,14 +108,18 @@ export default function SettingsButton() {
                   <DropdownMenuPortal>
                     <DropdownMenuSubContent>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Thaemine"}
-                        onCheckedChange={() => store.setServer("Thaemine")}
+                        checked={settingsStore.server === "Thaemine"}
+                        onCheckedChange={() =>
+                          settingsStore.setServer("Thaemine")
+                        }
                       >
                         <span>Thaemine</span>
                       </DropdownMenuCheckboxItem>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Brelshaza"}
-                        onCheckedChange={() => store.setServer("Brelshaza")}
+                        checked={settingsStore.server === "Brelshaza"}
+                        onCheckedChange={() =>
+                          settingsStore.setServer("Brelshaza")
+                        }
                       >
                         <span>Brelshaza</span>
                       </DropdownMenuCheckboxItem>
@@ -129,32 +133,42 @@ export default function SettingsButton() {
                   <DropdownMenuPortal>
                     <DropdownMenuSubContent>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Luterra"}
-                        onCheckedChange={() => store.setServer("Luterra")}
+                        checked={settingsStore.server === "Luterra"}
+                        onCheckedChange={() =>
+                          settingsStore.setServer("Luterra")
+                        }
                       >
                         <span>Luterra</span>
                       </DropdownMenuCheckboxItem>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Balthorr"}
-                        onCheckedChange={() => store.setServer("Balthorr")}
+                        checked={settingsStore.server === "Balthorr"}
+                        onCheckedChange={() =>
+                          settingsStore.setServer("Balthorr")
+                        }
                       >
                         <span>Balthorr</span>
                       </DropdownMenuCheckboxItem>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Nineveh"}
-                        onCheckedChange={() => store.setServer("Nineveh")}
+                        checked={settingsStore.server === "Nineveh"}
+                        onCheckedChange={() =>
+                          settingsStore.setServer("Nineveh")
+                        }
                       >
                         <span>Nineveh</span>
                       </DropdownMenuCheckboxItem>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Inanna"}
-                        onCheckedChange={() => store.setServer("Inanna")}
+                        checked={settingsStore.server === "Inanna"}
+                        onCheckedChange={() =>
+                          settingsStore.setServer("Inanna")
+                        }
                       >
                         <span>Inanna</span>
                       </DropdownMenuCheckboxItem>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Vairgrys"}
-                        onCheckedChange={() => store.setServer("Vairgrys")}
+                        checked={settingsStore.server === "Vairgrys"}
+                        onCheckedChange={() =>
+                          settingsStore.setServer("Vairgrys")
+                        }
                       >
                         <span>Vairgrys</span>
                       </DropdownMenuCheckboxItem>
@@ -168,32 +182,38 @@ export default function SettingsButton() {
                   <DropdownMenuPortal>
                     <DropdownMenuSubContent>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Ortuus"}
-                        onCheckedChange={() => store.setServer("Ortuus")}
+                        checked={settingsStore.server === "Ortuus"}
+                        onCheckedChange={() =>
+                          settingsStore.setServer("Ortuus")
+                        }
                       >
                         <span>Ortuus</span>
                       </DropdownMenuCheckboxItem>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Elpon"}
-                        onCheckedChange={() => store.setServer("Elpon")}
+                        checked={settingsStore.server === "Elpon"}
+                        onCheckedChange={() => settingsStore.setServer("Elpon")}
                       >
                         <span>Elpon</span>
                       </DropdownMenuCheckboxItem>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Ratik"}
-                        onCheckedChange={() => store.setServer("Ratik")}
+                        checked={settingsStore.server === "Ratik"}
+                        onCheckedChange={() => settingsStore.setServer("Ratik")}
                       >
                         <span>Ratik</span>
                       </DropdownMenuCheckboxItem>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Arcturus"}
-                        onCheckedChange={() => store.setServer("Arcturus")}
+                        checked={settingsStore.server === "Arcturus"}
+                        onCheckedChange={() =>
+                          settingsStore.setServer("Arcturus")
+                        }
                       >
                         <span>Arcturus</span>
                       </DropdownMenuCheckboxItem>
                       <DropdownMenuCheckboxItem
-                        checked={store.server === "Gienah"}
-                        onCheckedChange={() => store.setServer("Gienah")}
+                        checked={settingsStore.server === "Gienah"}
+                        onCheckedChange={() =>
+                          settingsStore.setServer("Gienah")
+                        }
                       >
                         <span>Gienah</span>
                       </DropdownMenuCheckboxItem>
@@ -213,33 +233,33 @@ export default function SettingsButton() {
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuCheckboxItem
-                  checked={store.experiments.buttonV2}
+                  checked={settingsStore.experiments.buttonV2}
                   onCheckedChange={() =>
-                    store.toggleExperiments(
+                    settingsStore.toggleExperiments(
                       "buttonV2",
-                      !store.experiments.buttonV2,
+                      !settingsStore.experiments.buttonV2,
                     )
                   }
                 >
                   <span>Raid Button V2</span>
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
-                  checked={store.experiments.ignoreThaemineIfNoG4}
+                  checked={settingsStore.experiments.ignoreThaemineIfNoG4}
                   onCheckedChange={() =>
-                    store.toggleExperiments(
+                    settingsStore.toggleExperiments(
                       "ignoreThaemineIfNoG4",
-                      !store.experiments.ignoreThaemineIfNoG4,
+                      !settingsStore.experiments.ignoreThaemineIfNoG4,
                     )
                   }
                 >
                   <span>Ignore Thaemine if no G4</span>
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
-                  checked={store.experiments.compactRaidCard}
+                  checked={settingsStore.experiments.compactRaidCard}
                   onCheckedChange={() =>
-                    store.toggleExperiments(
+                    settingsStore.toggleExperiments(
                       "compactRaidCard",
-                      !store.experiments.compactRaidCard,
+                      !settingsStore.experiments.compactRaidCard,
                     )
                   }
                 >
