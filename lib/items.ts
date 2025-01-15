@@ -1,5 +1,18 @@
 import { PricesStore } from "@/stores/prices";
 
+export function is_item_price_expired(
+  item: PricesStore["prices"][number] | undefined,
+) {
+  if (item === undefined || item.price === 0) return true;
+
+  const lastUpdated = new Date(item.updatedOn);
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - lastUpdated.getTime());
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+  return diffDays > 3;
+}
+
 export const isBadPriceItem = (
   item: PricesStore["prices"][number] | undefined,
 ) => {

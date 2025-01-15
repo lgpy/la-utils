@@ -1,6 +1,6 @@
 "use client";
 
-import { isBadPriceItem } from "@/lib/items";
+import { is_item_price_expired, isBadPriceItem } from "@/lib/items";
 import { cn } from "@/lib/utils";
 import { useCraftingStore } from "@/providers/CraftStoreProvider";
 import { usePriceStore } from "@/providers/PriceStoreProvider";
@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import WarningTooltipIcon from "../WarningTooltipIcon";
+import { Fragment, useMemo } from "react";
 
 function NavigationAnchor({
   children,
@@ -34,13 +35,7 @@ function NavigationAnchor({
   );
 }
 
-function CraftingItem({
-  item,
-  recipeIdx,
-}: {
-  item: (typeof craftingItems)[number];
-  recipeIdx: number;
-}) {
+function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
   const { store: pricesStore, hasHydrated: pricesHasHydrated } = usePriceStore(
     (store) => store,
   );
@@ -52,36 +47,28 @@ function CraftingItem({
     return <div>loading...</div>;
   }
 
-  const pricesItem = pricesStore?.prices.find((i) => i.id === item.id);
-  const pricesRecipeItems = Object.keys(item.recipes[recipeIdx]).reduce(
-    (acc, key) => {
-      acc[key] = pricesStore?.prices.find((i) => i.id === key)?.price || 0;
+  const item_price = pricesStore?.prices.find((i) => i.id === item.id);
+
+  const recipe_items_price = Object.values(item.recipes).reduce(
+    (acc, items) => {
+      Object.entries(items).forEach(([key, amount]) => {
+        if (acc[key] !== undefined) return;
+        const price = pricesStore?.prices.find((i) => i.id === key)?.price || 0;
+        acc[key] = price;
+      });
       return acc;
     },
     {} as Record<string, number>,
   );
 
-  const itemMarketPrice = pricesItem?.price || 0;
+  const itemMarketPrice = item_price?.price || 0;
 
   const type = item.type !== "general" ? store[item.type] : undefined;
 
-  const itemCraftCost =
+  const gold_craft_cost =
     item.craftCost -
     (item.craftCost * store.general.costReduction) / 100 -
     (item.craftCost * (type?.costReduction || 0)) / 100;
-
-  const recipeCost = Object.entries(item.recipes[recipeIdx]).reduce(
-    (acc, [key, amount]) => {
-      const price = pricesRecipeItems[key];
-      const storeItem = items.find((i) => i.id === key);
-      const singleMarketItemCost = price / (storeItem?.marketQty || 1);
-      acc += singleMarketItemCost * amount;
-      return acc;
-    },
-    0,
-  );
-
-  const craftCost = itemCraftCost + recipeCost;
 
   const gsChance =
     1 +
@@ -94,14 +81,39 @@ function CraftingItem({
   const sellPrice =
     Math.floor(itemMarketPrice * 0.95) * item.returns * gsChance;
 
-  const profit = sellPrice - craftCost;
+  const recipes = item.recipes
+    .map((recipe_items, idx) => {
+      const recipe_item_cost = Object.entries(recipe_items).reduce(
+        (acc, [key, amount]) => {
+          const price = recipe_items_price[key];
+          const storeItem = items.find((i) => i.id === key);
+          const singleMarketItemCost = price / (storeItem?.marketQty || 1);
+          acc += singleMarketItemCost * amount;
+          return acc;
+        },
+        0,
+      );
+      const isPricesBad = Object.keys(recipe_items).some((key) =>
+        is_item_price_expired(pricesStore?.prices.find((i) => i.id === key)),
+      );
+      const craft_cost = recipe_item_cost + gold_craft_cost;
+      const profit = sellPrice - craft_cost;
 
-  const marketdiff = -((profit / sellPrice) * 100);
+      return {
+        recipe_item_cost,
+        idx,
+        craft_cost,
+        profit,
+        marketdiff: -((profit / sellPrice) * 100),
+        isPricesBad,
+      };
+    })
+    .sort((a, b) => a.marketdiff - b.marketdiff);
 
-  const warning = isBadPriceItem(pricesItem);
+  const isItemPriceBad = isBadPriceItem(item_price);
 
   return (
-    <Card className="w-[350px] flex flex-col justify-between">
+    <Card className="w-[350px] flex flex-col justify-between h-fit">
       <CardHeader className="flex flex-row justify-between p-0">
         <div
           className={cn(
@@ -120,9 +132,9 @@ function CraftingItem({
               alt=""
               className="size-[48px]"
             />
-            {warning !== null && (
+            {isItemPriceBad !== null && (
               <WarningTooltipIcon
-                tooltip={warning}
+                tooltip={isItemPriceBad}
                 className="absolute -top-1 -right-1 size-5"
               />
             )}
@@ -137,64 +149,50 @@ function CraftingItem({
               tooltip: "text-center",
             }}
           />
-          {/*
-          <div className="flex flex-col -space-y-4">
-            {Object.keys(item.recipes[recipeIdx]).map((key) => {
-              return (
-                <Avatar
-                  key={`avatar-${item.id}-${recipeIdx}-${key}`}
-                  className="size-auto"
-                >
-                  <AvatarImage
-                    src={`/assets/${key}.webp`}
-                    alt=""
-                    height={32}
-                    width={32}
-                    className="size-8"
-                  />
-                </Avatar>
-              );
-            })}
-          </div>*/}
-          <Image
-            src={`/assets/${Object.keys(item.recipes[recipeIdx]).at(0)}.webp`}
-            height={32}
-            width={32}
-            alt=""
-          />
         </div>
       </CardHeader>
-      <CardContent className={cn("flex flex-row justify-between p-3")}>
-        <div className="flex flex-row text-center gap-3">
-          <div className="flex flex-col justify-between">
-            <Label>Craft Cost</Label>
-            <p>{(itemCraftCost + recipeCost).toFixed(2)}</p>
-          </div>
-          <Separator orientation="vertical" />
-          <div className="flex flex-col justify-between">
-            <Label className="text-end">Raw Profit</Label>
+      <CardContent
+        className={cn(
+          "p-3 grid grid-cols-[auto_auto_auto] gap-y-3 gap-x-3 text-center",
+        )}
+      >
+        <p className="font-bold">Recipe</p>
+        <p className="font-bold">Cost</p>
+        <p className="font-bold">Profit</p>
+        {recipes.map((recipe, idx) => (
+          <Fragment key={idx}>
+            <div className="relative size-fit mx-auto">
+              <Image
+                src={`/assets/${Object.keys(item.recipes[recipe.idx]).at(
+                  0,
+                )}.webp`}
+                height={48}
+                width={48}
+                alt=""
+              />
+              {recipe.isPricesBad && (
+                <WarningTooltipIcon
+                  tooltip="One of the recipe items price is older than 3 days"
+                  className="absolute -top-1 -right-1 size-5"
+                />
+              )}
+            </div>
+            <p className="self-center">{recipe.craft_cost.toLocaleString()}</p>
             <p
-              className={cn({
-                "text-destructive": profit < 0,
-                "text-success": profit > 0,
+              className={cn("font-semibold self-center", {
+                "text-destructive": recipe.marketdiff > 0,
+                "text-success": recipe.marketdiff < 0,
               })}
             >
-              {profit.toFixed(2)}
+              {recipe.marketdiff > 0 && "+"}
+              {recipe.marketdiff.toFixed(2)}%
+              <span className="font-normal text-xs">
+                ({recipe.profit > 0 && "+"}
+                {recipe.profit.toLocaleString()})
+              </span>
             </p>
-          </div>
-        </div>
-        <div className="flex flex-col gap-1">
-          <Label className="text-end">Profit</Label>
-          <p
-            className={cn("text-xl", {
-              "text-destructive": marketdiff > 0,
-              "text-success": marketdiff < 0,
-            })}
-          >
-            {marketdiff > 0 && "+"}
-            {marketdiff.toFixed(2)}%
-          </p>
-        </div>
+          </Fragment>
+        ))}
       </CardContent>
     </Card>
   );
@@ -229,11 +227,9 @@ function CraftingType({
           "mt-6 flex flex-row flex-wrap gap-3 justify-center md:justify-start",
         )}
       >
-        {items.map((item) =>
-          item.recipes.map((_, idx) => (
-            <CraftingItem key={item.id + idx} item={item} recipeIdx={idx} />
-          )),
-        )}
+        {items.map((item) => (
+          <CraftingItem key={item.id} item={item} />
+        ))}
       </div>
     </div>
   );
