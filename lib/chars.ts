@@ -92,45 +92,60 @@ export function getHighest3(
   >,
   ignoreThaemineIfNoG4: boolean,
 ) {
-  const sortedGold = Object.entries(goldInfo).sort(([aId, a], [bId, b]) => {
-    if (
-      ignoreThaemineIfNoG4 &&
-      charRaids["thaemine"]?.["G4"]?.completedDate !== undefined &&
-      (aId === "thaemine" || bId === "thaemine")
-    ) {
-      const lastReset = getLatestWeeklyReset();
+  const sortedGoldThisWeek = Object.entries(goldInfo).sort(
+    ([aId, a], [bId, b]) => {
       if (
-        charRaids["thaemine"]["G4"].completed &&
-        new Date(charRaids["thaemine"]["G4"].completedDate) < lastReset
-      )
-        return aId === "thaemine" ? 1 : -1;
-    }
+        ignoreThaemineIfNoG4 &&
+        charRaids["thaemine"]?.["G4"]?.completedDate !== undefined &&
+        (aId === "thaemine" || bId === "thaemine")
+      ) {
+        const lastReset = getLatestWeeklyReset();
+        if (
+          charRaids["thaemine"]["G4"].completed &&
+          new Date(charRaids["thaemine"]["G4"].completedDate) < lastReset
+        )
+          return aId === "thaemine" ? 1 : -1;
+      }
 
-    if (a.thisWeek.totalGold === b.thisWeek.totalGold) {
-      const aActualIndex = Object.keys(raids).indexOf(aId);
-      const bActualIndex = Object.keys(raids).indexOf(bId);
-      return bActualIndex - aActualIndex;
-    }
-    return b.thisWeek.totalGold - a.thisWeek.totalGold;
-  });
-
-  return sortedGold.slice(0, 3).reduce(
-    (acc, [raidId, info]) => {
-      return Object.assign(acc, { [raidId]: info });
+      if (a.thisWeek.totalGold === b.thisWeek.totalGold) {
+        const aActualIndex = Object.keys(raids).indexOf(aId);
+        const bActualIndex = Object.keys(raids).indexOf(bId);
+        return bActualIndex - aActualIndex;
+      }
+      return b.thisWeek.totalGold - a.thisWeek.totalGold;
     },
-    {} as Record<
-      string,
-      {
-        thisWeek: {
+  );
+
+  const sortedGoldNextWeek = Object.entries(goldInfo).sort(
+    ([aId, a], [bId, b]) => {
+      if (a.nextWeek.earnableGold === b.nextWeek.earnableGold) {
+        const aActualIndex = Object.keys(raids).indexOf(aId);
+        const bActualIndex = Object.keys(raids).indexOf(bId);
+        return bActualIndex - aActualIndex;
+      }
+      return b.nextWeek.earnableGold - a.nextWeek.earnableGold;
+    },
+  );
+
+  return {
+    thisWeek: sortedGoldThisWeek.slice(0, 3).reduce(
+      (acc, [raidId, info]) => Object.assign(acc, { [raidId]: info.thisWeek }),
+      {} as Record<
+        string,
+        {
           earnedGold: number;
           totalGold: number;
-        };
-        nextWeek: {
-          earnableGold: number;
-        };
-      }
-    >,
-  );
+        }
+      >,
+    ),
+    nextWeek: sortedGoldNextWeek
+      .slice(0, 3)
+      .reduce(
+        (acc, [raidId, info]) =>
+          Object.assign(acc, { [raidId]: info.nextWeek.earnableGold }),
+        {} as Record<string, number>,
+      ),
+  };
 }
 
 export function sortRaidKeys(a: string, b: string) {

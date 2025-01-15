@@ -23,10 +23,12 @@ export default function RosterGold() {
           goldInfo,
           settingsStore.experiments.ignoreThaemineIfNoG4,
         );
-        Object.values(highest3).forEach((nfo) => {
-          acc.thisWeek.earnedGold += nfo.thisWeek.earnedGold;
-          acc.thisWeek.totalGold += nfo.thisWeek.totalGold;
-          acc.nextWeek.earnableGold += nfo.nextWeek.earnableGold;
+        Object.values(highest3.thisWeek).forEach((thisWeek) => {
+          acc.thisWeek.earnedGold += thisWeek.earnedGold;
+          acc.thisWeek.totalGold += thisWeek.totalGold;
+        });
+        Object.values(highest3.nextWeek).forEach((earnable) => {
+          acc.nextWeek.earnableGold += earnable;
         });
         return acc;
       },

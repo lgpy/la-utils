@@ -9,34 +9,31 @@ import PiggyBankProgressBar from "./PiggyBankProgressBar";
 
 type Props = {
   className?: string;
-  goldInfo: Record<
+  highest3ThisWeek: Record<
     string,
     {
-      thisWeek: {
-        earnedGold: number;
-        totalGold: number;
-      };
-      nextWeek: {
-        earnableGold: number;
-      };
+      earnedGold: number;
+      totalGold: number;
     }
   >;
+  highest3NextWeek: Record<string, number>;
 };
 
 export default function PiggyBank(props: Props) {
-  const { goldInfo, className } = props;
+  const { highest3ThisWeek, highest3NextWeek, className } = props;
 
-  const gold = Object.values(goldInfo).reduce(
-    (acc, nfo) => {
-      acc.thisWeek.earned += nfo.thisWeek.earnedGold;
-      acc.thisWeek.total += nfo.thisWeek.totalGold;
-      acc.nextWeek.earnable += nfo.nextWeek.earnableGold;
+  const thisWeek = Object.values(highest3ThisWeek).reduce(
+    (acc, thisWeek) => {
+      acc.earned += thisWeek.earnedGold;
+      acc.total += thisWeek.totalGold;
       return acc;
     },
-    {
-      thisWeek: { earned: 0, total: 0 },
-      nextWeek: { earnable: 0 },
-    },
+    { earned: 0, total: 0 },
+  );
+
+  const nextWeek = Object.values(highest3NextWeek).reduce(
+    (acc, earnable) => acc + earnable,
+    0,
   );
 
   return (
@@ -44,7 +41,7 @@ export default function PiggyBank(props: Props) {
       <Tooltip>
         <TooltipTrigger asChild>
           <PiggyBankProgressBar
-            progress={(gold.thisWeek.earned / gold.thisWeek.total) * 100}
+            progress={(thisWeek.earned / thisWeek.total) * 100}
             className={cn("size-5 !m-0 absolute top-2 right-2", className)}
           />
         </TooltipTrigger>
@@ -52,11 +49,10 @@ export default function PiggyBank(props: Props) {
           <div className="grid grid-cols-[auto_auto] gap-1">
             <span className="font-extralight">This Week:</span>
             <span>
-              {formatGold(gold.thisWeek.earned)}/
-              {formatGold(gold.thisWeek.total)}
+              {formatGold(thisWeek.earned)}/{formatGold(thisWeek.total)}
             </span>
             <span className="font-extralight">Next Week:</span>
-            <span>{formatGold(gold.nextWeek.earnable)}</span>
+            <span>{formatGold(nextWeek)}</span>
           </div>
         </TooltipContent>
       </Tooltip>

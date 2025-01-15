@@ -47,8 +47,8 @@ export default function TodoCard({ char }: Props) {
               raid={char.assignedRaids[raidId]}
               goldEarner={
                 char.isGoldEarner &&
-                highest3[raidId] !== undefined &&
-                Object.keys(highest3).length <
+                highest3.thisWeek[raidId] !== undefined &&
+                Object.keys(highest3.thisWeek).length <
                   Object.keys(char.assignedRaids).length
               }
             />
@@ -59,8 +59,8 @@ export default function TodoCard({ char }: Props) {
               raid={char.assignedRaids[raidId]}
               goldEarner={
                 char.isGoldEarner &&
-                highest3[raidId] !== undefined &&
-                Object.keys(highest3).length <
+                highest3.thisWeek[raidId] !== undefined &&
+                Object.keys(highest3.thisWeek).length <
                   Object.keys(char.assignedRaids).length
               }
             />
@@ -163,7 +163,12 @@ export default function TodoCard({ char }: Props) {
           </div>
         </div>
 
-        {char.isGoldEarner && <PiggyBank goldInfo={highest3} />}
+        {char.isGoldEarner && (
+          <PiggyBank
+            highest3ThisWeek={highest3.thisWeek}
+            highest3NextWeek={highest3.nextWeek}
+          />
+        )}
       </CardHeader>
       {char.tasks.length > 0 && (
         <Tabs defaultValue="raids">
