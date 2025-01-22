@@ -167,6 +167,7 @@ export default function TodoCard({ char }: Props) {
           <PiggyBank
             highest3ThisWeek={highest3.thisWeek}
             highest3NextWeek={highest3.nextWeek}
+            char={char}
           />
         )}
       </CardHeader>

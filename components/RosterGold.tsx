@@ -5,6 +5,7 @@ import { useSettingsStore } from "@/providers/SettingsProvider";
 import { useMemo } from "react";
 import AnimatedNumber from "./AnimatedNumber";
 import { useMainStore } from "@/providers/MainStoreProvider";
+import { raids } from "@/lib/raids";
 
 export default function RosterGold() {
   const mainStore = useMainStore();
@@ -51,6 +52,14 @@ export default function RosterGold() {
     settingsStore.experiments.ignoreThaemineIfNoG4,
   ]);
 
+  const hasBiweekly = mainStore.characters.some((char) =>
+    Object.entries(char.assignedRaids).some(([raidId, gates]) =>
+      Object.keys(gates).some(
+        (gateId) => raids[raidId].gates[gateId].isBiWeekly,
+      ),
+    ),
+  );
+
   if (!mainStore.hasHydrated || !settingsStore.hasHydrated) {
     return null;
   }
@@ -75,11 +84,18 @@ export default function RosterGold() {
         /
         <AnimatedNumber n={rosterGold.thisWeek.totalGold} format="gold" />
       </p>
-      <p className="font-extralight">Next Week:</p>
+      {hasBiweekly && (
+        <>
+          <p className="font-extralight">Next Week:</p>
 
-      <p>
-        <AnimatedNumber n={rosterGold.nextWeek.earnableGold} format="gold" />
-      </p>
+          <p>
+            <AnimatedNumber
+              n={rosterGold.nextWeek.earnableGold}
+              format="gold"
+            />
+          </p>
+        </>
+      )}
     </div>
   );
 }

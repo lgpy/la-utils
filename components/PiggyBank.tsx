@@ -6,9 +6,12 @@ import {
 } from "@/components/ui/tooltip";
 import { cn, formatGold } from "@/lib/utils";
 import PiggyBankProgressBar from "./PiggyBankProgressBar";
+import { Character } from "@/providers/MainStoreProvider";
+import { raids } from "@/lib/raids";
 
 type Props = {
   className?: string;
+  char: Character;
   highest3ThisWeek: Record<
     string,
     {
@@ -20,7 +23,7 @@ type Props = {
 };
 
 export default function PiggyBank(props: Props) {
-  const { highest3ThisWeek, highest3NextWeek, className } = props;
+  const { highest3ThisWeek, highest3NextWeek, className, char } = props;
 
   const thisWeek = Object.values(highest3ThisWeek).reduce(
     (acc, thisWeek) => {
@@ -34,6 +37,13 @@ export default function PiggyBank(props: Props) {
   const nextWeek = Object.values(highest3NextWeek).reduce(
     (acc, earnable) => acc + earnable,
     0,
+  );
+
+  const hasBiweekly = Object.entries(char.assignedRaids).some(
+    ([raidId, gates]) =>
+      Object.keys(gates).some(
+        (gateId) => raids[raidId].gates[gateId].isBiWeekly,
+      ),
   );
 
   return (
@@ -51,8 +61,12 @@ export default function PiggyBank(props: Props) {
             <span>
               {formatGold(thisWeek.earned)}/{formatGold(thisWeek.total)}
             </span>
-            <span className="font-extralight">Next Week:</span>
-            <span>{formatGold(nextWeek)}</span>
+            {hasBiweekly && (
+              <>
+                <span className="font-extralight">Next Week:</span>
+                <span>{formatGold(nextWeek)}</span>
+              </>
+            )}
           </div>
         </TooltipContent>
       </Tooltip>
