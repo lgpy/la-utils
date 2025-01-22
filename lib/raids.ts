@@ -436,4 +436,33 @@ export const raids: Record<
       },
     },
   },
+  brelshaza2: {
+    name: "Brelshaza V2",
+    gates: {
+      G1: {
+        difficulties: {
+          [Difficulty.normal]: {
+            itemlevel: 1670,
+            rewards: { gold: 0 },
+          },
+          [Difficulty.hard]: {
+            itemlevel: 1690,
+            rewards: { gold: 0 },
+          },
+        },
+      },
+      G2: {
+        difficulties: {
+          [Difficulty.normal]: {
+            itemlevel: 1670,
+            rewards: { gold: 0 },
+          },
+          [Difficulty.hard]: {
+            itemlevel: 1690,
+            rewards: { gold: 0 },
+          },
+        },
+      },
+    },
+  },
 };
