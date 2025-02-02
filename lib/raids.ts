@@ -314,11 +314,11 @@ export const raids: Record<
         difficulties: {
           [Difficulty.normal]: {
             itemlevel: 1610,
-            rewards: { gold: 3500 },
+            rewards: { gold: 2750 },
           },
           [Difficulty.hard]: {
             itemlevel: 1620,
-            rewards: { gold: 5000 },
+            rewards: { gold: 4400 },
           },
         },
       },
@@ -326,11 +326,11 @@ export const raids: Record<
         difficulties: {
           [Difficulty.normal]: {
             itemlevel: 1610,
-            rewards: { gold: 4000 },
+            rewards: { gold: 3300 },
           },
           [Difficulty.hard]: {
             itemlevel: 1620,
-            rewards: { gold: 6000 },
+            rewards: { gold: 5500 },
           },
         },
       },
@@ -338,11 +338,11 @@ export const raids: Record<
         difficulties: {
           [Difficulty.normal]: {
             itemlevel: 1610,
-            rewards: { gold: 5500 },
+            rewards: { gold: 4950 },
           },
           [Difficulty.hard]: {
             itemlevel: 1620,
-            rewards: { gold: 9000 },
+            rewards: { gold: 8900 },
           },
         },
       },
@@ -350,7 +350,7 @@ export const raids: Record<
         difficulties: {
           [Difficulty.hard]: {
             itemlevel: 1620,
-            rewards: { gold: 21000 },
+            rewards: { gold: 9800 },
           },
         },
         isBiWeekly: "odd",
