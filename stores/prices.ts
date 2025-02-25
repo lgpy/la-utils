@@ -33,10 +33,6 @@ export const items = [
     name: "Prime Oreha Fusion Material",
     rarity: "epic",
     marketQty: 1,
-    mari: {
-      qty: 100,
-      bc: 80,
-    },
   },
   {
     type: "honing-t4",
@@ -45,8 +41,8 @@ export const items = [
     rarity: "rare",
     marketQty: 1,
     mari: {
-      qty: 30,
-      bc: 80,
+      qty: 50,
+      bc: 90,
     },
   },
   {
@@ -63,8 +59,8 @@ export const items = [
     rarity: "rare",
     marketQty: 1,
     mari: {
-      qty: 80,
-      bc: 220,
+      qty: 100,
+      bc: 150,
     },
   },
   {
@@ -98,10 +94,6 @@ export const items = [
     name: "Destiny Shard Pouch (S)",
     rarity: "uncommon",
     marketQty: 1,
-    mari: {
-      qty: 7,
-      bc: 154,
-    },
   },
   {
     type: "honing",
@@ -110,8 +102,8 @@ export const items = [
     rarity: "uncommon",
     marketQty: 1,
     mari: {
-      qty: 100,
-      bc: 107,
+      qty: 120,
+      bc: 40,
     },
   },
   {
@@ -121,8 +113,8 @@ export const items = [
     rarity: "rare",
     marketQty: 1,
     mari: {
-      qty: 50,
-      bc: 137,
+      qty: 80,
+      bc: 60,
     },
   },
   {
@@ -131,6 +123,10 @@ export const items = [
     name: "Solar Protection",
     rarity: "epic",
     marketQty: 1,
+    mari: {
+      qty: 100,
+      bc: 90,
+    },
   },
   {
     type: "honing-t4",
@@ -140,7 +136,7 @@ export const items = [
     marketQty: 1,
     mari: {
       qty: 20,
-      bc: 140,
+      bc: 96,
     },
   },
   {
