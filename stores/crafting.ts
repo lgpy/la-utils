@@ -91,7 +91,7 @@ export const craftingItems: {
       },
       {
         "oreha-solar-carp": 52,
-        "natural-pearl": 69,
+        "redflesh-fish": 69,
         fish: 142,
       },
     ],
