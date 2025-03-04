@@ -33,6 +33,10 @@ export const items = [
     name: "Prime Oreha Fusion Material",
     rarity: "epic",
     marketQty: 1,
+    mari: {
+      qty: 100,
+      bc: 80,
+    },
   },
   {
     type: "honing-t4",
