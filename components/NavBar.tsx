@@ -29,7 +29,7 @@ export default function NavBar() {
           className="flex flex-row gap-2 justify-center items-center h-full"
         >
           <Logo className="self-end" />
-          <span className="text-xl font-extrabold bg-[length:200%_auto] from-primary from-30% via-secondary via-50% to-primary to-70% bg-gradient-to-r bg-clip-text text-transparent animate-gradient">
+          <span className="text-xl font-extrabold text-secondary">
             Lost Ark Utils
           </span>
         </Link>
