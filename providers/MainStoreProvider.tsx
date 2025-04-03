@@ -61,6 +61,18 @@ export const useMainStore = () => {
   }
 
   useEffect(() => {
+    const handleVisibilityChange = () => {
+      mainStoreContext.persist.rehydrate()
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  useEffect(() => {
     if (mainStoreContext.persist.hasHydrated) {
       setHydrated(mainStoreContext.persist.hasHydrated());
     }
@@ -88,13 +100,13 @@ export const useMainStore = () => {
                 completed:
                   gate.completedDate !== undefined
                     ? isGateCompleted(
-                        new Date(gate.completedDate),
-                        raids[raidId].gates[gateId].isBiWeekly === undefined
-                          ? weeklyReset
-                          : raids[raidId].gates[gateId].isBiWeekly === "odd"
+                      new Date(gate.completedDate),
+                      raids[raidId].gates[gateId].isBiWeekly === undefined
+                        ? weeklyReset
+                        : raids[raidId].gates[gateId].isBiWeekly === "odd"
                           ? oddBiWeeklyReset
                           : evenBiWeeklyReset,
-                      )
+                    )
                     : false,
               };
               return gateAcc;
@@ -111,9 +123,9 @@ export const useMainStore = () => {
         completed:
           task.completedDate !== undefined
             ? isTaskCompleted(
-                task,
-                task.type === "daily" ? dailyReset : weeklyReset,
-              )
+              task,
+              task.type === "daily" ? dailyReset : weeklyReset,
+            )
             : false,
       })),
     }));
