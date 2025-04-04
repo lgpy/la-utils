@@ -61,18 +61,6 @@ export const useMainStore = () => {
   }
 
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      mainStoreContext.persist.rehydrate()
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
-
-  useEffect(() => {
     if (mainStoreContext.persist.hasHydrated) {
       setHydrated(mainStoreContext.persist.hasHydrated());
     }
