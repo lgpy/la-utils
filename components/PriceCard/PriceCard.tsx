@@ -9,6 +9,7 @@ import { ChangeEventHandler, useMemo } from "react";
 import TruncatedTooltip from "@/components/TruncatedTooltip";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { usePriceStore } from "@/providers/PriceStoreProvider";
 
 type Props = {
   item: (typeof items)[number];
@@ -23,6 +24,8 @@ export default function PriceCard({
   pSitem,
   item,
 }: Props) {
+  const { store, hasHydrated } = usePriceStore((state) => state);
+
   const mari = useMemo(() => {
     if (!item.mari) return undefined;
     const blueCrystalValue = bcValue * item.mari.bc;
@@ -41,6 +44,32 @@ export default function PriceCard({
       isProfit: profit > 0,
     };
   }, [bcValue, pSitem?.price, item]);
+
+  const exchange = useMemo(() => {
+    const singleMarketValue = (pSitem?.price || 0) / item.marketQty;
+    if (item.exchange === undefined) return undefined;
+    //find maximum value of the exchange array
+    const maxExchange = item.exchange.reduce<{ exchangeItemId?: string; value: number; rate: number; isProfit: boolean; profit: number, diff: number }>((acc, curr) => {
+      const exchangeItem = store.prices.find((i) => i.id === curr.id);
+      if (exchangeItem === undefined) return acc;
+      const value = curr.rate * exchangeItem.price;
+      const profit = singleMarketValue - value / item.marketQty;
+      const diff = -((profit / singleMarketValue) * 100);
+      if (value > acc.value) {
+        return {
+          exchangeItemId: curr.id,
+          value,
+          rate: curr.rate,
+          profit,
+          isProfit: profit > 0,
+          diff,
+        }
+      }
+      return acc;
+    }, { exchangeItemId: undefined, value: -Infinity, rate: -Infinity, isProfit: false, profit: 0, diff: 0 });
+    if (maxExchange.exchangeItemId === undefined) return undefined;
+    return maxExchange;
+  }, [pSitem, item.marketQty, store.prices]);
 
   const daysSinceUpdate = useMemo(() => {
     if (!pSitem) return undefined;
@@ -144,6 +173,34 @@ export default function PriceCard({
                 />
               </div>
             </div>
+          </div>
+        )}
+        {exchange !== undefined && (
+          <div className="flex flex-col items-end justify-between">
+            <Label>
+              Exchange
+              <span className="text-muted-foreground text-xs">
+                {" "}
+                (x{exchange.rate * 100})
+              </span>
+            </Label>
+            <p className="text-md mt-1.5">{+exchange.value.toFixed(2)}</p>
+            <p
+              className={cn("text-xs", {
+                "text-destructive": !exchange.isProfit,
+                "text-success": exchange.isProfit,
+              })}
+            >
+              {exchange.diff > 0 && "+"}
+              {+exchange.diff.toFixed(2)}%
+            </p>
+            <Image
+              src={`/assets/${exchange.exchangeItemId}.webp`}
+              height={32}
+              width={32}
+              alt=""
+              className="size-[32px]"
+            />
           </div>
         )}
       </CardContent>

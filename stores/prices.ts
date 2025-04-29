@@ -185,6 +185,16 @@ export const items = [
     name: "Abidos Solar Carp",
     rarity: "rare",
     marketQty: 100,
+    exchange: [
+      {
+        id: "fish",
+        rate: 12.5,
+      },
+      {
+        id: "redflesh-fish",
+        rate: 6.25,
+      },
+    ]
   },
   {
     type: "tradeskills",
@@ -217,6 +227,16 @@ export const items = [
     name: "Abidos Relic",
     rarity: "rare",
     marketQty: 100,
+    exchange: [
+      {
+        id: "ancient-relic",
+        rate: 12.5,
+      },
+      {
+        id: "rare-relic",
+        rate: 6.25,
+      },
+    ]
   },
   {
     type: "tradeskills",
@@ -249,6 +269,16 @@ export const items = [
     name: "Abidos Timber",
     rarity: "rare",
     marketQty: 100,
+    exchange: [
+      {
+        id: "timber",
+        rate: 12.5,
+      },
+      {
+        id: "tender-timber",
+        rate: 6.25,
+      },
+    ]
   },
   {
     type: "tradeskills",
@@ -281,6 +311,16 @@ export const items = [
     name: "Abidos Wild Flower",
     rarity: "rare",
     marketQty: 100,
+    exchange: [
+      {
+        id: "wild-flower",
+        rate: 12.5,
+      },
+      {
+        id: "shy-wild-flower",
+        rate: 6.25,
+      },
+    ]
   },
   {
     type: "tradeskills",
@@ -313,6 +353,16 @@ export const items = [
     name: "Abidos Iron Ore",
     rarity: "rare",
     marketQty: 100,
+    exchange: [
+      {
+        id: "iron-ore",
+        rate: 12.5,
+      },
+      {
+        id: "heavy-iron-ore",
+        rate: 6.25,
+      },
+    ]
   },
   {
     type: "tradeskills",
@@ -345,6 +395,16 @@ export const items = [
     name: "Abidos Thick Raw Meat",
     rarity: "rare",
     marketQty: 100,
+    exchange: [
+      {
+        id: "thick-raw-meat",
+        rate: 12.5,
+      },
+      {
+        id: "treated-meat",
+        rate: 6.25,
+      },
+    ]
   },
 ];
 
