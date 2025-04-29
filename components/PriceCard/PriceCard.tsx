@@ -24,13 +24,13 @@ const getRarityClasses = (rarity?: string) => ({
     "from-mauve/30": rarity === "epic",
     "from-blue/30": rarity === "rare",
     "from-green/30": rarity === "uncommon",
-    "from-gray/30": rarity === "common",
+    "from-overlay1/30": rarity === "common",
   }),
   text: cn("", {
     "text-mauve": rarity === "epic",
     "text-blue": rarity === "rare",
     "text-green": rarity === "uncommon",
-    "text-gray": rarity === "common",
+    "text-overlay1": rarity === "common",
   }),
 });
 
@@ -65,7 +65,7 @@ const MariShopSection = ({ item, bcValue, marketPrice }: { item: Props["item"], 
       </Label>
       <p className="text-md mt-1.5">{singleMariValue.toFixed(2)}</p>
       <PercentChange value={diff} />
-      <div className="flex items-center gap-1 text-muted">
+      <div className="flex items-center gap-1 text-muted-foreground">
         <p className="text-xs">{item.mari.bc}</p>
         <Image
           src="/assets/blue-crystal.webp"

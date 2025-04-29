@@ -38,15 +38,15 @@ const config = {
           foreground: "hsl(var(--base))",
         },
         muted: {
-          DEFAULT: "hsl(var(--overlay1))",
-          foreground: "hsl(var(--overlay1))",
+          DEFAULT: "hsl(var(--crust))",
+          foreground: "hsl(var(--subtext0))",
         },
         accent: {
-          DEFAULT: "hsl(var(--pink))",
-          foreground: "hsl(var(--base))",
+          DEFAULT: "hsl(var(--surface2))",
+          foreground: "hsl(var(--text))",
         },
         popover: {
-          DEFAULT: "hsl(var(--surface1))",
+          DEFAULT: "hsl(var(--base))",
           foreground: "hsl(var(--text))",
         },
         card: {
@@ -57,7 +57,6 @@ const config = {
           DEFAULT: "hsl(var(--green))",
           foreground: "hsl(var(--base))",
         },
-        gray: "hsl(var(--overlay1))",
 
         rosewater: "hsl(var(--rosewater))",
         flamingo: "hsl(var(--flamingo))",

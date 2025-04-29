@@ -79,7 +79,7 @@ export default function EditCardAssignedRaid({
             <span>Edit</span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            className="text-destructive"
+            className="text-destructive focus:bg-destructive/20 focus:text-destructive"
             onClick={() => mainStore.charDelRaid(char.id, raidId)}
             data-pw={`assigned-raid-delete`}
           >
