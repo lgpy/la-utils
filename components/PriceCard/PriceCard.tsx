@@ -207,7 +207,7 @@ export default function PriceCard({
             </p>
             <div className="flex flex-row gap-3 text-muted items-center text-end">
               <div>
-                <p className="text-md mt-1.5">{+exchange.value.toFixed(2)}</p>
+                <p className="text-md">{+exchange.value.toFixed(2)}</p>
                 <p
                   className={cn("text-xs", {
                     "text-destructive": !exchange.isProfit,
