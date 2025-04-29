@@ -46,7 +46,7 @@ export const items = [
     marketQty: 1,
     mari: {
       qty: 50,
-      bc: 90,
+      bc: 65,
     },
   },
   {
