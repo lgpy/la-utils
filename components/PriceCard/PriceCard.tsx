@@ -46,18 +46,28 @@ export default function PriceCard({
   }, [bcValue, pSitem?.price, item]);
 
   const exchange = useMemo(() => {
-    const singleMarketValue = (pSitem?.price || 0) / item.marketQty;
+    if (pSitem === undefined) return undefined;
+    const singleMarketValue = pSitem.price / item.marketQty;
     if (item.exchange === undefined) return undefined;
     //find maximum value of the exchange array
-    const maxExchange = item.exchange.reduce<{ exchangeItemId?: string; value: number; rate: number; isProfit: boolean; profit: number, diff: number }>((acc, curr) => {
-      const exchangeItem = store.prices.find((i) => i.id === curr.id);
+    const maxExchange = item.exchange.reduce<{
+      value: number;
+      rate: number;
+      isProfit: boolean;
+      profit: number;
+      diff: number;
+      exchangeItem?: (typeof items)[number];
+    }>((acc, curr) => {
+      const exchangeItem = items.find((i) => i.id === curr.id);
       if (exchangeItem === undefined) return acc;
-      const value = curr.rate * exchangeItem.price;
+      const store_exchangeItem = store.prices.find((i) => i.id === curr.id);
+      if (store_exchangeItem === undefined) return acc;
+      const value = curr.rate * store_exchangeItem.price;
       const profit = singleMarketValue - value / item.marketQty;
       const diff = -((profit / singleMarketValue) * 100);
       if (value > acc.value) {
         return {
-          exchangeItemId: curr.id,
+          exchangeItem,
           value,
           rate: curr.rate,
           profit,
@@ -66,10 +76,10 @@ export default function PriceCard({
         }
       }
       return acc;
-    }, { exchangeItemId: undefined, value: -Infinity, rate: -Infinity, isProfit: false, profit: 0, diff: 0 });
-    if (maxExchange.exchangeItemId === undefined) return undefined;
+    }, { exchangeItem: undefined, value: -Infinity, rate: -Infinity, isProfit: false, profit: 0, diff: 0 });
+    if (maxExchange.exchangeItem === undefined) return undefined;
     return maxExchange;
-  }, [pSitem, item.marketQty, store.prices]);
+  }, [item.marketQty, store.prices, pSitem?.price, item]);
 
   const daysSinceUpdate = useMemo(() => {
     if (!pSitem) return undefined;
@@ -176,6 +186,7 @@ export default function PriceCard({
           </div>
         )}
         {exchange !== undefined && (
+
           <div className="flex flex-col items-end justify-between">
             <Label>
               Exchange
@@ -184,26 +195,40 @@ export default function PriceCard({
                 (x{exchange.rate * 100})
               </span>
             </Label>
-            <p className="text-md mt-1.5">{+exchange.value.toFixed(2)}</p>
-            <p
-              className={cn("text-xs", {
-                "text-destructive": !exchange.isProfit,
-                "text-success": exchange.isProfit,
-              })}
-            >
-              {exchange.diff > 0 && "+"}
-              {+exchange.diff.toFixed(2)}%
+            <p className={
+              cn("text-xs text-muted-foreground", {
+                "text-mauve": exchange.exchangeItem?.rarity === "epic",
+                "text-blue": exchange.exchangeItem?.rarity === "rare",
+                "text-green": exchange.exchangeItem?.rarity === "uncommon",
+                "text-gray": exchange.exchangeItem?.rarity === "common",
+              })
+            }>
+              {exchange.exchangeItem?.name}
             </p>
-            <Image
-              src={`/assets/${exchange.exchangeItemId}.webp`}
-              height={32}
-              width={32}
-              alt=""
-              className="size-[32px]"
-            />
+            <div className="flex flex-row gap-3 text-muted items-center text-end">
+              <div>
+                <p className="text-md mt-1.5">{+exchange.value.toFixed(2)}</p>
+                <p
+                  className={cn("text-xs", {
+                    "text-destructive": !exchange.isProfit,
+                    "text-success": exchange.isProfit,
+                  })}
+                >
+                  {exchange.diff > 0 && "+"}
+                  {+exchange.diff.toFixed(1)}%
+                </p>
+              </div>
+              <Image
+                src={`/assets/${exchange.exchangeItem?.id}.webp`}
+                height={32}
+                width={32}
+                alt=""
+                className="size-[32px]"
+              />
+            </div>
           </div>
         )}
       </CardContent>
-    </Card>
+    </Card >
   );
 }
