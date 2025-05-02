@@ -102,8 +102,8 @@ const ExchangeSection = ({ item, marketPrice }: { item: Props["item"], marketPri
     const profit = singleMarketValue - value / item.marketQty;
     const diff = -((profit / singleMarketValue) * 100);
 
-    return value > best.value ? { item: exchangeItem, value, rate: curr.rate, diff } : best;
-  }, { item: undefined, value: -Infinity, rate: -Infinity, diff: 0 });
+    return value < best.value ? { item: exchangeItem, value, rate: curr.rate, diff } : best;
+  }, { item: undefined, value: +Infinity, rate: 0, diff: 0 });
 
   if (!bestExchange.item) return null;
 
