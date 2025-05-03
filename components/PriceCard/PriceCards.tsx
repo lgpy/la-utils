@@ -9,15 +9,11 @@ import { Fragment } from "react";
 import PriceCard from "./PriceCard";
 import {
   Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import PricesOCR from "../OCR/OCRComponent";
 import { Button } from "../ui/button";
+import { ScanText } from "lucide-react";
 
 function NavigationAnchor({
   type,
@@ -139,7 +135,10 @@ export default function PriceCards() {
     <div className="flex flex-row my-6 md:mx-12 gap-6 relative">
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline" className="fixed right-4 bottom-4">Ocr</Button>
+          <Button variant="outline" className="fixed right-4 bottom-4">
+            <ScanText className="mr-2 h-4 w-4" />
+            Ocr
+          </Button>
         </DialogTrigger>
         <PricesOCR />
       </Dialog>

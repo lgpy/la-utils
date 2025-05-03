@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, Upload, Image as ImageIcon, CheckCircle2 } from "lucide-react";
+import { AlertCircle, Upload, CheckCircle2, ScanText } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Image from "next/image";
 import { Loader2 } from "lucide-react"
-import { DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { usePriceStore } from "@/providers/PriceStoreProvider";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -25,6 +24,51 @@ export default function PricesOCR() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [result, setResult] = useState<OCRResult[] | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Handle paste events globally
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const blob = items[i].getAsFile();
+          if (blob) {
+            // Reset states
+            setError(null);
+            setResult(null);
+
+            // Create File from the blob
+            const file = new File([blob], "pasted-image.png", { type: blob.type });
+
+            // Create image preview
+            const reader = new FileReader();
+            reader.onload = () => {
+              setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+
+            // Update file input
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            if (fileInputRef.current) {
+              fileInputRef.current.files = dataTransfer.files;
+            }
+
+            break;
+          }
+        }
+      }
+    };
+
+    // Add global paste event listener
+    document.addEventListener('paste', handlePaste);
+
+    return () => {
+      document.removeEventListener('paste', handlePaste);
+    };
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -109,17 +153,16 @@ export default function PricesOCR() {
     <DialogContent className="w-full max-w-md">
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2">
-          <ImageIcon className="h-5 w-5" />
+          <ScanText className="h-5 w-5" />
           OCR Price Extraction
         </DialogTitle>
         <DialogDescription>
           Upload an image of the game and extract the prices using OCR.
+          You can also paste an image (Ctrl+V) directly from your clipboard.
         </DialogDescription>
       </DialogHeader>
 
       <div className="space-y-4">
-
-
         <div className="flex flex-col items-center justify-center space-y-4">
           <Input
             ref={fileInputRef}
@@ -130,7 +173,7 @@ export default function PricesOCR() {
             disabled={isProcessing}
           />
 
-          {imagePreview && (
+          {imagePreview && result === null && (
             <div className="relative w-full h-48 mt-4 border rounded-md overflow-hidden">
               <Image
                 src={imagePreview}
@@ -150,10 +193,7 @@ export default function PricesOCR() {
           )}
 
           {result && !isProcessing && (
-            <div className="w-full mt-4 p-3 border rounded-md bg-muted relative">
-              <Button variant="outline" className="absolute right-2 top-2" onClick={applyChanges}>
-                Apply
-              </Button>
+            <div className="w-full mt-4 p-3 border rounded-md bg-muted">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2 className="h-5 w-5 text-green-500" />
                 <h3 className="font-medium">OCR Results</h3>
@@ -172,7 +212,7 @@ export default function PricesOCR() {
       </div >
 
       <DialogFooter className="flex justify-end">
-        {result === null && (
+        {result === null ? (
           <Button
             onClick={processImage}
             disabled={isProcessing || !imagePreview}
@@ -190,9 +230,20 @@ export default function PricesOCR() {
                 </>
               )}
           </Button>
+
+        ) : (
+          <>
+            <Button variant="destructive" onClick={resetStates} className="mr-2">
+              Cancel
+            </Button>
+            <Button onClick={applyChanges}>
+              Apply Changes
+            </Button>
+          </>
         )}
 
       </DialogFooter >
+
     </DialogContent >
   );
 }
