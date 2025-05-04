@@ -7,13 +7,6 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Link from "next/link";
 import { Fragment } from "react";
 import PriceCard from "./PriceCard";
-import {
-  Dialog,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import PricesOCR from "../OCR/OCRComponent";
-import { Button } from "../ui/button";
-import { ScanText } from "lucide-react";
 
 function NavigationAnchor({
   type,
@@ -133,15 +126,6 @@ export default function PriceCards() {
 
   return (
     <div className="flex flex-row my-6 md:mx-12 gap-6 relative">
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline" className="fixed right-4 bottom-4">
-            <ScanText className="mr-2 h-4 w-4" />
-            Ocr
-          </Button>
-        </DialogTrigger>
-        <PricesOCR />
-      </Dialog>
       <div className="hidden md:block">
         <div className="flex flex-col gap-1 sticky top-[88px]">
           <h1 className="text-2xl font-bold mb-3">Navigation</h1>
