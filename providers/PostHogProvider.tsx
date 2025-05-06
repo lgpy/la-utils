@@ -4,7 +4,7 @@ import posthog from "posthog-js"
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react"
 import { Suspense, useEffect } from "react"
 import { usePathname, useSearchParams } from "next/navigation"
-import { useMainStore } from "./MainStoreProvider"
+import { Character, useMainStore } from "./MainStoreProvider"
 import { Class } from "@/lib/classes"
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
@@ -46,6 +46,19 @@ function PostHogPageView() {
   return null
 }
 
+
+function UniqueTasks(characters: Character[]) {
+  const uniqueTasks = new Set()
+
+  characters.forEach(character => {
+    character.tasks.forEach(task => {
+      uniqueTasks.add(task.name.toLowerCase())
+    })
+  })
+
+  return Array.from(uniqueTasks)
+}
+
 function CharacterPropertiesUpdater() {
   const { characters, hasHydrated } = useMainStore()
   const posthog = usePostHog()
@@ -76,14 +89,17 @@ function CharacterPropertiesUpdater() {
         return (current.itemLevel > prev.itemLevel) ? current : prev;
       })
 
+
+      const tasks = UniqueTasks(characters);
+
       // Set user properties in PostHog
       posthog.setPersonProperties({
         main: mainCharacter.name,
         characters: characterData,
-        total_characters: totalCharacters,
         gold_earners: goldEarners,
         class_distribution: classCounts,
         highest_item_level: mainCharacter.itemLevel,
+        tasks: tasks,
       })
     }
   }, [hasHydrated, characters, posthog])
