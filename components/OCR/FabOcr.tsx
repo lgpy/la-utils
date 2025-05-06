@@ -32,9 +32,7 @@ export default function FabOCR() {
           <ScanText className="size-6" />
         </Button>
       </motion.div>
-      <Dialog open={isOpen} onOpenChange={(open) => onOpenChange(open)}>
-        <PricesOCR />
-      </Dialog>
+      <PricesOCR isOpen={isOpen} onOpenChange={onOpenChange} />
     </div>
   );
 }

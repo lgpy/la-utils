@@ -7,7 +7,7 @@ import { AlertCircle, Upload, CheckCircle2, ScanText } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Image from "next/image";
 import { Loader2 } from "lucide-react"
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { usePriceStore } from "@/providers/PriceStoreProvider";
 import { useToast } from "@/components/ui/use-toast";
 import { usePostHog } from "posthog-js/react";
@@ -17,7 +17,12 @@ type OCRResult = {
   lowestPrice: number;
 };
 
-export default function PricesOCR() {
+type PricesOCRProps = {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+};
+
+export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
   const { store, hasHydrated } = usePriceStore((state) => state);
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -153,100 +158,109 @@ export default function PricesOCR() {
   };
 
   return (
-    <DialogContent className="w-full max-w-md">
-      <DialogHeader>
-        <DialogTitle className="flex items-center gap-2">
-          <ScanText className="h-5 w-5" />
-          OCR Price Extraction
-        </DialogTitle>
-        <DialogDescription>
-          Upload an image of the game and extract the prices using OCR.
-          You can also paste an image (Ctrl+V) directly from your clipboard.
-        </DialogDescription>
-      </DialogHeader>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      onOpenChange(open);
+      if (!open) {
+        setTimeout(() => {
+          resetStates();
+        }, 200);
+      }
+    }}>
+      <DialogContent className="w-full max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <ScanText className="h-5 w-5" />
+            OCR Price Extraction
+          </DialogTitle>
+          <DialogDescription>
+            Upload an image of the game and extract the prices using OCR.
+            You can also paste an image (Ctrl+V) directly from your clipboard.
+          </DialogDescription>
+        </DialogHeader>
 
-      <div className="space-y-4">
-        <div className="flex flex-col items-center justify-center space-y-4">
-          <Input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="cursor-pointer"
-            disabled={isProcessing}
-          />
+        <div className="space-y-4">
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <Input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="cursor-pointer"
+              disabled={isProcessing}
+            />
 
-          {imagePreview && result === null && (
-            <div className="relative w-full h-48 mt-4 border rounded-md overflow-hidden">
-              <Image
-                src={imagePreview}
-                alt="Preview"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
-          )}
-
-          {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          {result && !isProcessing && (
-            <div className="w-full mt-4 p-3 border rounded-md bg-muted">
-              <div className="flex items-center gap-2 mb-2">
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
-                <h3 className="font-medium">OCR Results</h3>
+            {imagePreview && result === null && (
+              <div className="relative w-full h-48 mt-4 border rounded-md overflow-hidden">
+                <Image
+                  src={imagePreview}
+                  alt="Preview"
+                  fill
+                  style={{ objectFit: "contain" }}
+                />
               </div>
-              <pre className="text-sm whitespace-pre-wrap overflow-auto max-h-60">
-                {result.map((item, index) => (
-                  <div key={index}>
-                    {item.itemId} &gt; {item.lowestPrice}
-                  </div>
-                ))}
-              </pre>
-              {/* button on the right side */}
-            </div>
+            )}
+
+            {error && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            {result && !isProcessing && (
+              <div className="w-full mt-4 p-3 border rounded-md bg-muted">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                  <h3 className="font-medium">OCR Results</h3>
+                </div>
+                <pre className="text-sm whitespace-pre-wrap overflow-auto max-h-60">
+                  {result.map((item, index) => (
+                    <div key={index}>
+                      {item.itemId} &gt; {item.lowestPrice}
+                    </div>
+                  ))}
+                </pre>
+                {/* button on the right side */}
+              </div>
+            )}
+          </div>
+        </div >
+
+        <DialogFooter className="flex justify-end">
+          {result === null ? (
+            <Button
+              onClick={processImage}
+              disabled={isProcessing || !imagePreview}
+            >
+              {
+                isProcessing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-4 w-4 mr-2" />
+                    Process Image
+                  </>
+                )}
+            </Button>
+
+          ) : (
+            <>
+              <Button variant="destructive" onClick={resetStates} className="mr-2">
+                Cancel
+              </Button>
+              <Button onClick={applyChanges}>
+                Apply Changes
+              </Button>
+            </>
           )}
-        </div>
-      </div >
 
-      <DialogFooter className="flex justify-end">
-        {result === null ? (
-          <Button
-            onClick={processImage}
-            disabled={isProcessing || !imagePreview}
-          >
-            {
-              isProcessing ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <Upload className="h-4 w-4 mr-2" />
-                  Process Image
-                </>
-              )}
-          </Button>
+        </DialogFooter >
 
-        ) : (
-          <>
-            <Button variant="destructive" onClick={resetStates} className="mr-2">
-              Cancel
-            </Button>
-            <Button onClick={applyChanges}>
-              Apply Changes
-            </Button>
-          </>
-        )}
-
-      </DialogFooter >
-
-    </DialogContent >
+      </DialogContent >
+    </Dialog>
   );
 }
