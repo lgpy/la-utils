@@ -8,6 +8,7 @@ import {
 import { isGateCompleted, raids } from "@/lib/raids";
 import { isTaskCompleted } from "@/lib/tasks";
 import { createMainStore, MainStore } from "@/stores/main";
+import { createSettingsStore, SettingsStore } from "@/stores/settings";
 import {
   type ReactNode,
   createContext,
@@ -20,8 +21,13 @@ import {
 import { useStore } from "zustand";
 
 export type MainStoreApi = ReturnType<typeof createMainStore>;
+export type SettingsStoreApi = ReturnType<typeof createSettingsStore>;
 
 export const MainStoreContext = createContext<MainStoreApi | undefined>(
+  undefined,
+);
+
+export const SettingsStoreContext = createContext<SettingsStoreApi | undefined>(
   undefined,
 );
 
@@ -30,14 +36,21 @@ export interface MainStoreProviderProps {
 }
 
 export const MainStoreProvider = ({ children }: MainStoreProviderProps) => {
-  const storeRef = useRef<MainStoreApi>(null);
-  if (!storeRef.current) {
-    storeRef.current = createMainStore();
+  const mainStoreRef = useRef<MainStoreApi>(null);
+  if (!mainStoreRef.current) {
+    mainStoreRef.current = createMainStore();
+  }
+
+  const settingsStoreRef = useRef<SettingsStoreApi>(null);
+  if (!settingsStoreRef.current) {
+    settingsStoreRef.current = createSettingsStore();
   }
 
   return (
-    <MainStoreContext.Provider value={storeRef.current}>
-      {children}
+    <MainStoreContext.Provider value={mainStoreRef.current}>
+      <SettingsStoreContext.Provider value={settingsStoreRef.current}>
+        {children}
+      </SettingsStoreContext.Provider>
     </MainStoreContext.Provider>
   );
 };
@@ -123,6 +136,35 @@ export const useMainStore = () => {
   return {
     ...store,
     characters,
+    hasHydrated: hydrated,
+  };
+};
+
+export const useSettingsStore = (): SettingsStore & {
+  hasHydrated: boolean;
+} => {
+  const settingsStoreContext = useContext(SettingsStoreContext);
+  const [hydrated, setHydrated] = useState(false);
+
+  if (!settingsStoreContext) {
+    throw new Error(
+      `useSettingsStore must be used within MainStoreProvider`,
+    );
+  }
+
+  useEffect(() => {
+    if (settingsStoreContext.persist.hasHydrated) {
+      setHydrated(settingsStoreContext.persist.hasHydrated());
+    }
+    settingsStoreContext.persist.onFinishHydration(() => {
+      setHydrated(true);
+    });
+  }, [settingsStoreContext.persist]);
+
+  const store = useStore(settingsStoreContext, (s) => s);
+
+  return {
+    ...store,
     hasHydrated: hydrated,
   };
 };

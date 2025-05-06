@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
-import { useSettingsStore } from "@/providers/SettingsProvider";
+import { useSettingsStore } from "@/providers/MainStoreProvider";
 
 export default function SettingsButton() {
   const { setTheme, theme } = useTheme();

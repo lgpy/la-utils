@@ -1,4 +1,4 @@
-import { Character } from "@/providers/MainStoreProvider";
+import { Character, useSettingsStore } from "@/providers/MainStoreProvider";
 import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { cn } from "@/lib/utils";
 import {
@@ -10,7 +10,6 @@ import {
 import { HandCoins } from "lucide-react";
 import TodoCardCompleteButtonV2 from "./TodoCardCompleteButtonV2";
 import { motion } from "framer-motion";
-import { useSettingsStore } from "@/providers/SettingsProvider";
 
 interface Props {
   charId: string;

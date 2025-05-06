@@ -10,9 +10,8 @@ import TodoCardRaid from "./TodoCardRaid";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import TodoCardTask from "./TodoCardTask";
 import TodoCardRaidV2 from "./TodoCardRaidV2";
-import { useSettingsStore } from "@/providers/SettingsProvider";
+import { Character, useMainStore, useSettingsStore } from "@/providers/MainStoreProvider";
 import { motion } from "framer-motion";
-import { Character, useMainStore } from "@/providers/MainStoreProvider";
 
 interface Props {
   char: Character;
@@ -49,7 +48,7 @@ export default function TodoCard({ char }: Props) {
                 char.isGoldEarner &&
                 highest3.thisWeek[raidId] !== undefined &&
                 Object.keys(highest3.thisWeek).length <
-                  Object.keys(char.assignedRaids).length
+                Object.keys(char.assignedRaids).length
               }
             />
           ) : (
@@ -61,7 +60,7 @@ export default function TodoCard({ char }: Props) {
                 char.isGoldEarner &&
                 highest3.thisWeek[raidId] !== undefined &&
                 Object.keys(highest3.thisWeek).length <
-                  Object.keys(char.assignedRaids).length
+                Object.keys(char.assignedRaids).length
               }
             />
           )}
@@ -228,9 +227,8 @@ export default function TodoCard({ char }: Props) {
                 })}
                 initial={false}
                 animate={{
-                  width: `${
-                    (completedDailyTasks / filteredTasks.daily.length) * 100
-                  }%`,
+                  width: `${(completedDailyTasks / filteredTasks.daily.length) * 100
+                    }%`,
                 }}
                 transition={{
                   duration: 0.4,
@@ -243,9 +241,8 @@ export default function TodoCard({ char }: Props) {
                 })}
                 initial={false}
                 animate={{
-                  width: `${
-                    (completedWeeklyTasks / filteredTasks.weekly.length) * 100
-                  }%`,
+                  width: `${(completedWeeklyTasks / filteredTasks.weekly.length) * 100
+                    }%`,
                 }}
                 transition={{
                   duration: 0.4,

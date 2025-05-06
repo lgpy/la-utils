@@ -8,7 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { useSettingsStore } from "@/providers/SettingsProvider";
+import { useSettingsStore } from "@/providers/MainStoreProvider";
 import { useToast } from "./ui/use-toast";
 import {
   getServerStatus,
@@ -85,8 +85,8 @@ export default function ServerStatusWidget() {
       );
     const delay =
       serverStatus === ServerStatus.OFFLINE ||
-      serverStatus === ServerStatus.MAINTENANCE ||
-      serverStatus === null
+        serverStatus === ServerStatus.MAINTENANCE ||
+        serverStatus === null
         ? 1000 * 60 * 5
         : 1000 * 60 * 60 * 2;
     const int = setInterval(async () => {

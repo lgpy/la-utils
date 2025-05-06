@@ -1,10 +1,9 @@
 "use client";
 
 import { getHighest3, parseGoldInfo } from "@/lib/chars";
-import { useSettingsStore } from "@/providers/SettingsProvider";
+import { useSettingsStore, useMainStore } from "@/providers/MainStoreProvider";
 import { useMemo } from "react";
 import AnimatedNumber from "./AnimatedNumber";
-import { useMainStore } from "@/providers/MainStoreProvider";
 import { raids } from "@/lib/raids";
 
 export default function RosterGold() {
