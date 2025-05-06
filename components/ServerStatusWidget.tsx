@@ -1,7 +1,7 @@
 "use client";
 
-import { Construction, Power } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Construction, Power, WifiOff } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -10,32 +10,29 @@ import {
 } from "./ui/tooltip";
 import { useSettingsStore } from "@/providers/MainStoreProvider";
 import { useToast } from "./ui/use-toast";
-import {
-  getServerStatus,
-  getServerStatusString,
-  ServerStatus,
-} from "@/lib/servers";
+import { getServerStatusString, ServerStatus } from "@/lib/servers";
 import { ServerStatusResponse } from "@/app/api/serverStatus/route";
 import { DateTime } from "luxon";
 
-function beep(ac: AudioContext, volume: number) {
+// Audio notification function with volume control and error handling
+function playNotification(volume: number = 30): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    volume = volume || 100;
-
     try {
-      // You're in charge of providing a valid AudioFile that can be reached by your web app
-      let soundSource = "/ringtone.mp3";
-      let sound = new Audio(soundSource);
+      const sound = new Audio("/ringtone.mp3");
+      sound.volume = Math.min(Math.max(volume / 100, 0), 1); // Ensure volume is between 0-1
+      sound.onended = () => resolve();
+      sound.onerror = (error) => reject(error);
 
-      // Set volume
-      sound.volume = volume / 100;
-
-      sound.onended = () => {
-        resolve();
-      };
-
-      sound.play();
+      // Modern browsers require user interaction before playing audio
+      const playPromise = sound.play();
+      if (playPromise) {
+        playPromise.catch((error) => {
+          console.warn("Audio playback failed:", error);
+          resolve(); // Resolve anyway to prevent hanging promises
+        });
+      }
     } catch (error) {
+      console.error("Audio notification error:", error);
       reject(error);
     }
   });
@@ -43,116 +40,181 @@ function beep(ac: AudioContext, volume: number) {
 
 export default function ServerStatusWidget() {
   const settingsStore = useSettingsStore();
+  const { server: selectedServer } = settingsStore;
 
   const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
-  const [tooltipLastUpdated, setTooltipLastUpdated] = useState<string | null>(
-    null,
-  );
+  const [tooltipLastUpdated, setTooltipLastUpdated] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hasError, setHasError] = useState<boolean>(false);
   const { toast } = useToast();
 
-  const audioContext = useRef<AudioContext | null>(null);
+  // Function to fetch server status with error handling
+  const fetchServerStatus = async () => {
+    if (!selectedServer) return;
 
-  useEffect(() => {
-    if (lastUpdated === null) return;
-    setTooltipLastUpdated(
-      DateTime.fromMillis(lastUpdated).toRelative({
-        unit: "minutes",
-      }),
-    );
-    const int = setInterval(() => {
-      setTooltipLastUpdated(
-        DateTime.fromMillis(lastUpdated).toRelative({
-          unit: "minutes",
-        }),
-      );
-    }, 1000 * 60);
-    return () => {
-      clearInterval(int);
-    };
-  }, [lastUpdated]);
+    try {
+      setIsLoading(true);
+      // Pass the server name as a query parameter
+      const res = await fetch(`/api/serverStatus?server=${encodeURIComponent(selectedServer)}`, {
+        cache: "no-cache",
+        next: { revalidate: 0 }
+      });
 
-  useEffect(() => {
-    if (!settingsStore.hasHydrated) return;
-    if (settingsStore.server === undefined) return;
-    if (serverStatus === null)
-      fetch(`/api/serverStatus`).then((res) =>
-        res.json().then((data: ServerStatusResponse) => {
-          const status = getServerStatus(data.servers, settingsStore.server!);
-          setServerStatus(status);
-          setLastUpdated(data.lastUpdated);
-        }),
-      );
-    const delay =
-      serverStatus === ServerStatus.OFFLINE ||
-        serverStatus === ServerStatus.MAINTENANCE ||
-        serverStatus === null
-        ? 1000 * 60 * 5
-        : 1000 * 60 * 60 * 2;
-    const int = setInterval(async () => {
-      const res = await fetch(`/api/serverStatus`);
-      const data = await res.json();
-      const status = getServerStatus(data, settingsStore.server!);
-      if (
-        status === ServerStatus.ONLINE &&
-        (serverStatus === ServerStatus.OFFLINE ||
-          serverStatus === ServerStatus.MAINTENANCE)
-      ) {
-        if (!audioContext.current) audioContext.current = new AudioContext();
-        beep(audioContext.current, 30);
+      if (!res.ok) {
+        throw new Error(`Server returned ${res.status}: ${res.statusText}`);
+      }
+
+      const data: ServerStatusResponse = await res.json();
+
+      if (data.error) {
+        console.warn("Server status warning:", data.error);
+      }
+
+      // Use the direct status property instead of looking it up in the servers object
+      const status = data.status;
+
+      if (status !== undefined) {
+        // Check if server came back online
+        if (
+          status === ServerStatus.ONLINE &&
+          (serverStatus === ServerStatus.OFFLINE || serverStatus === ServerStatus.MAINTENANCE)
+        ) {
+          // Show notification and play sound
+          await playNotification(30);
+          toast({
+            title: `Server ${selectedServer} is back online!`,
+            description: "You can now log in to the game.",
+            duration: 240000,
+          });
+        }
+
+        setServerStatus(status);
+      }
+
+      setLastUpdated(data.lastUpdated);
+      setHasError(false);
+    } catch (error) {
+      console.error("Error fetching server status:", error);
+      setHasError(true);
+
+      // Don't show toast for every error to avoid spamming the user
+      if (serverStatus === null) {
         toast({
-          title: `Server ${settingsStore.server} is back online!`,
-          duration: 240000,
+          title: "Unable to fetch server status",
+          description: "Will retry in a few minutes",
+          variant: "destructive",
+          duration: 3000,
         });
       }
-      if (serverStatus !== status) setServerStatus(status);
-    }, delay);
-    return () => {
-      clearInterval(int);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Update relative time display
+  useEffect(() => {
+    if (lastUpdated === null) return;
+
+    const updateRelativeTime = () => {
+      setTooltipLastUpdated(
+        DateTime.fromMillis(lastUpdated).toRelative({ unit: "minutes" })
+      );
     };
-  }, [settingsStore, settingsStore.hasHydrated, serverStatus]);
 
-  if (!settingsStore.hasHydrated) return null;
-  if (settingsStore.server === undefined) return null;
+    updateRelativeTime();
+    const interval = setInterval(updateRelativeTime, 60000); // Update every minute
 
+    return () => clearInterval(interval);
+  }, [lastUpdated]);
+
+  // Reset states and fetch when selectedServer changes
+  useEffect(() => {
+    if (!settingsStore.hasHydrated || !selectedServer) return;
+
+    // Reset states when server changes
+    setServerStatus(null);
+    setIsLoading(true);
+    setHasError(false);
+
+    // Fetch status for the new server
+    fetchServerStatus();
+  }, [selectedServer]);
+
+  // Initialize and schedule status updates
+  useEffect(() => {
+    if (!settingsStore.hasHydrated || !selectedServer) return;
+
+    // Initial fetch is now handled by the selectedServer effect above
+
+    // Set different polling intervals based on server status
+    const pollingInterval =
+      serverStatus === ServerStatus.OFFLINE || serverStatus === ServerStatus.MAINTENANCE
+        ? 5 * 60 * 1000  // 5 minutes for offline/maintenance
+        : 30 * 60 * 1000; // 30 minutes for online servers
+
+    const interval = setInterval(fetchServerStatus, pollingInterval);
+
+    return () => clearInterval(interval);
+  }, [settingsStore.hasHydrated, selectedServer, serverStatus]);
+
+  if (!settingsStore.hasHydrated || !selectedServer) return null;
+
+  // Determine which icon to show based on server status
   const icon = (() => {
+    if (isLoading) {
+      return <Power className="size-4 stroke-muted-foreground animate-pulse" />;
+    }
+
+    if (hasError) {
+      return <WifiOff className="size-4 stroke-destructive" />;
+    }
+
     switch (serverStatus) {
       case ServerStatus.OFFLINE:
         return <Power className="size-4 stroke-destructive" />;
       case ServerStatus.ONLINE:
-      case ServerStatus.FULL:
-      case ServerStatus.BUSY:
         return <Power className="size-4 stroke-green" />;
+      case ServerStatus.BUSY:
+      case ServerStatus.FULL:
+        return <Power className="size-4 stroke-peach" />;
       case ServerStatus.MAINTENANCE:
         return <Construction className="size-4 stroke-blue" />;
       default:
-        return undefined;
+        return <Power className="size-4 stroke-muted-foreground" />;
     }
   })();
 
   const tooltipServerStatus =
-    serverStatus !== null ? getServerStatusString(serverStatus) : "not set";
+    hasError ? "Connection Error" :
+      isLoading ? "Checking..." :
+        serverStatus !== null ? getServerStatusString(serverStatus) : "Unknown";
 
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger>
-          <div className="flex gap-1 items-center select-none">
+        <TooltipTrigger asChild>
+          <div className="flex gap-1 items-center select-none cursor-help">
             {icon}
-            <span className="text-muted-foreground text-xs">
-              {settingsStore.server}
+            <span className={`text-xs ${hasError ? "text-destructive" : "text-muted-foreground"}`}>
+              {selectedServer}
             </span>
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          <div>
-            <p>
-              Server status: <span>{tooltipServerStatus}</span>
+          <div className="space-y-1">
+            <p className="font-medium">
+              Server status: <span className="font-normal">{tooltipServerStatus}</span>
             </p>
-            <p>
+            <p className="text-sm text-muted-foreground">
               Last updated:{" "}
               {tooltipLastUpdated !== null ? tooltipLastUpdated : "never"}
             </p>
+            {hasError && (
+              <p className="text-xs text-destructive">
+                Could not connect to status service
+              </p>
+            )}
           </div>
         </TooltipContent>
       </Tooltip>

@@ -3,6 +3,7 @@ import {
   FlaskConical,
   Import,
   Moon,
+  Server,
   SettingsIcon,
   Sun,
   SunMoon,
@@ -97,6 +98,7 @@ export default function SettingsButton() {
         <DropdownMenuGroup>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="focus:text-background data-[state=open]:text-background">
+              <Server className="mr-2 h-4 w-4" />
               <span>Server</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>

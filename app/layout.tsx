@@ -30,7 +30,7 @@ export default function RootLayout({
       >
         <MainStoreProvider>
           <PostHogProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
               <div className="flex min-h-screen w-full flex-col">
                 <NavBar />{children}
               </div>
