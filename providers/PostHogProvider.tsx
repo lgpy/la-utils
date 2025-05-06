@@ -73,7 +73,7 @@ function CharacterPropertiesUpdater() {
 
       // set main character (highest item level)
       const mainCharacter = characters.reduce((prev, current) => {
-        return (prev.itemLevel > current.itemLevel) ? prev : current
+        return (current.itemLevel > prev.itemLevel) ? current : prev;
       })
 
       // Set user properties in PostHog
