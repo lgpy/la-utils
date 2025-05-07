@@ -81,12 +81,12 @@ export default function ServerStatusWidget() {
           (serverStatus === ServerStatus.OFFLINE || serverStatus === ServerStatus.MAINTENANCE)
         ) {
           // Show notification and play sound
-          await playNotification(30);
           toast({
             title: `Server ${selectedServer} is back online!`,
             description: "You can now log in to the game.",
             duration: 240000,
           });
+          await playNotification(30);
         }
 
         setServerStatus(status);
