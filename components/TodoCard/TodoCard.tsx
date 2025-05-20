@@ -190,9 +190,9 @@ export default function TodoCard({ char }: Props) {
                   <Check className="inline size-4" />
                 )}
               </p>
-              <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/15"></div>
+              <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20"></div>
               <motion.div
-                className="absolute left-0 bottom-0 z-0 h-1 bg-primary/30"
+                className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/50 transform -translate-x-1/2"
                 initial={false}
                 animate={{
                   width: `${(completedGateCount / totalGateCount) * 100}%`,
@@ -219,35 +219,17 @@ export default function TodoCard({ char }: Props) {
                   <Check className="inline size-4" />
                 )}
               </p>
-              <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/15"></div>
+              <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20"></div>
               <motion.div
-                className={cn("absolute left-0 bottom-0 z-0 bg-primary/30", {
-                  "h-0.5 bottom-0.5": filteredTasks.weekly.length > 0,
-                  "h-1": filteredTasks.weekly.length === 0,
-                })}
+                className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/50 transform -translate-x-1/2"
                 initial={false}
                 animate={{
-                  width: `${(completedDailyTasks / filteredTasks.daily.length) * 100
-                    }%`,
+                  width: `${((completedWeeklyTasks + completedDailyTasks) / (filteredTasks.daily.length + filteredTasks.weekly.length)) * 100}%`,
                 }}
                 transition={{
                   duration: 0.4,
                 }}
-              ></motion.div>
-              <motion.div
-                className={cn("absolute left-0 bottom-0 z-0 bg-primary/30", {
-                  "h-0.5": filteredTasks.daily.length > 0,
-                  "h-1": filteredTasks.daily.length === 0,
-                })}
-                initial={false}
-                animate={{
-                  width: `${(completedWeeklyTasks / filteredTasks.weekly.length) * 100
-                    }%`,
-                }}
-                transition={{
-                  duration: 0.4,
-                }}
-              ></motion.div>
+              />
             </TabsTrigger>
           </TabsList>
           <Separator />
