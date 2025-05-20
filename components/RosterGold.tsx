@@ -38,7 +38,7 @@ export default function RosterGold() {
       },
     );
     if (settingsStore.rosterGoldTotal === "remaining") {
-      ret.thisWeek.totalGold = -(
+      ret.thisWeek.earnedGold = -(
         ret.thisWeek.totalGold - ret.thisWeek.earnedGold
       );
     }
