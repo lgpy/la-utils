@@ -21,10 +21,10 @@ type Props = {
 // Helper function to get rarity-based styling
 const getRarityClasses = (rarity?: string) => ({
   header: cn("bg-gradient-to-b from-card to-card", {
-    "from-mauve/30": rarity === "epic",
-    "from-blue/30": rarity === "rare",
-    "from-green/30": rarity === "uncommon",
-    "from-overlay1/30": rarity === "common",
+    "from-mauve/30 dark:from-mauve/15": rarity === "epic",
+    "from-blue/30 dark:from-blue/15": rarity === "rare",
+    "from-green/30 dark:from-green/15": rarity === "uncommon",
+    "from-overlay1/40 dark:from-overlay1/20": rarity === "common",
   }),
   text: cn("", {
     "text-mauve": rarity === "epic",
@@ -154,7 +154,7 @@ export default function PriceCard({ changeValue, bcValue, pSitem, item }: Props)
   return (
     <Card className="w-[350px] flex flex-col justify-between">
       <CardHeader className="flex flex-row justify-between p-0">
-        <div className={cn("flex flex-row items-center gap-3 p-3 w-full rounded-t-md")}>
+        <div className={cn("flex flex-row items-center gap-3 p-3 w-full rounded-t-md", rarityClasses.header)}>
           <Image
             src={`/assets/${item.id}.webp`}
             width={48}

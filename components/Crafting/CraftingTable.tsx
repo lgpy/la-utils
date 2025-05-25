@@ -10,8 +10,6 @@ import Image from "next/image";
 import Link from "next/link";
 import TruncatedTooltip from "../TruncatedTooltip";
 import { Card, CardContent, CardHeader } from "../ui/card";
-import { Label } from "../ui/label";
-import { Separator } from "../ui/separator";
 import WarningTooltipIcon from "../WarningTooltipIcon";
 import { Fragment, useMemo } from "react";
 
@@ -34,6 +32,21 @@ function NavigationAnchor({
     </Link>
   );
 }
+
+const getRarityClasses = (rarity?: string) => ({
+  header: cn("bg-gradient-to-b from-card to-card", {
+    "from-mauve/30 dark:from-mauve/15": rarity === "epic",
+    "from-blue/30 dark:from-blue/15": rarity === "rare",
+    "from-green/30 dark:from-green/15": rarity === "uncommon",
+    "from-overlay1/40 dark:from-overlay1/20": rarity === "common",
+  }),
+  text: cn("", {
+    "text-mauve": rarity === "epic",
+    "text-blue": rarity === "rare",
+    "text-green": rarity === "uncommon",
+    "text-overlay1": rarity === "common",
+  }),
+});
 
 function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
   const { store: pricesStore, hasHydrated: pricesHasHydrated } = usePriceStore(
@@ -76,7 +89,7 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
       (type?.greatSuccessChance || 0) / 100 +
       1) *
       5) /
-      100;
+    100;
 
   const sellPrice =
     Math.floor(itemMarketPrice * 0.95) * item.returns * gsChance;
@@ -112,16 +125,15 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
 
   const isItemPriceBad = isBadPriceItem(item_price);
 
+  const rarityClasses = getRarityClasses(item.rarity);
+
   return (
     <Card className="w-[350px] flex flex-col justify-between h-fit">
       <CardHeader className="flex flex-row justify-between p-0">
         <div
           className={cn(
             "w-full grid grid-cols-[48px_auto_32px] items-center gap-3 p-3 rounded-t-md",
-            {
-              "bg-gradient-to-b from-mauve/30 to-card": item.rarity === "epic",
-              "bg-gradient-to-b from-blue/30 to-card": item.rarity === "rare",
-            },
+            rarityClasses.header,
           )}
         >
           <div className="relative">
@@ -142,10 +154,7 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
           <TruncatedTooltip
             text={item.name}
             className={{
-              text: cn("text-xl font-semibold tracking-tight truncate", {
-                "text-mauve": item.rarity === "epic",
-                "text-blue": item.rarity === "rare",
-              }),
+              text: cn("text-xl font-semibold tracking-tight truncate", rarityClasses.text),
               tooltip: "text-center",
             }}
           />
