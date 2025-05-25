@@ -28,9 +28,9 @@ function SingularButton({
         e.preventDefault();
       }}
     >
-      <div className="size-5 bg-surface1 rounded-full drop-shadow flex justify-center items-center">
+      <div className="size-5 bg-surface1 rounded-full shadow flex justify-center items-center">
         <motion.div
-          className="size-3 bg-mauve rounded-full"
+          className="size-3 bg-primary rounded-full"
           initial={false}
           animate={active ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
           transition={{

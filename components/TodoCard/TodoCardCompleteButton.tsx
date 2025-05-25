@@ -77,12 +77,12 @@ export default function TodoCardCompleteButton({
 
   return (
     <div
-      className="border-white/30 bg-primary/30 w-16 h-8 rounded-lg flex items-center relative overflow-hidden"
+      className="shadow bg-primary/30 w-16 h-8 rounded-lg flex items-center relative overflow-hidden"
       onClick={handleClick}
       onContextMenu={handleClick}
     >
       <div
-        className="absolute left-0 right-0 text-center z-10 text-white"
+        className="absolute left-0 right-0 text-center z-10 text-primary-foreground"
         style={{ fontFeatureSettings: "'tnum' 1" }}
       >
         <AnimatePresence initial={false}>
@@ -96,8 +96,8 @@ export default function TodoCardCompleteButton({
                   completedlen === Object.keys(assignedGates).length
                     ? -120
                     : increase
-                    ? -40
-                    : 40,
+                      ? -40
+                      : 40,
               }}
               animate={{
                 opacity: 1,

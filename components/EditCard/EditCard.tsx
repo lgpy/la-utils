@@ -86,7 +86,7 @@ export default function EditCard(props: Props) {
   }, [char.tasks, openTaskDialog]);
 
   return (
-    <Card className="h-fit w-56 border-card border-1" {...divProps}>
+    <Card className="h-fit w-56" {...divProps}>
       <CardHeader className="p-4 flex flex-row gap-2 items-center relative">
         <ClassIcon c={char.class} className="size-10" />
         <div className="flex flex-col">

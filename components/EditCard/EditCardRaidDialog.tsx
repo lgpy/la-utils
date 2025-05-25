@@ -100,9 +100,8 @@ export default function EditCardRaidDialog({
       close();
       toast({
         title: `Raid ${raidId ? "Updated" : "Added"}!`,
-        description: `Raid has been ${
-          raidId ? "updated" : "added"
-        } successfully!`,
+        description: `Raid has been ${raidId ? "updated" : "added"
+          } successfully!`,
       });
     } catch (error) {
       toast({
@@ -182,10 +181,10 @@ export default function EditCardRaidDialog({
       raidId: actualRaid ? watchRaidId : "",
       gates: actualRaid
         ? Object.keys(actualRaid.gates).map(
-            (gateId) =>
-              character.assignedRaids[watchRaidId]?.[gateId]?.difficulty ||
-              "none",
-          )
+          (gateId) =>
+            character.assignedRaids[watchRaidId]?.[gateId]?.difficulty ||
+            "none",
+        )
         : [],
     });
   }, [actualRaid, isOpen, character.assignedRaids, form, watchRaidId]);
@@ -233,12 +232,19 @@ export default function EditCardRaidDialog({
                 </FormItem>
               )}
             />
-            <div>
-              <FormLabel>Gates</FormLabel>
-            </div>
-            <div className="space-y-4" ref={parent}>
-              {checkBoxGroups}
-            </div>
+            {checkBoxGroups.length > 0 ? (<>
+              <div>
+                <FormLabel>Gates</FormLabel>
+              </div>
+              <div className="space-y-4" ref={parent}>
+                {checkBoxGroups}
+              </div>
+            </>
+            ) : (
+              <div className="text-muted-foreground text-sm">
+                Select a raid to see its gates and difficulties.
+              </div>
+            )}
           </form>
         </Form>
         <DialogFooter>

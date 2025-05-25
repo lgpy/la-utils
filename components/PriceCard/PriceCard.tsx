@@ -154,13 +154,13 @@ export default function PriceCard({ changeValue, bcValue, pSitem, item }: Props)
   return (
     <Card className="w-[350px] flex flex-col justify-between">
       <CardHeader className="flex flex-row justify-between p-0">
-        <div className={cn("flex flex-row items-center gap-3 p-3 w-full rounded-t-md", rarityClasses.header)}>
+        <div className={cn("flex flex-row items-center gap-3 p-3 w-full rounded-t-md")}>
           <Image
             src={`/assets/${item.id}.webp`}
             width={48}
             height={48}
             alt=""
-            className="size-[48px]"
+            className="size-[48px] drop-shadow-2xl shadow-white"
           />
           <TruncatedTooltip
             text={item.name}

@@ -55,7 +55,7 @@ export default function TodoCardRaidV2({
       )}
     >
       <motion.div
-        className="absolute left-0 right-0 top-0 z-0 h-full bg-mauve/10"
+        className="absolute left-0 right-0 top-0 z-0 h-full bg-primary/10"
         initial={false}
         animate={{
           width: `${progress * 100}%`,

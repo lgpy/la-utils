@@ -144,7 +144,7 @@ export default function TodoCard({ char }: Props) {
   }, 0);
 
   return (
-    <Card className="h-fit w-56 border-card border-1 select-none overflow-hidden">
+    <Card className="h-fit w-56 select-none overflow-hidden">
       <CardHeader className="p-4 flex flex-row gap-2 items-center relative">
         <ClassIcon c={char.class} className="size-10 min-w-10" />
         <div className="flex flex-col w-full">
@@ -172,17 +172,17 @@ export default function TodoCard({ char }: Props) {
       </CardHeader>
       {char.tasks.length > 0 && (
         <Tabs defaultValue="raids">
-          <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">
+          <TabsList className="w-full bg-primary/20 text-primary-foreground/50 p-0 h-auto rounded-none">
             <TabsTrigger
               value="raids"
-              className="w-full rounded-none relative group"
+              className="w-full rounded-none relative group data-[state=active]:bg-primary/30 data-[state=active]:text-primary-foreground"
             >
               <p>
-                <span className="group-data-[state=active]:underline">
+                <span>
                   Raids
                 </span>{" "}
                 {completedRaids !== Object.keys(char.assignedRaids).length && (
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs">
                     ({completedRaids}/{Object.keys(char.assignedRaids).length})
                   </span>
                 )}
@@ -190,9 +190,9 @@ export default function TodoCard({ char }: Props) {
                   <Check className="inline size-4" />
                 )}
               </p>
-              <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20"></div>
+              <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20 group-data-[state=active]:bg-primary/30"></div>
               <motion.div
-                className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/50 transform -translate-x-1/2"
+                className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/40 group-data-[state=active]:bg-primary/50 transform -translate-x-1/2"
                 initial={false}
                 animate={{
                   width: `${(completedGateCount / totalGateCount) * 100}%`,
@@ -204,14 +204,14 @@ export default function TodoCard({ char }: Props) {
             </TabsTrigger>
             <TabsTrigger
               value="tasks"
-              className="w-full rounded-none relative group"
+              className="w-full rounded-none relative group data-[state=active]:bg-primary/30 data-[state=active]:text-primary-foreground"
             >
               <p>
-                <span className="group-data-[state=active]:underline">
+                <span>
                   Tasks
                 </span>{" "}
                 {completedTasks !== char.tasks.length && (
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs ">
                     ({completedTasks}/{char.tasks.length})
                   </span>
                 )}
@@ -219,9 +219,9 @@ export default function TodoCard({ char }: Props) {
                   <Check className="inline size-4" />
                 )}
               </p>
-              <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20"></div>
+              <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20 group-data-[state=active]:bg-primary/30"></div>
               <motion.div
-                className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/50 transform -translate-x-1/2"
+                className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/40 group-data-[state=active]:bg-primary/50 transform -translate-x-1/2"
                 initial={false}
                 animate={{
                   width: `${((completedWeeklyTasks + completedDailyTasks) / (filteredTasks.daily.length + filteredTasks.weekly.length)) * 100}%`,

@@ -1,103 +1,167 @@
 @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@tailwind components;
+@tailwind utilities;
 
-  @layer base {
+@layer base {
+  :root {
+    --radius: 0.5rem;
+
+    --background: 220.00 23.08% 94.90%;
+    --foreground: 233.79 16.02% 35.49%;
+    --card: 0 0% 100%;
+    --card-foreground: 233.79 16.02% 35.49%;
+    --popover: 222.86 15.91% 82.75%;
+    --popover-foreground: 233.79 16.02% 35.49%;
+    --primary: 341.08 55.56% 45.88%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222.86 15.91% 82.75%;
+    --secondary-foreground: 233.79 16.02% 35.49%;
+    --muted: 220.00 20.69% 88.63%;
+    --muted-foreground: 232.80 10.37% 47.25%;
+    --accent: 356.57 61.40% 66.47%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 347.08 86.67% 44.12%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 225.00 13.56% 76.86%;
+    --input: 222.86 15.91% 82.75%;
+    --ring: 341.08 55.56% 45.88%;
+
+    --shadow-2xs: 0px 4px 6px 0px hsl(240 30% 25% / 0.06);
+    --shadow-xs: 0px 4px 6px 0px hsl(240 30% 25% / 0.06);
+    --shadow-sm: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 1px 2px -1px hsl(240 30% 25% / 0.12);
+    --shadow: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 1px 2px -1px hsl(240 30% 25% / 0.12);
+    --shadow-md: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 2px 4px -1px hsl(240 30% 25% / 0.12);
+    --shadow-lg: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 4px 6px -1px hsl(240 30% 25% / 0.12);
+    --shadow-xl: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 8px 10px -1px hsl(240 30% 25% / 0.12);
+    --shadow-2xl: 0px 4px 6px 0px hsl(240 30% 25% / 0.30);
+
+
+    --select-background: 232, 10%, 53%;
+
+    --rosewater: 11 59% 67%;
+    --flamingo: 0 60% 67%;
+    --pink: 316 73% 69%;
+    --mauve: 266 85% 58%;
+    --red: 347 87% 44%;
+    --maroon: 355 76% 59%;
+    --peach: 22 99% 52%;
+    --yellow: 35 77% 49%;
+    --green: 109 58% 40%;
+    --teal: 183 74% 35%;
+    --sky: 197 97% 46%;
+    --sapphire: 189 70% 42%;
+    --blue: 220 91% 54%;
+    --lavender: 231 97% 72%;
+    --text: 234 16% 35%;
+    --subtext1: 233 13% 41%;
+    --subtext0: 233 10% 47%;
+    --overlay2: 232 10% 53%;
+    --overlay1: 231 10% 59%;
+    --overlay0: 228 11% 65%;
+    --surface2: 227 12% 71%;
+    --surface1: 225 14% 77%;
+    --surface0: 223 16% 83%;
+    --base: 220 23% 95%;
+    --mantle: 220 22% 92%;
+    --crust: 220 21% 89%;
+  }
+
+  .dark {
+    --background: 233.33 23.08% 15.29%;
+    --foreground: 227.44 68.25% 87.65%;
+    --card: 231.82 23.40% 18.43%;
+    --card-foreground: 227.44 68.25% 87.65%;
+    --popover: 231.11 15.61% 33.92%;
+    --popover-foreground: 227.44 68.25% 87.65%;
+    --primary: 341.08 55.56% 45.88%;
+    --primary-foreground: 346.15 86.67% 94.12%;
+    --secondary: 229.66 13.74% 41.37%;
+    --secondary-foreground: 227.44 68.25% 87.65%;
+    --muted: 233.33 23.08% 15.29%;
+    --muted-foreground: 227.37 26.76% 72.16%;
+    --accent: 356.57 61.40% 66.47%;
+    --accent-foreground: 346.15 86.67% 94.12%;
+    --destructive: 351.18 73.91% 72.94%;
+    --destructive-foreground: 231.82 23.40% 18.43%;
+    --border: 230.40 18.80% 26.08%;
+    --input: 230.40 18.80% 26.08%;
+    --ring: 341.08 55.56% 45.88%;
+
+    --shadow-2xs: 0px 4px 6px 0px hsl(240 30% 25% / 0.06);
+    --shadow-xs: 0px 4px 6px 0px hsl(240 30% 25% / 0.06);
+    --shadow-sm: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 1px 2px -1px hsl(240 30% 25% / 0.12);
+    --shadow: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 1px 2px -1px hsl(240 30% 25% / 0.12);
+    --shadow-md: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 2px 4px -1px hsl(240 30% 25% / 0.12);
+    --shadow-lg: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 4px 6px -1px hsl(240 30% 25% / 0.12);
+    --shadow-xl: 0px 4px 6px 0px hsl(240 30% 25% / 0.12), 0px 8px 10px -1px hsl(240 30% 25% / 0.12);
+    --shadow-2xl: 0px 4px 6px 0px hsl(240 30% 25% / 0.30);
+
+    --select-background: 228, 20%, 65%;
+
+    --rosewater: 10 58% 90%;
+    --flamingo: 0 58% 86%;
+    --pink: 316 74% 85%;
+    --mauve: 267 83% 80%;
+    --red: 351 74% 73%;
+    --maroon: 355 71% 77%;
+    --peach: 21 86% 73%;
+    --yellow: 40 70% 78%;
+    --green: 105 48% 72%;
+    --teal: 171 47% 69%;
+    --sky: 189 59% 73%;
+    --sapphire: 199 66% 69%;
+    --blue: 220 83% 75%;
+    --lavender: 234 82% 85%;
+    --text: 227 68% 88%;
+    --subtext1: 228 39% 80%;
+    --subtext0: 227 27% 72%;
+    --overlay2: 228 20% 65%;
+    --overlay1: 228 15% 57%;
+    --overlay0: 230 12% 49%;
+    --surface2: 230 14% 41%;
+    --surface1: 231 16% 34%;
+    --surface0: 230 19% 26%;
+    --base: 232 23% 18%;
+    --mantle: 233 23% 15%;
+    --crust: 236 23% 12%;
+  }
+}
+
+@layer base {
+  :root {
+    font-family: Inter, sans-serif;
+    font-feature-settings: 'liga' 1, 'calt' 1;
+    /* fix for Chrome */
+  }
+
+  @supports (font-variation-settings: normal) {
     :root {
-      --radius: 0.5rem;
-
-      --select-background: 232, 10%, 53%;
-
-      --rosewater: 11 59% 67%;
-      --flamingo: 0 60% 67%;
-      --pink: 316 73% 69%;
-      --mauve: 266 85% 58%;
-      --red: 347 87% 44%;
-      --maroon: 355 76% 59%;
-      --peach: 22 99% 52%;
-      --yellow: 35 77% 49%;
-      --green: 109 58% 40%;
-      --teal: 183 74% 35%;
-      --sky: 197 97% 46%;
-      --sapphire: 189 70% 42%;
-      --blue: 220 91% 54%;
-      --lavender: 231 97% 72%;
-      --text: 234 16% 35%;
-      --subtext1: 233 13% 41%;
-      --subtext0: 233 10% 47%;
-      --overlay2: 232 10% 53%;
-      --overlay1: 231 10% 59%;
-      --overlay0: 228 11% 65%;
-      --surface2: 227 12% 71%;
-      --surface1: 225 14% 77%;
-      --surface0: 223 16% 83%;
-      --base: 220 23% 95%;
-      --mantle: 220 22% 92%;
-      --crust: 220 21% 89%;
-
-
-    }
-
-    .dark {
-
-      --select-background: 228, 20%, 65%;
-
-      --rosewater: 10 58% 90%;
-      --flamingo: 0 58% 86%;
-      --pink: 316 74% 85%;
-      --mauve: 267 83% 80%;
-      --red: 351 74% 73%;
-      --maroon: 355 71% 77%;
-      --peach: 21 86% 73%;
-      --yellow: 40 70% 78%;
-      --green: 105 48% 72%;
-      --teal: 171 47% 69%;
-      --sky: 189 59% 73%;
-      --sapphire: 199 66% 69%;
-      --blue: 220 83% 75%;
-      --lavender: 234 82% 85%;
-      --text: 227 68% 88%;
-      --subtext1: 228 39% 80%;
-      --subtext0: 227 27% 72%;
-      --overlay2: 228 20% 65%;
-      --overlay1: 228 15% 57%;
-      --overlay0: 230 12% 49%;
-      --surface2: 230 14% 41%;
-      --surface1: 231 16% 34%;
-      --surface0: 230 19% 26%;
-      --base: 232 23% 18%;
-      --mantle: 233 23% 15%;
-      --crust: 236 23% 12%;
+      font-family: InterVariable, sans-serif;
     }
   }
 
-  @layer base {
-    :root {
-      font-family: Inter, sans-serif;
-      font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
-    }
-    @supports (font-variation-settings: normal) {
-      :root { font-family: InterVariable, sans-serif; }
-    }
-    * {
-      @apply border-border;
-    }
-    body {
-      @apply bg-gradient-to-b from-background to-background2 text-foreground;
-    }
-    ::selection {
-      background: hsla(var(--select-background),0.2);
-    }
+  * {
+    @apply border-border;
   }
 
-  @layer components {
-    .no-spinner {
-      -moz-appearance: textfield;
-      appearance: textfield;
-    }
-    .no-spinner::-webkit-outer-spin-button,
-    .no-spinner::-webkit-inner-spin-button {
-      margin: 0;
-      -webkit-appearance: none;
-    }
+  body {
+    @apply bg-background text-foreground;
   }
+
+  ::selection {
+    background: hsla(var(--select-background), 0.2);
+  }
+}
+
+@layer components {
+  .no-spinner {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  .no-spinner::-webkit-outer-spin-button,
+  .no-spinner::-webkit-inner-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+  }
+}
