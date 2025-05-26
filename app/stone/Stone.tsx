@@ -514,7 +514,11 @@ export default function Stone() {
 
   return (
     <div className="flex flex-col gap-6 p-4 sm:p-6 lg:p-8 w-full items-center"> {/* MODIFIED: className for full width and responsive padding */}
-      <h1 className="text-3xl font-bold text-center mb-4">Stone Cutter</h1>
+      <h1 className="text-3xl font-bold text-center">Stone Cutter</h1>
+      <p className="text-sm text-muted-foreground text-center max-w-prose">
+        This tool has only been tested in fullscreen and borderless mode at 1920x1080 (16:9) resolution.
+        It will not work correctly with other resolutions or windowed modes, and may also be affected by certain color or brightness settings.
+      </p>
       {/* Hidden video element for screen capture source */}
       <video ref={videoRef} style={{ display: 'none' }} playsInline />
       <div className="grid grid-cols-[max-content_max-content] gap-6 mb-6 justify-center">

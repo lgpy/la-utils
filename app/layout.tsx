@@ -24,18 +24,35 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background antialiased",
-          inter.className
+          inter.className,
+          "min-h-screen bg-background font-sans antialiased flex flex-col"
         )}
       >
         <MainStoreProvider>
           <PostHogProvider>
-            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-              <div className="flex min-h-screen w-full flex-col">
-                <NavBar />{children}
-              </div>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <NavBar />
+              <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                {children}
+              </main>
+              <footer className="py-4 text-center text-xs text-muted-foreground/50">
+                <p>Made by Slayersen (EUC)</p>
+                <p>Feel free to contact me on <a
+                  href="https://discord.com/users/119529240587796482"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  Discord
+                </a></p>
+              </footer>
+              <Toaster />
             </ThemeProvider>
-            <Toaster />
           </PostHogProvider>
         </MainStoreProvider>
       </body>
