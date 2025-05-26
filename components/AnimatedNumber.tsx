@@ -1,5 +1,5 @@
 import { formatGold } from "@/lib/utils";
-import { animate } from "framer-motion";
+import { animate } from "motion/react";
 import React, { useEffect, useRef, useState } from "react";
 
 interface Props {

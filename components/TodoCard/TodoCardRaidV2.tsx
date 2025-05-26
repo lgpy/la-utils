@@ -8,21 +8,23 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { HandCoins } from "lucide-react";
-import TodoCardCompleteButtonV2 from "./TodoCardCompleteButtonV2";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
+import { ReactNode } from "react";
 
 interface Props {
-  charId: string;
   raidId: string;
   raid: Character["assignedRaids"][string];
   goldEarner: boolean;
+  children: ReactNode;
+  showBackground?: boolean;
 }
 
 export default function TodoCardRaidV2({
-  charId,
   raidId,
   raid,
   goldEarner,
+  children,
+  showBackground = true,
 }: Props) {
   const settingsStore = useSettingsStore();
   const actualraid = raids[raidId];
@@ -54,16 +56,18 @@ export default function TodoCardRaidV2({
         },
       )}
     >
-      <motion.div
-        className="absolute left-0 right-0 top-0 z-0 h-full bg-primary/10"
-        initial={false}
-        animate={{
-          width: `${progress * 100}%`,
-        }}
-        transition={{
-          duration: 0.4,
-        }}
-      ></motion.div>
+      {showBackground && (
+        <motion.div
+          className="absolute left-0 right-0 top-0 z-0 h-full bg-primary/10"
+          initial={false}
+          animate={{
+            width: `${progress * 100}%`,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
+        ></motion.div>
+      )}
 
       {goldEarner && (
         <HandCoins
@@ -71,7 +75,7 @@ export default function TodoCardRaidV2({
             "transition-opacity size-4 stroke-yellow absolute right-0.5 bottom-0.5 opacity-80",
             {
               "opacity-40": completedRaids === Object.keys(raid).length,
-              "right-[1px] bottom-[1px]": isCompactCardEnabled,
+              "right-px bottom-px": isCompactCardEnabled,
             },
           )}
         />
@@ -111,11 +115,7 @@ export default function TodoCardRaidV2({
         )}
       </div>
       <div className="z-10 flex flex-row items-center justify-end">
-        <TodoCardCompleteButtonV2
-          assignedGates={raid}
-          charId={charId}
-          raidId={raidId}
-        />
+        {children}
       </div>
     </div>
   );

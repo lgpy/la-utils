@@ -20,7 +20,7 @@ type Props = {
 
 // Helper function to get rarity-based styling
 const getRarityClasses = (rarity?: string) => ({
-  header: cn("bg-gradient-to-b from-card to-card", {
+  header: cn("bg-linear-to-b from-card to-card", {
     "from-mauve/30 dark:from-mauve/15": rarity === "epic",
     "from-blue/30 dark:from-blue/15": rarity === "rare",
     "from-green/30 dark:from-green/15": rarity === "uncommon",

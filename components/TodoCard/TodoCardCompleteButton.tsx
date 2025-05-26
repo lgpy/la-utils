@@ -2,7 +2,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 import { Character, useMainStore } from "@/providers/MainStoreProvider";
 import { raids } from "@/lib/raids";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { CheckIcon } from "lucide-react";
 import { MouseEventHandler, useState } from "react";
 
@@ -76,56 +76,105 @@ export default function TodoCardCompleteButton({
   };
 
   return (
-    <div
-      className="shadow bg-primary/30 w-16 h-8 rounded-lg flex items-center relative overflow-hidden"
-      onClick={handleClick}
-      onContextMenu={handleClick}
-    >
+    <div className="py-1.5">
       <div
-        className="absolute left-0 right-0 text-center z-10 text-primary-foreground"
-        style={{ fontFeatureSettings: "'tnum' 1" }}
+        className="shadow bg-primary/30 w-16 h-8 rounded-lg items-center relative overflow-hidden"
+        onClick={handleClick}
+        onContextMenu={handleClick}
       >
-        <AnimatePresence initial={false}>
-          <div className="flex flex-row justify-center">
-            <motion.div
-              key={"ap" + completedlen}
-              className="w-fit"
-              initial={{
-                opacity: 0,
-                rotate:
-                  completedlen === Object.keys(assignedGates).length
-                    ? -120
-                    : increase
-                      ? -40
-                      : 40,
-              }}
-              animate={{
-                opacity: 1,
-                rotate: 0,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-            >
+        <div
+          className="absolute left-0 right-0 text-center z-10 text-primary-foreground h-full"
+          style={{ fontFeatureSettings: "'tnum' 1" }}
+        >
+          <div className="flex flex-row justify-center h-full items-center">
+            <AnimatePresence initial={false}>
               {isChecked ? (
-                <CheckIcon />
+                <motion.div
+                  key="checkmark-icon" // Changed key for clarity and stability
+                  style={{ position: "absolute" }} // Added position: "absolute"
+                  initial={{
+                    opacity: 0,
+                    scale: 0.5,
+                    rotate: -90,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    rotate: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.5,
+                    rotate: -90,
+                  }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                >
+                  <CheckIcon />
+                </motion.div>
               ) : (
-                <span className="text-nowrap">{`${completedlen}`}</span>
+                <motion.div // New wrapper for numbers
+                  key="numbers-container"
+                  style={{ position: "absolute" }} // Added position: "absolute"
+                  className="flex flex-row items-center" // Layout for inner numbers
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <motion.div
+                    key={"ap" + completedlen} // Key depends on completedlen to trigger re-animation
+                    className="text-nowrap"
+                    initial={{
+                      opacity: 0,
+                      y: increase ? 10 : -10,
+                      scale: 0.9,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      y: increase ? -10 : 10,
+                      scale: 0.9,
+                    }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  >
+                    {completedlen}
+                  </motion.div>
+                  <motion.div
+                    key="ap-total" // Static key for the total display
+                    className="text-nowrap"
+                    initial={{
+                      opacity: 0,
+                      scale: 0.95,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      scale: 0.9,
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
+                    /{Object.keys(assignedGates).length}
+                  </motion.div>
+                </motion.div>
               )}
-            </motion.div>
-            {!isChecked && (
-              <span>{`/${Object.keys(assignedGates).length}`}</span>
-            )}
+            </AnimatePresence>
           </div>
-        </AnimatePresence>
+        </div>
+        <motion.div
+          animate={{
+            width: `${(completedlen / Object.keys(assignedGates).length) * 100}%`,
+          }}
+          initial={false}
+          className="bg-primary h-full"
+        />
       </div>
-      <motion.div
-        animate={{
-          width: `${(completedlen / Object.keys(assignedGates).length) * 100}%`,
-        }}
-        initial={false}
-        className="bg-primary h-full"
-      />
     </div>
   );
 }

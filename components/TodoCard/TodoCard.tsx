@@ -11,7 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import TodoCardTask from "./TodoCardTask";
 import TodoCardRaidV2 from "./TodoCardRaidV2";
 import { Character, useMainStore, useSettingsStore } from "@/providers/MainStoreProvider";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
+import TodoCardCompleteButtonV2 from "./TodoCardCompleteButtonV2";
+import TodoCardCompleteButton from "./TodoCardCompleteButton";
 
 interface Props {
   char: Character;
@@ -39,31 +41,31 @@ export default function TodoCard({ char }: Props) {
             "rounded-b-lg": i === keys.length - 1,
           })}
         >
-          {settingsStore.experiments.buttonV2 ? (
-            <TodoCardRaidV2
-              charId={char.id}
-              raidId={raidId}
-              raid={char.assignedRaids[raidId]}
-              goldEarner={
-                char.isGoldEarner &&
-                highest3.thisWeek[raidId] !== undefined &&
-                Object.keys(highest3.thisWeek).length <
-                Object.keys(char.assignedRaids).length
-              }
-            />
-          ) : (
-            <TodoCardRaid
-              charId={char.id}
-              raidId={raidId}
-              raid={char.assignedRaids[raidId]}
-              goldEarner={
-                char.isGoldEarner &&
-                highest3.thisWeek[raidId] !== undefined &&
-                Object.keys(highest3.thisWeek).length <
-                Object.keys(char.assignedRaids).length
-              }
-            />
-          )}
+          <TodoCardRaidV2
+            raidId={raidId}
+            raid={char.assignedRaids[raidId]}
+            goldEarner={
+              char.isGoldEarner &&
+              highest3.thisWeek[raidId] !== undefined &&
+              Object.keys(highest3.thisWeek).length <
+              Object.keys(char.assignedRaids).length
+            }
+          >
+
+            {settingsStore.experiments.buttonV2 ? (
+              <TodoCardCompleteButtonV2
+                assignedGates={char.assignedRaids[raidId]}
+                charId={char.id}
+                raidId={raidId}
+              />
+            ) : (
+              <TodoCardCompleteButton
+                assignedGates={char.assignedRaids[raidId]}
+                charId={char.id}
+                raidId={raidId}
+              />
+            )}
+          </TodoCardRaidV2>
         </CardContent>
         {i < keys.length - 1 && <Separator className="opacity-75" />}
       </Fragment>
@@ -145,7 +147,7 @@ export default function TodoCard({ char }: Props) {
 
   return (
     <Card className="h-fit w-56 select-none overflow-hidden">
-      <CardHeader className="p-4 flex flex-row gap-2 items-center relative">
+      <div className="p-4 flex flex-row gap-2 items-center relative">
         <ClassIcon c={char.class} className="size-10 min-w-10" />
         <div className="flex flex-col w-full">
           <span className="text-xs text-default-500 text-muted-foreground">
@@ -169,7 +171,7 @@ export default function TodoCard({ char }: Props) {
             char={char}
           />
         )}
-      </CardHeader>
+      </div>
       {char.tasks.length > 0 && (
         <Tabs defaultValue="raids">
           <TabsList className="w-full bg-primary/20 text-primary-foreground/50 p-0 h-auto rounded-none">

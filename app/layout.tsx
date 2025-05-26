@@ -25,7 +25,7 @@ export default function RootLayout({
       <body
         className={cn(
           inter.className,
-          "min-h-screen bg-background font-sans antialiased flex flex-col"
+          "min-h-screen bg-background antialiased flex flex-col"
         )}
       >
         <MainStoreProvider>
@@ -37,7 +37,7 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <NavBar />
-              <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+              <main className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-4">
                 {children}
               </main>
               <footer className="py-4 text-center text-xs text-muted-foreground/50">

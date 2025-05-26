@@ -52,7 +52,7 @@ export default function PiggyBank(props: Props) {
         <TooltipTrigger asChild>
           <PiggyBankProgressBar
             progress={(thisWeek.earned / thisWeek.total) * 100}
-            className={cn("size-5 !m-0 absolute top-2 right-2", className)}
+            className={cn("size-5 m-0! absolute top-2 right-2", className)}
           />
         </TooltipTrigger>
         <TooltipContent>

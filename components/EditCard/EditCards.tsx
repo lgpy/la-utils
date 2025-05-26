@@ -2,7 +2,7 @@
 
 import { Character, useMainStore } from "@/providers/MainStoreProvider";
 import { dragAndDrop } from "@formkit/drag-and-drop/react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { isEqual } from "lodash";
 import { LockIcon, LockOpenIcon, PlusIcon } from "lucide-react";
 import { RefObject, useEffect, useRef, useState } from "react";

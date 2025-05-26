@@ -87,7 +87,7 @@ export default function EditCard(props: Props) {
 
   return (
     <Card className="h-fit w-56" {...divProps}>
-      <CardHeader className="p-4 flex flex-row gap-2 items-center relative">
+      <div className="p-4 flex flex-row gap-2 items-center relative">
         <ClassIcon c={char.class} className="size-10" />
         <div className="flex flex-col">
           <span
@@ -110,18 +110,18 @@ export default function EditCard(props: Props) {
           </div>
         </div>
         {movable && (
-          <MoveIcon className="mover size-4 absolute top-1 mx-auto right-0 left-0 !mt-0 cursor-move" />
+          <MoveIcon className="mover size-4 absolute top-1 mx-auto right-0 left-0 mt-0! cursor-move" />
         )}
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-2 right-2 !m-0"
+          className="absolute top-1 right-1 m-0! size-8"
           onClick={() => editCharacter()}
           data-pw={`edit-character`}
         >
           <PencilIcon className="h-4 w-4" />
         </Button>
-      </CardHeader>
+      </div>
       <Tabs defaultValue="raids">
         <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">
           <TabsTrigger value="raids" className="w-full rounded-none">

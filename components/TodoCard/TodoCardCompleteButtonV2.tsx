@@ -1,6 +1,6 @@
 import { Character, useMainStore } from "@/providers/MainStoreProvider";
 import { raids } from "@/lib/raids";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { MouseEventHandler } from "react";
 
 interface Props {

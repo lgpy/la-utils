@@ -19,7 +19,7 @@ Lost Ark Utils v2 is a Next.js application that provides various utilities for t
 - **UI**: [React](https://react.dev/) with [Tailwind CSS](https://tailwindcss.com/)
 - **State Management**: [Zustand](https://github.com/pmndrs/zustand) with persistence
 - **Components**: [Shadcn UI](https://ui.shadcn.com/) components built on [Radix UI](https://www.radix-ui.com/) primitives
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Animations**: [Motion](https://motion.dev/)
 - **Date/Time Handling**: [Luxon](https://moment.github.io/luxon/)
 - **Type Safety**: [TypeScript](https://www.typescriptlang.org/) with [Zod](https://zod.dev/) for validation
 
