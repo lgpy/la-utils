@@ -43,12 +43,13 @@ export default function RootLayout({
               <footer className="py-4 text-center text-xs text-muted-foreground/50">
                 <p>Made by Slayersen (EUC)</p>
                 <p>Feel free to contact me on <a
-                  href="https://discord.com/users/119529240587796482"
+                  href="discord://discord.com/users/119529240587796482"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline"
+                  title="@leo213"
                 >
-                  Discord
+                  Discord (@leo213)
                 </a></p>
               </footer>
               <Toaster />
