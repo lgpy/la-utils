@@ -32,4 +32,5 @@ export enum Class {
   //Specialists
   Aeromancer = "Aeromancer",
   Artist = "Artist",
+  Wildsoul = "Wildsoul",
 }

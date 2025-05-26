@@ -27,6 +27,7 @@ import SummonerIcon from "./Summoner";
 import WardancerIcon from "./Wardancer";
 import { createElement } from "react";
 import { cn } from "@/lib/utils";
+import WildsoulIcon from "./Wildsoul";
 
 const icons: {
   [key in Class]: React.ComponentType<React.SVGProps<SVGSVGElement>>;
@@ -57,6 +58,7 @@ const icons: {
   [Class.Striker]: StrikerIcon,
   [Class.Summoner]: SummonerIcon,
   [Class.Wardancer]: WardancerIcon,
+  [Class.Wildsoul]: WildsoulIcon,
 };
 
 export default function ClassIcon(
