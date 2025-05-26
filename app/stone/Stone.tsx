@@ -53,6 +53,47 @@ function parseTargets(currentTargets: PixelTarget[], fullSourceCanvas: HTMLCanva
 }
 
 
+function PredictPercentage(oldState: StoneState, newState: Omit<StoneState, 'percentage'>): number | null {
+  let oldCount = { failures: 0, successes: 0 };
+  let newCount = { failures: 0, successes: 0 };
+
+  const statusChecker = (status: string, obj: { failures: number; successes: number }) => {
+    switch (status) {
+      case 'success':
+        obj.successes++;
+        break;
+      case 'failure':
+        obj.failures++;
+        break;
+      default:
+        break;
+    }
+  };
+
+  oldState.line1.forEach(status => statusChecker(status, oldCount));
+  oldState.line2.forEach(status => statusChecker(status, oldCount));
+  oldState.line3.forEach(status => statusChecker(status, oldCount));
+  newState.line1.forEach(status => statusChecker(status, newCount));
+  newState.line2.forEach(status => statusChecker(status, newCount));
+  newState.line3.forEach(status => statusChecker(status, newCount));
+
+  const totalOld = oldCount.successes + oldCount.failures;
+  const totalNew = newCount.successes + newCount.failures;
+  const totaldiff = totalNew - totalOld;
+
+  if (totaldiff === 0) return oldState.percentage; // No change in total, return old percentage
+
+  if (totaldiff === 1 && newCount.successes > oldCount.successes) {
+    // If one more success, increase percentage by 10%
+    return Math.min(oldState.percentage + 10, 75);
+  } else if (totaldiff === 1 && newCount.failures > oldCount.failures) {
+    // If one more failure, decrease percentage by 10%
+    return Math.max(oldState.percentage - 10, 25);
+  }
+
+  console.debug(`PredictPercentage: Unexpected totaldiff: ${totaldiff}, oldCount: ${JSON.stringify(oldCount)}, newCount: ${JSON.stringify(newCount)}`);
+  return null;
+}
 
 export default function Stone() {
   const displayCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -62,13 +103,14 @@ export default function Stone() {
   const [capturedImageSrc, setCapturedImageSrc] = useState<string | null>(null);
   const [isAutomating, setIsAutomating] = useState<boolean>(false);
   const [targets, setTargets] = useState<PixelTarget[]>(PREDEFINED_TARGETS.map(target => target));
-  const [ocrText, setOcrText] = useState<string>('');
+  const [ocrText, setOcrText] = useState<string | undefined>(undefined);
   const [showDebugInfo, setShowDebugInfo] = useState<boolean>(false);
 
   const tesseractWorkerRef = useRef<Tesseract.Worker | null>(null);
   const [tesseractWorkerReady, setTesseractWorkerReady] = useState(false);
 
   const [stoneInfo, setStoneInfo] = useState<StoneState>();
+
 
   useEffect(() => {
     // Cleanup function to stop screen share when the component unmounts
@@ -116,24 +158,32 @@ export default function Stone() {
   }, []); // Empty dependency array: runs on mount, cleans up on unmount
 
   useEffect(() => {
+    if (ocrText === undefined) {
+      console.debug("OCR text is undefined, skipping processing.");
+      return;
+    }
     //ocrText needs to be 75 65 55 45 35 25 and optionally have % at the end
-    const percentage = ocrText.trim().match(/^(\d{2})(?:\%)?$/);
-    if (!percentage) {
-      console.debug(`OCR text does not match expected format: "${ocrText}".`);
-      return;
-    }
-
-    const percentageValue = parseInt(percentage[1], 10);
-
-    if (isNaN(percentageValue)) {
-      console.debug("Parsed percentage is NaN.");
-      return;
-    }
-
     const Acceptable_Percentages = [75, 65, 55, 45, 35, 25];
-    if (!Acceptable_Percentages.includes(percentageValue)) {
-      console.debug(`Percentage ${percentageValue} is not in the acceptable range.`);
-      return;
+    const percentage = ocrText.trim().match(/^(\d{2})(?:\%)?$/);
+    let percentageValue: number | undefined;
+    let ocrWasSuccessful = false;
+
+    if (percentage) {
+      percentageValue = parseInt(percentage[1], 10);
+      if (!isNaN(percentageValue)) {
+        if (Acceptable_Percentages.includes(percentageValue)) {
+          ocrWasSuccessful = true;
+        } else {
+          console.debug(`Percentage ${percentageValue} is not in the acceptable range.`);
+          ocrWasSuccessful = false;
+        }
+      } else {
+        console.debug("Parsed percentage is NaN.");
+        ocrWasSuccessful = false;
+      }
+    } else {
+      console.debug(`OCR text does not match expected format: "${ocrText}".`);
+      ocrWasSuccessful = false;
     }
 
     if (targets.some(target => target.detectedStatus === 'unknown' || !target.isMatch)) {
@@ -145,8 +195,25 @@ export default function Stone() {
     const line2 = targets.filter(target => target.line === 2).map(target => target.detectedStatus);
     const line3 = targets.filter(target => target.line === 3).map(target => target.detectedStatus);
 
-
     setStoneInfo(currentStoneInfo => {
+      if (!ocrWasSuccessful && currentStoneInfo) {
+        const predict = PredictPercentage(currentStoneInfo, {
+          line1,
+          line2,
+          line3
+        });
+
+        if (predict !== null) {
+          percentageValue = predict;
+          console.debug(`Predicting percentage based on current state: ${percentageValue}`);
+        }
+      }
+
+      if (percentageValue === undefined) {
+        console.debug("No valid percentage value found.");
+        return currentStoneInfo;
+      }
+
       if (currentStoneInfo &&
         currentStoneInfo.percentage === percentageValue &&
         line1.length === currentStoneInfo.line1.length &&
@@ -165,7 +232,7 @@ export default function Stone() {
         percentage: percentageValue
       };
     })
-  }, [targets, ocrText]);
+  }, [ocrText]);
 
   const processFrame = useCallback(async () => {
     if (
@@ -239,7 +306,7 @@ export default function Stone() {
           parsedTargets.every(target => target.detectedStatus !== 'unknown' && target.isMatch) &&
           parsedTargets.some((target, i) => target.detectedStatus !== currentTargets[i].detectedStatus)
         ) {// Define the specific region for OCR
-          setOcrText('Processing...'); // Corrected typo: Processsing -> Processing
+          setOcrText(undefined); // Corrected typo: Processsing -> Processing
           const ocrX = 1185;
           const ocrY = 310;
           const ocrWidth = 46;
@@ -272,19 +339,19 @@ export default function Stone() {
                     console.debug(`OCR Result: "${text}"`);
                   }).catch(err => {
                     console.error('OCR Error:', err);
-                    setOcrText('OCR failed.');
+                    setOcrText(undefined);
                   });
               } else {
                 console.warn("OCR: Tesseract worker not ready or not initialized. Skipping OCR.");
-                setOcrText('OCR pending: Worker not ready.');
+                setOcrText(undefined);
               }
             } else {
               console.error("OCR: Could not get context from ocrCanvas.");
-              setOcrText('OCR failed: Context error.');
+              setOcrText(undefined);
             }
           } else {
             console.warn("OCR: fullSourceCanvasRef.current is not available.");
-            setOcrText('OCR failed: Source canvas not ready.');
+            setOcrText(undefined);
           }
 
           setCapturedImageSrc(displayCanvas.toDataURL('image/png'));

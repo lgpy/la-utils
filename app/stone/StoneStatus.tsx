@@ -158,7 +158,7 @@ export default function StoneStatus({ stoneState, className }: TargetOverviewCar
               />
             ))}
             <div>
-              {optimalMove?.rowDecisionProbabilities?.[0] && (
+              {optimalMove?.rowDecisionProbabilities?.[0] !== undefined && (
                 <span className={
                   cn(
                     "text-sm",
@@ -180,7 +180,7 @@ export default function StoneStatus({ stoneState, className }: TargetOverviewCar
               />
             ))}
             <div>
-              {optimalMove?.rowDecisionProbabilities?.[1] && (
+              {optimalMove?.rowDecisionProbabilities?.[1] !== undefined && (
                 <span className={
                   cn(
                     "text-sm",
