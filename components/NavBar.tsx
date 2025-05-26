@@ -16,6 +16,7 @@ const links = [
   { label: "Characters", href: "/characters" },
   { label: "Prices", href: "/prices" },
   { label: "Crafting", href: "/crafting" },
+  { label: "Stone (WIP)", href: "/stone" },
 ];
 
 export default function NavBar() {
