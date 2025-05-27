@@ -6,7 +6,7 @@
 .dlink::after, .mlink::after {
   content: '';
   position: absolute;
-  background: hsl(var(--primary));
+  background: var(--primary);
   z-index: -1;
   opacity: 0;
   transition: height 0.3s ease-out, width 0.3s ease-out;
@@ -18,16 +18,16 @@
   transform: translateX(-50%);
   width: 0;
   height: 0;
-  background: -webkit-radial-gradient(bottom, hsl(var(--primary)), transparent 50%) bottom no-repeat;
-  background: radial-gradient(at bottom, hsl(var(--primary)), transparent 50%) bottom no-repeat;
+  background: -webkit-radial-gradient(bottom, var(--primary), transparent 50%) bottom no-repeat;
+  background: radial-gradient(at bottom, var(--primary), transparent 50%) bottom no-repeat;
 }
 
 .mlink::after {
   left: -20px;
   top: 50%;
   transform: translateY(-50%);
-  background: -webkit-radial-gradient(center, hsl(var(--primary)), transparent 50%) center no-repeat;
-  background: radial-gradient(at center, hsl(var(--primary)), transparent 50%) center no-repeat;
+  background: -webkit-radial-gradient(center, var(--primary), transparent 50%) center no-repeat;
+  background: radial-gradient(at center, var(--primary), transparent 50%) center no-repeat;
 }
 
 .dlink.active::after, .mlink.active::after {
