@@ -179,7 +179,7 @@ export default function TodoCard({ char }: Props) {
               value="raids"
               className="w-full rounded-none relative group border-0 dark:data-[state=active]:text-primary-foreground data-[state=active]:text-foreground text-foreground/80 dark:text-primary-foreground/50 dark:data-[state=active]:bg-primary/30 data-[state=active]:bg-primary/30 shadow-none!"
             >
-              <p>
+              <div className="flex items-center gap-1">
                 <span>
                   Raids
                 </span>{" "}
@@ -191,7 +191,7 @@ export default function TodoCard({ char }: Props) {
                 {completedRaids === Object.keys(char.assignedRaids).length && (
                   <Check className="inline size-4" />
                 )}
-              </p>
+              </div>
               <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20 group-data-[state=active]:bg-primary/30"></div>
               <motion.div
                 className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/40 group-data-[state=active]:bg-primary/50 transform -translate-x-1/2"
@@ -208,7 +208,7 @@ export default function TodoCard({ char }: Props) {
               value="tasks"
               className="w-full rounded-none relative group border-0 dark:data-[state=active]:text-primary-foreground data-[state=active]:text-foreground text-foreground/80 dark:text-primary-foreground/50 dark:data-[state=active]:bg-primary/30 data-[state=active]:bg-primary/30 shadow-none!"
             >
-              <p>
+              <div className="flex items-center gap-1">
                 <span>
                   Tasks
                 </span>{" "}
@@ -220,7 +220,7 @@ export default function TodoCard({ char }: Props) {
                 {completedTasks === char.tasks.length && (
                   <Check className="inline size-4" />
                 )}
-              </p>
+              </div>
               <div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20 group-data-[state=active]:bg-primary/30"></div>
               <motion.div
                 className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/40 group-data-[state=active]:bg-primary/50 transform -translate-x-1/2"
