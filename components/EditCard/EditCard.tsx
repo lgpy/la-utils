@@ -122,9 +122,9 @@ export default function EditCard(props: Props) {
           <PencilIcon className="h-4 w-4" />
         </Button>
       </div>
-      <Tabs defaultValue="raids">
+      <Tabs defaultValue="raids" className="gap-0">
         <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">
-          <TabsTrigger value="raids" className="w-full rounded-none">
+          <TabsTrigger value="raids" className="w-full rounded-none border-b-0 border-l-0 text-foreground/70 data-[state=active]:text-foreground">
             <p>
               Raids{" "}
               <span className="text-xs text-muted-foreground">
@@ -132,7 +132,7 @@ export default function EditCard(props: Props) {
               </span>
             </p>
           </TabsTrigger>
-          <TabsTrigger value="tasks" className="w-full rounded-none">
+          <TabsTrigger value="tasks" className="w-full rounded-none border-b-0 border-r-0 text-foreground/70 data-[state=active]:text-foreground">
             <p>
               Tasks{" "}
               <span className="text-xs text-muted-foreground">

@@ -128,11 +128,11 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
   const rarityClasses = getRarityClasses(item.rarity);
 
   return (
-    <Card className="w-[350px] flex flex-col justify-between h-fit gap-0 py-0">
+    <Card className="w-[350px] flex flex-col justify-between h-fit gap-0 py-0 overflow-hidden">
       <CardHeader className="flex flex-row justify-between p-0">
         <div
           className={cn(
-            "w-full grid grid-cols-[48px_auto_32px] items-center gap-3 p-3 rounded-t-md",
+            "w-full grid grid-cols-[48px_auto_32px] items-center gap-3 p-3",
             rarityClasses.header,
           )}
         >

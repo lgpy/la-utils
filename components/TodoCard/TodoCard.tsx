@@ -173,11 +173,11 @@ export default function TodoCard({ char }: Props) {
         )}
       </div>
       {char.tasks.length > 0 && (
-        <Tabs defaultValue="raids">
-          <TabsList className="w-full bg-primary/20 text-primary-foreground/50 p-0 h-auto rounded-none">
+        <Tabs defaultValue="raids" className="gap-0">
+          <TabsList className="w-full bg-primary/20 p-0 h-auto rounded-none">
             <TabsTrigger
               value="raids"
-              className="w-full rounded-none relative group data-[state=active]:bg-primary/30 data-[state=active]:text-primary-foreground"
+              className="w-full rounded-none relative group border-0 dark:data-[state=active]:text-primary-foreground data-[state=active]:text-foreground text-foreground/80 dark:text-primary-foreground/50 dark:data-[state=active]:bg-primary/30 data-[state=active]:bg-primary/30 shadow-none!"
             >
               <p>
                 <span>
@@ -206,7 +206,7 @@ export default function TodoCard({ char }: Props) {
             </TabsTrigger>
             <TabsTrigger
               value="tasks"
-              className="w-full rounded-none relative group data-[state=active]:bg-primary/30 data-[state=active]:text-primary-foreground"
+              className="w-full rounded-none relative group border-0 dark:data-[state=active]:text-primary-foreground data-[state=active]:text-foreground text-foreground/80 dark:text-primary-foreground/50 dark:data-[state=active]:bg-primary/30 data-[state=active]:bg-primary/30 shadow-none!"
             >
               <p>
                 <span>

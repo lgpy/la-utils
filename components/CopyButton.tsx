@@ -1,14 +1,17 @@
 import { cn } from "@/lib/utils";
 import { CheckIcon, ClipboardIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Button, ButtonProps } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
+import { VariantProps } from "class-variance-authority";
 
 type Props = {
   textToCopy: string;
   children?: React.ReactNode;
   iconClassName?: string;
-} & React.HTMLAttributes<HTMLButtonElement> &
-  ButtonProps;
+} & React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean
+  };
 
 export default function CopyButton(props: Props) {
   const { textToCopy, children, iconClassName, ...rest } = props;
