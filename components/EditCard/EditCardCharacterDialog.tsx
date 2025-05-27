@@ -19,8 +19,7 @@ import {
   FormControl,
   FormMessage,
 } from "../ui/form";
-import { useToast } from "../ui/use-toast";
-import { ToastAction } from "../ui/toast";
+import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import {
@@ -65,7 +64,6 @@ export default function EditCardCharacterDialog({
     },
   });
   const mainStore = useMainStore();
-  const { toast } = useToast();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -73,20 +71,12 @@ export default function EditCardCharacterDialog({
         mainStore.updateCharacter(existingCharacter.id, values);
       else mainStore.createCharacter(values);
       close();
-      toast({
-        title: `Character ${existingCharacter ? "Updated" : "Created"}!`,
-        description: `Your character has been ${
-          existingCharacter ? "updated" : "created"
-        } successfully!`,
-      });
+      toast.success(
+        `Character ${existingCharacter ? "updated" : "created"} successfully!`
+      );
     } catch (error) {
-      toast({
-        title: "Error!",
-        description: `Failed to ${
-          existingCharacter ? "update" : "create"
-        } character!`,
-        variant: "destructive",
-      });
+      toast.error(`Failed to ${existingCharacter ? "update" : "create"
+        } character!`);
     }
   }
 
@@ -99,19 +89,17 @@ export default function EditCardCharacterDialog({
     );
     mainStore.deleteCharacter(existingCharacter.id);
     close();
-    toast({
-      title: "Character Deleted!",
-      description: "Your character has been deleted successfully!",
-      action: (
-        <ToastAction
-          onClick={() => mainStore.restoreCharacter(existingCharacter, index)}
-          className="hover:text-background"
-          altText="Undo"
-          data-pw="undo-char-delete"
-        >
-          Undo
-        </ToastAction>
-      ),
+    toast.success("Character deleted successfully!", {
+      action: {
+        label: "Undo",
+        onClick: () => {
+          mainStore.restoreCharacter(existingCharacter, index);
+          toast.success("Character restored successfully!");
+        },
+        props: {
+          "data-pw": "undo-char-delete"
+        }
+      }
     });
   };
 

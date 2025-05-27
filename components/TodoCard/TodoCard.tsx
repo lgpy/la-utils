@@ -146,7 +146,7 @@ export default function TodoCard({ char }: Props) {
   }, 0);
 
   return (
-    <Card className="h-fit w-56 select-none overflow-hidden">
+    <Card className="h-fit w-56 select-none overflow-hidden py-0 gap-0">
       <div className="p-4 flex flex-row gap-2 items-center relative">
         <ClassIcon c={char.class} className="size-10 min-w-10" />
         <div className="flex flex-col w-full">

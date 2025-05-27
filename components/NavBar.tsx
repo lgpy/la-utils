@@ -9,7 +9,7 @@ import "./NavBar.css";
 import ServerStatusWidget from "./ServerStatusWidget";
 import SettingsButton from "./SettingsButton";
 import { Button } from "./ui/button";
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 
 const links = [
   { label: "Home", href: "/" },
@@ -60,18 +60,10 @@ export default function NavBar() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left">
-          <nav className="grid gap-6 text-lg font-medium">
-            <SheetClose asChild>
-              <Link
-                href="/"
-                className="flex items-center gap-2 text-lg font-semibold"
-              >
-                <Logo />
-                <span className="text-xl font-extrabold bg-size-[200%_auto] from-primary via-secondary to-primary bg-linear-to-r bg-clip-text text-transparent animate-gradient">
-                  Lost Ark Utils
-                </span>
-              </Link>
-            </SheetClose>
+          <SheetHeader className="flex flex-row items-center gap-4">
+            <SheetTitle className="text-primary text-xl font-extrabold">Lost Ark Utils</SheetTitle>
+          </SheetHeader>
+          <nav className="grid gap-6 text-lg font-medium px-4">
             {links.map(({ label, href }, index) => (
               <SheetClose asChild key={"ml" + index}>
                 <Link

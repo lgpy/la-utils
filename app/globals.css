@@ -180,6 +180,8 @@
   --color-base: var(--base);
   --color-mantle: var(--mantle);
   --color-crust: var(--crust);
+
+  --radius-base: var(--radius);
 }
 
 @layer base {

@@ -1,12 +1,12 @@
 import NavBar from "@/components/NavBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { MainStoreProvider } from "@/providers/MainStoreProvider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { PostHogProvider } from "@/providers/PostHogProvider";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 

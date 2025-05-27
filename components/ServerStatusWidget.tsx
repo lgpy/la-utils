@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import { useSettingsStore } from "@/providers/MainStoreProvider";
-import { useToast } from "./ui/use-toast";
+import { toast } from "sonner";
 import { getServerStatusString, ServerStatus } from "@/lib/servers";
 import { ServerStatusResponse } from "@/app/api/serverStatus/route";
 import { DateTime } from "luxon";
@@ -47,7 +47,6 @@ export default function ServerStatusWidget() {
   const [tooltipLastUpdated, setTooltipLastUpdated] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
-  const { toast } = useToast();
 
   // Function to fetch server status with error handling
   const fetchServerStatus = async () => {
@@ -81,9 +80,7 @@ export default function ServerStatusWidget() {
           (serverStatus === ServerStatus.OFFLINE || serverStatus === ServerStatus.MAINTENANCE)
         ) {
           // Show notification and play sound
-          toast({
-            title: `Server ${selectedServer} is back online!`,
-            description: "You can now log in to the game.",
+          toast.info(`Server ${selectedServer} is back online!`, {
             duration: 240000,
           });
           await playNotification(30);
@@ -100,10 +97,8 @@ export default function ServerStatusWidget() {
 
       // Don't show toast for every error to avoid spamming the user
       if (serverStatus === null) {
-        toast({
-          title: "Unable to fetch server status",
+        toast.error("Unable to fetch server status", {
           description: "Will retry in a few minutes",
-          variant: "destructive",
           duration: 3000,
         });
       }

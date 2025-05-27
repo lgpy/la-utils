@@ -521,7 +521,7 @@ export default function Stone() {
       </p>
       {/* Hidden video element for screen capture source */}
       <video ref={videoRef} style={{ display: 'none' }} playsInline />
-      <div className="grid grid-cols-[max-content_max-content] gap-6 mb-6 justify-center">
+      <div className="grid sm:grid-cols-[max-content_max-content] gap-6 justify-center">
         <ControlsCard
           onStartScreenShare={startScreenShare}
           onStopScreenShare={stopScreenShare}

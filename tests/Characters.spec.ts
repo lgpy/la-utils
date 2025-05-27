@@ -182,12 +182,12 @@ test("delete character and undo", async ({ page }) => {
   let characterCard = await page.getByTestId("character-0");
   await characterCard.getByTestId("edit-character").click();
   page.once("dialog", (dialog) => {
-    dialog.accept().catch(() => {});
+    dialog.accept().catch(() => { });
   });
   await page.getByTestId("char-delete-button").click();
   characterCard = await page.getByTestId("character-0");
   await expect(characterCard).toHaveCount(0);
-  await page.getByTestId("undo-char-delete").click();
+  await page.getByRole('button', { name: 'Undo' }).click();
   await page.reload();
   characterCard = await page.getByTestId("character-0");
   await expect(characterCard.getByTestId("character-class")).toContainText(

@@ -11,29 +11,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { useMainStore } from "@/providers/MainStoreProvider";
 import { useState } from "react";
 
 export default function BackupCards() {
   const mainStore = useMainStore();
   const [jsonImport, setJsonImport] = useState("");
-  const { toast } = useToast();
 
   const importData = () => {
     try {
       const data = JSON.parse(jsonImport);
       mainStore.restoreData(data);
-      toast({
-        title: "Success!",
-        description: `Data imported successfully.`,
-      });
+      toast.success("Data imported successfully.");
     } catch (e) {
-      toast({
-        title: "Error!",
-        description: `Failed to import data. Make sure the data is correct.`,
-        variant: "destructive",
-      });
+      toast.error("Failed to import data. Make sure the data is correct.");
     }
     setJsonImport("");
   };
@@ -53,7 +45,7 @@ export default function BackupCards() {
             placeholder="Paste your export here."
             value={jsonImport}
             onChange={(e) => setJsonImport(e.target.value)}
-            className="min-h-60"
+            className="h-80 break-all"
           />
         </CardContent>
         <CardFooter className="flex justify-end">
@@ -69,9 +61,9 @@ export default function BackupCards() {
         </CardHeader>
         <CardContent>
           <Textarea
-            value={JSON.stringify(mainStore)}
-            onChange={() => {}}
-            className="min-h-60"
+            value={JSON.stringify(mainStore, null, 2)}
+            onChange={() => { }}
+            className="h-80 break-all"
           />
         </CardContent>
         <CardFooter className="flex justify-end">

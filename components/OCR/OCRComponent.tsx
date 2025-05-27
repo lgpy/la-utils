@@ -9,7 +9,7 @@ import Image from "next/image";
 import { Loader2 } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { usePriceStore } from "@/providers/PriceStoreProvider";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { usePostHog } from "posthog-js/react";
 
 type OCRResult = {
@@ -24,7 +24,6 @@ type PricesOCRProps = {
 
 export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
   const { store, hasHydrated } = usePriceStore((state) => state);
-  const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -151,10 +150,7 @@ export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
       store.changePrice(item.itemId, item.lowestPrice);
     }
     resetStates();
-    toast({
-      title: "Success!",
-      description: "Prices updated successfully.",
-    });
+    toast.success("Prices updated successfully.");
   };
 
   return (

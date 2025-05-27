@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useToast } from "../ui/use-toast";
+import { toast } from "sonner";
 import { Character, useMainStore } from "@/providers/MainStoreProvider";
 
 Difficulty;
@@ -59,7 +59,6 @@ export default function EditCardRaidDialog({
       gates: [],
     },
   });
-  const { toast } = useToast();
 
   const filteredRaids = useMemo(() => {
     return Object.entries(raids).reduce((acc, [raidkey, raid]) => {
@@ -98,17 +97,10 @@ export default function EditCardRaidDialog({
       else mainStore.charAddRaid(character.id, values.raidId, fgates);
 
       close();
-      toast({
-        title: `Raid ${raidId ? "Updated" : "Added"}!`,
-        description: `Raid has been ${raidId ? "updated" : "added"
-          } successfully!`,
-      });
+      toast.success(
+        `Raid ${raidId ? "updated" : "added"} successfully!`,)
     } catch (error) {
-      toast({
-        title: "Error!",
-        description: `Failed to ${raidId ? "update" : "add"} raid!`,
-        variant: "destructive",
-      });
+      toast.error(`Failed to ${raidId ? "update" : "add"} raid!`);
     }
   }
 

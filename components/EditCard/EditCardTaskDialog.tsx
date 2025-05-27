@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useToast } from "../ui/use-toast";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,15 +47,15 @@ const presets: {
   name: string;
   type: (typeof types)[number];
 }[] = [
-  {
-    name: "Chaos Dungeon",
-    type: "daily",
-  },
-  {
-    name: "Guardian Raid",
-    type: "daily",
-  },
-];
+    {
+      name: "Chaos Dungeon",
+      type: "daily",
+    },
+    {
+      name: "Guardian Raid",
+      type: "daily",
+    },
+  ];
 
 interface Props {
   character: Character;
@@ -78,7 +78,6 @@ export default function EditCardTaskDialog({
       type: "daily",
     },
   });
-  const { toast } = useToast();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -97,18 +96,10 @@ export default function EditCardTaskDialog({
         });
 
       close();
-      toast({
-        title: `Task ${taskId ? "Updated" : "Added"}!`,
-        description: `Raid has been ${
-          taskId ? "updated" : "added"
-        } successfully!`,
-      });
+      toast.success(`Raid has been ${taskId ? "updated" : "added"
+        } successfully!`);
     } catch (error) {
-      toast({
-        title: "Error!",
-        description: `Failed to ${taskId ? "update" : "add"} task!`,
-        variant: "destructive",
-      });
+      toast.error(`Failed to ${taskId ? "update" : "add"} task!`);
     }
   }
 

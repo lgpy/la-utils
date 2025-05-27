@@ -152,9 +152,9 @@ export default function PriceCard({ changeValue, bcValue, pSitem, item }: Props)
   };
 
   return (
-    <Card className="w-[350px] flex flex-col justify-between">
+    <Card className="w-[350px] flex flex-col justify-between gap-0 py-0 overflow-hidden">
       <CardHeader className="flex flex-row justify-between p-0">
-        <div className={cn("flex flex-row items-center gap-3 p-3 w-full rounded-t-md", rarityClasses.header)}>
+        <div className={cn("flex flex-row items-center gap-3 p-3 w-full", rarityClasses.header)}>
           <Image
             src={`/assets/${item.id}.webp`}
             width={48}

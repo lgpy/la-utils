@@ -1,4 +1,5 @@
-import { useToast } from "@/components/ui/use-toast";
+
+import { toast } from "sonner";
 
 import { Character, useMainStore } from "@/providers/MainStoreProvider";
 import { raids } from "@/lib/raids";
@@ -19,7 +20,6 @@ export default function TodoCardCompleteButton({
 }: Props) {
   const mainStore = useMainStore();
   const raid = raids[raidId];
-  const { toast } = useToast();
   const [increase, setIncrease] = useState(false);
 
   const completedlen = Object.values(assignedGates).reduce(
@@ -45,13 +45,10 @@ export default function TodoCardCompleteButton({
           type: "complete",
         });
       } catch (e) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: event.shiftKey
-            ? "Failed to complete all gates"
-            : "Failed to complete last gate",
-        });
+        toast.error(event.shiftKey
+          ? "Failed to complete all gates"
+          : "Failed to complete last gate",
+        )
       }
     } else if (event.button === 2) {
       setIncrease(false);
@@ -64,13 +61,11 @@ export default function TodoCardCompleteButton({
           type: "uncomplete",
         });
       } catch (e) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: event.shiftKey
+        toast.error(
+          event.shiftKey
             ? "Failed to uncomplete all gates"
-            : "Failed to uncomplete last gate",
-        });
+            : "Failed to uncomplete last gate"
+        )
       }
     }
   };

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function BackUpPage() {
   return (
-    <main className="my-6 flex md:flex-row flex-col gap-6 2xl:gap-40 justify-evenly px-6 2xl:px-40 items-center">
+    <main className="my-6 grid gap-6 lg:grid-cols-2">
       <BackupCards />
     </main>
   );
