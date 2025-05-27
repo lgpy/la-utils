@@ -96,6 +96,7 @@ export default function AuctionCalculatorModalContent() {
             <Input
               placeholder="Market Value"
               type="number"
+              className="no-spinner"
               value={auction.marketValue}
               onChange={(e) => changeValue(e.target.value)}
             />

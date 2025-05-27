@@ -2,7 +2,7 @@
 
 import { useCraftingStore } from "@/providers/CraftStoreProvider";
 import { CraftingParents, CraftingStore } from "@/stores/crafting";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -29,10 +29,12 @@ function CraftingOptions({
   const label = getLabel(parent);
 
   return (
-    <Card className="flex flex-col p-4 gap-4 max-w-[300px]">
-      <h2 className="text-lg font-semibold text-center">{label}</h2>
-      <div className="grid gap-4 items-center text-center grid-cols-[auto_100px]">
-        <Label className="text-center md:text-end">Cost Reduction</Label>
+    <Card className="flex flex-col max-w-[300px]">
+      <CardHeader>
+        <CardTitle className="text-center">{label}</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-4 items-center text-center grid-cols-[max-content_60px]">
+        <Label className="text-end justify-end">Cost Reduction</Label>
         <Input
           type="number"
           min={0}
@@ -42,7 +44,7 @@ function CraftingOptions({
             store.changeKey(parent, "costReduction", Number(e.target.value))
           }
         />
-        <Label className="text-center md:text-end">Great Success Chance</Label>
+        <Label className="text-end justify-end">Great Success Chance</Label>
         <Input
           type="number"
           min={0}
@@ -56,7 +58,7 @@ function CraftingOptions({
             )
           }
         />
-      </div>
+      </CardContent>
     </Card>
   );
 }
