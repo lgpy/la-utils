@@ -1,5 +1,4 @@
 import { Character } from "@/providers/MainStoreProvider";
-import { DateTime } from "luxon";
 import { isGateCompleted, raids } from "./raids";
 import { getLatestBiWeeklyReset, getLatestWeeklyReset } from "./dates";
 
@@ -56,7 +55,12 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
         ret[assignedRaidId].thisWeek.earnedGold += gateGoldReward;
       }
 
-      const plus1week = DateTime.now().plus({ week: 1 });
+
+
+      const now = new Date();
+      now.setDate(now.getDate() + 7);
+      const plus1week = now;
+
       if (
         actualGate.isBiWeekly === undefined ||
         assignedGate.completedDate === undefined
@@ -66,7 +70,7 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
       } else {
         const isGateComplete = isGateCompleted(
           new Date(assignedGate.completedDate),
-          getLatestBiWeeklyReset(actualGate.isBiWeekly, plus1week.toJSDate()),
+          getLatestBiWeeklyReset(actualGate.isBiWeekly, plus1week),
         );
         if (!isGateComplete)
           ret[assignedRaidId].nextWeek.earnableGold += gateGoldReward;

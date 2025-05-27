@@ -3,13 +3,13 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { items, PricesState } from "@/stores/prices";
-import { DateTime } from "luxon";
 import Image from "next/image";
 import { ChangeEventHandler } from "react";
 import TruncatedTooltip from "@/components/TruncatedTooltip";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { usePriceStore } from "@/providers/PriceStoreProvider";
+import { formatDistanceToNowStrict } from 'date-fns';
 
 type Props = {
   item: (typeof items)[number];
@@ -138,8 +138,8 @@ const ExchangeSection = ({ item, marketPrice }: { item: Props["item"], marketPri
 export default function PriceCard({ changeValue, bcValue, pSitem, item }: Props) {
   const marketPrice = pSitem?.price || 0;
 
-  const daysSinceUpdate = pSitem?.updatedOn
-    ? DateTime.fromISO(pSitem.updatedOn).toRelative()
+  const dayfnsDaysSinceUpdate = pSitem?.updatedOn
+    ? formatDistanceToNowStrict(pSitem.updatedOn, { addSuffix: true })
     : "Never";
 
   const rarityClasses = getRarityClasses(item.rarity);
@@ -187,7 +187,7 @@ export default function PriceCard({ changeValue, bcValue, pSitem, item }: Props)
             onChange={handleChange}
           />
           <p className="text-xs text-muted-foreground">
-            Updated: {daysSinceUpdate}
+            Updated: {dayfnsDaysSinceUpdate}
           </p>
         </div>
 

@@ -12,7 +12,7 @@ import { useSettingsStore } from "@/providers/MainStoreProvider";
 import { toast } from "sonner";
 import { getServerStatusString, ServerStatus } from "@/lib/servers";
 import { ServerStatusResponse } from "@/app/api/serverStatus/route";
-import { DateTime } from "luxon";
+import { formatDistanceToNow } from 'date-fns';
 
 // Audio notification function with volume control and error handling
 function playNotification(volume: number = 30): Promise<void> {
@@ -112,9 +112,9 @@ export default function ServerStatusWidget() {
     if (lastUpdated === null) return;
 
     const updateRelativeTime = () => {
-      setTooltipLastUpdated(
-        DateTime.fromMillis(lastUpdated).toRelative({ unit: "minutes" })
-      );
+      setTooltipLastUpdated(formatDistanceToNow(new Date(lastUpdated), {
+        addSuffix: true,
+      }));
     };
 
     updateRelativeTime();
