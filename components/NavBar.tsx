@@ -5,11 +5,11 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./Logo";
-import "./NavBar.css";
 import ServerStatusWidget from "./ServerStatusWidget";
 import SettingsButton from "./SettingsButton";
 import { Button } from "./ui/button";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { motion } from "motion/react";
 
 const links = [
   { label: "Home", href: "/" },
@@ -37,7 +37,7 @@ export default function NavBar() {
         {links.map(({ label, href }, index) => (
           <div
             key={"dl" + index}
-            className={cn("h-full flex items-center px-2 dlink", {
+            className={cn("h-full flex items-center px-2 relative", {
               active: href === currentPath,
             })}
           >
@@ -49,6 +49,12 @@ export default function NavBar() {
             >
               {label}
             </Link>
+            {href === currentPath && (
+              <motion.div
+                className="bottom-radial-gradient mx-auto absolute bottom-0 left-0 right-0 w-[40px] h-[20px]"
+                layoutId="activeNavItem"
+              />
+            )}
           </div>
         ))}
       </nav>
@@ -59,7 +65,7 @@ export default function NavBar() {
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left">
+        <SheetContent side="left" className="w-[250px]">
           <SheetHeader className="flex flex-row items-center gap-4">
             <SheetTitle className="text-primary text-xl font-extrabold">Lost Ark Utils</SheetTitle>
           </SheetHeader>
@@ -69,9 +75,9 @@ export default function NavBar() {
                 <Link
                   href={href}
                   className={cn(
-                    "text-muted-foreground hover:text-foreground mlink",
+                    "text-muted-foreground hover:text-foreground",
                     {
-                      active: href === currentPath,
+                      "underline underline-offset-2": href === currentPath,
                     },
                   )}
                 >

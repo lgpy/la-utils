@@ -231,4 +231,9 @@
     margin: 0;
     -webkit-appearance: none;
   }
+
+  .bottom-radial-gradient {
+    background: -webkit-radial-gradient(bottom, var(--primary), transparent 50%) bottom no-repeat;
+    background: radial-gradient(at bottom, var(--primary), transparent 50%) bottom no-repeat;
+  }
 }
