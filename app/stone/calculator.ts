@@ -323,12 +323,12 @@ export class StoneGameOptimizer {
 					this.probMin,
 					currentProb - this.probStep,
 				);
-				let s_c1 = current_c1,
-					s_s1 = current_s1,
-					s_c2 = current_c2,
-					s_s2 = current_s2,
-					s_c3 = current_c3,
-					s_s3 = current_s3;
+				let s_c1 = current_c1;
+				let s_s1 = current_s1;
+				let s_c2 = current_c2;
+				let s_s2 = current_s2;
+				let s_c3 = current_c3;
+				let s_s3 = current_s3;
 				if (rowIdx === 0) {
 					s_c1++;
 					s_s1++;
@@ -384,12 +384,12 @@ export class StoneGameOptimizer {
 					this.probMax,
 					currentProb + this.probStep,
 				);
-				let f_c1 = current_c1,
-					f_s1 = current_s1,
-					f_c2 = current_c2,
-					f_s2 = current_s2,
-					f_c3 = current_c3,
-					f_s3 = current_s3;
+				let f_c1 = current_c1;
+				const f_s1 = current_s1;
+				let f_c2 = current_c2;
+				const f_s2 = current_s2;
+				let f_c3 = current_c3;
+				const f_s3 = current_s3;
 				if (rowIdx === 0) {
 					f_c1++;
 				} // s1 remains current_s1

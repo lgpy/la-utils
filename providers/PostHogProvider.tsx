@@ -9,7 +9,13 @@ import { type Character, useMainStore } from "./MainStoreProvider";
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
-		posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+		const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+		if (!posthogKey) {
+			console.warn("PostHog key is not defined");
+			return;
+		}
+
+		posthog.init(posthogKey, {
 			api_host: "/ingest",
 			ui_host: "https://eu.posthog.com",
 			capture_pageview: false, // We capture pageviews manually
@@ -37,7 +43,7 @@ function PostHogPageView() {
 			let url = window.origin + pathname;
 			const search = searchParams.toString();
 			if (search) {
-				url += "?" + search;
+				url += `?${search}`;
 			}
 			posthog.capture("$pageview", { $current_url: url });
 		}
@@ -49,11 +55,11 @@ function PostHogPageView() {
 function UniqueTasks(characters: Character[]) {
 	const uniqueTasks = new Set();
 
-	characters.forEach((character) => {
-		character.tasks.forEach((task) => {
+	for (const character of characters) {
+		for (const task of character.tasks) {
 			uniqueTasks.add(task.name.toLowerCase());
-		});
-	});
+		}
+	}
 
 	return Array.from(uniqueTasks);
 }

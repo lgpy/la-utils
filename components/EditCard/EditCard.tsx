@@ -117,7 +117,7 @@ export default function EditCard(props: Props) {
 					size="icon"
 					className="absolute top-1 right-1 m-0! size-8"
 					onClick={() => editCharacter()}
-					data-pw={`edit-character`}
+					data-pw={"edit-character"}
 				>
 					<PencilIcon />
 				</Button>
@@ -163,7 +163,7 @@ export default function EditCard(props: Props) {
 							className="w-full rounded-t-none p-2"
 							onClick={() => openRaidDialog()}
 							variant="ghost"
-							data-pw={`character-add-raid`}
+							data-pw={"character-add-raid"}
 						>
 							<PlusIcon /> Add Raid
 						</Button>
@@ -202,7 +202,7 @@ export default function EditCard(props: Props) {
 							className="w-full rounded-t-none px-0"
 							onClick={() => openTaskDialog()}
 							variant="ghost"
-							data-pw={`character-add-task`}
+							data-pw={"character-add-task"}
 						>
 							<PlusIcon /> Add Task
 						</Button>

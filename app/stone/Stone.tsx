@@ -25,8 +25,8 @@ function parseTargets(
 ) {
 	return currentTargets.map((target) => {
 		const { x, y, name: targetName } = target; // Ensure targetName is available via name property
-		let finalRgb = { r: 0, g: 0, b: 0 },
-			detectedClassification: string | null = null;
+		let finalRgb = { r: 0, g: 0, b: 0 };
+		let detectedClassification: string | null = null;
 		let pixelFound = false;
 
 		for (const offset of SPIRAL_OFFSETS_5X5) {
@@ -101,12 +101,12 @@ function PredictPercentage(
 		}
 	};
 
-	oldState.line1.forEach((status) => statusChecker(status, oldCount));
-	oldState.line2.forEach((status) => statusChecker(status, oldCount));
-	oldState.line3.forEach((status) => statusChecker(status, oldCount));
-	newState.line1.forEach((status) => statusChecker(status, newCount));
-	newState.line2.forEach((status) => statusChecker(status, newCount));
-	newState.line3.forEach((status) => statusChecker(status, newCount));
+	for (const status of oldState.line1) statusChecker(status, oldCount);
+	for (const status of oldState.line2) statusChecker(status, oldCount);
+	for (const status of oldState.line3) statusChecker(status, oldCount);
+	for (const status of newState.line1) statusChecker(status, newCount);
+	for (const status of newState.line2) statusChecker(status, newCount);
+	for (const status of newState.line3) statusChecker(status, newCount);
 
 	const totalOld = oldCount.successes + oldCount.failures;
 	const totalNew = newCount.successes + newCount.failures;
@@ -117,7 +117,9 @@ function PredictPercentage(
 	if (totaldiff === 1 && newCount.successes > oldCount.successes) {
 		// If one more success, increase percentage by 10%
 		return Math.min(oldState.percentage + 10, 75);
-	} else if (totaldiff === 1 && newCount.failures > oldCount.failures) {
+	}
+
+	if (totaldiff === 1 && newCount.failures > oldCount.failures) {
 		// If one more failure, decrease percentage by 10%
 		return Math.max(oldState.percentage - 10, 25);
 	}
@@ -207,7 +209,7 @@ export default function Stone() {
 
 		if (percentage) {
 			percentageValue = Number.parseInt(percentage[1], 10);
-			if (!isNaN(percentageValue)) {
+			if (!Number.isNaN(percentageValue)) {
 				if (Acceptable_Percentages.includes(percentageValue)) {
 					ocrWasSuccessful = true;
 				} else {
@@ -344,7 +346,7 @@ export default function Stone() {
 				fullSourceCtx,
 			);
 
-			parsedTargets.forEach((target) => {
+			for (const target of parsedTargets) {
 				displayCtx.fillStyle = "rgba(255, 255, 0, 0.7)"; // Default marker color
 				if (target.isMatch) {
 					displayCtx.fillStyle = target.isMatch
@@ -373,7 +375,7 @@ export default function Stone() {
 						}
 					}
 				}
-			});
+			}
 
 			setTargets((currentTargets) => {
 				if (
@@ -534,7 +536,7 @@ export default function Stone() {
 			const currentFullSourceCanvas = fullSourceCanvasRef.current;
 
 			try {
-				const IC = (window as any).ImageCapture;
+				const IC = window.ImageCapture;
 				if (!IC) {
 					await captureWithHiddenVideoInternal(track, currentFullSourceCanvas);
 					return;
@@ -640,7 +642,11 @@ export default function Stone() {
 
 	const stopScreenShare = () => {
 		setIsAutomating(false); // Directly set isAutomating to false
-		mediaStream?.getTracks().forEach((t) => t.stop());
+		if (mediaStream) {
+			for (const track of mediaStream.getTracks()) {
+				track.stop();
+			}
+		}
 		setMediaStream(null);
 	};
 
@@ -656,6 +662,7 @@ export default function Stone() {
 				or brightness settings.
 			</p>
 			{/* Hidden video element for screen capture source */}
+			{/* biome-ignore lint/a11y/useMediaCaption: <explanation> */}
 			<video ref={videoRef} style={{ display: "none" }} playsInline />
 			<div className="grid sm:grid-cols-[max-content_max-content] gap-6 justify-center">
 				<ControlsCard

@@ -168,7 +168,7 @@ export default function EditCards() {
 						variant="default"
 						size="icon"
 						onClick={() => openCharacterEditDialog(undefined)}
-						data-pw={`create-character`}
+						data-pw={"create-character"}
 					>
 						<PlusIcon className="size-6" />
 					</Button>

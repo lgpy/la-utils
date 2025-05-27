@@ -71,6 +71,7 @@ export const createSettingsStore = () =>
 			{
 				name: "settings",
 				version: 4,
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 				migrate: (ps: any, version) => {
 					if (version <= 0) ps.rosterGoldTotal = "total";
 					if (ps.experiments === undefined) ps.experiments = {};

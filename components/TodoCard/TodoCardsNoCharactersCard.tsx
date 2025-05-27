@@ -17,7 +17,7 @@ export function TodoCardsNoCharactersCard() {
 						alt=""
 						height={820 / 8}
 						quality={100}
-						src={`/logo-2.png`}
+						src={"/logo-2.png"}
 						width={910 / 8}
 						className="mt-auto"
 					/>

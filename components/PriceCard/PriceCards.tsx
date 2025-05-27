@@ -57,7 +57,7 @@ function PricesType({
 			<div
 				className="block relative top-[-70px] invisible"
 				id={subtype || type}
-			></div>
+			/>
 			<h1
 				className={cn(
 					"text-2xl font-bold text-center md:text-start",
@@ -130,11 +130,11 @@ export default function PriceCards() {
 				<div className="flex flex-col gap-1 sticky top-[88px]">
 					<h1 className="text-2xl font-bold mb-3">Navigation</h1>
 					{types.map((type) => (
-						<Fragment key={"na" + type.type}>
+						<Fragment key={`na${type.type}`}>
 							<NavigationAnchor type={type.type}>{type.name}</NavigationAnchor>
 							{type.subtypes?.map((subtype) => (
 								<NavigationAnchor
-									key={"na" + type.type + subtype.type}
+									key={`na${type.type}${subtype.type}`}
 									type={type.type}
 									subtype={subtype.type}
 									className="ml-3"
@@ -155,7 +155,7 @@ export default function PriceCards() {
 								<div
 									className="block relative top-[-70px] invisible"
 									id={type.type}
-								></div>
+								/>
 								<div className="flex flex-col gap-6" ref={parent}>
 									<h1 className="text-2xl font-bold text-center md:text-start">
 										{type.name}

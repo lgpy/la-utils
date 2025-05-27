@@ -136,10 +136,11 @@ export default function TodoCard({ char }: Props) {
 
 	const completedGateCount = Object.values(char.assignedRaids).reduce(
 		(acc, r) => {
-			Object.values(r).forEach((b) => {
-				if (b.completed) acc++;
-			});
-			return acc;
+			let count = acc;
+			for (const gate of Object.values(r)) {
+				if (gate.completed) count++;
+			}
+			return count;
 		},
 		0,
 	);
@@ -193,7 +194,7 @@ export default function TodoCard({ char }: Props) {
 									<Check className="inline size-4" />
 								)}
 							</div>
-							<div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20 group-data-[state=active]:bg-primary/30"></div>
+							<div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20 group-data-[state=active]:bg-primary/30" />
 							<motion.div
 								className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/40 group-data-[state=active]:bg-primary/50 transform -translate-x-1/2"
 								initial={false}
@@ -220,7 +221,7 @@ export default function TodoCard({ char }: Props) {
 									<Check className="inline size-4" />
 								)}
 							</div>
-							<div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20 group-data-[state=active]:bg-primary/30"></div>
+							<div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20 group-data-[state=active]:bg-primary/30" />
 							<motion.div
 								className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/40 group-data-[state=active]:bg-primary/50 transform -translate-x-1/2"
 								initial={false}

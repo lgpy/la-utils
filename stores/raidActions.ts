@@ -91,9 +91,9 @@ export function raidAction(
 		})();
 
 		if (mode === "all") {
-			Object.keys(char.assignedRaids[raidId]).forEach((gateId) => {
+			for (const gateId of Object.keys(char.assignedRaids[raidId])) {
 				char.assignedRaids[raidId][gateId].completedDate = newCompletedDate;
-			});
+			}
 		} else if (mode === "last" && type === "uncomplete") {
 			const lastCompletedGate = Object.entries(
 				char.assignedRaids[raidId],

@@ -16,7 +16,7 @@ export default function LiveFeedCard({
 	return (
 		<>
 			{capturedImageSrc && (
-				<Card className={cn(`overflow-hidden`, className)}>
+				<Card className={cn("overflow-hidden", className)}>
 					<CardHeader>
 						<CardTitle>Live Feed (with markers)</CardTitle>
 					</CardHeader>

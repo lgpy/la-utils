@@ -69,7 +69,7 @@ export default function TodoCardRaidV2({
 					transition={{
 						duration: 0.4,
 					}}
-				></motion.div>
+				/>
 			)}
 
 			{goldEarner && (

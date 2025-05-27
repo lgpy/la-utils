@@ -70,7 +70,7 @@ export const useMainStore = () => {
 	const [hydrated, setHydrated] = useState(false);
 
 	if (!mainStoreContext) {
-		throw new Error(`useMainStore must be used within MainStoreProvider`);
+		throw new Error("useMainStore must be used within MainStoreProvider");
 	}
 
 	useEffect(() => {
@@ -147,7 +147,7 @@ export const useSettingsStore = (): SettingsStore & {
 	const [hydrated, setHydrated] = useState(false);
 
 	if (!settingsStoreContext) {
-		throw new Error(`useSettingsStore must be used within MainStoreProvider`);
+		throw new Error("useSettingsStore must be used within MainStoreProvider");
 	}
 
 	useEffect(() => {

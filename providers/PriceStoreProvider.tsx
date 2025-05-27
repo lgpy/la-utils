@@ -41,7 +41,7 @@ export const usePriceStore = <T,>(
 	const [hydrated, setHydrated] = useState(false);
 
 	if (!priceStoreContext) {
-		throw new Error(`usePriceStore must be used within PriceStoreProvider`);
+		throw new Error("usePriceStore must be used within PriceStoreProvider");
 	}
 
 	useEffect(() => {

@@ -72,6 +72,7 @@ export default function TodoCardCompleteButton({
 
 	return (
 		<div className="py-1.5">
+			{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 			<div
 				className="shadow bg-primary/30 w-16 h-8 rounded-lg items-center relative overflow-hidden"
 				onClick={handleClick}
@@ -117,7 +118,7 @@ export default function TodoCardCompleteButton({
 									transition={{ type: "spring", stiffness: 300, damping: 20 }}
 								>
 									<motion.div
-										key={"ap" + completedlen} // Key depends on completedlen to trigger re-animation
+										key={`ap${completedlen}`} // Key depends on completedlen to trigger re-animation
 										className="text-nowrap"
 										initial={{
 											opacity: 0,

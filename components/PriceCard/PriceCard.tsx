@@ -174,7 +174,7 @@ export default function PriceCard({
 
 	const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
 		const num = Number(event.target.value);
-		if (!isNaN(num)) {
+		if (!Number.isNaN(num)) {
 			changeValue(num);
 		}
 	};

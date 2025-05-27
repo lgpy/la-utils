@@ -39,7 +39,7 @@ function SingularButton({
 							: (total - index) * (0.2 / total),
 						duration: 0.2,
 					}}
-				></motion.div>
+				/>
 			</div>
 		</div>
 	);

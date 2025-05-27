@@ -44,7 +44,7 @@ export const useCraftingStore = <T,>(
 
 	if (!craftingStoreContext) {
 		throw new Error(
-			`useCraftingStore must be used within CraftingStoreProvider`,
+			"useCraftingStore must be used within CraftingStoreProvider",
 		);
 	}
 

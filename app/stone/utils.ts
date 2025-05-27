@@ -16,11 +16,11 @@ export function rgbToHsl(r: number, g: number, b: number) {
 	g /= 255;
 	b /= 255;
 
-	const max = Math.max(r, g, b),
-		min = Math.min(r, g, b);
-	let h,
-		s,
-		l = (max + min) / 2;
+	const max = Math.max(r, g, b);
+	const min = Math.min(r, g, b);
+	let h: number | undefined;
+	let s: number | undefined;
+	const l = (max + min) / 2;
 
 	if (max === min) {
 		h = s = 0; // achromatic
@@ -59,24 +59,24 @@ export function classifyPixelColor(h: number, s: number, l: number) {
 	if (s > 0.9 && l < 0.15) {
 		return "black";
 	}
+
 	// 2. Grey (low saturation, not black, not overly light)
-	else if (s < 0.2 && l >= 0.1 && l < 0.75) {
+	if (s < 0.2 && l >= 0.1 && l < 0.75) {
 		return "grey";
 	}
+
 	// 3. Red (includes peachy/salmon tones)
-	else if (
-		((h >= 0 && h < 30) || (h >= 330 && h <= 360)) &&
-		s > 0.25 &&
-		l > 0.2
-	) {
+	if (((h >= 0 && h < 30) || (h >= 330 && h <= 360)) && s > 0.25 && l > 0.2) {
 		return "red";
 	}
+
 	// 4. Turquoise/Light Blue (includes light teals)
-	else if (h >= 160 && h <= 220 && s > 0.3 && l >= 0.35) {
+	if (h >= 160 && h <= 220 && s > 0.3 && l >= 0.35) {
 		return "blue";
 	}
+
 	// 5. Dark Blue (lower lightness blues)
-	else if (h >= 190 && h <= 260 && s > 0.35 && l < 0.35 && l > 0.05) {
+	if (h >= 190 && h <= 260 && s > 0.35 && l < 0.35 && l > 0.05) {
 		return "blue";
 	}
 

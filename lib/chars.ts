@@ -17,11 +17,11 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
 	>;
 
 	const lastWeeklyReset = getLatestWeeklyReset();
-	Object.entries(charRaids).forEach(([assignedRaidId, assignedRaid]) => {
+	for (const [assignedRaidId, assignedRaid] of Object.entries(charRaids)) {
 		const raid = raids[assignedRaidId];
-		if (!raid) return;
+		if (!raid) continue;
 
-		Object.entries(assignedRaid).forEach(([assignedGateId, assignedGate]) => {
+		for (const [assignedGateId, assignedGate] of Object.entries(assignedRaid)) {
 			const actualGate = raid.gates[assignedGateId];
 			const gateGoldReward =
 				actualGate.difficulties[assignedGate.difficulty]?.rewards.gold || 0;
@@ -73,8 +73,8 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
 				if (!isGateComplete)
 					ret[assignedRaidId].nextWeek.earnableGold += gateGoldReward;
 			}
-		});
-	});
+		}
+	}
 	return ret;
 }
 
@@ -98,13 +98,13 @@ export function getHighest3(
 		([aId, a], [bId, b]) => {
 			if (
 				ignoreThaemineIfNoG4 &&
-				charRaids["thaemine"]?.["G4"]?.completedDate !== undefined &&
+				charRaids.thaemine?.G4?.completedDate !== undefined &&
 				(aId === "thaemine" || bId === "thaemine")
 			) {
 				const lastReset = getLatestWeeklyReset();
 				if (
-					charRaids["thaemine"]["G4"].completed &&
-					new Date(charRaids["thaemine"]["G4"].completedDate) < lastReset
+					charRaids.thaemine.G4.completed &&
+					new Date(charRaids.thaemine.G4.completedDate) < lastReset
 				)
 					return aId === "thaemine" ? 1 : -1;
 			}

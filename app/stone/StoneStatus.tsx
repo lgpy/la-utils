@@ -174,7 +174,7 @@ export default function StoneStatus({
 						<div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_minmax(65px,1fr)] items-center justify-center text-center gap-2">
 							{stoneState?.line1.map((cell, index) => (
 								<div
-									key={"line1-" + index}
+									key={`line1-${index}`}
 									className={cn(
 										"w-6 h-6 transform rotate-45 m-1.5 border-2 border-neutral-700 shadow-md",
 										getColorClasses(cell, true).background,
@@ -193,17 +193,17 @@ export default function StoneStatus({
 									>
 										{optimalMove.rowDecisionProbabilities[0] === -1
 											? "0%"
-											: Number(
+											: `${Number(
 													(
 														optimalMove.rowDecisionProbabilities[0] * 100
 													).toFixed(2),
-												) + "%"}
+												)}%`}
 									</span>
 								)}
 							</div>
 							{stoneState?.line2.map((cell, index) => (
 								<div
-									key={"line2-" + index}
+									key={`line2-${index}`}
 									className={cn(
 										"w-6 h-6 transform rotate-45 m-1.5 border-2 border-neutral-700 shadow-md",
 										getColorClasses(cell, true).background,
@@ -222,17 +222,17 @@ export default function StoneStatus({
 									>
 										{optimalMove.rowDecisionProbabilities[1] === -1
 											? "0%"
-											: Number(
+											: `${Number(
 													(
 														optimalMove.rowDecisionProbabilities[1] * 100
 													).toFixed(2),
-												) + "%"}
+												)}%`}
 									</span>
 								)}
 							</div>
 							{stoneState?.line3.map((cell, index) => (
 								<div
-									key={"line3-" + index}
+									key={`line3-${index}`}
 									className={cn(
 										"w-6 h-6 transform rotate-45 m-1.5 border-2 border-neutral-700 shadow-md",
 										getColorClasses(cell, false).background,
@@ -251,11 +251,11 @@ export default function StoneStatus({
 									>
 										{optimalMove.rowDecisionProbabilities[2] === -1
 											? "0%"
-											: Number(
+											: `${Number(
 													(
 														optimalMove.rowDecisionProbabilities[2] * 100
 													).toFixed(2),
-												) + "%"}
+												)}%`}
 									</span>
 								)}
 							</div>

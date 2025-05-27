@@ -79,18 +79,18 @@ export const PREDEFINED_TARGETS: PixelTarget[] = [
 export const G_GRID_SIZE = 4;
 export const PADDING = 6;
 
-let minTargetX = Number.POSITIVE_INFINITY,
-	minTargetY = Number.POSITIVE_INFINITY,
-	maxTargetX = Number.NEGATIVE_INFINITY,
-	maxTargetY = Number.NEGATIVE_INFINITY;
+let minTargetX = Number.POSITIVE_INFINITY;
+let minTargetY = Number.POSITIVE_INFINITY;
+let maxTargetX = Number.NEGATIVE_INFINITY;
+let maxTargetY = Number.NEGATIVE_INFINITY;
 
 if (PREDEFINED_TARGETS.length > 0) {
-	PREDEFINED_TARGETS.forEach((target) => {
+	for (const target of PREDEFINED_TARGETS) {
 		minTargetX = Math.min(minTargetX, target.x);
 		minTargetY = Math.min(minTargetY, target.y);
 		maxTargetX = Math.max(maxTargetX, target.x);
 		maxTargetY = Math.max(maxTargetY, target.y);
-	});
+	}
 } else {
 	minTargetX = 0;
 	minTargetY = 0;
@@ -112,13 +112,13 @@ export function getSpiralOffsets(
 	offsets.push({ dx: 0, dy: 0 });
 	visited.add("0,0");
 	if (gridSize > 1) {
-		let curX = 0,
-			curY = 0,
-			dirX = 1,
-			dirY = 0,
-			legLength = 1,
-			stepsInLeg = 0,
-			turnsMade = 0;
+		let curX = 0;
+		let curY = 0;
+		let dirX = 1;
+		let dirY = 0;
+		let legLength = 1;
+		let stepsInLeg = 0;
+		let turnsMade = 0;
 		while (offsets.length < gridSize * gridSize) {
 			curX += dirX;
 			curY += dirY;

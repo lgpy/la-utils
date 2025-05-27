@@ -64,11 +64,11 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
 
 	const recipe_items_price = Object.values(item.recipes).reduce(
 		(acc, items) => {
-			Object.entries(items).forEach(([key, amount]) => {
-				if (acc[key] !== undefined) return;
+			for (const key of Object.keys(items)) {
+				if (acc[key] !== undefined) continue;
 				const price = pricesStore?.prices.find((i) => i.id === key)?.price || 0;
 				acc[key] = price;
-			});
+			}
 			return acc;
 		},
 		{} as Record<string, number>,
@@ -101,8 +101,7 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
 					const price = recipe_items_price[key];
 					const storeItem = items.find((i) => i.id === key);
 					const singleMarketItemCost = price / (storeItem?.marketQty || 1);
-					acc += singleMarketItemCost * amount;
-					return acc;
+					return acc + singleMarketItemCost * amount;
 				},
 				0,
 			);
@@ -226,7 +225,7 @@ function CraftingType({
 			<div
 				className="block relative top-[-70px] invisible"
 				id={subtype || type}
-			></div>
+			/>
 			<h1
 				className={cn("text-2xl font-bold text-center md:text-start", {
 					"text-xl": subtype !== undefined,

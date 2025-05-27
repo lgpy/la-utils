@@ -124,7 +124,7 @@ export default function EditCardRaidDialog({
 					return (
 						<FormItem
 							className="flex items-center space-x-3 space-y-0"
-							key={"rgi" + gateId + difficulty}
+							key={`rgi${gateId}${difficulty}`}
 						>
 							<FormControl>
 								<RadioGroupItem
@@ -139,7 +139,7 @@ export default function EditCardRaidDialog({
 			);
 			return (
 				<FormField
-					key={"rg" + gateId}
+					key={`rg${gateId}`}
 					control={form.control}
 					name={`gates.${gateIndex}`}
 					render={({ field }) => (

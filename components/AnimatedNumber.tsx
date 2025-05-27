@@ -17,8 +17,10 @@ export default function AnimatedNumber({ n, format = "number" }: Props) {
 		const controls = animate(oldn, n, {
 			duration: 0.2,
 			onUpdate(value) {
-				node!.textContent =
-					format === "gold" ? formatGold(value) : String(value);
+				if (node) {
+					node.textContent =
+						format === "gold" ? formatGold(value) : String(value);
+				}
 			},
 			onComplete: () => {
 				setOldn(n);

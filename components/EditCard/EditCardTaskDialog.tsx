@@ -44,14 +44,17 @@ const formSchema = z.object({
 const types = formSchema.shape.type._def.values;
 
 const presets: {
+	id: string;
 	name: string;
 	type: (typeof types)[number];
 }[] = [
 	{
+		id: "chaos-dungeon",
 		name: "Chaos Dungeon",
 		type: "daily",
 	},
 	{
+		id: "abyss-dungeon",
 		name: "Guardian Raid",
 		type: "daily",
 	},
@@ -174,9 +177,9 @@ export default function EditCardTaskDialog({
 								<Button variant="outline">Presets</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent className="w-56">
-								{presets.map((preset, idx) => (
+								{presets.map((preset) => (
 									<DropdownMenuItem
-										key={"preset" + idx}
+										key={preset.id}
 										onClick={() => {
 											form.setValue("name", preset.name);
 											form.setValue("type", preset.type);

@@ -23,13 +23,13 @@ export default function RosterGold() {
 					goldInfo,
 					settingsStore.experiments.ignoreThaemineIfNoG4,
 				);
-				Object.values(highest3.thisWeek).forEach((thisWeek) => {
+				for (const thisWeek of Object.values(highest3.thisWeek)) {
 					acc.thisWeek.earnedGold += thisWeek.earnedGold;
 					acc.thisWeek.totalGold += thisWeek.totalGold;
-				});
-				Object.values(highest3.nextWeek).forEach((earnable) => {
+				}
+				for (const earnable of Object.values(highest3.nextWeek)) {
 					acc.nextWeek.earnableGold += earnable;
-				});
+				}
 				return acc;
 			},
 			{
@@ -71,6 +71,7 @@ export default function RosterGold() {
 		<div className="grid grid-cols-[auto_auto] gap-x-2 fixed left-4 bottom-4 text-yellow/60 select-none">
 			<h2 className="col-span-2 text-xl font-bold">Roster Gold</h2>
 			<p className="font-extralight">This Week:</p>
+			{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 			<p
 				className="cursor-pointer"
 				onClick={() =>

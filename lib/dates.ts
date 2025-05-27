@@ -60,8 +60,8 @@ export function getLatestDailyReset(currentDateOverride?: Date): Date {
 export function getGateResetDate(raidId: string, gateId: string) {
 	const isBiWeekly = raids[raidId].gates[gateId].isBiWeekly;
 	if (isBiWeekly === undefined) return getLatestWeeklyReset();
-	else if (isBiWeekly === "odd") return getLatestBiWeeklyReset("odd");
-	else return getLatestBiWeeklyReset("even");
+	if (isBiWeekly === "odd") return getLatestBiWeeklyReset("odd");
+	return getLatestBiWeeklyReset("even");
 }
 
 export function getTaskResetDate(taskType: Task["type"]) {

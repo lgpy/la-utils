@@ -1,22 +1,3 @@
-// Global type declarations for ImageCapture API
-declare global {
-	interface ImageCapture {
-		grabFrame(): Promise<ImageBitmap>;
-		getPhotoCapabilities(): Promise<any>;
-		getPhotoSettings(): Promise<any>;
-		takePhoto(photoSettings?: any): Promise<Blob>;
-	}
-	var ImageCapture: {
-		prototype: ImageCapture;
-		new (track: MediaStreamTrack): ImageCapture;
-	};
-	interface ImageBitmap {
-		readonly width: number;
-		readonly height: number;
-		close(): void;
-	}
-}
-
 export interface PixelCoordinate {
 	x: number;
 	y: number;

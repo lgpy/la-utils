@@ -16,7 +16,7 @@ export default function EditCardsNoCharactersCard() {
 						alt=""
 						height={820 / 8}
 						quality={100}
-						src={`/logo-1.png`}
+						src={"/logo-1.png"}
 						width={910 / 8}
 						className="mt-auto"
 					/>
