@@ -215,7 +215,7 @@
   }
 
   ::selection {
-    background: hsla(var(--select-background), 0.2);
+    background: color-mix(in oklab, var(--select-background), transparent 80%);
   }
 }
 
