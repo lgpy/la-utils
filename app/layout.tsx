@@ -40,7 +40,7 @@ export default function RootLayout({
               <main className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-4">
                 {children}
               </main>
-              <footer className="py-4 text-center text-xs text-muted-foreground/50">
+              <footer className="mb-2 text-center text-xs text-muted-foreground/50">
                 <p>Made by Slayersen (EUC)</p>
                 <p>Feel free to contact me on <a
                   href="discord://discord.com/users/119529240587796482"
