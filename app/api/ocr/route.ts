@@ -1,5 +1,5 @@
 import PostHogClient from "@/lib/posthog";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 const phClient = PostHogClient();
 
@@ -8,42 +8,39 @@ const phClient = PostHogClient();
  * Forwards image data to the OCR API defined in environment variables
  */
 export async function POST(request: NextRequest) {
-  try {
-    // Get form data from the request
-    const formData = await request.formData();
+	try {
+		// Get form data from the request
+		const formData = await request.formData();
 
-    // Get the OCR API URL from environment variables
-    const ocrApiUrl = process.env.OCR_API;
+		// Get the OCR API URL from environment variables
+		const ocrApiUrl = process.env.OCR_API;
 
-    if (!ocrApiUrl) {
-      return NextResponse.json(
-        { error: "OCR API failed" },
-        { status: 500 }
-      );
-    }
+		if (!ocrApiUrl) {
+			return NextResponse.json({ error: "OCR API failed" }, { status: 500 });
+		}
 
-    // Forward the form data to the OCR API
-    const response = await fetch(`${ocrApiUrl}/ocr`, {
-      method: "POST",
-      body: formData,
-    });
+		// Forward the form data to the OCR API
+		const response = await fetch(`${ocrApiUrl}/ocr`, {
+			method: "POST",
+			body: formData,
+		});
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      return NextResponse.json(
-        { error: `OCR API error: ${errorData}` },
-        { status: response.status }
-      );
-    }
+		if (!response.ok) {
+			const errorData = await response.text();
+			return NextResponse.json(
+				{ error: `OCR API error: ${errorData}` },
+				{ status: response.status },
+			);
+		}
 
-    // Return the OCR API response to the client
-    const data = await response.json();
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error("OCR processing error:", error);
-    return NextResponse.json(
-      { error: "Failed to process OCR request" },
-      { status: 500 }
-    );
-  }
+		// Return the OCR API response to the client
+		const data = await response.json();
+		return NextResponse.json(data);
+	} catch (error) {
+		console.error("OCR processing error:", error);
+		return NextResponse.json(
+			{ error: "Failed to process OCR request" },
+			{ status: 500 },
+		);
+	}
 }

@@ -1,18 +1,18 @@
+import FabOCR from "@/components/OCR/FabOcr";
 import PriceCards from "@/components/PriceCard/PriceCards";
 import { PriceStoreProvider } from "@/providers/PriceStoreProvider";
-import { Metadata } from "next";
-import FabOCR from "@/components/OCR/FabOcr";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Prices | Lost Ark Utils",
-  description: "",
+	title: "Prices | Lost Ark Utils",
+	description: "",
 };
 
 export default function PricesPage() {
-  return (
-    <PriceStoreProvider>
-      <PriceCards />
-      <FabOCR />
-    </PriceStoreProvider>
-  );
+	return (
+		<PriceStoreProvider>
+			<PriceCards />
+			<FabOCR />
+		</PriceStoreProvider>
+	);
 }

@@ -1,9 +1,9 @@
 export enum ServerStatus {
-  ONLINE,
-  OFFLINE,
-  BUSY,
-  FULL,
-  MAINTENANCE,
+	ONLINE = 0,
+	OFFLINE = 1,
+	BUSY = 2,
+	FULL = 3,
+	MAINTENANCE = 4,
 }
 
 // Create a Map for storing server status information
@@ -11,23 +11,23 @@ export const serverMap = new Map<string, ServerStatus>();
 
 // Initialize the Map with server data
 const initializeServerMap = () => {
-  // NAW servers
-  serverMap.set("Thaemine", ServerStatus.OFFLINE);
-  serverMap.set("Brelshaza", ServerStatus.OFFLINE);
+	// NAW servers
+	serverMap.set("Thaemine", ServerStatus.OFFLINE);
+	serverMap.set("Brelshaza", ServerStatus.OFFLINE);
 
-  // NAE servers
-  serverMap.set("Luterra", ServerStatus.OFFLINE);
-  serverMap.set("Balthorr", ServerStatus.OFFLINE);
-  serverMap.set("Nineveh", ServerStatus.OFFLINE);
-  serverMap.set("Inanna", ServerStatus.OFFLINE);
-  serverMap.set("Vairgrys", ServerStatus.OFFLINE);
+	// NAE servers
+	serverMap.set("Luterra", ServerStatus.OFFLINE);
+	serverMap.set("Balthorr", ServerStatus.OFFLINE);
+	serverMap.set("Nineveh", ServerStatus.OFFLINE);
+	serverMap.set("Inanna", ServerStatus.OFFLINE);
+	serverMap.set("Vairgrys", ServerStatus.OFFLINE);
 
-  // EUC servers
-  serverMap.set("Ortuus", ServerStatus.OFFLINE);
-  serverMap.set("Elpon", ServerStatus.OFFLINE);
-  serverMap.set("Ratik", ServerStatus.OFFLINE);
-  serverMap.set("Arcturus", ServerStatus.OFFLINE);
-  serverMap.set("Gienah", ServerStatus.OFFLINE);
+	// EUC servers
+	serverMap.set("Ortuus", ServerStatus.OFFLINE);
+	serverMap.set("Elpon", ServerStatus.OFFLINE);
+	serverMap.set("Ratik", ServerStatus.OFFLINE);
+	serverMap.set("Arcturus", ServerStatus.OFFLINE);
+	serverMap.set("Gienah", ServerStatus.OFFLINE);
 };
 
 // Initialize the server map on module load
@@ -39,7 +39,7 @@ initializeServerMap();
  * @returns The server status, or OFFLINE if server not found
  */
 export function getServerStatus(server: string): ServerStatus {
-  return serverMap.get(server) ?? ServerStatus.OFFLINE;
+	return serverMap.get(server) ?? ServerStatus.OFFLINE;
 }
 
 /**
@@ -48,18 +48,18 @@ export function getServerStatus(server: string): ServerStatus {
  * @returns A string representation of the status
  */
 export function getServerStatusString(status: ServerStatus): string {
-  switch (status) {
-    case ServerStatus.OFFLINE:
-      return "Offline";
-    case ServerStatus.ONLINE:
-      return "Online";
-    case ServerStatus.FULL:
-      return "Online - Full";
-    case ServerStatus.BUSY:
-      return "Online - Busy";
-    case ServerStatus.MAINTENANCE:
-      return "In Maintenance";
-  }
+	switch (status) {
+		case ServerStatus.OFFLINE:
+			return "Offline";
+		case ServerStatus.ONLINE:
+			return "Online";
+		case ServerStatus.FULL:
+			return "Online - Full";
+		case ServerStatus.BUSY:
+			return "Online - Busy";
+		case ServerStatus.MAINTENANCE:
+			return "In Maintenance";
+	}
 }
 
 /**
@@ -68,10 +68,10 @@ export function getServerStatusString(status: ServerStatus): string {
  * @param status The new status
  */
 export function setServerStatus(server: string, status: ServerStatus): void {
-  if (serverMap.has(server)) {
-    serverMap.set(server, status);
-  } else {
-    // For unknown servers (should not happen in practice)
-    console.warn(`Attempted to set status for unknown server: ${server}`);
-  }
+	if (serverMap.has(server)) {
+		serverMap.set(server, status);
+	} else {
+		// For unknown servers (should not happen in practice)
+		console.warn(`Attempted to set status for unknown server: ${server}`);
+	}
 }

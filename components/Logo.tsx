@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 export default function Logo(props: { className?: string }) {
-  /*const [logoNumber, setLogoNumber] = useState(0);
+	/*const [logoNumber, setLogoNumber] = useState(0);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -12,16 +12,16 @@ export default function Logo(props: { className?: string }) {
     setLogoNumber(newLogo);
   }, [pathname]);*/
 
-  return (
-    <div className={cn("flex items-center justify-center", props.className)}>
-      <Image
-        alt=""
-        height={59}
-        quality={100}
-        src={`/logo.png`}
-        width={65}
-        priority={true}
-      />
-    </div>
-  );
+	return (
+		<div className={cn("flex items-center justify-center", props.className)}>
+			<Image
+				alt=""
+				height={59}
+				quality={100}
+				src={`/logo.png`}
+				width={65}
+				priority={true}
+			/>
+		</div>
+	);
 }
