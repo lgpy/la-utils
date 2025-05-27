@@ -14,7 +14,7 @@ export default function EditCardTask({ task, openTaskDialog }: Props) {
         <p>{task.name}</p>
       </div>
       <Button variant="ghost" size="icon" onClick={openTaskDialog}>
-        <PencilIcon className="size-4" />
+        <PencilIcon />
       </Button>
     </div>
   );

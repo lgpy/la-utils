@@ -67,7 +67,7 @@ export default function EditCardAssignedRaid({
             size="icon"
             data-pw={`assigned-raid-ellipsis`}
           >
-            <EllipsisIcon className="h-4 w-4" />
+            <EllipsisIcon />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -75,15 +75,15 @@ export default function EditCardAssignedRaid({
             onClick={() => openRaidDialog()}
             data-pw={`assigned-raid-edit`}
           >
-            <PencilIcon className="mr-2 h-4 w-4" />
+            <PencilIcon />
             <span>Edit</span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            className="text-destructive focus:bg-destructive/20 focus:text-destructive"
             onClick={() => mainStore.charDelRaid(char.id, raidId)}
             data-pw={`assigned-raid-delete`}
+            variant="destructive"
           >
-            <Trash2Icon className="mr-2 h-4 w-4" />
+            <Trash2Icon />
             <span>Delete Raid</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

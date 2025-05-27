@@ -153,9 +153,9 @@ export default function EditCards() {
                   aria-label="Lock/Unlock Characters"
                 >
                   {isLocked ? (
-                    <LockIcon className="h-6 w-6" />
+                    <LockIcon className="size-6" />
                   ) : (
-                    <LockOpenIcon className="h-6 w-6" />
+                    <LockOpenIcon className="size-6" />
                   )}
                 </Button>
               </TooltipTrigger>
@@ -170,7 +170,7 @@ export default function EditCards() {
             onClick={() => openCharacterEditDialog(undefined)}
             data-pw={`create-character`}
           >
-            <PlusIcon className="h-6 w-6" />
+            <PlusIcon className="size-6" />
           </Button>
         </div>
       </motion.div>

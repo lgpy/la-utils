@@ -29,9 +29,9 @@ function BidAmtButton({ bidAmt }: { bidAmt: number }) {
     <Button variant="ghost" onClick={copyToClipboard}>
       {bidAmt}
       {copied ? (
-        <CheckIcon className="ml-2 h-4 w-4" />
+        <CheckIcon />
       ) : (
-        <ClipboardIcon className="ml-2 h-4 w-4" />
+        <ClipboardIcon />
       )}
     </Button>
   );
@@ -48,11 +48,11 @@ function AuctionAmt({
 }) {
   const bidAmt = isProfit
     ? Math.floor(
-        0.92 *
-          Math.floor(
-            ((0.95 * marketValue) / playerNumber) * (playerNumber - 1),
-          ),
-      )
+      0.92 *
+      Math.floor(
+        ((0.95 * marketValue) / playerNumber) * (playerNumber - 1),
+      ),
+    )
     : Math.floor(((0.95 * marketValue) / playerNumber) * (playerNumber - 1));
 
   const profit = Math.floor(0.95 * marketValue - bidAmt);

@@ -55,7 +55,7 @@ export default function NavBar() {
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
-            <Menu className="h-5 w-5" />
+            <Menu />
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
         </SheetTrigger>
@@ -89,7 +89,6 @@ export default function NavBar() {
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
-              className="size-5"
               viewBox="0 0 24 24"
               role="img"
             >

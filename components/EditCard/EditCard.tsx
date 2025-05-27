@@ -119,7 +119,7 @@ export default function EditCard(props: Props) {
           onClick={() => editCharacter()}
           data-pw={`edit-character`}
         >
-          <PencilIcon className="h-4 w-4" />
+          <PencilIcon />
         </Button>
       </div>
       <Tabs defaultValue="raids" className="gap-0">
@@ -159,7 +159,7 @@ export default function EditCard(props: Props) {
               variant="ghost"
               data-pw={`character-add-raid`}
             >
-              <PlusIcon className="mr-1 h-4 w-4" /> Add Raid
+              <PlusIcon /> Add Raid
             </Button>
           </CardContent>
         </TabsContent>
@@ -198,7 +198,7 @@ export default function EditCard(props: Props) {
               variant="ghost"
               data-pw={`character-add-task`}
             >
-              <PlusIcon className="mr-1 h-4 w-4" /> Add Task
+              <PlusIcon /> Add Task
             </Button>
           </CardContent>
         </TabsContent>

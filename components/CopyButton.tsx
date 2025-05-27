@@ -38,7 +38,6 @@ export default function CopyButton(props: Props) {
       {copied ? (
         <CheckIcon
           className={cn(
-            "size-4",
             {
               "ml-2": props.size !== "icon",
             },
@@ -48,7 +47,6 @@ export default function CopyButton(props: Props) {
       ) : (
         <ClipboardIcon
           className={cn(
-            "size-4",
             {
               "ml-2": props.size !== "icon",
             },

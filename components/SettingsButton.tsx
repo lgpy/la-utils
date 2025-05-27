@@ -36,13 +36,13 @@ export default function SettingsButton() {
   const ThemeIcon = (() => {
     switch (theme) {
       case "light":
-        return <Sun className="mr-2 h-4 w-4" />;
+        return <Sun className="mr-2 size-4" />;
       case "dark":
-        return <Moon className="mr-2 h-4 w-4" />;
+        return <Moon className="mr-2 size-4" />;
       case "system":
-        return <SunMoon className="mr-2 h-4 w-4" />;
+        return <SunMoon className="mr-2 size-4" />;
       default:
-        return <SunMoon className="mr-2 h-4 w-4" />;
+        return <SunMoon className="mr-2 size-4" />;
     }
   })();
 
@@ -50,7 +50,7 @@ export default function SettingsButton() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild disabled={!settingsStore.hasHydrated}>
         <Button variant="outline" size="icon">
-          <SettingsIcon className="h-4 w-4" />
+          <SettingsIcon />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 hover:">
@@ -58,7 +58,7 @@ export default function SettingsButton() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem onClick={() => router.push("/backup")}>
-          <Import className="mr-2 h-4 w-4" />
+          <Import />
           <span>Import/Export Data</span>
         </DropdownMenuItem>
         <DropdownMenuGroup>
@@ -73,14 +73,14 @@ export default function SettingsButton() {
                   checked={theme === "light"}
                   onCheckedChange={() => setTheme("light")}
                 >
-                  <Sun className="mr-2 h-4 w-4" />
+                  <Sun />
                   <span>Light</span>
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
                   checked={theme === "dark"}
                   onCheckedChange={() => setTheme("dark")}
                 >
-                  <Moon className="mr-2 h-4 w-4" />
+                  <Moon />
                   <span>Dark</span>
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuSeparator />
@@ -88,7 +88,7 @@ export default function SettingsButton() {
                   checked={theme === "system"}
                   onCheckedChange={() => setTheme("system")}
                 >
-                  <SunMoon className="mr-2 h-4 w-4" />
+                  <SunMoon />
                   <span>System</span>
                 </DropdownMenuCheckboxItem>
               </DropdownMenuSubContent>
@@ -98,7 +98,7 @@ export default function SettingsButton() {
         <DropdownMenuGroup>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="focus:text-background data-[state=open]:text-background">
-              <Server className="mr-2 h-4 w-4" />
+              <Server className="mr-2 size-4" />
               <span>Server</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
@@ -229,7 +229,7 @@ export default function SettingsButton() {
         <DropdownMenuGroup>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="focus:text-background data-[state=open]:text-background">
-              <FlaskConical className="mr-2 h-4 w-4" />
+              <FlaskConical className="mr-2 size-4" />
               <span>Experiments</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>

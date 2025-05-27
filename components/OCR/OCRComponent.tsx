@@ -198,7 +198,7 @@ export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
 
             {error && (
               <Alert variant="destructive" className="mb-4">
-                <AlertCircle className="h-4 w-4" />
+                <AlertCircle />
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
@@ -232,12 +232,12 @@ export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
               {
                 isProcessing ? (
                   <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <Loader2 className="animate-spin" />
                     Processing...
                   </>
                 ) : (
                   <>
-                    <Upload className="h-4 w-4 mr-2" />
+                    <Upload />
                     Process Image
                   </>
                 )}

@@ -26,7 +26,7 @@ export default function AuctionCalculatorFAB() {
       >
         <Button
           color="secondary"
-          size={"icon"}
+          size="icon"
           onClick={() => onOpenChange(true)}
         >
           <GavelIcon className="size-6" />
