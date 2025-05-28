@@ -7,6 +7,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { PostHogProvider } from "@/providers/PostHogProvider";
 import { Toaster } from "sonner";
+import { ReactScan } from "@/components/ReactScanComponent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
+			<ReactScan />
 			<body
 				className={cn(
 					inter.className,
