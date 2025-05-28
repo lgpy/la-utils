@@ -67,7 +67,7 @@ export default function CraftingHeader() {
 	const { store, hasHydrated } = useCraftingStore((store) => store);
 
 	if (!hasHydrated) {
-		return <Skeleton className="h-[300px] rounded-md" />;
+		return null;
 	}
 
 	return (

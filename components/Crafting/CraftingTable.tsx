@@ -250,7 +250,7 @@ export default function CraftingTable() {
 	const { store, hasHydrated } = useCraftingStore((store) => store);
 
 	if (!hasHydrated) {
-		return <div>loading...</div>;
+		return null;
 	}
 
 	return (

@@ -43,6 +43,14 @@ export default function TruncatedTooltip(props: Props) {
 		}
 	}, [titleIsTruncated, tooltipIsHovered, titleIsHovered]);
 
+	if (!titleIsTruncated) {
+		return (
+			<div className={cn(className.text)} ref={titleRef}>
+				{text}
+			</div>
+		);
+	}
+
 	return (
 		<TooltipProvider>
 			<Tooltip open={isOpen}>
