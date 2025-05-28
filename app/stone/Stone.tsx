@@ -10,6 +10,7 @@ import type { CellPosition, StoneState, CellInfo } from "./types";
 import { useScreenShare, useTesseractWorker } from "@/hooks/stone";
 import { ImageProcessor, PredictPercentage } from "./utils";
 import { StoneHelper } from "./helper";
+import { toast } from "sonner";
 
 export default function Stone() {
 	const [ocrImageSrc, setOcrImageSrc] = useState<string>();
@@ -173,7 +174,19 @@ export default function Stone() {
 			img.width !== helperResolution.width ||
 			img.height !== helperResolution.height
 		) {
-			setStoneHelper(new StoneHelper({ width: img.width, height: img.height }));
+			try {
+				const newHelper = new StoneHelper({
+					width: img.width,
+					height: img.height,
+				});
+				setStoneHelper(newHelper);
+			} catch (error) {
+				ss.stopScreenShare();
+				console.error(error);
+				toast.error("Unsupported Resolution", {
+					description: `The current resolution (${img.width}x${img.height}) is not supported, stopped the screen sharing.`,
+				});
+			}
 			return;
 		}
 		try {
