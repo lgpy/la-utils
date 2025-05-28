@@ -8,19 +8,17 @@ import { Label } from "@/components/ui/label"; // Added Label import
 interface ControlsCardProps {
 	onStartScreenShare: () => void;
 	onStopScreenShare: () => void;
-	isAutomating: boolean;
 	mediaStreamActive: boolean;
-	showDebugInfo: boolean; // Changed from showTargetOverview and showLiveFeed
-	setShowDebugInfo: (value: boolean) => void; // Changed from setShowTargetOverview and setShowLiveFeed
+	showDebugInfo: boolean;
+	setShowDebugInfo: (value: boolean) => void;
 }
 
 export default function ControlsCard({
 	onStartScreenShare,
 	onStopScreenShare,
-	isAutomating,
 	mediaStreamActive,
-	showDebugInfo, // Changed
-	setShowDebugInfo, // Changed
+	showDebugInfo,
+	setShowDebugInfo,
 }: ControlsCardProps) {
 	return (
 		<Card>

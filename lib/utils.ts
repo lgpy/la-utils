@@ -24,3 +24,15 @@ export function formatGold(gold: number) {
 		dividedGold % 1 === 0 ? dividedGold.toFixed(0) : dividedGold.toFixed(1);
 	return `${prefix}${formattedGold}${suffix}`;
 }
+
+export interface Resolution {
+	width: number;
+	height: number;
+}
+
+export interface Region {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}

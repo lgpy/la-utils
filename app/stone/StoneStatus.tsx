@@ -14,7 +14,7 @@ import type { GameState, GoalCondition, OptimalMoveResult } from "./calculator";
 import type { StoneState } from "./types";
 import { getColorClasses } from "./utils";
 
-interface TargetOverviewCardProps {
+interface StoneStatusProps {
 	stoneState: StoneState | undefined;
 	className?: string;
 }
@@ -40,7 +40,7 @@ const goals: Record<string, GoalCondition[]> = {
 export default function StoneStatus({
 	stoneState,
 	className,
-}: TargetOverviewCardProps) {
+}: StoneStatusProps) {
 	const [selectedGoal, setSelectedGoal] = useState<string>("");
 	const workerRef = useRef<Worker | null>(null);
 	const [optimizerReady, setOptimizerReady] = useState(false);
@@ -120,7 +120,6 @@ export default function StoneStatus({
 				"Main: Stone state or optimizer readiness changed, calculating optimal move in worker",
 				stoneState,
 			);
-			console.log(stoneState, optimizerReady);
 			setCalculating(true);
 			workerRef.current.postMessage({
 				type: "getOptimalMove",

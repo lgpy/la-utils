@@ -2,19 +2,19 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { PixelTarget } from "./types";
+import type { CellInfo } from "./types";
 
 interface SessionInfoCardProps {
 	mediaStreamActive: boolean;
-	targets: PixelTarget[];
+	cells: CellInfo[];
 }
 
 export default function SessionInfoCard({
 	mediaStreamActive,
-	targets,
+	cells,
 }: SessionInfoCardProps) {
-	const allTargetsMatch = targets.length > 0 && targets.every((t) => t.isMatch);
-	const targetsCount = targets.length;
+	const allCellssMatch = cells.length > 0 && cells.every((t) => t.isMatch);
+	const cellsCount = cells.length;
 
 	return (
 		<Card>
@@ -31,22 +31,22 @@ export default function SessionInfoCard({
 						{mediaStreamActive ? "Active" : "Inactive"}
 					</Badge>
 				</div>
-				{targetsCount > 0 && (
+				{cellsCount > 0 && (
 					<div className="mt-2">
 						All Match:{" "}
 						<Badge
-							variant={allTargetsMatch ? "default" : "destructive"}
+							variant={allCellssMatch ? "default" : "destructive"}
 							className="ml-2"
 						>
-							{allTargetsMatch ? "YES" : "NO"}
+							{allCellssMatch ? "YES" : "NO"}
 						</Badge>
 					</div>
 				)}
-				{targetsCount > 0 && (
+				{cellsCount > 0 && (
 					<div className="mt-2">
-						Targets:{" "}
+						Cells:{" "}
 						<Badge variant={"outline"} className="ml-2">
-							{targetsCount}
+							{cellsCount}
 						</Badge>
 					</div>
 				)}

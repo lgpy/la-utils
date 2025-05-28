@@ -8,75 +8,75 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import type { PixelTarget } from "./types";
+import type { Cell } from "./types";
 import { getColorClasses } from "./utils";
 
-interface TargetOverviewCardProps {
-	targets: PixelTarget[];
+interface CellOverviewCardProps {
+	cells: Cell[];
 	className?: string;
 }
 
-export default function TargetOverviewCard({
-	targets,
+export default function CellOverviewCard({
+	cells,
 	className,
-}: TargetOverviewCardProps) {
-	if (targets.length === 0) {
-		console.log("TargetOverviewCard: No targets to display."); // Added console.log for empty targets
+}: CellOverviewCardProps) {
+	if (cells.length === 0) {
+		console.log("CellOverviewCard: No cells to display."); // Added console.log for empty cells
 		return null;
 	}
 
 	return (
 		<Card className={cn(className)}>
 			<CardHeader>
-				<CardTitle>Target Status Overview ({targets.length})</CardTitle>
+				<CardTitle>Cell Status Overview ({cells.length})</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<TooltipProvider delayDuration={100}>
 					<div className="flex flex-col items-center">
 						{[1, 2, 3].map((lineIndex: number) => {
-							const lineTargets = targets.filter(
-								(target: PixelTarget) => target.line === lineIndex,
-							);
-							if (lineTargets.length === 0) return null; // Don't render a line if no targets
+							const lineCells = cells.filter((cell) => cell.line === lineIndex);
+							if (lineCells.length === 0) return null; // Don't render a line if no cells
 							return (
 								<div
 									key={lineIndex}
 									className={`flex justify-center my-${lineIndex === 1 ? 2 : 0}`}
 								>
-									{lineTargets.map((target: PixelTarget) => (
-										<Tooltip key={target.name}>
+									{lineCells.map((cell) => (
+										<Tooltip key={cell.line + cell.pos}>
 											<TooltipTrigger asChild>
 												<div
 													className={cn(
 														"w-6 h-6 transform rotate-45 m-1.5 border-2 border-neutral-700 shadow-md",
 														getColorClasses(
-															target.detectedStatus,
-															target.line !== 3,
+															cell.detectedStatus,
+															cell.line !== 3,
 														).background,
 													)}
-													aria-label={`Target ${target.name}`}
+													aria-label={`Cell line ${cell.line}, pos ${cell.pos}`}
 												/>
 											</TooltipTrigger>
 											<TooltipContent className="text-xs">
-												<p className="font-semibold">{target.name}</p>
+												<p className="font-semibold">
+													L {cell.line}, P{cell.pos}
+												</p>
 												<hr className="my-1" />
 												<p>
-													Cfg: ({target.x},{target.y})
+													Cfg: ({cell.x},{cell.y})
 												</p>
 												<p>
 													Status:{" "}
 													<span
 														className={cn(
 															"font-medium",
-															target.detectedStatus === "success" &&
+															cell.detectedStatus === "success" &&
 																"text-green-500",
-															target.detectedStatus === "failure" &&
+															cell.detectedStatus === "failure" &&
 																"text-red-500",
-															target.detectedStatus === "pending" &&
+															cell.detectedStatus === "pending" &&
 																"text-yellow-500",
 														)}
 													>
-														{target.detectedStatus?.toUpperCase() || "N/A"}
+														{cell.detectedStatus?.toUpperCase() || "N/A"}
 													</span>
 												</p>
 											</TooltipContent>

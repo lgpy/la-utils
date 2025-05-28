@@ -3,15 +3,24 @@ export interface PixelCoordinate {
 	y: number;
 }
 
-export interface PixelTarget {
-	id: string;
-	name: string;
-	x: number;
-	y: number;
+interface CellIdentifier {
 	line: number;
-	isMatch: boolean;
-	detectedStatus: string;
+	pos: number;
 }
+
+export interface CellPosition extends PixelCoordinate, CellIdentifier {}
+
+export interface CellInfo extends CellIdentifier {
+	detectedStatus: string;
+	isMatch: boolean; //TODO what is the purpose of this field?
+	rgbColor: {
+		r: number;
+		g: number;
+		b: number;
+	};
+}
+
+export type Cell = CellPosition & CellInfo;
 
 export interface StoneState {
 	line1: string[];

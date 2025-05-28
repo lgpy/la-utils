@@ -4,27 +4,34 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface LiveFeedCardProps {
-	capturedImageSrc: string | null;
+	ocrImageSrc: string | undefined;
+	cellsImageSrc: string | undefined;
 
 	className?: string;
 }
 
 export default function LiveFeedCard({
-	capturedImageSrc,
+	ocrImageSrc,
+	cellsImageSrc,
 	className,
 }: LiveFeedCardProps) {
 	return (
 		<>
-			{capturedImageSrc && (
+			{ocrImageSrc && (
 				<Card className={cn("overflow-hidden", className)}>
 					<CardHeader>
-						<CardTitle>Live Feed (with markers)</CardTitle>
+						<CardTitle>Live Feed</CardTitle>
 					</CardHeader>
-					<CardContent>
+					<CardContent className="flex flex-col md:flex-row gap-4">
 						<img
-							src={capturedImageSrc}
+							src={cellsImageSrc}
+							alt="Cells"
+							className="w-full md:w-1/2 h-auto block rounded-md border"
+						/>
+						<img
+							src={ocrImageSrc}
 							alt="Screen with markers"
-							className="w-full h-auto block rounded-md border"
+							className="w-full md:w-1/2 h-auto block rounded-md border"
 						/>
 					</CardContent>
 				</Card>

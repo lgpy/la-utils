@@ -1,4 +1,7 @@
-import { cn } from "@/lib/utils";
+import { cn, type Region } from "@/lib/utils";
+import { SPIRAL_OFFSETS_5X5 } from "./constants";
+import type { CellPosition, StoneState } from "./types";
+import { StoneHelper } from "./helper";
 
 /**
  * Converts an RGB color value to HSL. Conversion formula
@@ -46,43 +49,6 @@ export function rgbToHsl(r: number, g: number, b: number) {
 	return [h * 360, s, l]; // Return H in degrees (0-360), S and L as 0-1
 }
 
-/**
- * Differentiates a pixel's color based on its RGB values.
- *
- * @param   Number  h       The hue component (0-360 degrees)
- * @param   Number  s       The saturation component (0-1)
- * @param   Number  l       The lightness component (0-1)
- * @return  String          The name of the color category
- */
-export function classifyPixelColor(h: number, s: number, l: number) {
-	// 1. Black (very low lightness, low saturation)
-	if (s > 0.9 && l < 0.15) {
-		return "black";
-	}
-
-	// 2. Grey (low saturation, not black, not overly light)
-	if (s < 0.2 && l >= 0.1 && l < 0.75) {
-		return "grey";
-	}
-
-	// 3. Red (includes peachy/salmon tones)
-	if (((h >= 0 && h < 30) || (h >= 330 && h <= 360)) && s > 0.25 && l > 0.2) {
-		return "red";
-	}
-
-	// 4. Turquoise/Light Blue (includes light teals)
-	if (h >= 160 && h <= 220 && s > 0.3 && l >= 0.35) {
-		return "blue";
-	}
-
-	// 5. Dark Blue (lower lightness blues)
-	if (h >= 190 && h <= 260 && s > 0.35 && l < 0.35 && l > 0.05) {
-		return "blue";
-	}
-
-	return null; // If none of the above categories match
-}
-
 export const getColorClasses = (
 	status: string | undefined,
 	isBlueLine: boolean,
@@ -93,3 +59,122 @@ export const getColorClasses = (
 		"bg-surface2": status === "failure",
 	}),
 });
+
+export function PredictPercentage(
+	oldState: StoneState,
+	newState: Omit<StoneState, "percentage">,
+): number | null {
+	const oldCount = { failures: 0, successes: 0 };
+	const newCount = { failures: 0, successes: 0 };
+
+	const statusChecker = (
+		status: string,
+		obj: { failures: number; successes: number },
+	) => {
+		switch (status) {
+			case "success":
+				obj.successes++;
+				break;
+			case "failure":
+				obj.failures++;
+				break;
+			default:
+				break;
+		}
+	};
+
+	for (const status of oldState.line1) statusChecker(status, oldCount);
+	for (const status of oldState.line2) statusChecker(status, oldCount);
+	for (const status of oldState.line3) statusChecker(status, oldCount);
+	for (const status of newState.line1) statusChecker(status, newCount);
+	for (const status of newState.line2) statusChecker(status, newCount);
+	for (const status of newState.line3) statusChecker(status, newCount);
+
+	const totalOld = oldCount.successes + oldCount.failures;
+	const totalNew = newCount.successes + newCount.failures;
+	const totaldiff = totalNew - totalOld;
+
+	if (totaldiff === 0) return oldState.percentage; // No change in total, return old percentage
+
+	if (totaldiff === 1 && newCount.successes > oldCount.successes) {
+		// If one more success, increase percentage by 10%
+		return Math.min(oldState.percentage + 10, 75);
+	}
+
+	if (totaldiff === 1 && newCount.failures > oldCount.failures) {
+		// If one more failure, decrease percentage by 10%
+		return Math.max(oldState.percentage - 10, 25);
+	}
+
+	console.debug(
+		`PredictPercentage: Unexpected totaldiff: ${totaldiff}, oldCount: ${JSON.stringify(oldCount)}, newCount: ${JSON.stringify(newCount)}`,
+	);
+	return null;
+}
+
+export class ImageProcessor {
+	constructor(
+		private ctx: CanvasRenderingContext2D,
+		private region: Region | undefined,
+	) {}
+
+	static async fromImageBitmap(
+		imageBitmap: ImageBitmap,
+		cropRegion?: Region,
+	): Promise<ImageProcessor> {
+		const canvas = document.createElement("canvas");
+		canvas.width = cropRegion?.width ?? imageBitmap.width;
+		canvas.height = cropRegion?.height ?? imageBitmap.height;
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
+		if (ctx === null) {
+			throw new Error("Could not get 2D context from canvas");
+		}
+		ctx.drawImage(
+			imageBitmap,
+			cropRegion?.x ?? 0,
+			cropRegion?.y ?? 0,
+			cropRegion?.width ?? imageBitmap.width,
+			cropRegion?.height ?? imageBitmap.height,
+			0,
+			0,
+			canvas.width,
+			canvas.height,
+		);
+		return new ImageProcessor(ctx, cropRegion);
+	}
+
+	getDataUrl(type = "image/png", quality?: number): string {
+		return this.ctx.canvas.toDataURL(type, quality);
+	}
+
+	getCanvas(): HTMLCanvasElement {
+		return this.ctx.canvas;
+	}
+
+	getWidth(): number {
+		return this.ctx.canvas.width;
+	}
+	getHeight(): number {
+		return this.ctx.canvas.height;
+	}
+
+	getPixel(x: number, y: number) {
+		// If there's a crop region, adjust coordinates
+		const adjustedX = this.region ? x - this.region.x : x;
+		const adjustedY = this.region ? y - this.region.y : y;
+
+		// Ensure coordinates are within bounds
+		if (
+			adjustedX < 0 ||
+			adjustedY < 0 ||
+			adjustedX >= this.ctx.canvas.width ||
+			adjustedY >= this.ctx.canvas.height
+		) {
+			throw new Error(
+				`Coordinates (${adjustedX}, ${adjustedY}) are out of the bound ${JSON.stringify(this.region)}`,
+			);
+		}
+		const pixelData = this.ctx.getImageData(adjustedX, adjustedY, 1, 1).data;
+		return [pixelData[0], pixelData[1], pixelData[2]];
+	}
+}
