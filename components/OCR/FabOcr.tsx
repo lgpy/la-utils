@@ -24,11 +24,8 @@ export default function FabOCR() {
 					},
 				}}
 			>
-				<Button
-					color="secondary"
-					size={"icon"}
-					onClick={() => onOpenChange(true)}
-				>
+				<Button color="secondary" onClick={() => onOpenChange(true)}>
+					Image Upload
 					<ScanText className="size-6" />
 				</Button>
 			</motion.div>
