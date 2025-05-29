@@ -60,6 +60,8 @@ export default function NavBar() {
 							<motion.div
 								className="bottom-radial-gradient mx-auto absolute bottom-0 left-0 right-0 w-[40px] h-[20px]"
 								layoutId="activeNavItem"
+								layout
+								style={{ originY: "top" }}
 							/>
 						)}
 					</div>
