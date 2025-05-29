@@ -55,7 +55,6 @@ export default function StoneStatus({
 
 		workerRef.current.onmessage = (event: MessageEvent) => {
 			const { type, data, message, stack } = event.data;
-			console.log("Main: Received message from worker", type, data);
 			if (type === "initDone") {
 				setOptimizerReady(true);
 				console.log("Main: Optimizer ready");
@@ -67,6 +66,8 @@ export default function StoneStatus({
 				console.error("Main: Worker error:", message, stack);
 				setCalculating(false);
 				// Optionally, notify the user of the error
+			} else {
+				console.log("Main: Received message from worker", type, data);
 			}
 		};
 

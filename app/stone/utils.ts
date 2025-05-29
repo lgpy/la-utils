@@ -1,7 +1,5 @@
 import { cn, type Region } from "@/lib/utils";
-import { SPIRAL_OFFSETS_5X5 } from "./constants";
-import type { CellPosition, StoneState } from "./types";
-import { StoneHelper } from "./helper";
+import { StoneState } from "./types";
 
 /**
  * Converts an RGB color value to HSL. Conversion formula
@@ -57,6 +55,7 @@ export const getColorClasses = (
 		"bg-red": status === "success" && !isBlueLine,
 		"bg-blue": status === "success" && isBlueLine,
 		"bg-surface2": status === "failure",
+		"bg-peach": status === "unknown",
 	}),
 });
 
@@ -97,13 +96,11 @@ export function PredictPercentage(
 	if (totaldiff === 0) return oldState.percentage; // No change in total, return old percentage
 
 	if (totaldiff === 1 && newCount.successes > oldCount.successes) {
-		// If one more success, increase percentage by 10%
-		return Math.min(oldState.percentage + 10, 75);
+		return Math.max(oldState.percentage - 10, 25);
 	}
 
 	if (totaldiff === 1 && newCount.failures > oldCount.failures) {
-		// If one more failure, decrease percentage by 10%
-		return Math.max(oldState.percentage - 10, 25);
+		return Math.min(oldState.percentage + 10, 75);
 	}
 
 	console.debug(
@@ -177,4 +174,23 @@ export class ImageProcessor {
 		const pixelData = this.ctx.getImageData(adjustedX, adjustedY, 1, 1).data;
 		return [pixelData[0], pixelData[1], pixelData[2]];
 	}
+}
+
+export function parseSuccessRate(ocrString: string): number | null {
+	const trimmedString = ocrString.trim();
+	if (trimmedString.length === 0) return null;
+
+	const regexRes = trimmedString.match(/^(\d{2})(?:\%)?$/);
+
+	if (regexRes === null) return null;
+
+	const intValue = Number.parseInt(regexRes[1], 10);
+
+	if (Number.isNaN(intValue)) return null;
+
+	//ocrText needs to be 75 65 55 45 35 25 and optionally have % at the end
+	const Acceptable_Percentages = [75, 65, 55, 45, 35, 25];
+	if (!Acceptable_Percentages.includes(intValue)) return null;
+
+	return intValue;
 }

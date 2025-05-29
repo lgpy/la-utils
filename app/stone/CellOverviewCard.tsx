@@ -32,17 +32,17 @@ export default function CellOverviewCard({
 			</CardHeader>
 			<CardContent>
 				<TooltipProvider delayDuration={100}>
-					<div className="flex flex-col items-center">
+					<div className="flex flex-col gap-2 items-center">
 						{[1, 2, 3].map((lineIndex: number) => {
 							const lineCells = cells.filter((cell) => cell.line === lineIndex);
 							if (lineCells.length === 0) return null; // Don't render a line if no cells
 							return (
 								<div
 									key={lineIndex}
-									className={`flex justify-center my-${lineIndex === 1 ? 2 : 0}`}
+									className={`flex justify-center  gap-2 my-${lineIndex === 1 ? 2 : 0}`}
 								>
 									{lineCells.map((cell) => (
-										<Tooltip key={cell.line + cell.pos}>
+										<Tooltip key={cell.line + cell.pos} delayDuration={0}>
 											<TooltipTrigger asChild>
 												<div
 													className={cn(
@@ -57,23 +57,26 @@ export default function CellOverviewCard({
 											</TooltipTrigger>
 											<TooltipContent className="text-xs">
 												<p className="font-semibold">
-													L {cell.line}, P{cell.pos}
+													Line {cell.line}, Position {cell.pos}
 												</p>
 												<hr className="my-1" />
 												<p>
-													Cfg: ({cell.x},{cell.y})
+													Coords: ({cell.x},{cell.y})
+												</p>
+												<p>
+													RGB: ({cell.rgbColor.r},{cell.rgbColor.g},
+													{cell.rgbColor.b})
 												</p>
 												<p>
 													Status:{" "}
 													<span
 														className={cn(
 															"font-medium",
-															cell.detectedStatus === "success" &&
-																"text-green-500",
-															cell.detectedStatus === "failure" &&
-																"text-red-500",
+															cell.detectedStatus === "success" && "text-green",
+															cell.detectedStatus === "failure" && "text-red",
 															cell.detectedStatus === "pending" &&
-																"text-yellow-500",
+																"text-yellow",
+															cell.detectedStatus === "unknown" && "text-gray",
 														)}
 													>
 														{cell.detectedStatus?.toUpperCase() || "N/A"}

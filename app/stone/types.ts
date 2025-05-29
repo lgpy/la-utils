@@ -8,11 +8,12 @@ interface CellIdentifier {
 	pos: number;
 }
 
+export type ColorCategory = "pending" | "failure" | "success" | "unknown";
+
 export interface CellPosition extends PixelCoordinate, CellIdentifier {}
 
 export interface CellInfo extends CellIdentifier {
-	detectedStatus: string;
-	isMatch: boolean; //TODO what is the purpose of this field?
+	detectedStatus: ColorCategory;
 	rgbColor: {
 		r: number;
 		g: number;

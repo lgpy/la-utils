@@ -131,9 +131,14 @@ export function useScreenShare(
 	useEffect(() => {
 		if (stream === null || !stream.active) return;
 
-		const intervalId = setInterval(() => {
+		const intervalId = setInterval(async () => {
 			if (stream.active) {
-				captureFrame(stream).then(onFrameCaptured).catch(console.error);
+				try {
+					const frame = await captureFrame(stream);
+					await onFrameCaptured(frame);
+				} catch (error) {
+					console.error(error);
+				}
 			} else {
 				console.log(
 					"Stream became inactive during automation interval. Stopping.",

@@ -13,7 +13,9 @@ export default function SessionInfoCard({
 	mediaStreamActive,
 	cells,
 }: SessionInfoCardProps) {
-	const allCellssMatch = cells.length > 0 && cells.every((t) => t.isMatch);
+	const allCellsParsed = cells.every(
+		(cell) => cell.detectedStatus !== "unknown",
+	);
 	const cellsCount = cells.length;
 
 	return (
@@ -33,12 +35,12 @@ export default function SessionInfoCard({
 				</div>
 				{cellsCount > 0 && (
 					<div className="mt-2">
-						All Match:{" "}
+						All Parsed:{" "}
 						<Badge
-							variant={allCellssMatch ? "default" : "destructive"}
+							variant={allCellsParsed ? "default" : "destructive"}
 							className="ml-2"
 						>
-							{allCellssMatch ? "YES" : "NO"}
+							{allCellsParsed ? "YES" : "NO"}
 						</Badge>
 					</div>
 				)}
