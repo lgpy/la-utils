@@ -160,7 +160,8 @@ export const createMainStore = () =>
 											: false;
 									if (
 										biweeklyGateIsCompleted &&
-										new Date(assignedRaid[gateId].completedDate!) < lastreset
+										assignedRaid[gateId].completedDate &&
+										new Date(assignedRaid[gateId].completedDate) < lastreset
 									) {
 										return;
 									}
@@ -172,10 +173,11 @@ export const createMainStore = () =>
 							const gateIndex = gateKeys.findIndex((gate) => gate === gateId);
 							for (let i = 0; i <= gateIndex; i++) {
 								if (raids[raidId].gates[gateKeys[i]].isBiWeekly) {
+									const completedDate = assignedRaid[gateKeys[i]].completedDate;
 									const biweeklyGateIsCompleted =
-										assignedRaid[gateKeys[i]].completedDate !== undefined
+										completedDate !== undefined
 											? isGateCompleted(
-													new Date(assignedRaid[gateKeys[i]].completedDate!),
+													new Date(completedDate),
 													getGateResetDate(raidId, gateId),
 												)
 											: false;
@@ -214,7 +216,7 @@ export const createMainStore = () =>
 							) {
 								const lastreset = getLatestWeeklyReset();
 								if (aGate.completedDate !== undefined) {
-									const biWeeklyDate = new Date(aGate.completedDate!);
+									const biWeeklyDate = new Date(aGate.completedDate);
 									const biweeklyGateIsCompleted = isGateCompleted(
 										biWeeklyDate,
 										getGateResetDate(raidId, gateKey),
@@ -247,7 +249,7 @@ export const createMainStore = () =>
 							if (raids[raidId].gates[gateKey].isBiWeekly) {
 								const lastreset = getLatestWeeklyReset();
 								if (aGate.completedDate !== undefined) {
-									const biWeeklyDate = new Date(aGate.completedDate!);
+									const biWeeklyDate = new Date(aGate.completedDate);
 									const biweeklyGateIsCompleted = isGateCompleted(
 										biWeeklyDate,
 										getGateResetDate(raidId, gateKey),
@@ -280,7 +282,7 @@ export const createMainStore = () =>
 							if (raids[raidId].gates[gateKey].isBiWeekly) {
 								const lastreset = getLatestWeeklyReset();
 								if (aGate.completedDate !== undefined) {
-									const biWeeklyDate = new Date(aGate.completedDate!);
+									const biWeeklyDate = new Date(aGate.completedDate);
 									const biweeklyGateIsCompleted = isGateCompleted(
 										biWeeklyDate,
 										getGateResetDate(raidId, gateKey),
@@ -429,49 +431,82 @@ export const createMainStore = () =>
 				name: "characters",
 				version: 4,
 				migrate: (persistedState, version) => {
+					// Define types for migration
+					interface LegacyCharacter {
+						itemLevel: string | number;
+						completedRaids?: unknown;
+						tasks?: unknown[];
+						raids?: {
+							[key: string]: {
+								gates: Array<{
+									id: string;
+									difficulty: Difficulty;
+									completedDate?: string;
+								}>;
+							};
+						};
+						assignedRaids?: Record<
+							string,
+							Record<string, { difficulty: Difficulty; completedDate?: string }>
+						>;
+						isGoldEarner?: boolean;
+					}
+
+					interface LegacyState {
+						characters: LegacyCharacter[];
+					}
+
+					const state = persistedState as LegacyState;
+
 					if (version <= 0) {
-						for (const char of (persistedState as { characters: any[] })
-							.characters) {
+						for (const char of state.characters) {
 							if (typeof char.itemLevel === "string") {
 								char.itemLevel = Number.parseInt(char.itemLevel);
 							}
-							delete char.completedRaids;
+							char.completedRaids = undefined;
 						}
 					}
 					if (version <= 1) {
-						for (const char of (persistedState as { characters: any[] })
-							.characters) {
+						for (const char of state.characters) {
 							char.tasks = [];
 						}
 					}
 					if (version <= 2) {
-						for (const char of (persistedState as { characters: any[] })
-							.characters) {
-							char.assignedRaids = Object.entries(char.raids).reduce(
-								(accraids, [raidId, raid]) => {
-									accraids[raidId] = (raid as any).gates.reduce(
-										(accgates: any, gate: any) => {
-											accgates[gate.id] = {
-												difficulty: gate.difficulty,
-												completedDate: gate.completedDate,
-											};
-											return accgates;
-										},
-										{} as any,
-									);
-									return accraids;
-								},
-								{} as any,
-							);
-							delete char.raids;
+						for (const char of state.characters) {
+							if (char.raids) {
+								char.assignedRaids = Object.entries(char.raids).reduce(
+									(accraids, [raidId, raid]) => {
+										accraids[raidId] = raid.gates.reduce(
+											(accgates, gate) => {
+												accgates[gate.id] = {
+													difficulty: gate.difficulty,
+													completedDate: gate.completedDate,
+												};
+												return accgates;
+											},
+											{} as Record<
+												string,
+												{ difficulty: Difficulty; completedDate?: string }
+											>,
+										);
+										return accraids;
+									},
+									{} as Record<
+										string,
+										Record<
+											string,
+											{ difficulty: Difficulty; completedDate?: string }
+										>
+									>,
+								);
+								char.raids = undefined;
+							}
 						}
 					}
 					if (version <= 3) {
-						(persistedState as { characters: any[] }).characters.forEach(
-							(char, idx) => {
-								char.isGoldEarner = idx < 6;
-							},
-						);
+						state.characters.forEach((char, idx) => {
+							char.isGoldEarner = idx < 6;
+						});
 					}
 					return persistedState;
 				},
