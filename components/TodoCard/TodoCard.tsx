@@ -12,12 +12,12 @@ import {
 import { Check, SwordsIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { Fragment, type JSX, useMemo } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import TodoCardCompleteButton from "./TodoCardCompleteButton";
 import TodoCardCompleteButtonV2 from "./TodoCardCompleteButtonV2";
 import TodoCardRaid from "./TodoCardRaid";
 import TodoCardRaidV2 from "./TodoCardRaidV2";
 import TodoCardTask from "./TodoCardTask";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Props {
 	char: Character;

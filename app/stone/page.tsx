@@ -1,5 +1,5 @@
+import { StoneCalculator } from "@/components/Stone";
 import type { Metadata } from "next";
-import Stone from "./Stone";
 
 export const metadata: Metadata = {
 	title: "Stone | Lost Ark Utils",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function StonePage() {
-	return <Stone />;
+	return <StoneCalculator />;
 }

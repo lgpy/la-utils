@@ -19,7 +19,7 @@ import LiveFeedCard from "./LiveFeedCard";
 import SessionInfoCard from "./SessionInfoCard";
 import StoneStatus from "./StoneStatus";
 
-export default function Stone() {
+export default function StoneCalculator() {
 	const [ocrImageSrc, setOcrImageSrc] = useState<string>();
 	const [cellsImageSrc, setCellsImageSrc] = useState<string>();
 
