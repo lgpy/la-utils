@@ -11,7 +11,11 @@ type Props = {
 const PiggyBankProgressBar = forwardRef<HTMLDivElement, Props>(
 	({ progress, className: classname, ...props }, ref) => {
 		/* width starts at 6 for 0% and ends at 21 for 100% */
-		const width = 6 + (progress / 100) * 16;
+		// Ensure progress is a valid number and clamp it between 0 and 100
+		const validProgress = Number.isFinite(progress)
+			? Math.max(0, Math.min(100, progress))
+			: 0;
+		const width = 6 + (validProgress / 100) * 16;
 
 		const clipPathId = useRef(
 			Math.random().toString(36).substring(2, 15) +

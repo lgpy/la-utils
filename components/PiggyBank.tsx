@@ -47,12 +47,16 @@ export default function PiggyBank(props: Props) {
 			),
 	);
 
+	// Calculate progress, handling division by zero
+	const progressPercentage =
+		thisWeek.total > 0 ? (thisWeek.earned / thisWeek.total) * 100 : 0;
+
 	return (
 		<TooltipProvider>
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<PiggyBankProgressBar
-						progress={(thisWeek.earned / thisWeek.total) * 100}
+						progress={progressPercentage}
 						className={cn("size-5 m-0! absolute top-2 right-2", className)}
 					/>
 				</TooltipTrigger>
