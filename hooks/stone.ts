@@ -1,4 +1,4 @@
-import type { Resolution } from "@/lib/utils";
+import type { Resolution } from "@/lib/stone";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Tesseract from "tesseract.js";
 

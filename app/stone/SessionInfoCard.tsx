@@ -2,8 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { CellInfo } from "./types";
-import type { Resolution } from "@/lib/utils";
+import type { CellInfo, Resolution } from "@/lib/stone";
 
 interface SessionInfoCardProps {
 	mediaStreamActive: boolean;

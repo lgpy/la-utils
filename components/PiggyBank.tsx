@@ -5,9 +5,10 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { raids } from "@/lib/raids";
-import { cn, formatGold } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import type { Character } from "@/providers/MainStoreProvider";
 import PiggyBankProgressBar from "./PiggyBankProgressBar";
+import { formatGold } from "@/lib/format";
 
 type Props = {
 	className?: string;

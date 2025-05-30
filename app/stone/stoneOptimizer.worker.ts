@@ -1,9 +1,4 @@
-import {
-	type GameState,
-	type GoalCondition,
-	type OptimalMoveResult,
-	StoneGameOptimizer,
-} from "./calculator";
+import { type GameState, StoneGameOptimizer } from "@/lib/stone";
 
 let optimizer: StoneGameOptimizer | null = null;
 

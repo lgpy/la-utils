@@ -14,11 +14,7 @@ export interface CellPosition extends PixelCoordinate, CellIdentifier {}
 
 export interface CellInfo extends CellIdentifier {
 	detectedStatus: ColorCategory;
-	rgbColor: {
-		r: number;
-		g: number;
-		b: number;
-	};
+	hsl: [number, number, number];
 }
 
 export type Cell = CellPosition & CellInfo;
@@ -28,4 +24,16 @@ export interface StoneState {
 	line2: string[];
 	line3: string[];
 	percentage: number;
+}
+
+export interface Resolution {
+	width: number;
+	height: number;
+}
+
+export interface Region {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
 }

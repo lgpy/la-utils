@@ -1,6 +1,6 @@
-import type { Region } from "@/lib/utils";
 import { z } from "zod";
 import ResData from "./resolutions.json";
+import type { Resolution } from "./types";
 
 const resolutionConfSchema = z.object({
 	line1: z.object({
@@ -30,6 +30,10 @@ export type ResolutionConfig = z.infer<typeof resolutionConfSchema>;
 
 const parsedConfig = resolutionConfFileSchema.parse(ResData);
 
-export const resolutionConfigs: Map<string, ResolutionConfig> = new Map(
+const resolutionConfigs: Map<string, ResolutionConfig> = new Map(
 	Object.entries(parsedConfig).map(([key, value]) => [key, value]),
 );
+
+export function getResolutionConfig(resolution: Resolution) {
+	return resolutionConfigs.get(`${resolution.width}x${resolution.height}`);
+}

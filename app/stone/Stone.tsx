@@ -1,16 +1,23 @@
 "use client";
 
+import { useScreenShare, useTesseractWorker } from "@/hooks/stone";
+import {
+	type Cell,
+	type CellInfo,
+	type CellPosition,
+	type StoneState,
+	StoneHelper,
+	ImageProcessor,
+	PredictPercentage,
+	parseSuccessRate,
+} from "@/lib/stone";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import CellOverviewCard from "./CellOverviewCard";
 import ControlsCard from "./ControlsCard";
 import LiveFeedCard from "./LiveFeedCard";
 import SessionInfoCard from "./SessionInfoCard";
 import StoneStatus from "./StoneStatus";
-import CellOverviewCard from "./CellOverviewCard";
-import type { CellPosition, StoneState, CellInfo, Cell } from "./types";
-import { useScreenShare, useTesseractWorker } from "@/hooks/stone";
-import { ImageProcessor, parseSuccessRate, PredictPercentage } from "./utils";
-import { StoneHelper } from "./helper";
-import { toast } from "sonner";
 
 export default function Stone() {
 	const [ocrImageSrc, setOcrImageSrc] = useState<string>();
@@ -33,7 +40,7 @@ export default function Stone() {
 			return stoneHelper.getCells().map((cellPosition: CellPosition) => ({
 				...cellPosition,
 				detectedStatus: "unknown",
-				rgbColor: { r: -1, g: -1, b: -1 },
+				hsl: [-1, -1, -1],
 			}));
 
 		return stoneHelper.getCells().map((cellPosition) => {
@@ -44,13 +51,13 @@ export default function Stone() {
 				return {
 					...cellPosition,
 					detectedStatus: "unknown",
-					rgbColor: { r: -1, g: -1, b: -1 },
+					hsl: [-1, -1, -1],
 				};
 
 			return {
 				...cellPosition,
 				detectedStatus: cellInfo.detectedStatus,
-				rgbColor: cellInfo.rgbColor,
+				hsl: cellInfo.hsl,
 			};
 		});
 	}, [stoneHelper, parsedState]);
@@ -140,7 +147,7 @@ export default function Stone() {
 	}, [parsedState, stoneHelper]);
 
 	const onFrameCaptured = useCallback(
-		async (img: ImageBitmap) => {
+		async (img: ImageBitmap, stopCapture: () => void) => {
 			const helperResolution = stoneHelper.getResolution();
 			if (
 				img.width !== helperResolution.width ||
@@ -153,7 +160,7 @@ export default function Stone() {
 					});
 					setStoneHelper(newHelper);
 				} catch (error) {
-					ss.stopScreenShare();
+					stopCapture();
 					console.error(error);
 					toast.error("Unsupported Resolution", {
 						description: `The current resolution (${img.width}x${img.height}) is not supported, stopped the screen sharing.`,
@@ -233,7 +240,7 @@ export default function Stone() {
 		[stoneHelper, isTesseractWorkerReady, showDebugInfo, tesseractWorker],
 	);
 
-	const ss = useScreenShare(500, onFrameCaptured);
+	const ss = useScreenShare(500, (f) => onFrameCaptured(f, ss.stopScreenShare));
 
 	return (
 		<div className="flex flex-col gap-6 p-4 sm:p-6 lg:p-8 w-full items-center">

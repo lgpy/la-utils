@@ -1,5 +1,3 @@
-// filepath: c:\\Users\\lgpy\\repos\\la-utilsv2\\app\\test\\calculator.ts
-
 /**
  * Represents the state of a cell in a row.
  */

@@ -10,9 +10,13 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect, useRef } from "react";
-import type { GameState, GoalCondition, OptimalMoveResult } from "./calculator"; // StoneGameOptimizer removed
-import type { StoneState } from "./types";
-import { getColorClasses } from "./utils";
+import {
+	type GameState,
+	type GoalCondition,
+	type OptimalMoveResult,
+	type StoneState,
+	getColorClasses,
+} from "@/lib/stone";
 
 interface StoneStatusProps {
 	stoneState: StoneState | undefined;

@@ -1,4 +1,4 @@
-import { formatGold } from "@/lib/utils";
+import { formatGold } from "@/lib/format";
 import { animate } from "motion/react";
 import React, { useEffect, useRef, useState } from "react";
 

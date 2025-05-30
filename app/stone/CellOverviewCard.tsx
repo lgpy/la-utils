@@ -7,9 +7,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { type Cell, getColorClasses } from "@/lib/stone";
 import { cn } from "@/lib/utils";
-import type { Cell } from "./types";
-import { getColorClasses } from "./utils";
 
 interface CellOverviewCardProps {
 	cells: Cell[];
@@ -64,8 +63,8 @@ export default function CellOverviewCard({
 													Coords: ({cell.x},{cell.y})
 												</p>
 												<p>
-													RGB: ({cell.rgbColor.r},{cell.rgbColor.g},
-													{cell.rgbColor.b})
+													HSL Value: ({cell.hsl[0].toFixed(2)},
+													{cell.hsl[1].toFixed(2)},{cell.hsl[2].toFixed(2)})
 												</p>
 												<p>
 													Status:{" "}
