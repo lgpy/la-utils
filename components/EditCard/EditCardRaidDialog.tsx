@@ -1,11 +1,3 @@
-import { Difficulty, raids } from "@/lib/raids";
-import { type Character, useMainStore } from "@/providers/MainStoreProvider";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -30,6 +22,14 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Difficulty, raids } from "@/lib/raids";
+import { type Character, useMainStore } from "@/providers/MainStoreProvider";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useMemo } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 Difficulty;
 const formSchema = z.object({

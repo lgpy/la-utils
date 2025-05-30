@@ -2,14 +2,6 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { usePriceStore } from "@/providers/PriceStoreProvider";
-import { AlertCircle, CheckCircle2, ScanText, Upload } from "lucide-react";
-import { Loader2 } from "lucide-react";
-import Image from "next/image";
-import { usePostHog } from "posthog-js/react";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
 import {
 	Dialog,
 	DialogContent,
@@ -18,6 +10,14 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { usePriceStore } from "@/providers/PriceStoreProvider";
+import { AlertCircle, CheckCircle2, ScanText, Upload } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import Image from "next/image";
+import { usePostHog } from "posthog-js/react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 type OCRResult = {
 	itemId: string;

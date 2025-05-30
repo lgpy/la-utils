@@ -5,9 +5,9 @@ import { MainStoreProvider } from "@/providers/MainStoreProvider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { PostHogProvider } from "@/providers/PostHogProvider";
 import { ReactScan } from "@/components/ReactScanComponent";
 import { Toaster } from "@/components/ui/sonner";
+import { PostHogProvider } from "@/providers/PostHogProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 

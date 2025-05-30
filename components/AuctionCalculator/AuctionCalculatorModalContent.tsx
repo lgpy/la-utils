@@ -1,6 +1,3 @@
-import { useAutionStore } from "@/stores/auction";
-import { CheckIcon, ClipboardIcon, GavelIcon, UsersIcon } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -10,6 +7,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAutionStore } from "@/stores/auction";
+import { CheckIcon, ClipboardIcon, GavelIcon, UsersIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 
 function BidAmtButton({ bidAmt }: { bidAmt: number }) {
 	const [copied, setCopied] = useState(false);

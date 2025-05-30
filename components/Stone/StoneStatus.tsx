@@ -8,8 +8,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import React, { useState, useEffect, useRef } from "react";
 import {
 	type GameState,
 	type GoalCondition,
@@ -17,6 +15,8 @@ import {
 	type StoneState,
 	getColorClasses,
 } from "@/lib/stone";
+import { cn } from "@/lib/utils";
+import React, { useState, useEffect, useRef } from "react";
 
 interface StoneStatusProps {
 	stoneState: StoneState | undefined;

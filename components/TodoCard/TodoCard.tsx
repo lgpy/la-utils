@@ -2,6 +2,7 @@ import PiggyBank from "@/components/PiggyBank";
 import ClassIcon from "@/components/class-icons/ClassIcon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getHighest3, parseGoldInfo, sortRaidKeys } from "@/lib/chars";
 import { cn } from "@/lib/utils";
 import {
@@ -17,7 +18,6 @@ import TodoCardCompleteButtonV2 from "./TodoCardCompleteButtonV2";
 import TodoCardRaid from "./TodoCardRaid";
 import TodoCardRaidV2 from "./TodoCardRaidV2";
 import TodoCardTask from "./TodoCardTask";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Props {
 	char: Character;

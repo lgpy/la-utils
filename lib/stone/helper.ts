@@ -1,3 +1,5 @@
+import { CELL_COUNT_PER_LINE, GRID_SIZE, PADDING } from "./constants";
+import { type ResolutionConfig, getResolutionConfig } from "./resolutions";
 import type {
 	CellInfo,
 	CellPosition,
@@ -6,9 +8,7 @@ import type {
 	Region,
 	Resolution,
 } from "./types";
-import { getResolutionConfig, type ResolutionConfig } from "./resolutions";
 import { type ImageProcessor, rgbToHsl } from "./utils";
-import { CELL_COUNT_PER_LINE, PADDING, GRID_SIZE } from "./constants";
 
 const generateLineCellPositions = (
 	baseX: number,

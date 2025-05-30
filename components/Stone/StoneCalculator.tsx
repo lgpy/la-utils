@@ -5,10 +5,10 @@ import {
 	type Cell,
 	type CellInfo,
 	type CellPosition,
-	type StoneState,
-	StoneHelper,
 	ImageProcessor,
 	PredictPercentage,
+	StoneHelper,
+	type StoneState,
 	parseSuccessRate,
 } from "@/lib/stone";
 import { useCallback, useEffect, useMemo, useState } from "react";

@@ -1,11 +1,3 @@
-import { Class } from "@/lib/classes";
-import { type Character, useMainStore } from "@/providers/MainStoreProvider";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash2Icon, TrashIcon } from "lucide-react";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
 import ClassIcon from "@/components/class-icons/ClassIcon";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -33,6 +25,14 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Class } from "@/lib/classes";
+import { type Character, useMainStore } from "@/providers/MainStoreProvider";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Trash2Icon, TrashIcon } from "lucide-react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const formSchema = z.object({
 	name: z.string().min(2).max(50),

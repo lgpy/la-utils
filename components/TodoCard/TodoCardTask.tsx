@@ -1,6 +1,6 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import type { Character } from "@/providers/MainStoreProvider";
-import { Checkbox } from "@/components/ui/checkbox";
 
 type Props = {
 	task: Character["tasks"][number];
