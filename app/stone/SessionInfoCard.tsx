@@ -3,19 +3,24 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { CellInfo } from "./types";
+import type { Resolution } from "@/lib/utils";
 
 interface SessionInfoCardProps {
 	mediaStreamActive: boolean;
 	cells: CellInfo[];
+	resolution: Resolution;
 }
 
 export default function SessionInfoCard({
 	mediaStreamActive,
 	cells,
+	resolution,
 }: SessionInfoCardProps) {
-	const allCellsParsed = cells.every(
-		(cell) => cell.detectedStatus !== "unknown",
+	const parsedCells = cells.reduce(
+		(acc, cell) => acc + (cell.detectedStatus !== "unknown" ? 1 : 0),
+		0,
 	);
+	const allCellsParsed = parsedCells === cells.length && cells.length > 0;
 	const cellsCount = cells.length;
 
 	return (
@@ -35,23 +40,21 @@ export default function SessionInfoCard({
 				</div>
 				{cellsCount > 0 && (
 					<div className="mt-2">
-						All Parsed:{" "}
+						Parsed:{" "}
 						<Badge
 							variant={allCellsParsed ? "default" : "destructive"}
 							className="ml-2"
 						>
-							{allCellsParsed ? "YES" : "NO"}
+							{parsedCells} / {cellsCount}
 						</Badge>
 					</div>
 				)}
-				{cellsCount > 0 && (
-					<div className="mt-2">
-						Cells:{" "}
-						<Badge variant={"outline"} className="ml-2">
-							{cellsCount}
-						</Badge>
-					</div>
-				)}
+				<div className="mt-2">
+					Resolution:{" "}
+					<Badge variant="secondary" className="ml-2">
+						{resolution.width}x{resolution.height}
+					</Badge>
+				</div>
 			</CardContent>
 		</Card>
 	);

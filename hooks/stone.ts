@@ -88,13 +88,19 @@ export function useScreenShare(
 	const [stream, setStream] = useState<MediaStream | null>(null);
 
 	const stopScreenShare = useCallback(() => {
+		setStream((prevStream) => {
+			if (prevStream === null) {
+				return prevStream;
+			}
+
+			for (const track of prevStream.getTracks()) {
+				track.stop();
+			}
+
+			return null;
+		});
 		setIsSharing(false);
-		if (stream === null) return;
-		for (const track of stream.getTracks()) {
-			track.stop();
-		}
-		setStream(null);
-	}, [stream]);
+	}, []);
 
 	useEffect(() => {
 		return () => {

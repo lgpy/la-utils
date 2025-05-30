@@ -256,6 +256,7 @@ export default function Stone() {
 				<SessionInfoCard
 					mediaStreamActive={ss.isSharing}
 					cells={parsedState.cellsInfo}
+					resolution={stoneHelper.getResolution()}
 				/>
 			</div>
 			<StoneStatus stoneState={stoneInfo} className="w-fit" />

@@ -7,73 +7,11 @@ import type {
 } from "./types";
 import { type ImageProcessor, rgbToHsl } from "./utils";
 import { SPIRAL_OFFSETS_5X5 } from "./constants";
+import { type ResolutionConfig, resolutionConfigs } from "./resolutions";
 
 const CELL_COUNT_PER_LINE = 10;
 
 const PADDING = 6;
-
-interface ResolutionConfig {
-	line1: {
-		baseX: number;
-		y: number;
-	};
-	line2: {
-		baseX: number;
-		y: number;
-	};
-	line3: {
-		baseX: number;
-		y: number;
-	};
-	successRateRegion: Region;
-	spacing: number;
-}
-
-const resolutionConfigs: Map<string, ResolutionConfig> = new Map();
-
-resolutionConfigs.set("1920x1080", {
-	line1: {
-		baseX: 746,
-		y: 384,
-	},
-	line2: {
-		baseX: 745,
-		y: 477,
-	},
-	line3: {
-		baseX: 745,
-		y: 605,
-	},
-	successRateRegion: {
-		x: 1185,
-		y: 310,
-		width: 46,
-		height: 27,
-	},
-	spacing: 38,
-});
-
-resolutionConfigs.set("1870x1078", {
-	line1: {
-		baseX: 727,
-		y: 400,
-	},
-	line2: {
-		baseX: 726,
-		y: 490,
-	},
-	line3: {
-		baseX: 727,
-		y: 615,
-	},
-	successRateRegion: {
-		x: 1155,
-		y: 331,
-		width: 39,
-		height: 19,
-	},
-	spacing: 37,
-});
 
 export const generateLineCellPositions = (
 	baseX: number,
