@@ -18,8 +18,11 @@ import type { Region, StoneState } from "./types";
  * rgbToHsl(0, 255, 0);
  */
 export function rgbToHsl(r: number, g: number, b: number) {
+	// biome-ignore lint/style/noParameterAssign: optimization
 	r /= 255;
+	// biome-ignore lint/style/noParameterAssign: optimization
 	g /= 255;
+	// biome-ignore lint/style/noParameterAssign: optimization
 	b /= 255;
 	const l = Math.max(r, g, b);
 	const s = l - Math.min(r, g, b);
