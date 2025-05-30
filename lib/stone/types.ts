@@ -15,6 +15,7 @@ export interface CellPosition extends PixelCoordinate, CellIdentifier {}
 export interface CellInfo extends CellIdentifier {
 	detectedStatus: ColorCategory;
 	hsl: [number, number, number];
+	rgb: [number, number, number];
 }
 
 export type Cell = CellPosition & CellInfo;

@@ -41,6 +41,7 @@ export default function StoneCalculator() {
 				...cellPosition,
 				detectedStatus: "unknown",
 				hsl: [-1, -1, -1],
+				rgb: [-1, -1, -1],
 			}));
 
 		return stoneHelper.getCells().map((cellPosition) => {
@@ -52,12 +53,14 @@ export default function StoneCalculator() {
 					...cellPosition,
 					detectedStatus: "unknown",
 					hsl: [-1, -1, -1],
+					rgb: [-1, -1, -1],
 				};
 
 			return {
 				...cellPosition,
 				detectedStatus: cellInfo.detectedStatus,
 				hsl: cellInfo.hsl,
+				rgb: cellInfo.rgb,
 			};
 		});
 	}, [stoneHelper, parsedState]);
@@ -220,8 +223,7 @@ export default function StoneCalculator() {
 						cellsInfo.some(
 							(cell, i) =>
 								cell.detectedStatus !==
-									currentState.cellsInfo[i].detectedStatus &&
-								cell.detectedStatus !== "unknown",
+								currentState.cellsInfo[i].detectedStatus,
 						)
 					) {
 						console.debug("Cell status has changed, updating state.");

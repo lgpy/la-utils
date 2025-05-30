@@ -53,7 +53,7 @@ export default function StoneStatus({
 	useEffect(() => {
 		// Initialize the worker
 		workerRef.current = new Worker(
-			new URL("../../lib/stone/stoneOptimizer.worker.ts", import.meta.url),
+			new URL("../../workers/stoneOptimizer.ts", import.meta.url),
 		);
 		console.log("Worker created");
 

@@ -1,4 +1,4 @@
-export const GRID_SIZE = 5;
+export const GRID_SIZE = 3;
 if (GRID_SIZE % 2 === 0) {
 	throw new Error(`GRID_SIZE must be odd, but got ${GRID_SIZE}`);
 }

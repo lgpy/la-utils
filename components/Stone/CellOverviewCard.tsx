@@ -63,6 +63,10 @@ export default function CellOverviewCard({
 													Coords: ({cell.x},{cell.y})
 												</p>
 												<p>
+													RGB Value: ({cell.rgb[0]}, {cell.rgb[1]},{cell.rgb[2]}
+													)
+												</p>
+												<p>
 													HSL Value: ({cell.hsl[0].toFixed(2)},
 													{cell.hsl[1].toFixed(2)},{cell.hsl[2].toFixed(2)})
 												</p>

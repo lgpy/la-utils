@@ -87,17 +87,47 @@ function classifyColor(
 	}
 
 	// Gray -> Failure: Low saturation with any lightness above black threshold
-	if (s <= 25) {
+	if (s <= 25 && l < 70) {
 		return "failure";
 	}
 
 	// Red classification rules
-	const isRedHue = normalizedHue <= 20 || normalizedHue >= 340;
-	const isRedRange = isRedHue && s > 25;
 
-	// Blue classification rules - more restrictive range to avoid cyan
-	const isBlueHue = normalizedHue >= 184 && normalizedHue <= 215;
-	const isBlueRange = isBlueHue && s > 25;
+	// Normal: 355-0-7 30-65 24-60
+	const isRedNormal =
+		(normalizedHue >= 355 || normalizedHue <= 7) &&
+		s >= 30 &&
+		s <= 65 &&
+		l >= 24 &&
+		l <= 60;
+	// Milestone: 10-20 57-77 55-87
+	const isRedMilestone =
+		normalizedHue >= 10 &&
+		normalizedHue <= 20 &&
+		s >= 57 &&
+		s <= 77 &&
+		l >= 55 &&
+		l <= 87;
+	const isRedRange = isRedNormal || isRedMilestone;
+
+	// Blue classification rules
+	// Normal: 185-203 31-62 35-54
+	const isBlueNormal =
+		normalizedHue >= 185 &&
+		normalizedHue <= 203 &&
+		s >= 31 &&
+		s <= 62 &&
+		l >= 35 &&
+		l <= 54;
+	// Milestone:  183-205 75-85 55-70
+	const isBlueMilestone =
+		normalizedHue >= 183 &&
+		normalizedHue <= 205 &&
+		s >= 75 &&
+		s <= 85 &&
+		l >= 55 &&
+		l <= 70;
+	const isBlueRange = isBlueNormal || isBlueMilestone;
 
 	// Apply constraints based on the 'contains' parameter
 	if (contains === "red") {
@@ -189,6 +219,7 @@ export class StoneHelper {
 				line,
 				pos,
 				detectedStatus: detectedClassification,
+				rgb: [avgR, avgG, avgB],
 				hsl: [h, s, l],
 			};
 		});

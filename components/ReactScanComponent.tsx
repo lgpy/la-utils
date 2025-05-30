@@ -1,13 +1,16 @@
 "use client";
 import { type JSX, useEffect } from "react";
-// react-scan must be imported before react
-import { scan } from "react-scan";
 
 export function ReactScan(): JSX.Element {
 	useEffect(() => {
-		scan({
-			enabled: process.env.NODE_ENV === "development",
-		});
+		// Dynamically import react-scan only on the client side
+		if (process.env.NODE_ENV === "development") {
+			import("react-scan").then(({ scan }) => {
+				scan({
+					enabled: true,
+				});
+			});
+		}
 	}, []);
 
 	return <></>;
