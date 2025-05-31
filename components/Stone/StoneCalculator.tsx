@@ -1,31 +1,28 @@
 "use client";
 
-import { useScreenShare, useTesseractWorker } from "@/hooks/stone";
 import {
 	type Cell,
 	type CellInfo,
 	type CellPosition,
 	ImageProcessor,
-	PredictPercentage,
-	StoneHelper,
-	type StoneState,
 	parseSuccessRate,
 } from "@/lib/stone";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import CellOverviewCard from "./CellOverviewCard";
 import ControlsCard from "./ControlsCard";
 import LiveFeedCard from "./LiveFeedCard";
 import SessionInfoCard from "./SessionInfoCard";
 import StoneStatus from "./StoneStatus";
+import {
+	useScreenShare,
+	useStoneStatus,
+	useTesseractWorker,
+} from "./StoneCalculator.hooks";
 
 export default function StoneCalculator() {
 	const [ocrImageSrc, setOcrImageSrc] = useState<string>();
 	const [cellsImageSrc, setCellsImageSrc] = useState<string>();
-
-	const [stoneHelper, setStoneHelper] = useState<StoneHelper>(
-		new StoneHelper({ width: 1920, height: 1080 }),
-	);
 
 	const [parsedState, setParsedState] = useState<{
 		cellsInfo: CellInfo[];
@@ -34,6 +31,8 @@ export default function StoneCalculator() {
 		cellsInfo: [],
 		ocrText: "",
 	});
+
+	const { onResChange, stoneHelper, stoneInfo } = useStoneStatus(parsedState);
 
 	const cells = useMemo<Cell[]>(() => {
 		if (stoneHelper.getCells().length !== parsedState.cellsInfo.length)
@@ -69,86 +68,6 @@ export default function StoneCalculator() {
 
 	const [tesseractWorker, isTesseractWorkerReady] = useTesseractWorker();
 
-	const [stoneInfo, setStoneInfo] = useState<StoneState>();
-
-	useEffect(() => {
-		if (parsedState.cellsInfo.length !== stoneHelper.getCells().length) {
-			console.debug(
-				`Parsed cells length (${parsedState.cellsInfo.length}) does not match expected length (${stoneHelper.getCells().length}).`,
-			);
-			return;
-		}
-
-		const parsedSuccessRate = parseSuccessRate(parsedState.ocrText);
-		let finalSuccessRate = parsedSuccessRate;
-
-		if (
-			parsedState.cellsInfo.some((cell) => cell.detectedStatus === "unknown")
-		) {
-			console.debug("Not all cells are matched or have unknown status.");
-			return;
-		}
-
-		const line1 = parsedState.cellsInfo
-			.filter((cell) => cell.line === 1)
-			.map((cell) => cell.detectedStatus);
-		const line2 = parsedState.cellsInfo
-			.filter((cell) => cell.line === 2)
-			.map((cell) => cell.detectedStatus);
-		const line3 = parsedState.cellsInfo
-			.filter((cell) => cell.line === 3)
-			.map((cell) => cell.detectedStatus);
-
-		setStoneInfo((currentStoneInfo) => {
-			if (parsedSuccessRate === null && currentStoneInfo) {
-				const predict = PredictPercentage(currentStoneInfo, {
-					line1,
-					line2,
-					line3,
-				});
-
-				if (predict !== null) {
-					finalSuccessRate = predict;
-					console.debug(
-						`Predicting percentage based on current state: ${finalSuccessRate}%`,
-					);
-				}
-			}
-
-			if (finalSuccessRate === null) {
-				console.debug("No valid percentage value found.");
-				return currentStoneInfo;
-			}
-
-			if (
-				currentStoneInfo &&
-				currentStoneInfo.percentage === finalSuccessRate &&
-				line1.length === currentStoneInfo.line1.length &&
-				line2.length === currentStoneInfo.line2.length &&
-				line3.length === currentStoneInfo.line3.length &&
-				line1.every(
-					(status, index) => status === currentStoneInfo.line1[index],
-				) &&
-				line2.every(
-					(status, index) => status === currentStoneInfo.line2[index],
-				) &&
-				line3.every((status, index) => status === currentStoneInfo.line3[index])
-			) {
-				console.debug(
-					"Stone state has not changed, returning current state without update.",
-				);
-				return currentStoneInfo;
-			}
-
-			return {
-				line1,
-				line2,
-				line3,
-				percentage: finalSuccessRate,
-			};
-		});
-	}, [parsedState, stoneHelper]);
-
 	const onFrameCaptured = useCallback(
 		async (img: ImageBitmap, stopCapture: () => void) => {
 			const helperResolution = stoneHelper.getResolution();
@@ -156,19 +75,18 @@ export default function StoneCalculator() {
 				img.width !== helperResolution.width ||
 				img.height !== helperResolution.height
 			) {
-				try {
-					const newHelper = new StoneHelper({
+				onResChange(
+					{
 						width: img.width,
 						height: img.height,
-					});
-					setStoneHelper(newHelper);
-				} catch (error) {
-					stopCapture();
-					console.error(error);
-					toast.error("Unsupported Resolution", {
-						description: `The current resolution (${img.width}x${img.height}) is not supported, stopped the screen sharing.`,
-					});
-				}
+					},
+					() => {
+						stopCapture();
+						toast.error("Unsupported Resolution", {
+							description: `The current resolution (${img.width}x${img.height}) is not supported, stopped the screen sharing.`,
+						});
+					},
+				);
 				return;
 			}
 			try {
@@ -239,7 +157,13 @@ export default function StoneCalculator() {
 				console.error("Error processing screen share image:", error);
 			}
 		},
-		[stoneHelper, isTesseractWorkerReady, showDebugInfo, tesseractWorker],
+		[
+			stoneHelper,
+			isTesseractWorkerReady,
+			showDebugInfo,
+			tesseractWorker,
+			onResChange,
+		],
 	);
 
 	const ss = useScreenShare(500, (f) => onFrameCaptured(f, ss.stopScreenShare));

@@ -9,14 +9,13 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import {
-	type GameState,
 	type GoalCondition,
-	type OptimalMoveResult,
 	type StoneState,
 	getColorClasses,
 } from "@/lib/stone";
 import { cn } from "@/lib/utils";
-import React, { useState, useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { useStoneOptimizer } from "./StoneStatus.hooks";
 
 interface StoneStatusProps {
 	stoneState: StoneState | undefined;
@@ -45,95 +44,13 @@ export default function StoneStatus({
 	stoneState,
 	className,
 }: StoneStatusProps) {
-	const [selectedGoal, setSelectedGoal] = useState<string>("");
-	const workerRef = useRef<Worker | null>(null);
-	const [optimizerReady, setOptimizerReady] = useState(false);
-	const [calculating, setCalculating] = useState(false);
-
-	useEffect(() => {
-		// Initialize the worker
-		workerRef.current = new Worker(
-			new URL("../../workers/stoneOptimizer.ts", import.meta.url),
-		);
-		console.log("Worker created");
-
-		workerRef.current.onmessage = (event: MessageEvent) => {
-			const { type, data, message, stack } = event.data;
-			if (type === "initDone") {
-				setOptimizerReady(true);
-				console.log("Main: Optimizer ready");
-			} else if (type === "optimalMove") {
-				setOptimalMove(data);
-				setCalculating(false);
-				console.log("Main: Optimal move received", data);
-			} else if (type === "error") {
-				console.error("Main: Worker error:", message, stack);
-				setCalculating(false);
-				// Optionally, notify the user of the error
-			} else {
-				console.log("Main: Received message from worker", type, data);
-			}
-		};
-
-		workerRef.current.onerror = (error) => {
-			console.error("Main: Worker uncaught error:", error);
-			setCalculating(false);
-			// Optionally, notify the user of the error
-		};
-
-		return () => {
-			// Terminate the worker when the component unmounts
-			if (workerRef.current) {
-				console.log("Terminating worker");
-				workerRef.current.onmessage = null; // Remove onmessage handler
-				workerRef.current.onerror = null; // Remove onerror handler
-				workerRef.current.terminate();
-				workerRef.current = null;
-			}
-		};
-	}, []);
-
-	useEffect(() => {
-		if (selectedGoal && goals[selectedGoal] && workerRef.current) {
-			console.log(
-				"Main: Selected goal changed, initializing optimizer in worker",
-				selectedGoal,
-			);
-			setOptimizerReady(false); // Reset ready state
-			setOptimalMove(null); // Clear previous optimal move
-			workerRef.current.postMessage({
-				type: "init",
-				payload: {
-					goalConditions: goals[selectedGoal],
-					maxRedundantRedFails: 5, // Or get this from somewhere
-				},
-			});
-		} else if (!selectedGoal && workerRef.current) {
-			// If no goal is selected, ensure optimizer is not marked as ready
-			setOptimizerReady(false);
-			setOptimalMove(null);
-		}
-	}, [selectedGoal]);
-
-	const [optimalMove, setOptimalMove] = useState<OptimalMoveResult | null>(
-		null,
-	);
-
-	useEffect(() => {
-		if (stoneState && optimizerReady && workerRef.current && !calculating) {
-			console.log(
-				"Main: Stone state or optimizer readiness changed, calculating optimal move in worker",
-				stoneState,
-			);
-			setCalculating(true);
-			workerRef.current.postMessage({
-				type: "getOptimalMove",
-				payload: { gameState: stoneState as GameState },
-			});
-		} else if (!stoneState) {
-			setOptimalMove(null); // Clear optimal move if stoneState is undefined
-		}
-	}, [stoneState, optimizerReady]);
+	const {
+		changeGoal,
+		optimalMove,
+		isCalculating,
+		isWorkerReady: optimizerReady,
+		selectedGoal,
+	} = useStoneOptimizer(stoneState);
 
 	return (
 		<Card className={cn(className)}>
@@ -146,7 +63,7 @@ export default function StoneStatus({
 				) : (
 					<>
 						<div className="flex justify-between items-end mb-4 ">
-							<Select value={selectedGoal} onValueChange={setSelectedGoal}>
+							<Select value={selectedGoal} onValueChange={changeGoal}>
 								<SelectTrigger className="w-[180px]">
 									<SelectValue placeholder="Select Stone Goal" />
 								</SelectTrigger>
@@ -164,9 +81,9 @@ export default function StoneStatus({
 										Loading model...
 									</span>
 								)}
-								{optimizerReady && calculating && (
+								{optimizerReady && isCalculating && (
 									<span className="text-sm text-gray-400 mr-2">
-										Calculating optimal move...
+										Calculating...
 									</span>
 								)}
 							</div>
@@ -175,25 +92,63 @@ export default function StoneStatus({
 								<span className="text-yellow">{stoneState?.percentage}%</span>
 							</div>
 						</div>
-						<div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_minmax(65px,1fr)] items-center justify-center text-center gap-2">
-							{stoneState?.line1.map((cell, index) => (
-								<div
-									key={`line1-${index}`}
-									className={cn(
-										"w-6 h-6 transform rotate-45 m-1.5 border-2 border-neutral-700 shadow-md",
-										getColorClasses(cell, true).background,
-									)}
-								/>
-							))}
-							<div>
+						<div className="grid grid-cols-[repeat(10,40px)_65px] items-center justify-center text-center gap-2">
+							<AnimatePresence mode="popLayout">
+								{stoneState?.line1.map((cell, _, line) => (
+									<motion.div
+										key={`l1-${cell.pos}-${cell.detectedStatus}`}
+										className={cn(
+											"size-6 transform rotate-45 border-2 border-neutral-700 shadow-md",
+											getColorClasses(cell.detectedStatus, true).background,
+										)}
+										initial={{
+											scale: 0.3,
+											opacity: 0,
+										}}
+										animate={{
+											scale: 1,
+											opacity: 1,
+										}}
+										exit={{
+											scale: 0.3,
+											opacity: 0,
+										}}
+										transition={{
+											duration: 0.6,
+											type: "spring",
+											stiffness: 200,
+											damping: 15,
+										}}
+									/>
+								))}
+							</AnimatePresence>
+							<div className="flex justify-center items-center h-8">
 								{optimalMove?.rowDecisionProbabilities?.[0] !== undefined && (
-									<span
-										className={cn("text-sm", {
-											"text-red":
+									<motion.span
+										className={cn("text-sm font-medium", {
+											"text-red-400":
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
 													optimalMove.rowDecisionProbabilities[0] &&
 												optimalMove.rowDecisionProbabilities[0] > 0,
+											"text-gray-400": optimalMove.rowDecisionProbabilities[0] === -1,
+											"text-gray-300": 
+												optimalMove.rowDecisionProbabilities[0] !== -1 &&
+												Math.max(...optimalMove.rowDecisionProbabilities) !==
+													optimalMove.rowDecisionProbabilities[0],
 										})}
+										animate={{
+											color: Math.max(...optimalMove.rowDecisionProbabilities) ===
+												optimalMove.rowDecisionProbabilities[0] &&
+												optimalMove.rowDecisionProbabilities[0] > 0
+												? "rgb(248 113 113)" // red-400
+												: optimalMove.rowDecisionProbabilities[0] === -1
+												? "rgb(156 163 175)" // gray-400
+												: "rgb(209 213 219)", // gray-300
+										}}
+										transition={{
+											duration: 0.2,
+											ease: "easeOut",
+										}}
 									>
 										{optimalMove.rowDecisionProbabilities[0] === -1
 											? "0%"
@@ -202,27 +157,65 @@ export default function StoneStatus({
 														optimalMove.rowDecisionProbabilities[0] * 100
 													).toFixed(2),
 												)}%`}
-									</span>
+									</motion.span>
 								)}
 							</div>
-							{stoneState?.line2.map((cell, index) => (
-								<div
-									key={`line2-${index}`}
-									className={cn(
-										"w-6 h-6 transform rotate-45 m-1.5 border-2 border-neutral-700 shadow-md",
-										getColorClasses(cell, true).background,
-									)}
-								/>
-							))}
-							<div>
+							<AnimatePresence mode="popLayout">
+								{stoneState?.line2.map((cell, _, line) => (
+									<motion.div
+										key={`l2-${cell.pos}-${cell.detectedStatus}`}
+										className={cn(
+											"size-6 transform rotate-45 border-2 border-neutral-700 shadow-md",
+											getColorClasses(cell.detectedStatus, true).background,
+										)}
+										initial={{
+											scale: 0.3,
+											opacity: 0,
+										}}
+										animate={{
+											scale: 1,
+											opacity: 1,
+										}}
+										exit={{
+											scale: 0.3,
+											opacity: 0,
+										}}
+										transition={{
+											duration: 0.6,
+											type: "spring",
+											stiffness: 200,
+											damping: 15,
+										}}
+									/>
+								))}
+							</AnimatePresence>
+							<div className="flex justify-center items-center h-8">
 								{optimalMove?.rowDecisionProbabilities?.[1] !== undefined && (
-									<span
-										className={cn("text-sm", {
-											"text-red":
+									<motion.span
+										className={cn("text-sm font-medium", {
+											"text-red-400":
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
 													optimalMove.rowDecisionProbabilities[1] &&
 												optimalMove.rowDecisionProbabilities[1] > 0,
+											"text-gray-400": optimalMove.rowDecisionProbabilities[1] === -1,
+											"text-gray-300": 
+												optimalMove.rowDecisionProbabilities[1] !== -1 &&
+												Math.max(...optimalMove.rowDecisionProbabilities) !==
+													optimalMove.rowDecisionProbabilities[1],
 										})}
+										animate={{
+											color: Math.max(...optimalMove.rowDecisionProbabilities) ===
+												optimalMove.rowDecisionProbabilities[1] &&
+												optimalMove.rowDecisionProbabilities[1] > 0
+												? "rgb(248 113 113)" // red-400
+												: optimalMove.rowDecisionProbabilities[1] === -1
+												? "rgb(156 163 175)" // gray-400
+												: "rgb(209 213 219)", // gray-300
+										}}
+										transition={{
+											duration: 0.2,
+											ease: "easeOut",
+										}}
 									>
 										{optimalMove.rowDecisionProbabilities[1] === -1
 											? "0%"
@@ -231,27 +224,64 @@ export default function StoneStatus({
 														optimalMove.rowDecisionProbabilities[1] * 100
 													).toFixed(2),
 												)}%`}
-									</span>
+									</motion.span>
 								)}
 							</div>
-							{stoneState?.line3.map((cell, index) => (
-								<div
-									key={`line3-${index}`}
-									className={cn(
-										"w-6 h-6 transform rotate-45 m-1.5 border-2 border-neutral-700 shadow-md",
-										getColorClasses(cell, false).background,
-									)}
-								/>
-							))}
-							<div>
+							<AnimatePresence mode="popLayout">
+								{stoneState?.line3.map((cell, _, line) => (
+									<motion.div
+										key={`l3-${cell.pos}-${cell.detectedStatus}`}
+										className={cn(
+											"size-6 transform rotate-45 border-2 border-neutral-700 shadow-md",
+											getColorClasses(cell.detectedStatus, false).background,
+										)}
+										initial={{
+											scale: 0.3,
+											opacity: 0,
+										}}
+										animate={{
+											scale: 1,
+											opacity: 1,
+										}}
+										exit={{
+											scale: 0.3,
+											opacity: 0,
+										}}
+										transition={{
+											duration: 0.6,
+											type: "spring",
+											stiffness: 200,
+											damping: 15,
+										}}
+									/>
+								))}
+							</AnimatePresence>							<div className="flex justify-center items-center h-8">
 								{optimalMove?.rowDecisionProbabilities?.[2] !== undefined && (
-									<span
-										className={cn("text-sm", {
-											"text-red":
+									<motion.span
+										className={cn("text-sm font-medium", {
+											"text-red-400":
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
 													optimalMove.rowDecisionProbabilities[2] &&
 												optimalMove.rowDecisionProbabilities[2] > 0,
+											"text-gray-400": optimalMove.rowDecisionProbabilities[2] === -1,
+											"text-gray-300": 
+												optimalMove.rowDecisionProbabilities[2] !== -1 &&
+												Math.max(...optimalMove.rowDecisionProbabilities) !==
+													optimalMove.rowDecisionProbabilities[2],
 										})}
+										animate={{
+											color: Math.max(...optimalMove.rowDecisionProbabilities) ===
+												optimalMove.rowDecisionProbabilities[2] &&
+												optimalMove.rowDecisionProbabilities[2] > 0
+												? "rgb(248 113 113)" // red-400
+												: optimalMove.rowDecisionProbabilities[2] === -1
+												? "rgb(156 163 175)" // gray-400
+												: "rgb(209 213 219)", // gray-300
+										}}
+										transition={{
+											duration: 0.2,
+											ease: "easeOut",
+										}}
 									>
 										{optimalMove.rowDecisionProbabilities[2] === -1
 											? "0%"
@@ -260,7 +290,7 @@ export default function StoneStatus({
 														optimalMove.rowDecisionProbabilities[2] * 100
 													).toFixed(2),
 												)}%`}
-									</span>
+									</motion.span>
 								)}
 							</div>
 						</div>

@@ -1,9 +1,32 @@
-import { type GameState, StoneGameOptimizer } from "@/lib/stone";
+import {
+	type GoalCondition,
+	StoneGameOptimizer,
+	type StoneState,
+	type StoneStateInterface,
+} from "@/lib/stone";
 
 let optimizer: StoneGameOptimizer | null = null;
 
-addEventListener("message", (event: MessageEvent) => {
+type BaseMessage<T, Y> = {
+	type: T;
+	payload: Y;
+};
+
+type InitMessage = BaseMessage<
+	"init",
+	{ goalConditions: GoalCondition[]; maxRedundantRedFails: number }
+>;
+
+type GetOptimalMoveMessage = BaseMessage<
+	"calculate",
+	{ gameState: StoneState }
+>;
+
+type MessageType = InitMessage | GetOptimalMoveMessage;
+
+addEventListener("message", (event: MessageEvent<MessageType>) => {
 	const { type, payload } = event.data;
+	console.debug("Worker received message:", type, payload);
 
 	try {
 		if (type === "init") {
@@ -12,7 +35,7 @@ addEventListener("message", (event: MessageEvent) => {
 				payload.maxRedundantRedFails,
 			);
 			postMessage({ type: "initDone" });
-		} else if (type === "getOptimalMove") {
+		} else if (type === "calculate") {
 			if (!optimizer) {
 				postMessage({
 					type: "error",
@@ -20,7 +43,8 @@ addEventListener("message", (event: MessageEvent) => {
 				});
 				return;
 			}
-			const result = optimizer.getOptimalMove(payload.gameState as GameState);
+
+			const result = optimizer.getOptimalMove(payload.gameState);
 			postMessage({ type: "optimalMove", data: result });
 		}
 	} catch (error) {

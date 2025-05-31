@@ -1,142 +1,63 @@
-import { CELL_COUNT_PER_LINE, GRID_SIZE, PADDING } from "./constants";
-import { type ResolutionConfig, getResolutionConfig } from "./resolutions";
+import { GRID_SIZE, PADDING } from "./constants";
+import { type ResolutionConfig, resolutionConfigs } from "./resolutions";
 import type {
 	CellInfo,
 	CellPosition,
 	ColorCategory,
-	PixelCoordinate,
 	Region,
 	Resolution,
 } from "./types";
 import { type ImageProcessor, rgbToHsl } from "./utils";
 
-const generateLineCellPositions = (
-	baseX: number,
-	y: number,
-	count: number,
-	spacing: number,
-): PixelCoordinate[] => {
-	return Array.from({ length: count }, (_, i) => ({
-		x: baseX + i * spacing,
-		y,
-	}));
-};
-
-function generateCells(config: ResolutionConfig): CellPosition[] {
-	const line1CellPositions = generateLineCellPositions(
-		config.line1.baseX,
-		config.line1.y,
-		CELL_COUNT_PER_LINE,
-		config.spacing,
-	);
-	const line2CellPositions = generateLineCellPositions(
-		config.line2.baseX,
-		config.line2.y,
-		CELL_COUNT_PER_LINE,
-		config.spacing,
-	);
-	const line3CellPositions = generateLineCellPositions(
-		config.line3.baseX,
-		config.line3.y,
-		CELL_COUNT_PER_LINE,
-		config.spacing,
-	);
-
-	return [
-		...line1CellPositions.map((pos, index) => ({
-			line: 1,
-			pos: index,
-			x: pos.x,
-			y: pos.y,
-		})),
-		...line2CellPositions.map((pos, index) => ({
-			line: 2,
-			pos: index,
-			x: pos.x,
-			y: pos.y,
-		})),
-		...line3CellPositions.map((pos, index) => ({
-			line: 3,
-			pos: index,
-			x: pos.x,
-			y: pos.y,
-		})),
-	];
-}
-
 /**
  * Classifies a color based on HSL values with constraints
- * @param h - Hue (0-360)
- * @param s - Saturation (0-100)
- * @param l - Lightness (0-100)
+ * @param _H - Hue (0-360)
+ * @param S - Saturation (0-100)
+ * @param L - Lightness (0-100)
  * @param contains - Constraint that limits classification to "blue" or "red"
  * @returns "unknown" | "pending" | "failure" | "success"
  */
 function classifyColor(
-	h: number,
-	s: number,
-	l: number,
+	_H: number,
+	S: number,
+	L: number,
 	contains: "blue" | "red",
 ): ColorCategory {
 	// Normalize hue to 0-360 range
-	const normalizedHue = ((h % 360) + 360) % 360;
+	const H = ((_H % 360) + 360) % 360;
 
 	// Black -> Pending: Very low lightness (≤3%) OR (high saturation ≥70% AND low lightness ≤14%)
-	if (l <= 3 || (s >= 70 && l <= 14)) {
+	if (L <= 3 || (S >= 70 && L <= 14)) {
 		return "pending";
 	}
 
 	// Gray -> Failure: Low saturation with any lightness above black threshold
-	if (s <= 25 && l < 70) {
+	if (S <= 25 && L < 70) {
 		return "failure";
 	}
 
-	// Red classification rules
-
-	// Normal: 355-0-7 30-65 24-60
-	const isRedNormal =
-		(normalizedHue >= 355 || normalizedHue <= 7) &&
-		s >= 30 &&
-		s <= 65 &&
-		l >= 24 &&
-		l <= 60;
-	// Milestone: 10-20 57-77 55-87
-	const isRedMilestone =
-		normalizedHue >= 10 &&
-		normalizedHue <= 20 &&
-		s >= 57 &&
-		s <= 77 &&
-		l >= 55 &&
-		l <= 87;
-	const isRedRange = isRedNormal || isRedMilestone;
-
-	// Blue classification rules
-	// Normal: 185-203 31-62 35-54
-	const isBlueNormal =
-		normalizedHue >= 185 &&
-		normalizedHue <= 203 &&
-		s >= 31 &&
-		s <= 62 &&
-		l >= 35 &&
-		l <= 54;
-	// Milestone:  183-205 75-85 55-70
-	const isBlueMilestone =
-		normalizedHue >= 183 &&
-		normalizedHue <= 205 &&
-		s >= 75 &&
-		s <= 85 &&
-		l >= 55 &&
-		l <= 70;
-	const isBlueRange = isBlueNormal || isBlueMilestone;
-
 	// Apply constraints based on the 'contains' parameter
 	if (contains === "red") {
-		// Can only classify as success (red), pending (black), failure (gray), or unknown
+		//* Red Normal Constraints: H 355-0-7 | S 24-65 | L 24-60
+		const isRedNormal =
+			(H >= 355 || H <= 7) && S >= 24 && S <= 65 && L >= 24 && L <= 60;
+		//* Red Milestone Constraints: H 10-20 | S 57-82 | L 55-87
+		const isRedMilestone =
+			H >= 10 && H <= 20 && S >= 57 && S <= 82 && L >= 55 && L <= 87;
+		const isRedRange = isRedNormal || isRedMilestone;
+
 		if (isRedRange) {
 			return "success";
 		}
 	} else if (contains === "blue") {
-		// Can only classify as success (blue), pending (black), failure (gray), or unknown
+		//* Blue Normal Constraints: H 185-203 | S 31-64 | L 35-54
+		const isBlueNormal =
+			H >= 185 && H <= 203 && S >= 31 && S <= 64 && L >= 35 && L <= 54;
+		//* Blue Milestone Constraints:  H 183-205 | S 75-92 | L 55-70
+		const isBlueMilestone =
+			H >= 183 && H <= 205 && S >= 75 && S <= 92 && L >= 55 && L <= 70;
+		const isBlueRange = isBlueNormal || isBlueMilestone;
+
 		if (isBlueRange) {
 			return "success";
 		}
@@ -162,7 +83,7 @@ export class StoneHelper {
 	private config: ResolutionConfig;
 
 	constructor(resolution: Resolution) {
-		const config = getResolutionConfig(resolution);
+		const config = resolutionConfigs.get(resolution);
 		if (config === undefined) {
 			throw new Error(
 				`No resolution config found for ${resolution.width}x${resolution.height}.`,
@@ -170,7 +91,7 @@ export class StoneHelper {
 		}
 		this.resolution = resolution;
 		this.config = config;
-		this.cells = generateCells(this.config);
+		this.cells = this.config.generateCells();
 	}
 
 	getCells(): CellPosition[] {

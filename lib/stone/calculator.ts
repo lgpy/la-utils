@@ -1,35 +1,4 @@
-/**
- * Stone Game Calculator - Optimized Version
- *
- * Key Optimizations Applied:
- * 1. Numeric State Keys: Replaced string-based state representation with bit-packed numeric keys for faster lookup
- * 2. Pre-calculated Probabilities: Cache probability calculations in a Map to avoid repeated division operations
- * 3. Reduced Code Duplication: Unified row-testing logic using loops instead of separate code blocks for each row
- * 4. Early Termination: Added checks to detect impossible-to-win states and return immediately
- * 5. Memory Efficiency: Use numeric keys instead of strings for memoization table
- * 6. Helper Methods: Added utility methods for better code organization and reusability
- *
- * Performance Improvements:
- * - Faster state encoding/decoding using bitwise operations
- * - Reduced memory allocation from string operations
- * - Early game state pruning to avoid unnecessary recursive calls
- * - Pre-computed probability lookup table
- */
-
-/**
- * Represents the state of a cell in a row.
- */
-export type CellState = "success" | "failure" | "pending";
-
-/**
- * Defines the input structure for the current game state.
- */
-export interface GameState {
-	line1: CellState[];
-	line2: CellState[];
-	line3: CellState[];
-	percentage: number; // Current success probability (e.g., 75, 65, ..., 25)
-}
+import type { StoneState } from "./state";
 
 /**
  * Defines a single victory goal condition.
@@ -288,16 +257,16 @@ export class StoneGameOptimizer {
 	 * @param gameState The current state of the game.
 	 * @returns An OptimalMoveResult containing the expected win probabilities for each row.
 	 */
-	public getOptimalMove(gameState: GameState): OptimalMoveResult {
+	public getOptimalMove(gameState: StoneState): OptimalMoveResult {
 		const linesStatus = [gameState.line1, gameState.line2, gameState.line3];
 		const c = [0, 0, 0]; // cells filled per row
 		const s = [0, 0, 0]; // successes per row
 
 		for (let i = 0; i < 3; i++) {
-			for (const status of linesStatus[i]) {
-				if (status !== "pending") {
+			for (const cell of linesStatus[i]) {
+				if (cell.detectedStatus !== "pending") {
 					c[i]++;
-					if (status === "success") {
+					if (cell.detectedStatus === "success") {
 						s[i]++;
 					}
 				}

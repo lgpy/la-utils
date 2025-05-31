@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { Region, StoneState } from "./types";
+import type { Region } from "./types";
 
 /**
  * Converts RGB color values to HSL (Hue, Saturation, Lightness) color space.
@@ -43,64 +43,16 @@ export function rgbToHsl(r: number, g: number, b: number) {
 export const getColorClasses = (
 	status: string | undefined,
 	isBlueLine: boolean,
-) => ({
-	background: cn("", {
-		"bg-red": status === "success" && !isBlueLine,
-		"bg-blue": status === "success" && isBlueLine,
-		"bg-surface2": status === "failure",
-		"bg-peach": status === "unknown",
-	}),
-});
-
-export function PredictPercentage(
-	oldState: StoneState,
-	newState: Omit<StoneState, "percentage">,
-): number | null {
-	const oldCount = { failures: 0, successes: 0 };
-	const newCount = { failures: 0, successes: 0 };
-
-	const statusChecker = (
-		status: string,
-		obj: { failures: number; successes: number },
-	) => {
-		switch (status) {
-			case "success":
-				obj.successes++;
-				break;
-			case "failure":
-				obj.failures++;
-				break;
-			default:
-				break;
-		}
+) => {
+	return {
+		background: cn("", {
+			"bg-red": status === "success" && !isBlueLine,
+			"bg-blue": status === "success" && isBlueLine,
+			"bg-surface2": status === "failure",
+			"bg-peach": status === "unknown",
+		}),
 	};
-
-	for (const status of oldState.line1) statusChecker(status, oldCount);
-	for (const status of oldState.line2) statusChecker(status, oldCount);
-	for (const status of oldState.line3) statusChecker(status, oldCount);
-	for (const status of newState.line1) statusChecker(status, newCount);
-	for (const status of newState.line2) statusChecker(status, newCount);
-	for (const status of newState.line3) statusChecker(status, newCount);
-
-	const totalOld = oldCount.successes + oldCount.failures;
-	const totalNew = newCount.successes + newCount.failures;
-	const totaldiff = totalNew - totalOld;
-
-	if (totaldiff === 0) return oldState.percentage; // No change in total, return old percentage
-
-	if (totaldiff === 1 && newCount.successes > oldCount.successes) {
-		return Math.max(oldState.percentage - 10, 25);
-	}
-
-	if (totaldiff === 1 && newCount.failures > oldCount.failures) {
-		return Math.min(oldState.percentage + 10, 75);
-	}
-
-	console.debug(
-		`PredictPercentage: Unexpected totaldiff: ${totaldiff}, oldCount: ${JSON.stringify(oldCount)}, newCount: ${JSON.stringify(newCount)}`,
-	);
-	return null;
-}
+};
 
 export class ImageProcessor {
 	constructor(

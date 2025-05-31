@@ -20,13 +20,6 @@ export interface CellInfo extends CellIdentifier {
 
 export type Cell = CellPosition & CellInfo;
 
-export interface StoneState {
-	line1: string[];
-	line2: string[];
-	line3: string[];
-	percentage: number;
-}
-
 export interface Resolution {
 	width: number;
 	height: number;

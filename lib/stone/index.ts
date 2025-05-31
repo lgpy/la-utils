@@ -4,11 +4,10 @@ export {
 	getColorClasses,
 	ImageProcessor,
 	parseSuccessRate,
-	PredictPercentage,
 } from "./utils";
 export {
-	type GameState,
 	StoneGameOptimizer,
 	type GoalCondition,
 	type OptimalMoveResult,
 } from "./calculator";
+export { StoneState, type StoneStateInterface } from "./state";
