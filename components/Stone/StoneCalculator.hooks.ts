@@ -1,11 +1,11 @@
 import {
 	type CellInfo,
-	StoneState,
-	StoneHelper,
-	parseSuccessRate,
 	type Resolution,
+	StoneHelper,
+	StoneState,
+	parseSuccessRate,
 } from "@/lib/stone";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Tesseract from "tesseract.js";
 
 declare global {

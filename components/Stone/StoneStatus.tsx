@@ -130,20 +130,22 @@ export default function StoneStatus({
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
 													optimalMove.rowDecisionProbabilities[0] &&
 												optimalMove.rowDecisionProbabilities[0] > 0,
-											"text-gray-400": optimalMove.rowDecisionProbabilities[0] === -1,
-											"text-gray-300": 
+											"text-gray-400":
+												optimalMove.rowDecisionProbabilities[0] === -1,
+											"text-gray-300":
 												optimalMove.rowDecisionProbabilities[0] !== -1 &&
 												Math.max(...optimalMove.rowDecisionProbabilities) !==
 													optimalMove.rowDecisionProbabilities[0],
 										})}
 										animate={{
-											color: Math.max(...optimalMove.rowDecisionProbabilities) ===
-												optimalMove.rowDecisionProbabilities[0] &&
+											color:
+												Math.max(...optimalMove.rowDecisionProbabilities) ===
+													optimalMove.rowDecisionProbabilities[0] &&
 												optimalMove.rowDecisionProbabilities[0] > 0
-												? "rgb(248 113 113)" // red-400
-												: optimalMove.rowDecisionProbabilities[0] === -1
-												? "rgb(156 163 175)" // gray-400
-												: "rgb(209 213 219)", // gray-300
+													? "rgb(248 113 113)" // red-400
+													: optimalMove.rowDecisionProbabilities[0] === -1
+														? "rgb(156 163 175)" // gray-400
+														: "rgb(209 213 219)", // gray-300
 										}}
 										transition={{
 											duration: 0.2,
@@ -197,20 +199,22 @@ export default function StoneStatus({
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
 													optimalMove.rowDecisionProbabilities[1] &&
 												optimalMove.rowDecisionProbabilities[1] > 0,
-											"text-gray-400": optimalMove.rowDecisionProbabilities[1] === -1,
-											"text-gray-300": 
+											"text-gray-400":
+												optimalMove.rowDecisionProbabilities[1] === -1,
+											"text-gray-300":
 												optimalMove.rowDecisionProbabilities[1] !== -1 &&
 												Math.max(...optimalMove.rowDecisionProbabilities) !==
 													optimalMove.rowDecisionProbabilities[1],
 										})}
 										animate={{
-											color: Math.max(...optimalMove.rowDecisionProbabilities) ===
-												optimalMove.rowDecisionProbabilities[1] &&
+											color:
+												Math.max(...optimalMove.rowDecisionProbabilities) ===
+													optimalMove.rowDecisionProbabilities[1] &&
 												optimalMove.rowDecisionProbabilities[1] > 0
-												? "rgb(248 113 113)" // red-400
-												: optimalMove.rowDecisionProbabilities[1] === -1
-												? "rgb(156 163 175)" // gray-400
-												: "rgb(209 213 219)", // gray-300
+													? "rgb(248 113 113)" // red-400
+													: optimalMove.rowDecisionProbabilities[1] === -1
+														? "rgb(156 163 175)" // gray-400
+														: "rgb(209 213 219)", // gray-300
 										}}
 										transition={{
 											duration: 0.2,
@@ -255,7 +259,8 @@ export default function StoneStatus({
 										}}
 									/>
 								))}
-							</AnimatePresence>							<div className="flex justify-center items-center h-8">
+							</AnimatePresence>{" "}
+							<div className="flex justify-center items-center h-8">
 								{optimalMove?.rowDecisionProbabilities?.[2] !== undefined && (
 									<motion.span
 										className={cn("text-sm font-medium", {
@@ -263,20 +268,22 @@ export default function StoneStatus({
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
 													optimalMove.rowDecisionProbabilities[2] &&
 												optimalMove.rowDecisionProbabilities[2] > 0,
-											"text-gray-400": optimalMove.rowDecisionProbabilities[2] === -1,
-											"text-gray-300": 
+											"text-gray-400":
+												optimalMove.rowDecisionProbabilities[2] === -1,
+											"text-gray-300":
 												optimalMove.rowDecisionProbabilities[2] !== -1 &&
 												Math.max(...optimalMove.rowDecisionProbabilities) !==
 													optimalMove.rowDecisionProbabilities[2],
 										})}
 										animate={{
-											color: Math.max(...optimalMove.rowDecisionProbabilities) ===
-												optimalMove.rowDecisionProbabilities[2] &&
+											color:
+												Math.max(...optimalMove.rowDecisionProbabilities) ===
+													optimalMove.rowDecisionProbabilities[2] &&
 												optimalMove.rowDecisionProbabilities[2] > 0
-												? "rgb(248 113 113)" // red-400
-												: optimalMove.rowDecisionProbabilities[2] === -1
-												? "rgb(156 163 175)" // gray-400
-												: "rgb(209 213 219)", // gray-300
+													? "rgb(248 113 113)" // red-400
+													: optimalMove.rowDecisionProbabilities[2] === -1
+														? "rgb(156 163 175)" // gray-400
+														: "rgb(209 213 219)", // gray-300
 										}}
 										transition={{
 											duration: 0.2,

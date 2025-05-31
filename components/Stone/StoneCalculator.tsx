@@ -13,12 +13,12 @@ import CellOverviewCard from "./CellOverviewCard";
 import ControlsCard from "./ControlsCard";
 import LiveFeedCard from "./LiveFeedCard";
 import SessionInfoCard from "./SessionInfoCard";
-import StoneStatus from "./StoneStatus";
 import {
 	useScreenShare,
 	useStoneStatus,
 	useTesseractWorker,
 } from "./StoneCalculator.hooks";
+import StoneStatus from "./StoneStatus";
 
 export default function StoneCalculator() {
 	const [ocrImageSrc, setOcrImageSrc] = useState<string>();

@@ -1,7 +1,7 @@
 import { z } from "zod";
+import { CELL_COUNT_PER_LINE } from "./constants";
 import ResData from "./resolutions.json";
 import type { CellPosition, PixelCoordinate, Resolution } from "./types";
-import { CELL_COUNT_PER_LINE } from "./constants";
 
 function generateLineCellPositions(
 	baseX: number,

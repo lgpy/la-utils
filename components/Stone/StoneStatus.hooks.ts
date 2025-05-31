@@ -1,9 +1,9 @@
 import {
-	StoneState,
-	type OptimalMoveResult,
 	type GoalCondition,
+	type OptimalMoveResult,
+	StoneState,
 } from "@/lib/stone";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const goals: Record<string, GoalCondition[]> = {
 	"77": [
