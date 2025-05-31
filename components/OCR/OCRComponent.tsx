@@ -222,8 +222,8 @@ export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
 									<h3 className="font-medium">OCR Results</h3>
 								</div>
 								<pre className="text-sm whitespace-pre-wrap overflow-auto max-h-60">
-									{result.map((item, index) => (
-										<div key={index}>
+									{result.map((item) => (
+										<div key={item.itemId}>
 											{item.itemId} &gt; {item.lowestPrice}
 										</div>
 									))}

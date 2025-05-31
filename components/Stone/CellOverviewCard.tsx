@@ -49,12 +49,6 @@ export default function CellOverviewCard({
 														getColorClasses(
 															cell.detectedStatus,
 															cell.line !== 3,
-															lineCells
-																.filter((c) => c.detectedStatus === "success")
-																.findIndex(
-																	(c) =>
-																		c.line === cell.line && c.pos === cell.pos,
-																) + 1,
 														).background,
 													)}
 													aria-label={`Cell line ${cell.line}, pos ${cell.pos}`}
