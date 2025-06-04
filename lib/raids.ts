@@ -465,4 +465,45 @@ export const raids: Record<
 			},
 		},
 	},
+	mordum: {
+		name: "Mordum",
+		gates: {
+			G1: {
+				difficulties: {
+					[Difficulty.normal]: {
+						itemlevel: 1680,
+						rewards: { gold: 6000 },
+					},
+					[Difficulty.hard]: {
+						itemlevel: 1700,
+						rewards: { gold: 7000 },
+					},
+				},
+			},
+			G2: {
+				difficulties: {
+					[Difficulty.normal]: {
+						itemlevel: 1680,
+						rewards: { gold: 9500 },
+					},
+					[Difficulty.hard]: {
+						itemlevel: 1700,
+						rewards: { gold: 11000 },
+					},
+				},
+			},
+			G3: {
+				difficulties: {
+					[Difficulty.normal]: {
+						itemlevel: 1680,
+						rewards: { gold: 12500 },
+					},
+					[Difficulty.hard]: {
+						itemlevel: 1700,
+						rewards: { gold: 20000 },
+					},
+				},
+			},
+		},
+	},
 };
