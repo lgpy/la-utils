@@ -192,7 +192,7 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
 						<p
 							className={cn("font-semibold self-center", {
 								"text-destructive": recipe.marketdiff > 0,
-								"text-success": recipe.marketdiff < 0,
+								"text-green": recipe.marketdiff < 0,
 							})}
 						>
 							{recipe.marketdiff > 0 && "+"}

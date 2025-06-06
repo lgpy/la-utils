@@ -39,7 +39,7 @@ const PercentChange = ({ value }: { value: number }) => (
 	<p
 		className={cn("text-xs", {
 			"text-destructive": value >= 0,
-			"text-success": value < 0,
+			"text-green": value < 0,
 		})}
 	>
 		{value > 0 && "+"}
