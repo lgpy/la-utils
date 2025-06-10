@@ -35,7 +35,7 @@ function ChangelogEntryCard({ entry }: ChangelogEntryCardProps) {
 
 	return (
 		<Card id={entry.id}>
-			<CardHeader className="flex items-center justify-between items-start">
+			<CardHeader className="flex justify-between items-start">
 				<div>
 					<CardTitle className="text-lg flex items-center justify-between">
 						<span>{entry.title}</span>
