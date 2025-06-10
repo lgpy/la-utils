@@ -19,17 +19,14 @@ import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 
 export default function ChangelogNotification() {
-	const { lastViewedDate } = useChangelogStore();
+	const { lastViewedDate, isHydrated } = useChangelogStore();
 
 	// Local state for notification logic
 	const [newEntries, setNewEntries] = useState<ChangelogEntryWithNew[]>([]);
 	const [totalCount, setTotalCount] = useState(0);
-	const [isLoadingNew, setIsLoadingNew] = useState(false);
 
 	// Fetch new entries function
 	const fetchNewEntries = useCallback(async () => {
-		setIsLoadingNew(true);
-
 		try {
 			if (!lastViewedDate) {
 				// For first-time users, fetch recent entries (limit to avoid overwhelming)
@@ -51,8 +48,6 @@ export default function ChangelogNotification() {
 			}
 		} catch (error) {
 			console.error("Failed to fetch new entries:", error);
-		} finally {
-			setIsLoadingNew(false);
 		}
 	}, [lastViewedDate]);
 
@@ -62,14 +57,12 @@ export default function ChangelogNotification() {
 
 	// Fetch new entries when component mounts
 	useEffect(() => {
+		if (!isHydrated) return;
 		fetchNewEntries();
-	}, [fetchNewEntries]);
+	}, [fetchNewEntries, isHydrated]);
 
 	const unreadEntries = getUnreadEntries();
 	const hasUnread = hasUnreadEntries();
-
-	// Always show dropdown, even when no new updates
-	const showDropdown = true;
 
 	return (
 		<DropdownMenu>

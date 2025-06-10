@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import {
+	createContext,
+	useContext,
+	useEffect,
+	useState,
+	type ReactNode,
+} from "react";
 import { useStore } from "zustand";
 import { createChangelogStore, type ChangelogStore } from "@/stores/changelog";
 
@@ -26,11 +32,27 @@ export const ChangelogStoreProvider = ({
 
 export const useChangelogStore = () => {
 	const context = useContext(ChangelogStoreContext);
+	const [isHydrated, setIsHydrated] = useState(false);
+
 	if (!context) {
 		throw new Error(
 			"useChangelogStore must be used within a ChangelogStoreProvider",
 		);
 	}
 
-	return useStore(context);
+	useEffect(() => {
+		if (context.persist.hasHydrated) {
+			setIsHydrated(context.persist.hasHydrated());
+		}
+		context.persist.onFinishHydration(() => {
+			setIsHydrated(true);
+		});
+	}, [context.persist]);
+
+	const store = useStore(context);
+
+	return {
+		...store,
+		isHydrated,
+	};
 };

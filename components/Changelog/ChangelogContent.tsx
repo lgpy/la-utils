@@ -78,7 +78,7 @@ function ChangelogEntryCard({ entry }: ChangelogEntryCardProps) {
 }
 
 export default function ChangelogContent() {
-	const { setLastViewedDate, lastViewedDate } = useChangelogStore();
+	const { setLastViewedDate, lastViewedDate, isHydrated } = useChangelogStore();
 
 	// Local state for component logic
 	const [entries, setEntries] = useState<ChangelogEntryWithNew[]>([]);
@@ -139,8 +139,9 @@ export default function ChangelogContent() {
 
 	// Fetch entries on component mount
 	useEffect(() => {
+		if (!isHydrated) return; // Wait for hydration to complete
 		fetchEntries(1, 10);
-	}, [fetchEntries]);
+	}, [fetchEntries, isHydrated]);
 
 	// Handle scrolling to specific entry if hash is present (only run once)
 	useEffect(() => {
@@ -202,7 +203,7 @@ export default function ChangelogContent() {
 					</div>
 				</div>
 
-				{isLoading && (
+				{(isLoading || !isHydrated) && (
 					<Card>
 						<CardContent className="flex items-center justify-center py-12">
 							<div className="text-center">
@@ -239,7 +240,7 @@ export default function ChangelogContent() {
 					</Card>
 				)}
 
-				{!isLoading && !error && (
+				{!isLoading && !error && isHydrated && (
 					<div className="flex flex-col gap-6">
 						{sortedEntries.map((entry) => (
 							<ChangelogEntryCard key={entry.id} entry={entry} />
@@ -272,7 +273,7 @@ export default function ChangelogContent() {
 					</div>
 				)}
 
-				{!isLoading && !error && sortedEntries.length === 0 && (
+				{!isLoading && !error && isHydrated && sortedEntries.length === 0 && (
 					<Card>
 						<CardContent className="flex items-center justify-center py-12">
 							<div className="text-center">
