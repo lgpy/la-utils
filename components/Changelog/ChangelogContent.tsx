@@ -59,7 +59,7 @@ function ChangelogEntryCard({ entry }: ChangelogEntryCardProps) {
 						{entry.details.map(([category, detail], index) => (
 							<li
 								key={`${entry.id}-detail-${index}`}
-								className="grid grid-cols-[60px_1fr] gap-3 items-start"
+								className="grid grid-cols-[65px_1fr] gap-3 items-start"
 							>
 								<Badge
 									variant="secondary"
