@@ -5,6 +5,7 @@ import { Menu } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ChangelogNotification from "./Changelog/ChangelogNotification";
 import Logo from "./Logo";
 import ServerStatusWidget from "./ServerStatusWidget";
 import SettingsButton from "./SettingsButton";
@@ -24,6 +25,7 @@ const links = [
 	{ id: "prices", label: "Prices", href: "/prices" },
 	{ id: "crafting", label: "Crafting", href: "/crafting" },
 	{ id: "stone", label: "Stone", href: "/stone" },
+	{ id: "changelog", label: "Changelog", href: "/changelog" },
 ];
 
 export default function NavBar() {
@@ -98,6 +100,7 @@ export default function NavBar() {
 			</Sheet>
 			<div className="ml-auto flex flex-row gap-2">
 				<ServerStatusWidget />
+				<ChangelogNotification />
 				<Button variant="ghost" size="icon">
 					<Link href="https://ko-fi.com/leo213" target="_blank">
 						<svg

@@ -2,6 +2,7 @@ import NavBar from "@/components/NavBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { cn } from "@/lib/utils";
 import { MainStoreProvider } from "@/providers/MainStoreProvider";
+import { ChangelogStoreProvider } from "@/providers/ChangelogStoreProvider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -31,17 +32,18 @@ export default function RootLayout({
 				)}
 			>
 				<MainStoreProvider>
-					<PostHogProvider>
-						<ThemeProvider
-							attribute="class"
-							defaultTheme="system"
-							enableSystem
-							disableTransitionOnChange
-						>
-							<NavBar />
-							<main className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-								{children}
-							</main>
+					<ChangelogStoreProvider>
+						<PostHogProvider>
+							<ThemeProvider
+								attribute="class"
+								defaultTheme="system"
+								enableSystem
+								disableTransitionOnChange
+							>
+								<NavBar />
+								<main className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+									{children}
+								</main>
 							<footer className="mb-2 text-center text-xs text-muted-foreground/50">
 								<p>Made by Slayersen (EUC)</p>
 								<p>
@@ -60,7 +62,8 @@ export default function RootLayout({
 							<Toaster />
 						</ThemeProvider>
 					</PostHogProvider>
-				</MainStoreProvider>
+				</ChangelogStoreProvider>
+			</MainStoreProvider>
 			</body>
 		</html>
 	);

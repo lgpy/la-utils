@@ -22,6 +22,7 @@ Lost Ark Utils v2 is a Next.js application that provides various utilities for t
 - **Animations**: [Motion](https://motion.dev/)
 - **Date/Time Handling**: [Luxon](https://moment.github.io/luxon/)
 - **Type Safety**: [TypeScript](https://www.typescriptlang.org/) with [Zod](https://zod.dev/) for validation
+- **Package Management**: [bun](https://bun.sh/) for fast builds and package management
 
 ## Project Structure
 
