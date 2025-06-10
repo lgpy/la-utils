@@ -9,7 +9,10 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { fetchChangelogEntries, type ChangelogEntryWithNew } from "@/lib/changelog";
+import {
+	fetchChangelogEntries,
+	type ChangelogEntryWithNew,
+} from "@/lib/changelog";
 import { useChangelogStore } from "@/providers/ChangelogStoreProvider";
 import { Bell, BellRing } from "lucide-react";
 import Link from "next/link";
@@ -17,7 +20,7 @@ import { useEffect, useState, useCallback } from "react";
 
 export default function ChangelogNotification() {
 	const { lastViewedDate } = useChangelogStore();
-	
+
 	// Local state for notification logic
 	const [newEntries, setNewEntries] = useState<ChangelogEntryWithNew[]>([]);
 	const [totalCount, setTotalCount] = useState(0);
@@ -26,14 +29,14 @@ export default function ChangelogNotification() {
 	// Fetch new entries function
 	const fetchNewEntries = useCallback(async () => {
 		setIsLoadingNew(true);
-		
+
 		try {
 			if (!lastViewedDate) {
 				// For first-time users, fetch recent entries (limit to avoid overwhelming)
 				const response = await fetchChangelogEntries({
 					limit: 5, // Just show recent entries for first-time users
 				});
-				
+
 				setNewEntries(response.entries);
 				setTotalCount(response.pagination.total);
 			} else {
@@ -42,12 +45,12 @@ export default function ChangelogNotification() {
 					newerThan: lastViewedDate,
 					limit: 5, // Keep limit low, use total from pagination
 				});
-				
+
 				setNewEntries(response.entries);
 				setTotalCount(response.pagination.total);
 			}
 		} catch (error) {
-			console.error('Failed to fetch new entries:', error);
+			console.error("Failed to fetch new entries:", error);
 		} finally {
 			setIsLoadingNew(false);
 		}
@@ -72,7 +75,11 @@ export default function ChangelogNotification() {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="ghost" size="icon" className="relative">
-					{hasUnread ? <BellRing className="h-5 w-5" /> : <Bell className="h-5 w-5" />}
+					{hasUnread ? (
+						<BellRing className="h-5 w-5" />
+					) : (
+						<Bell className="h-5 w-5" />
+					)}
 					{hasUnread && (
 						<span className="absolute -top-1 -right-1 flex size-5">
 							<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
@@ -93,15 +100,24 @@ export default function ChangelogNotification() {
 					</h4>
 				</div>
 				<DropdownMenuSeparator />
-				
+
 				{hasUnread ? (
 					<>
 						<div className="max-h-96 overflow-y-auto">
 							{unreadEntries.slice(0, 5).map((entry) => (
-								<DropdownMenuItem key={entry.id} asChild className="cursor-pointer">
-									<Link href={`/changelog#${entry.id}`} className="block p-3 space-y-1">
+								<DropdownMenuItem
+									key={entry.id}
+									asChild
+									className="cursor-pointer"
+								>
+									<Link
+										href={`/changelog#${entry.id}`}
+										className="block p-3 space-y-1"
+									>
 										<div className="flex items-center gap-2 min-w-0">
-											<p className="text-sm font-medium truncate flex-1 min-w-0">{entry.title}</p>
+											<p className="text-sm font-medium truncate flex-1 min-w-0">
+												{entry.title}
+											</p>
 										</div>
 									</Link>
 								</DropdownMenuItem>
@@ -121,13 +137,14 @@ export default function ChangelogNotification() {
 								There are no new updates
 							</p>
 							<p className="text-xs text-muted-foreground">
-								You're all caught up! Check back later for new features and improvements.
+								You're all caught up! Check back later for new features and
+								improvements.
 							</p>
 						</div>
 						<DropdownMenuSeparator />
 					</>
 				)}
-				
+
 				<DropdownMenuItem asChild>
 					<Link
 						href="/changelog"
