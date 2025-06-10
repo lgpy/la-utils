@@ -1,4 +1,5 @@
 import AuctionCalculatorFAB from "@/components/AuctionCalculator/AuctionCalculatorFAB";
+import LoaLogUpdateRaidCompletion from "@/components/LoaLogAccess/LoaLogUpdateRaidCompletion";
 import RosterGold from "@/components/RosterGold";
 import TodoCards from "@/components/TodoCard/TodoCards";
 import type { Metadata } from "next";
@@ -14,6 +15,7 @@ export default function Home() {
 			<TodoCards />
 			<AuctionCalculatorFAB />
 			<RosterGold />
+			<LoaLogUpdateRaidCompletion />
 		</>
 	);
 }

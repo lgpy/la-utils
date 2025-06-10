@@ -36,7 +36,11 @@ export const raids: Record<
 			string,
 			{
 				difficulties: Partial<
-					Record<Difficulty, { itemlevel: number; rewards: { gold: number } }>
+					Record<Difficulty, {
+						clearBossName?: string;
+						itemlevel: number;
+						rewards: { gold: number }
+					}>
 				>;
 				isBiWeekly?: "odd" | "even";
 			}
@@ -313,10 +317,12 @@ export const raids: Record<
 			G1: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Killineza the Dark Worshipper",
 						itemlevel: 1610,
 						rewards: { gold: 2750 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Killineza the Dark Worshipper",
 						itemlevel: 1620,
 						rewards: { gold: 4400 },
 					},
@@ -325,10 +331,12 @@ export const raids: Record<
 			G2: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Valinak, Herald of the End",
 						itemlevel: 1610,
 						rewards: { gold: 3300 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Valinak, Herald of the End",
 						itemlevel: 1620,
 						rewards: { gold: 5500 },
 					},
@@ -337,10 +345,12 @@ export const raids: Record<
 			G3: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Thaemine the Lightqueller",
 						itemlevel: 1610,
 						rewards: { gold: 4950 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Thaemine the Lightqueller",
 						itemlevel: 1620,
 						rewards: { gold: 8900 },
 					},
@@ -349,6 +359,7 @@ export const raids: Record<
 			G4: {
 				difficulties: {
 					[Difficulty.hard]: {
+						clearBossName: "Thaemine, Conqueror of Stars",
 						itemlevel: 1620,
 						rewards: { gold: 9800 },
 					},
@@ -363,10 +374,12 @@ export const raids: Record<
 			G1: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Red Doom Narkiel",
 						itemlevel: 1620,
 						rewards: { gold: 6000 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Red Doom Narkiel",
 						itemlevel: 1630,
 						rewards: { gold: 7000 },
 					},
@@ -375,10 +388,12 @@ export const raids: Record<
 			G2: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Covetous Master Echidna",
 						itemlevel: 1620,
 						rewards: { gold: 10000 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Covetous Master Echidna",
 						itemlevel: 1630,
 						rewards: { gold: 12500 },
 					},
@@ -392,6 +407,7 @@ export const raids: Record<
 			G1: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Behemoth, the Storm Commander",
 						itemlevel: 1620,
 						rewards: { gold: 6500 },
 					},
@@ -400,6 +416,7 @@ export const raids: Record<
 			G2: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Behemoth, Cruel Storm Slayer",
 						itemlevel: 1620,
 						rewards: { gold: 11500 },
 					},
@@ -413,10 +430,12 @@ export const raids: Record<
 			G1: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Akkan, Lord of Death",
 						itemlevel: 1660,
 						rewards: { gold: 7500 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Akkan, Lord of Death",
 						itemlevel: 1680,
 						rewards: { gold: 10000 },
 					},
@@ -425,10 +444,12 @@ export const raids: Record<
 			G2: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Aegir, the Oppressor",
 						itemlevel: 1660,
 						rewards: { gold: 16500 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Aegir, the Oppressor",
 						itemlevel: 1680,
 						rewards: { gold: 20000 },
 					},
@@ -442,10 +463,12 @@ export const raids: Record<
 			G1: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Narok the Butcher",
 						itemlevel: 1670,
 						rewards: { gold: 9000 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Narok the Butcher",
 						itemlevel: 1690,
 						rewards: { gold: 11000 },
 					},
@@ -454,10 +477,12 @@ export const raids: Record<
 			G2: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Phantom Manifester Brelshaza",
 						itemlevel: 1670,
 						rewards: { gold: 18500 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Phantom Manifester Brelshaza",
 						itemlevel: 1690,
 						rewards: { gold: 23000 },
 					},
@@ -471,10 +496,12 @@ export const raids: Record<
 			G1: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Infernas",
 						itemlevel: 1680,
 						rewards: { gold: 6000 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Infernas",
 						itemlevel: 1700,
 						rewards: { gold: 7000 },
 					},
@@ -483,10 +510,12 @@ export const raids: Record<
 			G2: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Blossoming Fear, Naitreya",
 						itemlevel: 1680,
 						rewards: { gold: 9500 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Blossoming Fear, Naitreya",
 						itemlevel: 1700,
 						rewards: { gold: 11000 },
 					},
@@ -495,10 +524,12 @@ export const raids: Record<
 			G3: {
 				difficulties: {
 					[Difficulty.normal]: {
+						clearBossName: "Mordum, the Abyssal Punisher",
 						itemlevel: 1680,
 						rewards: { gold: 12500 },
 					},
 					[Difficulty.hard]: {
+						clearBossName: "Flash of Punishment",
 						itemlevel: 1700,
 						rewards: { gold: 20000 },
 					},

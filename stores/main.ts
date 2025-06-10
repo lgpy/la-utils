@@ -104,6 +104,7 @@ export type MainActions = {
 	charDelTask: (charId: string, taskId: string) => void;
 	charToggleTask: (charId: string, taskId: string) => void;
 	reorderChars: (charIds: string[]) => void;
+	setGate: (charId: string, raidId: string, gateId: string, completedDate: Date) => void;
 };
 
 export type MainStore = MainState & MainActions;
@@ -137,9 +138,9 @@ export const createMainStore = () =>
 						const isCompleted =
 							gate.completedDate !== undefined
 								? isGateCompleted(
-										new Date(gate.completedDate),
-										getGateResetDate(raidId, gateId),
-									)
+									new Date(gate.completedDate),
+									getGateResetDate(raidId, gateId),
+								)
 								: false;
 
 						if (isCompleted && !raids[raidId].gates[gateId].isBiWeekly) {
@@ -154,9 +155,9 @@ export const createMainStore = () =>
 									const biweeklyGateIsCompleted =
 										assignedRaid[gateId].completedDate !== undefined
 											? isGateCompleted(
-													new Date(assignedRaid[gateId].completedDate),
-													getGateResetDate(raidId, gateId),
-												)
+												new Date(assignedRaid[gateId].completedDate),
+												getGateResetDate(raidId, gateId),
+											)
 											: false;
 									if (
 										biweeklyGateIsCompleted &&
@@ -177,9 +178,9 @@ export const createMainStore = () =>
 									const biweeklyGateIsCompleted =
 										completedDate !== undefined
 											? isGateCompleted(
-													new Date(completedDate),
-													getGateResetDate(raidId, gateId),
-												)
+												new Date(completedDate),
+												getGateResetDate(raidId, gateId),
+											)
 											: false;
 									if (biweeklyGateIsCompleted) {
 										continue;
@@ -424,6 +425,23 @@ export const createMainStore = () =>
 							return charIds.indexOf(a.id) - charIds.indexOf(b.id);
 						});
 						return { ...state, characters: updatedChars };
+					});
+				},
+				setGate: (charId, raidId, gateId, completedDate) => {
+					set((state) => {
+						const charIndex = state.characters.findIndex(
+							(c) => c.id === charId,
+						);
+						if (charIndex === -1) throw new Error("Character not found");
+						const assignedRaid =
+							state.characters[charIndex].assignedRaids[raidId];
+						if (assignedRaid === undefined) throw new Error("Raid not found");
+						const gate = assignedRaid[gateId];
+						if (gate === undefined) throw new Error("Gate not found");
+
+						gate.completedDate = completedDate.toISOString();
+
+						return { ...state };
 					});
 				},
 			}),

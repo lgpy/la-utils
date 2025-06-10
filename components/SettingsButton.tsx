@@ -1,5 +1,6 @@
 "use client";
 import {
+	Database,
 	FlaskConical,
 	Import,
 	Moon,
@@ -60,6 +61,10 @@ export default function SettingsButton() {
 				<DropdownMenuItem onClick={() => router.push("/backup")}>
 					<Import />
 					<span>Import/Export Data</span>
+				</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => router.push("/loa-logs-config")}>
+					<Database />
+					<span>LOA Logs Configuration</span>
 				</DropdownMenuItem>
 				<DropdownMenuGroup>
 					<DropdownMenuSub>
