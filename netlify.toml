@@ -1,17 +1,17 @@
 [[redirects]]
-  from = "/ingest/static/*"
+  from = "/i/static/*"
   to = "https://eu-assets.i.posthog.com/static/:splat"
   status = 200
   force = true
 
 [[redirects]]
-  from = "/ingest/*"
+  from = "/i/*"
   to = "https://eu.i.posthog.com/:splat"
   status = 200
   force = true
 
 [[redirects]]
-  from = "/ingest/decide"
+  from = "/i/decide"
   to = "https://eu.i.posthog.com/decide"
   status = 200
   force = true
