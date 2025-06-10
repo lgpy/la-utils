@@ -13,9 +13,12 @@ export default function Home() {
 	return (
 		<>
 			<TodoCards />
-			<AuctionCalculatorFAB />
 			<RosterGold />
-			<LoaLogUpdateRaidCompletion />
+
+			<div className="fixed right-4 bottom-4 flex flex-col gap-2">
+				<LoaLogUpdateRaidCompletion />
+				<AuctionCalculatorFAB />
+			</div>
 		</>
 	);
 }

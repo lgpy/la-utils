@@ -137,7 +137,7 @@ export default function ChangelogNotification() {
 								There are no new updates
 							</p>
 							<p className="text-xs text-muted-foreground">
-								You're all caught up! Check back later for new features and
+								You&apos;re all caught up! Check back later for new features and
 								improvements.
 							</p>
 						</div>

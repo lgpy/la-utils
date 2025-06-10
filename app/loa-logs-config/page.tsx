@@ -6,6 +6,7 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
@@ -232,6 +233,26 @@ export default function LoaLogsConfigPage() {
 							</div>
 						</div>
 					</CardContent>
+					{fileAccess.hasPermission && (
+						<CardFooter className="flex justify-between">
+							<Button
+								variant="outline"
+								onClick={() => {
+									checkStoredFileAccess();
+								}}
+								disabled={isProcessing}
+							>
+								{isProcessing ? "Checking..." : "Refresh Status"}
+							</Button>
+							<Button
+								variant="destructive"
+								onClick={clearAccess}
+								disabled={isProcessing}
+							>
+								Clear Access
+							</Button>
+						</CardFooter>
+					)}
 				</Card>
 
 				{/* Setup Instructions */}
@@ -247,7 +268,7 @@ export default function LoaLogsConfigPage() {
 							<h4 className="font-semibold">1. Install LOA Logs</h4>
 							<p className="text-sm text-muted-foreground">
 								Download and install LOA Logs from the official source. Make
-								sure it's running and logging your raids.
+								sure it&apos;s running and logging your raids.
 							</p>
 						</div>
 						<div className="space-y-2">
@@ -270,6 +291,13 @@ export default function LoaLogsConfigPage() {
 							<p className="text-sm text-muted-foreground">
 								Drag and drop the encounters.db file onto the area below to
 								grant persistent access to your raid data.
+							</p>
+						</div>
+						<div className="space-y-2">
+							<h4 className="font-semibold">After completing the setup</h4>
+							<p className="text-sm text-muted-foreground">
+								Navigate to the home page and there should be a button to update
+								the raid completion in the bottom right corner.
 							</p>
 						</div>
 					</CardContent>
@@ -311,27 +339,6 @@ export default function LoaLogsConfigPage() {
 									</p>
 								</div>
 							</div>
-
-							{fileAccess.hasPermission && (
-								<div className="flex gap-2 pt-4">
-									<Button
-										variant="destructive"
-										onClick={clearAccess}
-										disabled={isProcessing}
-									>
-										Clear Access
-									</Button>
-									<Button
-										variant="outline"
-										onClick={() => {
-											checkStoredFileAccess();
-										}}
-										disabled={isProcessing}
-									>
-										{isProcessing ? "Checking..." : "Refresh Status"}
-									</Button>
-								</div>
-							)}
 						</CardContent>
 					</Card>
 				)}

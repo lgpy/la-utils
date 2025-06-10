@@ -5,7 +5,8 @@ import { Button } from "../ui/button";
 import { useLoaLogsDb } from "./LoaLogUpdateRaidCompletion.hooks";
 import { useMainStore } from "@/providers/MainStoreProvider";
 import { getGateInfoFromClearBossName } from "./utils";
-import { RefreshCw } from "lucide-react";
+import { DatabaseBackup } from "lucide-react";
+import { motion } from "motion/react";
 
 export default function LoaLogUpdateRaidCompletion() {
 	const { hasAccess, getWeeklyRaids } = useLoaLogsDb();
@@ -71,23 +72,36 @@ export default function LoaLogUpdateRaidCompletion() {
 	}
 
 	return (
-		<Button
-			size="icon"
-			onClick={() => {
-				toast.promise(updateWeeklyRaids(), {
-					loading: "Updating weekly raids...",
-					success: (hasError) => {
-						if (hasError) {
-							return "Weekly raids updated with some errors, check console for details";
-						}
-						return "Weekly raids updated successfully";
-					},
-					error: "Failed to update weekly raids, check console for details",
-				});
+		<motion.div
+			initial={{ scale: 0.8, opacity: 0 }}
+			animate={{
+				scale: 1,
+				opacity: 1,
+				transition: {
+					type: "spring",
+					stiffness: 260,
+					damping: 20,
+				},
 			}}
-			title="Update Weekly Raids"
 		>
-			<RefreshCw />
-		</Button>
+			<Button
+				variant="secondary"
+				size="icon"
+				onClick={() => {
+					toast.promise(updateWeeklyRaids(), {
+						loading: "Updating weekly raids...",
+						success: (hasError) => {
+							if (hasError) {
+								return "Weekly raids updated with some errors, check console for details";
+							}
+							return "Weekly raids updated successfully";
+						},
+						error: "Failed to update weekly raids, check console for details",
+					});
+				}}
+			>
+				<DatabaseBackup className="size-6" />
+			</Button>
+		</motion.div>
 	);
 }

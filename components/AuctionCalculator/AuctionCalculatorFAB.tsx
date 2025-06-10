@@ -11,7 +11,7 @@ export default function AuctionCalculatorFAB() {
 	const [isOpen, onOpenChange] = useState(false);
 
 	return (
-		<div className="fixed right-4 bottom-4">
+		<>
 			<motion.div
 				initial={{ scale: 0.8, opacity: 0 }}
 				animate={{
@@ -24,11 +24,7 @@ export default function AuctionCalculatorFAB() {
 					},
 				}}
 			>
-				<Button
-					color="secondary"
-					size="icon"
-					onClick={() => onOpenChange(true)}
-				>
+				<Button size="icon" onClick={() => onOpenChange(true)}>
 					<GavelIcon className="size-6" />
 				</Button>
 			</motion.div>
@@ -37,6 +33,6 @@ export default function AuctionCalculatorFAB() {
 					<AuctionCalculatorModalContent />
 				</DialogContent>
 			</Dialog>
-		</div>
+		</>
 	);
 }
