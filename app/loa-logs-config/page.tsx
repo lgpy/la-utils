@@ -248,7 +248,7 @@ export default function LoaLogsConfigPage() {
 						<AlertDescription>
 							File access needs to be configured for each website separately. If
 							you previously set up file access on a different domain or during
-							development, you'll need to grant access again here.
+							development, you&apos;ll need to grant access again here.
 						</AlertDescription>
 					</Alert>
 				)}
@@ -355,12 +355,12 @@ export default function LoaLogsConfigPage() {
 								<p className="text-sm text-muted-foreground mb-3">
 									Chrome now supports persistent file permissions that survive
 									browser restarts and tab closures. When you enable this,
-									you'll see a three-way prompt with options for one-time,
+									you&apos;ll see a three-way prompt with options for one-time,
 									session, or persistent access.
 								</p>
 								<p className="text-sm text-muted-foreground">
-									Choose "Allow and remember" to avoid having to re-grant file
-									access every time you visit this site.
+									Choose &quot;Allow and remember&quot; to avoid having to
+									re-grant file access every time you visit this site.
 								</p>
 							</div>
 						</CardContent>
@@ -423,7 +423,7 @@ export default function LoaLogsConfigPage() {
 							<p className="text-sm text-muted-foreground">
 								After granting initial access, enable persistent permissions to
 								avoid re-authorizing file access on every visit. When prompted,
-								choose "Allow and remember" for the best experience.
+								choose &quot;Allow and remember&quot; for the best experience.
 							</p>
 						</div>
 						<div className="space-y-2">
