@@ -18,6 +18,7 @@ import {
 	getStoredLoaLogsFileHandle,
 	clearStoredLoaLogsFileHandle,
 	isFileSystemAccessSupported,
+	requestPersistentPermission,
 	type LoaLogsFileAccess,
 } from "@/components/LoaLogAccess/utils";
 
@@ -32,30 +33,43 @@ export default function LoaLogsConfigPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [isClient, setIsClient] = useState(false);
+	const [hasStoredHandle, setHasStoredHandle] = useState(false);
 
 	const supported = isClient && isFileSystemAccessSupported();
 
 	const checkStoredFileAccess = useCallback(async () => {
 		try {
 			const handle = await getStoredLoaLogsFileHandle();
+			setHasStoredHandle(!!handle);
+
 			if (handle) {
-				// getStoredLoaLogsFileHandle already validates the file and permission
-				const file = await handle.getFile();
-				setFileAccess({
-					fileHandle: handle,
-					hasPermission: true,
-					lastAccessed: new Date(),
-					fileSize: file.size,
-				});
-			} else {
-				// No valid stored file handle found
-				setFileAccess({
-					fileHandle: null,
-					hasPermission: false,
-					lastAccessed: null,
-					fileSize: null,
-				});
+				// First check current permission status
+				const currentPermission = await handle.queryPermission();
+
+				if (currentPermission === "granted") {
+					// Permission is already granted, verify file access
+					try {
+						const file = await handle.getFile();
+						setFileAccess({
+							fileHandle: handle,
+							hasPermission: true,
+							lastAccessed: new Date(),
+							fileSize: file.size,
+						});
+						return;
+					} catch (error) {
+						console.warn("File no longer accessible:", error);
+					}
+				}
 			}
+
+			// No valid stored file handle found or permission not granted
+			setFileAccess({
+				fileHandle: handle,
+				hasPermission: false,
+				lastAccessed: null,
+				fileSize: null,
+			});
 		} catch (error) {
 			console.warn("Failed to check stored file access:", error);
 			// Clear the file access state on error
@@ -65,8 +79,47 @@ export default function LoaLogsConfigPage() {
 				lastAccessed: null,
 				fileSize: null,
 			});
+			setHasStoredHandle(false);
 		}
 	}, []);
+
+	const requestPersistentAccess = useCallback(async () => {
+		if (!fileAccess.fileHandle) return;
+
+		try {
+			setIsProcessing(true);
+			setError(null);
+
+			// Request persistent permission (this triggers the three-way prompt)
+			const granted = await requestPersistentPermission(fileAccess.fileHandle);
+
+			if (granted) {
+				try {
+					const file = await fileAccess.fileHandle.getFile();
+					setFileAccess((prev) => ({
+						...prev,
+						hasPermission: true,
+						lastAccessed: new Date(),
+						fileSize: file.size,
+					}));
+				} catch (error) {
+					setError("File access failed after permission granted");
+				}
+			} else {
+				setError(
+					"Permission denied. Please try again and allow persistent access.",
+				);
+			}
+		} catch (error) {
+			setError(
+				error instanceof Error
+					? error.message
+					: "Failed to request persistent access",
+			);
+		} finally {
+			setIsProcessing(false);
+		}
+	}, [fileAccess.fileHandle]);
 
 	useEffect(() => {
 		setIsClient(true);
@@ -151,6 +204,7 @@ export default function LoaLogsConfigPage() {
 			lastAccessed: null,
 			fileSize: null,
 		});
+		setHasStoredHandle(false);
 		await clearStoredLoaLogsFileHandle();
 	}, []);
 
@@ -192,9 +246,9 @@ export default function LoaLogsConfigPage() {
 					<Alert>
 						<AlertTriangle className="h-4 w-4" />
 						<AlertDescription>
-							File access needs to be configured for each website separately. 
-							If you previously set up file access on a different domain or during development, 
-							you'll need to grant access again here.
+							File access needs to be configured for each website separately. If
+							you previously set up file access on a different domain or during
+							development, you'll need to grant access again here.
 						</AlertDescription>
 					</Alert>
 				)}
@@ -279,6 +333,51 @@ export default function LoaLogsConfigPage() {
 					)}
 				</Card>
 
+				{/* Persistent Permissions Card */}
+				{hasStoredHandle && !fileAccess.hasPermission && (
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2">
+								<AlertTriangle className="h-5 w-5 text-amber-500" />
+								Enable Persistent Permissions
+							</CardTitle>
+							<CardDescription>
+								A previous file access was found but permissions have been
+								revoked. Click below to enable persistent permissions for future
+								visits.
+							</CardDescription>
+						</CardHeader>
+						<CardContent className="space-y-4">
+							<div className="p-4 bg-muted rounded-lg">
+								<h4 className="font-semibold mb-2">
+									What are persistent permissions?
+								</h4>
+								<p className="text-sm text-muted-foreground mb-3">
+									Chrome now supports persistent file permissions that survive
+									browser restarts and tab closures. When you enable this,
+									you'll see a three-way prompt with options for one-time,
+									session, or persistent access.
+								</p>
+								<p className="text-sm text-muted-foreground">
+									Choose "Allow and remember" to avoid having to re-grant file
+									access every time you visit this site.
+								</p>
+							</div>
+						</CardContent>
+						<CardFooter>
+							<Button
+								onClick={requestPersistentAccess}
+								disabled={isProcessing}
+								className="w-full"
+							>
+								{isProcessing
+									? "Requesting permissions..."
+									: "Enable Persistent Permissions"}
+							</Button>
+						</CardFooter>
+					</Card>
+				)}
+
 				{/* Setup Instructions */}
 				<Card>
 					<CardHeader>
@@ -314,11 +413,21 @@ export default function LoaLogsConfigPage() {
 							<h4 className="font-semibold">3. Grant File Access</h4>
 							<p className="text-sm text-muted-foreground">
 								Drag and drop the encounters.db file onto the area below to
-								grant persistent access to your raid data.
+								grant initial access to your raid data.
 							</p>
 						</div>
 						<div className="space-y-2">
-							<h4 className="font-semibold">After completing the setup</h4>
+							<h4 className="font-semibold">
+								4. Enable Persistent Permissions (Recommended)
+							</h4>
+							<p className="text-sm text-muted-foreground">
+								After granting initial access, enable persistent permissions to
+								avoid re-authorizing file access on every visit. When prompted,
+								choose "Allow and remember" for the best experience.
+							</p>
+						</div>
+						<div className="space-y-2">
+							<h4 className="font-semibold">5. After completing the setup</h4>
 							<p className="text-sm text-muted-foreground">
 								Navigate to the home page and there should be a button to update
 								the raid completion in the bottom right corner.

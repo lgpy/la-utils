@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getStoredLoaLogsFileHandle, getWeeklyRaids } from "@/components/LoaLogAccess/utils";
+import { getStoredLoaLogsFileHandle, getWeeklyRaids, requestPersistentPermission } from "@/components/LoaLogAccess/utils";
 
 
 interface FileAccessState {
@@ -21,23 +21,46 @@ export function useLoaLogsDb() {
 
   useEffect(() => {
     getStoredLoaLogsFileHandle()
-      .then((handle) => {
+      .then(async (handle) => {
         if (handle) {
-          // getStoredLoaLogsFileHandle already validates permission and file access
-          handle.getFile().then((file) => {
-            setFileAccess({
-              fileHandle: handle,
-              hasPermission: true,
-              fileSize: file.size,
-            });
-          }).catch(() => {
-            // File no longer accessible
+          try {
+            // Check current permission status
+            const currentPermission = await handle.queryPermission();
+
+            if (currentPermission === "granted") {
+              // Permission already granted, verify file access
+              const file = await handle.getFile();
+              setFileAccess({
+                fileHandle: handle,
+                hasPermission: true,
+                fileSize: file.size,
+              });
+            } else {
+              // Try to request persistent permission
+              const granted = await requestPersistentPermission(handle);
+              if (granted) {
+                const file = await handle.getFile();
+                setFileAccess({
+                  fileHandle: handle,
+                  hasPermission: true,
+                  fileSize: file.size,
+                });
+              } else {
+                setFileAccess({
+                  fileHandle: null,
+                  hasPermission: false,
+                  fileSize: null,
+                });
+              }
+            }
+          } catch (error) {
+            // File no longer accessible or other error
             setFileAccess({
               fileHandle: null,
               hasPermission: false,
               fileSize: null,
             });
-          });
+          }
         } else {
           setFileAccess({
             fileHandle: null,

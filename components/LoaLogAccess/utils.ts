@@ -66,31 +66,26 @@ export async function getStoredLoaLogsFileHandle(): Promise<FileSystemFileHandle
       };
     });
 
-    // Validate the stored file handle by checking if it's still accessible
-    if (fileHandle) {
-      try {
-        // Test if we can still access the file
-        const permission = await fileHandle.queryPermission();
-        if (permission === "granted") {
-          // Try to access the file to ensure it's still valid
-          await fileHandle.getFile();
-          return fileHandle;
-        }
-        // Permission lost, clear the invalid handle
-        await clearStoredLoaLogsFileHandle();
-        return null;
-      } catch (error) {
-        // Handle or file no longer accessible, clear the invalid handle
-        console.warn("Stored file handle is no longer valid:", error);
-        await clearStoredLoaLogsFileHandle();
-        return null;
-      }
-    }
-
-    return null;
+    // Return the stored handle directly without validation
+    // The validation and permission request should be done by the caller
+    // to properly trigger the persistent permissions flow
+    return fileHandle;
   } catch (error) {
     console.warn("Failed to retrieve stored file handle:", error);
     return null;
+  }
+}
+
+// New function to request persistent permissions on a stored handle
+export async function requestPersistentPermission(fileHandle: FileSystemFileHandle): Promise<boolean> {
+  try {
+    // This is the key: calling requestPermission() on a previously stored handle
+    // triggers the new three-way persistent permissions prompt
+    const permission = await fileHandle.requestPermission();
+    return permission === "granted";
+  } catch (error) {
+    console.warn("Failed to request persistent permission:", error);
+    return false;
   }
 }
 
