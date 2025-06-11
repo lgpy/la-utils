@@ -372,7 +372,7 @@ export default function LoaLogsConfigPage() {
 								Find the encounters.db file in your LOA Logs directory:
 							</p>
 							<code className="block bg-muted p-2 rounded text-sm">
-								%localappdata%/LOA Logs/encounters.db
+								%localappdata%/LOA Logs/
 							</code>
 							<p className="text-sm text-muted-foreground">
 								This is typically located at:{" "}
@@ -393,7 +393,8 @@ export default function LoaLogsConfigPage() {
 								4. Enable Persistent Permissions
 							</h4>
 							<p className="text-sm text-muted-foreground">
-								After granting initial access, refresh the page and enable
+								After granting initial access,{" "}
+								<span className="font-bold">refresh the page</span> and enable
 								persistent permissions to avoid re-authorizing file access on
 								every visit. When prompted, choose &quot;Allow on every
 								visit&quot; for the best experience.

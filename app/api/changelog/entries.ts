@@ -286,5 +286,16 @@ export const changelogEntries: ChangelogEntry[] = [
       ["added", "Changelog page for tracking updates"],
       ["added", "Automatic raid completion tracking via LOA Logs encounters.db file"],
     ],
+  },
+  {
+    id: "11-6-2025-loa-logs-integration-fix",
+    date: "11/6/2025",
+    title: "Loa Logs Integration Fix",
+    description: "Fixed issues with LOA Logs persistent file handle access and permissions.",
+    details: [
+      ["fixed", "Persistent file handle access for LOA Logs encounters.db"],
+      ["improved", "Permission handling for LOA Logs file access"],
+      ["improved", "User interface for LOA Logs integration"],
+    ],
   }
 ];
