@@ -23,21 +23,36 @@ export function useLoaLogsDb() {
     getStoredLoaLogsFileHandle()
       .then((handle) => {
         if (handle) {
-          handle.queryPermission().then((permission) => {
-            if (permission === "granted") {
-              handle.getFile().then((file) => {
-                setFileAccess({
-                  fileHandle: handle,
-                  hasPermission: true,
-                  fileSize: file.size,
-                });
-              });
-            }
+          // getStoredLoaLogsFileHandle already validates permission and file access
+          handle.getFile().then((file) => {
+            setFileAccess({
+              fileHandle: handle,
+              hasPermission: true,
+              fileSize: file.size,
+            });
+          }).catch(() => {
+            // File no longer accessible
+            setFileAccess({
+              fileHandle: null,
+              hasPermission: false,
+              fileSize: null,
+            });
+          });
+        } else {
+          setFileAccess({
+            fileHandle: null,
+            hasPermission: false,
+            fileSize: null,
           });
         }
       })
       .catch(() => {
-        // Ignore errors when checking stored access
+        // Handle any errors by resetting state
+        setFileAccess({
+          fileHandle: null,
+          hasPermission: false,
+          fileSize: null,
+        });
       });
   }, []);
 

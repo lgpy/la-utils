@@ -39,19 +39,32 @@ export default function LoaLogsConfigPage() {
 		try {
 			const handle = await getStoredLoaLogsFileHandle();
 			if (handle) {
-				const permission = await handle.queryPermission();
-				if (permission === "granted") {
-					const file = await handle.getFile();
-					setFileAccess({
-						fileHandle: handle,
-						hasPermission: true,
-						lastAccessed: new Date(),
-						fileSize: file.size,
-					});
-				}
+				// getStoredLoaLogsFileHandle already validates the file and permission
+				const file = await handle.getFile();
+				setFileAccess({
+					fileHandle: handle,
+					hasPermission: true,
+					lastAccessed: new Date(),
+					fileSize: file.size,
+				});
+			} else {
+				// No valid stored file handle found
+				setFileAccess({
+					fileHandle: null,
+					hasPermission: false,
+					lastAccessed: null,
+					fileSize: null,
+				});
 			}
 		} catch (error) {
 			console.warn("Failed to check stored file access:", error);
+			// Clear the file access state on error
+			setFileAccess({
+				fileHandle: null,
+				hasPermission: false,
+				lastAccessed: null,
+				fileSize: null,
+			});
 		}
 	}, []);
 
@@ -171,6 +184,17 @@ export default function LoaLogsConfigPage() {
 							File System Access API is not supported in this browser. Please
 							use Chrome, Edge, or another Chromium-based browser to access LOA
 							Logs files.
+						</AlertDescription>
+					</Alert>
+				)}
+
+				{supported && !fileAccess.hasPermission && (
+					<Alert>
+						<AlertTriangle className="h-4 w-4" />
+						<AlertDescription>
+							File access needs to be configured for each website separately. 
+							If you previously set up file access on a different domain or during development, 
+							you'll need to grant access again here.
 						</AlertDescription>
 					</Alert>
 				)}

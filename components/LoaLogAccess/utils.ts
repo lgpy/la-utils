@@ -46,24 +46,52 @@ export async function storeLoaLogsFileHandle(fileHandle: FileSystemFileHandle): 
 }
 
 export async function getStoredLoaLogsFileHandle(): Promise<FileSystemFileHandle | null> {
-  const request = indexedDB.open("LoaLogsDB", 1);
-  return new Promise((resolve, reject) => {
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => {
-      const db = request.result;
-      const transaction = db.transaction(["fileHandles"], "readonly");
-      const store = transaction.objectStore("fileHandles");
-      const getRequest = store.get("encounters.db");
-      getRequest.onsuccess = () => resolve(getRequest.result || null);
-      getRequest.onerror = () => reject(getRequest.error);
-    };
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains("fileHandles")) {
-        db.createObjectStore("fileHandles");
+  try {
+    const request = indexedDB.open("LoaLogsDB", 1);
+    const fileHandle = await new Promise<FileSystemFileHandle | null>((resolve, reject) => {
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const db = request.result;
+        const transaction = db.transaction(["fileHandles"], "readonly");
+        const store = transaction.objectStore("fileHandles");
+        const getRequest = store.get("encounters.db");
+        getRequest.onsuccess = () => resolve(getRequest.result || null);
+        getRequest.onerror = () => reject(getRequest.error);
+      };
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains("fileHandles")) {
+          db.createObjectStore("fileHandles");
+        }
+      };
+    });
+
+    // Validate the stored file handle by checking if it's still accessible
+    if (fileHandle) {
+      try {
+        // Test if we can still access the file
+        const permission = await fileHandle.queryPermission();
+        if (permission === "granted") {
+          // Try to access the file to ensure it's still valid
+          await fileHandle.getFile();
+          return fileHandle;
+        }
+        // Permission lost, clear the invalid handle
+        await clearStoredLoaLogsFileHandle();
+        return null;
+      } catch (error) {
+        // Handle or file no longer accessible, clear the invalid handle
+        console.warn("Stored file handle is no longer valid:", error);
+        await clearStoredLoaLogsFileHandle();
+        return null;
       }
-    };
-  });
+    }
+
+    return null;
+  } catch (error) {
+    console.warn("Failed to retrieve stored file handle:", error);
+    return null;
+  }
 }
 
 export async function clearStoredLoaLogsFileHandle(): Promise<void> {
