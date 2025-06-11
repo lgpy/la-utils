@@ -242,17 +242,6 @@ export default function LoaLogsConfigPage() {
 					</Alert>
 				)}
 
-				{supported && !fileAccess.hasPermission && (
-					<Alert>
-						<AlertTriangle className="h-4 w-4" />
-						<AlertDescription>
-							File access needs to be configured for each website separately. If
-							you previously set up file access on a different domain or during
-							development, you&apos;ll need to grant access again here.
-						</AlertDescription>
-					</Alert>
-				)}
-
 				{error && (
 					<Alert variant="destructive">
 						<XCircle className="h-4 w-4" />
@@ -347,23 +336,6 @@ export default function LoaLogsConfigPage() {
 								visits.
 							</CardDescription>
 						</CardHeader>
-						<CardContent className="space-y-4">
-							<div className="p-4 bg-muted rounded-lg">
-								<h4 className="font-semibold mb-2">
-									What are persistent permissions?
-								</h4>
-								<p className="text-sm text-muted-foreground mb-3">
-									Chrome now supports persistent file permissions that survive
-									browser restarts and tab closures. When you enable this,
-									you&apos;ll see a three-way prompt with options for one-time,
-									session, or persistent access.
-								</p>
-								<p className="text-sm text-muted-foreground">
-									Choose &quot;Allow and remember&quot; to avoid having to
-									re-grant file access every time you visit this site.
-								</p>
-							</div>
-						</CardContent>
 						<CardFooter>
 							<Button
 								onClick={requestPersistentAccess}
@@ -418,12 +390,13 @@ export default function LoaLogsConfigPage() {
 						</div>
 						<div className="space-y-2">
 							<h4 className="font-semibold">
-								4. Enable Persistent Permissions (Recommended)
+								4. Enable Persistent Permissions
 							</h4>
 							<p className="text-sm text-muted-foreground">
-								After granting initial access, enable persistent permissions to
-								avoid re-authorizing file access on every visit. When prompted,
-								choose &quot;Allow and remember&quot; for the best experience.
+								After granting initial access, refresh the page and enable
+								persistent permissions to avoid re-authorizing file access on
+								every visit. When prompted, choose &quot;Allow on every
+								visit&quot; for the best experience.
 							</p>
 						</div>
 						<div className="space-y-2">
