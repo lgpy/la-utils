@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { useLoaLogsDb } from "./LoaLogUpdateRaidCompletion.hooks";
 import { useMainStore } from "@/providers/MainStoreProvider";
-import { getGateInfoFromClearBossName } from "./utils";
+import { getGateInfoFromClearBossName, ignoreBosses } from "./utils";
 import { DatabaseBackup } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -24,7 +24,9 @@ export default function LoaLogUpdateRaidCompletion() {
 			const weeklyRaids = await getWeeklyRaids();
 
 			const uniqueCharacters = new Set<string>(
-				weeklyRaids.map((raid) => raid.local_player),
+				weeklyRaids
+					.filter((c) => c.local_player.length > 0)
+					.map((raid) => raid.local_player),
 			);
 			const uniqueCharactersToIdMap = new Map<string, string>();
 			for (const character of uniqueCharacters) {
@@ -40,6 +42,12 @@ export default function LoaLogUpdateRaidCompletion() {
 			}
 
 			for (const raid of weeklyRaids) {
+				if (ignoreBosses.has(raid.current_boss)) {
+					console.debug(
+						`Ignoring raid for boss: ${raid.current_boss} (not a valid raid boss)`,
+					);
+					continue;
+				}
 				const charId = uniqueCharactersToIdMap.get(raid.local_player);
 				if (charId === undefined) continue;
 				const raidInfo = getGateInfoFromClearBossName(
