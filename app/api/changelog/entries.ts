@@ -290,12 +290,22 @@ export const changelogEntries: ChangelogEntry[] = [
   {
     id: "11-6-2025-loa-logs-integration-fix",
     date: "11/6/2025",
-    title: "Loa Logs Integration Fix",
+    title: "LOA Logs Integration Fix",
     description: "Fixed issues with LOA Logs persistent file handle access and permissions.",
     details: [
       ["fixed", "Persistent file handle access for LOA Logs encounters.db"],
       ["improved", "Permission handling for LOA Logs file access"],
       ["improved", "User interface for LOA Logs integration"],
+    ],
+  },
+  {
+    id: "13-6-2025-loa-logs-integration-fix",
+    date: "13/6/2025",
+    title: "LOA Logs Integration Fix",
+    description: "Fixed an issue that prevented the LOA Logs integration from reading large databases.",
+    details: [
+      ["fixed", "Issue with reading large databases in LOA Logs integration"],
+      ["improved", "Performance of LOA Logs database queries"],
     ],
   }
 ];

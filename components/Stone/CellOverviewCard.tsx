@@ -20,7 +20,6 @@ export default function CellOverviewCard({
 	className,
 }: CellOverviewCardProps) {
 	if (cells.length === 0) {
-		console.log("CellOverviewCard: No cells to display."); // Added console.log for empty cells
 		return null;
 	}
 

@@ -118,7 +118,7 @@ export const zEntries = z.object({
 }).array();
 
 
-export const ignoreBosses = new Set(['Drextalas', 'Skolakia']);
+export const ignoreBosses = new Set(['Drextalas', 'Skolakia', 'Argeos', 'Veskal', 'Gargadeth', 'Sonavel', 'Hanumatan', 'Kungelanium', 'Deskaluda']);
 
 export function getGateInfoFromClearBossName(
   clearBossName: string,
