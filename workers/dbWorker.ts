@@ -1,6 +1,4 @@
-import * as SQLite from '@/lib/wa-sqlite/sqlite-api.js';
-import { OPFSReadOnlyVFS } from '@/lib/wa-sqlite/OPFSReadOnlyVFS.js';
-import moduleFactory from "@/lib/wa-sqlite/wa-sqlite-async.mjs";
+import { OPFSReadOnlyVFS, SQLite, moduleFactory } from '@/lib/wa-sqlite';
 
 type BaseMessage<T, Y> = {
   type: T;
@@ -31,7 +29,7 @@ interface QueryResult {
 const IDBName = "sqlite-vfs";
 const DBName = "encounters.db";
 
-let sqlite3: ReturnType<typeof SQLite.Factory> | null = null;
+let sqlite3: SQLiteAPI | null = null;
 let db: number | null = null;
 // biome-ignore lint/suspicious/noExplicitAny: We need to use `any` for dynamic module loading
 let module: any = null;
