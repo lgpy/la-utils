@@ -59,9 +59,9 @@ export const raids: Record<
 			G1: {
 				bossName: ["Dark Mountain Predator", "Destroyer Lucas", "Leader Lugaru"],
 				difficulties: {
+					[Difficulty.solo]: { itemlevel: 1415, rewards: { gold: 240 } },
 					[Difficulty.normal]: { itemlevel: 1415, rewards: { gold: 300 } },
 					[Difficulty.hard]: { itemlevel: 1445, rewards: { gold: 400 } },
-					[Difficulty.solo]: { itemlevel: 1415, rewards: { gold: 240 } },
 				},
 			},
 			G2: {
@@ -78,7 +78,7 @@ export const raids: Record<
 		name: "Vykas",
 		gates: {
 			G1: {
-				bossName: ["Incubus Morphe", "Nightmarish Morphe"],
+				bossName: ["Covetous Devourer Vykas"],
 				difficulties: {
 					[Difficulty.solo]: { itemlevel: 1430, rewards: { gold: 280 } },
 					[Difficulty.normal]: { itemlevel: 1430, rewards: { gold: 350 } },
@@ -86,19 +86,11 @@ export const raids: Record<
 				},
 			},
 			G2: {
-				bossName: ["Covetous Devourer Vykas"],
+				bossName: ["Covetous Legion Commander Vykas"],
 				difficulties: {
 					[Difficulty.solo]: { itemlevel: 1430, rewards: { gold: 520 } },
 					[Difficulty.normal]: { itemlevel: 1430, rewards: { gold: 650 } },
 					[Difficulty.hard]: { itemlevel: 1460, rewards: { gold: 1000 } },
-				},
-			},
-			G3: {
-				bossName: ["Covetous Legion Commander Vykas"],
-				difficulties: {
-					[Difficulty.solo]: { itemlevel: 1430, rewards: { gold: 780 } },
-					[Difficulty.normal]: { itemlevel: 1430, rewards: { gold: 900 } },
-					[Difficulty.hard]: { itemlevel: 1460, rewards: { gold: 1300 } },
 				},
 			},
 		},
@@ -164,23 +156,7 @@ export const raids: Record<
 					[Difficulty.hard]: { itemlevel: 1560, rewards: { gold: 2000 } },
 				},
 				isBiWeekly: "even",
-			},
-			G5: {
-				bossName: ["Brelshaza, Monarch of Nightmares", "Imagined Primordial Nightmare", "Pseudospace Primordial Nightmare"],
-				difficulties: {
-					[Difficulty.solo]: { itemlevel: 1540, rewards: { gold: 640 } },
-					[Difficulty.normal]: { itemlevel: 1540, rewards: { gold: 800 } },
-					[Difficulty.hard]: { itemlevel: 1580, rewards: { gold: 1000 } },
-				},
-			},
-			G6: {
-				bossName: ["Phantom Legion Commander Brelshaza"],
-				difficulties: {
-					[Difficulty.solo]: { itemlevel: 1540, rewards: { gold: 960 } },
-					[Difficulty.normal]: { itemlevel: 1540, rewards: { gold: 1200 } },
-					[Difficulty.hard]: { itemlevel: 1580, rewards: { gold: 1600 } },
-				},
-			},
+			}
 		},
 	},
 	kayangel: {
@@ -219,24 +195,24 @@ export const raids: Record<
 				bossName: ["Griefbringer Maurug", "Evolved Maurug"],
 				difficulties: {
 					[Difficulty.solo]: { itemlevel: 1580, rewards: { gold: 800 } },
-					[Difficulty.normal]: { itemlevel: 1580, rewards: { gold: 800 } },
-					[Difficulty.hard]: { itemlevel: 1600, rewards: { gold: 1200 } },
+					[Difficulty.normal]: { itemlevel: 1580, rewards: { gold: 1000 } },
+					[Difficulty.hard]: { itemlevel: 1600, rewards: { gold: 1500 } },
 				},
 			},
 			G2: {
 				bossName: ["Lord of Degradation Akkan"],
 				difficulties: {
 					[Difficulty.solo]: { itemlevel: 1580, rewards: { gold: 1440 } },
-					[Difficulty.normal]: { itemlevel: 1580, rewards: { gold: 1440 } },
-					[Difficulty.hard]: { itemlevel: 1600, rewards: { gold: 2000 } },
+					[Difficulty.normal]: { itemlevel: 1580, rewards: { gold: 1800 } },
+					[Difficulty.hard]: { itemlevel: 1600, rewards: { gold: 2500 } },
 				},
 			},
 			G3: {
 				bossName: ["Plague Legion Commander Akkan", "Lord of Kartheon Akkan"],
 				difficulties: {
 					[Difficulty.solo]: { itemlevel: 1580, rewards: { gold: 2080 } },
-					[Difficulty.normal]: { itemlevel: 1580, rewards: { gold: 2080 } },
-					[Difficulty.hard]: { itemlevel: 1600, rewards: { gold: 2800 } },
+					[Difficulty.normal]: { itemlevel: 1580, rewards: { gold: 2600 } },
+					[Difficulty.hard]: { itemlevel: 1600, rewards: { gold: 3500 } },
 				},
 			},
 		},
@@ -248,32 +224,24 @@ export const raids: Record<
 				bossName: ["Kaltaya, the Blooming Chaos"],
 				difficulties: {
 					[Difficulty.solo]: { itemlevel: 1600, rewards: { gold: 1200 } },
-					[Difficulty.normal]: { itemlevel: 1600, rewards: { gold: 1200 } },
-					[Difficulty.hard]: { itemlevel: 1610, rewards: { gold: 1600 } },
+					[Difficulty.normal]: { itemlevel: 1600, rewards: { gold: 1500 } },
+					[Difficulty.hard]: { itemlevel: 1610, rewards: { gold: 2000 } },
 				},
 			},
 			G2: {
 				bossName: ["Rakathus, the Lurking Arrogance"],
 				difficulties: {
 					[Difficulty.solo]: { itemlevel: 1600, rewards: { gold: 1600 } },
-					[Difficulty.normal]: { itemlevel: 1600, rewards: { gold: 1600 } },
-					[Difficulty.hard]: { itemlevel: 1610, rewards: { gold: 2400 } },
+					[Difficulty.normal]: { itemlevel: 1600, rewards: { gold: 2000 } },
+					[Difficulty.hard]: { itemlevel: 1610, rewards: { gold: 3000 } },
 				},
 			},
 			G3: {
-				bossName: ["Firehorn, Trampler of Earth"],
-				difficulties: {
-					[Difficulty.solo]: { itemlevel: 1600, rewards: { gold: 2400 } },
-					[Difficulty.normal]: { itemlevel: 1600, rewards: { gold: 2400 } },
-					[Difficulty.hard]: { itemlevel: 1610, rewards: { gold: 4400 } },
-				},
-			},
-			G4: {
 				bossName: ["Lazaram, the Trailblazer", "Subordinated Vertus", "Subordinated Calventus", "Subordinated Legoros", "Brand of Subordination"],
 				difficulties: {
-					[Difficulty.solo]: { itemlevel: 1610, rewards: { gold: 2700 } },
-					[Difficulty.normal]: { itemlevel: 1610, rewards: { gold: 3300 } },
-					[Difficulty.hard]: { itemlevel: 1620, rewards: { gold: 5500 } },
+					[Difficulty.solo]: { itemlevel: 1600, rewards: { gold: 2400 } },
+					[Difficulty.normal]: { itemlevel: 1600, rewards: { gold: 3000 } },
+					[Difficulty.hard]: { itemlevel: 1610, rewards: { gold: 5500 } },
 				},
 			},
 		},
@@ -310,6 +278,7 @@ export const raids: Record<
 				difficulties: {
 					[Difficulty.hard]: { itemlevel: 1620, rewards: { gold: 9800 } },
 				},
+				isBiWeekly: "odd",
 			},
 		},
 	},

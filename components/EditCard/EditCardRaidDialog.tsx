@@ -176,14 +176,24 @@ export default function EditCardRaidDialog({
 		form.reset({
 			raidId: actualRaid ? watchRaidId : "",
 			gates: actualRaid
-				? Object.keys(actualRaid.gates).map(
-						(gateId) =>
+				? Object.entries(actualRaid.gates).map(
+						([gateId, gateInfo]) =>
 							character.assignedRaids[watchRaidId]?.[gateId]?.difficulty ||
+							Object.entries(gateInfo.difficulties).findLast(
+								([, diffData]) => diffData.itemlevel <= character.itemLevel,
+							)?.[0] ||
 							"none",
 					)
 				: [],
 		});
-	}, [actualRaid, isOpen, character.assignedRaids, form, watchRaidId]);
+	}, [
+		actualRaid,
+		isOpen,
+		character.assignedRaids,
+		form,
+		watchRaidId,
+		character.itemLevel,
+	]);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
