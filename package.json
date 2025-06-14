@@ -9,7 +9,8 @@
 		"next:lint": "next lint",
 		"lint": "bunx biome lint --write",
 		"check": "bunx biome check --write",
-		"format": "bunx biome format --write"
+		"format": "bunx biome format --write",
+		"test": "bunx playwright test"
 	},
 	"dependencies": {
 		"@formkit/auto-animate": "^0.8.2",
