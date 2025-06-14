@@ -7,6 +7,7 @@ import { useMainStore } from "@/providers/MainStoreProvider";
 import { getGateInfoFromClearBossName, ignoreBosses } from "./utils";
 import { DatabaseBackup } from "lucide-react";
 import { motion } from "motion/react";
+import { Difficulty } from "@/lib/raids";
 
 export default function LoaLogUpdateRaidCompletion() {
 	const { hasAccess, getWeeklyRaids } = useLoaLogsDb();
@@ -42,6 +43,14 @@ export default function LoaLogUpdateRaidCompletion() {
 			}
 
 			for (const raid of weeklyRaids) {
+				if (
+					!Object.values(Difficulty).includes(raid.difficulty as Difficulty)
+				) {
+					console.debug(
+						`Skipping raid with unsupported difficulty: ${raid.difficulty}`,
+					);
+					continue;
+				}
 				if (ignoreBosses.has(raid.current_boss)) {
 					continue;
 				}
