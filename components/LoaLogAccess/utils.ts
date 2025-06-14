@@ -1,4 +1,3 @@
-import { getLatestWeeklyReset } from "@/lib/dates";
 import { raids } from "@/lib/raids";
 import { z } from "zod";
 
@@ -117,23 +116,30 @@ export const zEntries = z.object({
   fight_start: z.number(),
 }).array();
 
-
-export const ignoreBosses = new Set(['Drextalas', 'Skolakia', 'Argeos', 'Veskal', 'Gargadeth', 'Sonavel', 'Hanumatan', 'Kungelanium', 'Deskaluda']);
+// guardian raids: https://github.com/snoww/loa-logs/blob/master/src/lib/constants/encounters.ts
+export const ignoreBosses = new Set([
+  "Drextalas",
+  "Skolakia",
+  "Argeos",
+  "Veskal",
+  "Gargadeth",
+  "Sonavel",
+  "Hanumatan",
+  "Kungelanium",
+  "Deskaluda"
+]);
 
 export function getGateInfoFromClearBossName(
   clearBossName: string,
-  difficulty: string,
 ) {
-  if (difficulty !== "Normal" && difficulty !== "Hard") {
-    throw new Error("Invalid difficulty, expected 'Normal' or 'Hard'");
-  }
   for (const [raidId, raidInfo] of Object.entries(raids)) {
     for (const [gateId, gateInfo] of Object.entries(raidInfo.gates)) {
-      if (gateInfo.difficulties[difficulty]?.clearBossName === clearBossName)
+      if (gateInfo.bossName.includes(clearBossName)) {
         return {
           raidId,
           gateId,
         }
+      }
     }
   }
 

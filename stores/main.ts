@@ -435,9 +435,9 @@ export const createMainStore = () =>
 						if (charIndex === -1) throw new Error("Character not found");
 						const assignedRaid =
 							state.characters[charIndex].assignedRaids[raidId];
-						if (assignedRaid === undefined) throw new Error("Raid not found");
+						if (assignedRaid === undefined) throw new Error("Raid not assigned");
 						const gate = assignedRaid[gateId];
-						if (gate === undefined) throw new Error("Gate not found");
+						if (gate === undefined) throw new Error("Gate not assigned");
 
 						gate.completedDate = completedDate.toISOString();
 

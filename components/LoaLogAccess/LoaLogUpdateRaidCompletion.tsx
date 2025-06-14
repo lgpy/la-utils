@@ -43,17 +43,11 @@ export default function LoaLogUpdateRaidCompletion() {
 
 			for (const raid of weeklyRaids) {
 				if (ignoreBosses.has(raid.current_boss)) {
-					console.debug(
-						`Ignoring raid for boss: ${raid.current_boss} (not a valid raid boss)`,
-					);
 					continue;
 				}
 				const charId = uniqueCharactersToIdMap.get(raid.local_player);
 				if (charId === undefined) continue;
-				const raidInfo = getGateInfoFromClearBossName(
-					raid.current_boss,
-					raid.difficulty,
-				);
+				const raidInfo = getGateInfoFromClearBossName(raid.current_boss);
 				if (!raidInfo) {
 					console.warn(
 						`No raid info found for boss: ${raid.current_boss}, difficulty: ${raid.difficulty}`,
@@ -61,12 +55,20 @@ export default function LoaLogUpdateRaidCompletion() {
 					hasError = true;
 					continue;
 				}
-				mainStore.setGate(
-					charId,
-					raidInfo.raidId,
-					raidInfo.gateId,
-					new Date(raid.fight_start),
-				);
+				try {
+					mainStore.setGate(
+						charId,
+						raidInfo.raidId,
+						raidInfo.gateId,
+						new Date(raid.fight_start),
+					);
+				} catch (error) {
+					console.warn(
+						`Failed to complete gate "${raidInfo.gateId}" of "${raidInfo.raidId}" for "${raid.local_player}":`,
+						error instanceof Error ? error.message : error,
+					);
+					hasError = true;
+				}
 			}
 			return hasError;
 		} catch (error) {

@@ -31,7 +31,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-Difficulty;
 const formSchema = z.object({
 	raidId: z.string().min(2).max(50),
 	gates: z.array(z.nativeEnum(Difficulty).or(z.literal("none"))),
