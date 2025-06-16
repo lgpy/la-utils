@@ -5,7 +5,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./db";
 
 let baseUrl: string;
-let trustedOrigins: string[] = [];
+const trustedOrigins: string[] = [];
 
 if (process.env.VERCEL === "1" && process.env.NODE_ENV === "production") {
   console.info("Running in Vercel production mode, using production URL");
