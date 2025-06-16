@@ -20,6 +20,8 @@ if (process.env.VERCEL_URL) { // Vercel
 
 console.log("Base URL for auth:", baseUrl);
 
+console.dir(process.env)
+
 export const auth = betterAuth({
   baseURL: baseUrl,
   database: prismaAdapter(prisma, {
