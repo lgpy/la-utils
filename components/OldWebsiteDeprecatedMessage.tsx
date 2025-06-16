@@ -16,7 +16,7 @@ import { useLocalStorage } from "usehooks-ts";
 
 export default function OldWebsiteDeprecatedMessage() {
 	const [value, setValue, removeValue] = useLocalStorage(
-		"hide-domain-change-notice",
+		"hide-v2-domain-deprecation-notice",
 		false,
 	);
 	const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +25,8 @@ export default function OldWebsiteDeprecatedMessage() {
 		if (typeof window === "undefined") {
 			return;
 		}
+		// Remove old notice key if present
+		window.localStorage.removeItem("hide-domain-change-notice");
 		if (window.location.hostname === "la-utilsv2.vercel.app") {
 			setIsOpen(!value);
 		}
@@ -37,26 +39,26 @@ export default function OldWebsiteDeprecatedMessage() {
 					<AlertDialogTitle>Notice</AlertDialogTitle>
 					<AlertDialogDescription className="flex flex-col gap-2">
 						<span>
-							The old website has been taken down. You can now access this
-							website with the old domain,{" "}
+							The current domain (<b>la-utilsv2.vercel.app</b>) will be{" "}
+							<b>taken down on June 25th</b> to make way for new updates and
+							improvements to Lost Ark Utils. Please switch to the main domain
+							at{" "}
 							<Link
 								href="https://la-utils.vercel.app/"
 								className="underline text-primary hover:primary/80"
 								target="_blank"
 							>
 								la-utils.vercel.app
-							</Link>
-							.
+							</Link>{" "}
+							to access all new features and updates.
 						</span>
 						<span>
-							If you wish to migrate to the old domain, use the
-							&quot;Import/Export Data&quot; feature by accessing the cogweel on
-							the top right of the website.
+							To transfer your data, use the "Import/Export Data" option by
+							clicking the cogwheel in the top right corner.
 						</span>
-						<span>
-							This domain (la-utilsv2.vercel.app) will not be taken down.
+						<span className="text-right">
+							Thank you for using Lost Ark Utils!
 						</span>
-						<span className="text-right">Thank you for using the website</span>
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>

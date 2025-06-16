@@ -12,6 +12,7 @@ import { PostHogProvider } from "@/providers/PostHogProvider";
 import { UserInfoUpdater } from "@/components/UserInfoUpdater";
 import "@/lib/orpc.server";
 import { OrpcProvider } from "@/providers/OrpcProvider";
+import OldWebsiteDeprecatedMessage from "@/components/OldWebsiteDeprecatedMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -63,6 +64,7 @@ export default async function RootLayout({
 											</a>
 										</p>
 									</footer>
+									<OldWebsiteDeprecatedMessage />
 									<Toaster />
 									<UserInfoUpdater />
 								</ThemeProvider>
