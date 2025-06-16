@@ -12,25 +12,44 @@ import {
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useLocalStorage } from "usehooks-ts";
+
+const STORAGE_KEY = "hide-v2-domain-deprecation-notice-until";
+const HIDE_DURATION_MS = 12 * 60 * 60 * 1000; // 12 hours
+
+const OLD_KEYS = [
+	"hide-domain-change-notice",
+	"hide-v2-domain-deprecation-notice",
+];
 
 export default function OldWebsiteDeprecatedMessage() {
-	const [value, setValue, removeValue] = useLocalStorage(
-		"hide-v2-domain-deprecation-notice",
-		false,
-	);
 	const [isOpen, setIsOpen] = useState(false);
 
 	useEffect(() => {
 		if (typeof window === "undefined") {
 			return;
 		}
-		// Remove old notice key if present
-		window.localStorage.removeItem("hide-domain-change-notice");
-		if (window.location.hostname === "la-utilsv2.vercel.app") {
-			setIsOpen(!value);
+
+		for (const key of OLD_KEYS) {
+			window.localStorage.removeItem(key);
 		}
-	}, [value]);
+
+		if (
+			window.location.hostname === "la-utilsv2.vercel.app" ||
+			window.location.hostname === "localhost"
+		) {
+			const hideUntil = window.localStorage.getItem(STORAGE_KEY);
+			const now = Date.now();
+			if (!hideUntil || now > Number(hideUntil)) {
+				setIsOpen(true);
+			}
+		}
+	}, []);
+
+	const handleHideForNow = () => {
+		const until = Date.now() + HIDE_DURATION_MS;
+		window.localStorage.setItem(STORAGE_KEY, String(until));
+		setIsOpen(false);
+	};
 
 	return (
 		<AlertDialog open={isOpen}>
@@ -62,8 +81,8 @@ export default function OldWebsiteDeprecatedMessage() {
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel onClick={() => setValue(true)}>
-						Don&apos;t show me this again
+					<AlertDialogCancel onClick={handleHideForNow}>
+						Hide for Now
 					</AlertDialogCancel>
 					<AlertDialogAction onClick={() => setIsOpen(false)} autoFocus>
 						Okay
