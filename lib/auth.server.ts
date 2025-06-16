@@ -6,19 +6,25 @@ import prisma from "./db";
 
 let baseUrl: string;
 
-if (process.env.VERCEL_URL) { // Vercel
-  baseUrl = `https://${process.env.VERCEL_URL}`;
-} else if (process.env.URL) { // Netlify
+if (process.env.VERCEL === "1" && process.env.NODE_ENV === "production") {
+  console.info("Running in Vercel production mode, using production URL");
+  baseUrl = `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+} else if (process.env.VERCEL === "1" && process.env.NODE_ENV !== "production") {
+  console.info(`Running in Vercel ${process.env.NODE_ENV} mode, using staging URL`);
+  baseUrl = `https://${process.env.VERCEL_PROJECT_STAGING_URL}`;
+} else if (process.env.URL) {
+  console.info("Running in Netlify");
   baseUrl = process.env.URL;
-} else if (process.env.BETTER_AUTH_URL) { // env file
+} else if (process.env.BETTER_AUTH_URL) {
+  console.info("Using BETTER_AUTH_URL from environment variables");
   baseUrl = process.env.BETTER_AUTH_URL;
 } else {
-  baseUrl = "http://localhost:3000"; // Default fallback
+  console.info("Running in local development mode, using default URL");
+  baseUrl = "http://localhost:3000";
 }
 
 console.log("Base URL for auth:", baseUrl);
 
-console.dir(process.env)
 
 export const auth = betterAuth({
   baseURL: baseUrl,
