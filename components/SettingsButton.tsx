@@ -97,7 +97,6 @@ export default function SettingsButton() {
 						onClick={() =>
 							authClient.signIn.social({
 								provider: "discord",
-								callbackURL: `${window.location.origin}/`,
 							})
 						}
 					>
