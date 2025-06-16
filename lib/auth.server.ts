@@ -25,6 +25,8 @@ if (process.env.VERCEL === "1" && process.env.NODE_ENV === "production") {
 
 console.log("Base URL for auth:", baseUrl);
 
+console.dir(process.env)
+
 
 export const auth = betterAuth({
   baseURL: baseUrl,
