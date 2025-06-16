@@ -13,9 +13,7 @@ if (process.env.VERCEL_URL) { // Vercel
 } else if (process.env.BETTER_AUTH_URL) { // env file
   baseUrl = process.env.BETTER_AUTH_URL;
 } else {
-  throw new Error(
-    "baseUrl is not defined. Please set environment variable."
-  );
+  baseUrl = "http://localhost:3000"; // Default fallback
 }
 
 console.log("Base URL for auth:", baseUrl);
