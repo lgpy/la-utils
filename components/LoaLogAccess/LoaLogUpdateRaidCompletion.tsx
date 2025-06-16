@@ -1,13 +1,13 @@
 "use client";
 
 import { toast } from "sonner";
-import { Button } from "../ui/button";
 import { useLoaLogsDb } from "./LoaLogUpdateRaidCompletion.hooks";
 import { useMainStore } from "@/providers/MainStoreProvider";
 import { getGateInfoFromClearBossName, ignoreBosses } from "./utils";
 import { DatabaseBackup } from "lucide-react";
-import { motion } from "motion/react";
-import { Difficulty } from "@/lib/raids";
+import { Difficulty } from "@/generated/prisma";
+import { ExpandableButton } from "../ExpandableButton";
+import { FabButtonWrapper } from "../FabButtonWrapper";
 
 export default function LoaLogUpdateRaidCompletion() {
 	const { hasAccess, getWeeklyRaids } = useLoaLogsDb();
@@ -91,21 +91,10 @@ export default function LoaLogUpdateRaidCompletion() {
 	}
 
 	return (
-		<motion.div
-			initial={{ scale: 0.8, opacity: 0 }}
-			animate={{
-				scale: 1,
-				opacity: 1,
-				transition: {
-					type: "spring",
-					stiffness: 260,
-					damping: 20,
-				},
-			}}
-		>
-			<Button
+		<FabButtonWrapper>
+			<ExpandableButton
 				variant="secondary"
-				size="icon"
+				label="Update Raids"
 				onClick={() => {
 					toast.promise(updateWeeklyRaids(), {
 						loading: "Updating weekly raids...",
@@ -120,7 +109,7 @@ export default function LoaLogUpdateRaidCompletion() {
 				}}
 			>
 				<DatabaseBackup className="size-6" />
-			</Button>
-		</motion.div>
+			</ExpandableButton>
+		</FabButtonWrapper>
 	);
 }

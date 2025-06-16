@@ -1,5 +1,4 @@
-import { Class } from "@/lib/classes";
-import { Difficulty } from "@/lib/raids";
+import { Class, Difficulty } from "@/generated/prisma";
 import type { MainState } from "@/stores/main";
 import { type Page, expect, test } from "@playwright/test";
 
@@ -119,9 +118,9 @@ test("edit raid", async ({ page }) => {
 		itemLevel: 1600,
 		assignedRaids: {
 			brel: {
-				G1: { difficulty: Difficulty.normal },
-				G2: { difficulty: Difficulty.hard },
-				G3: { difficulty: Difficulty.normal },
+				G1: { difficulty: Difficulty.Normal },
+				G2: { difficulty: Difficulty.Hard },
+				G3: { difficulty: Difficulty.Normal },
 			},
 		},
 	});
@@ -153,9 +152,9 @@ test("delete raid", async ({ page }) => {
 		itemLevel: 1600,
 		assignedRaids: {
 			brel: {
-				G1: { difficulty: Difficulty.normal },
-				G2: { difficulty: Difficulty.hard },
-				G3: { difficulty: Difficulty.normal },
+				G1: { difficulty: Difficulty.Normal },
+				G2: { difficulty: Difficulty.Hard },
+				G3: { difficulty: Difficulty.Normal },
 			},
 		},
 	});
@@ -182,7 +181,7 @@ test("delete character and undo", async ({ page }) => {
 	let characterCard = await page.getByTestId("character-0");
 	await characterCard.getByTestId("edit-character").click();
 	page.once("dialog", (dialog) => {
-		dialog.accept().catch(() => {});
+		dialog.accept().catch(() => { });
 	});
 	await page.getByTestId("char-delete-button").click();
 	characterCard = await page.getByTestId("character-0");

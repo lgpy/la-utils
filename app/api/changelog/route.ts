@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { changelogEntries, zodChangelogEntry } from "./entries";
 
 
@@ -8,7 +8,7 @@ function parseChangelogDate(dateString: string): Date {
   return new Date(year, month - 1, day); // month is 0-indexed in Date constructor
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const lastViewedDate = searchParams.get('lastViewedDate');

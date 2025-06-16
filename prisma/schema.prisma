@@ -1,0 +1,205 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+
+  characters Character[]
+
+  friendshipsRequested Friendship[] @relation("FriendRequester")
+  friendshipsReceived  Friendship[] @relation("FriendAddressee")
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+enum Class {
+  //Warriors
+  Berserker
+  Destroyer
+  Gunlancer
+  Paladin
+  Slayer
+
+  //Mages
+  Arcanist
+  Bard
+  Sorceress
+  Summoner
+
+  //Fighters
+  Glaivier
+  Scrapper
+  Soulfist
+  Wardancer
+  Striker
+  Breaker
+
+  //Gunners
+  Artillerist
+  Deadeye
+  Gunslinger
+  Machinist
+  Sharpshooter
+
+  //Assassins
+  Deathblade
+  Reaper
+  Shadowhunter
+  Souleater
+
+  //Specialists
+  Aeromancer
+  Artist
+  Wildsoul
+}
+
+model Character {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  id           String
+  name         String
+  class        Class
+  itemLevel    Int
+  isGoldEarner Boolean @default(false)
+  assignedRaids AssignedRaid[]
+  tasks         CharacterTask[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@id([userId, id])
+}
+
+model AssignedRaid {
+  raidId      String
+  characterId String
+  userId      String
+  character   Character  @relation(fields: [userId, characterId], references: [userId, id], onDelete: Cascade)
+  gates       RaidGate[]
+
+  @@id([raidId, characterId, userId])
+}
+
+enum Difficulty {
+  Solo
+  Normal
+  Hard
+}
+
+model RaidGate {
+  gateId         String
+  difficulty     Difficulty
+  completedDate  DateTime?
+  
+  userId      String
+  characterId   String
+  assignedRaidId String
+  assignedRaid   AssignedRaid @relation(fields: [assignedRaidId, characterId, userId], references: [raidId, characterId, userId], onDelete: Cascade)
+
+  @@id([gateId, assignedRaidId, characterId, userId])
+}
+
+enum TaskType {
+  daily
+  weekly
+}
+
+model CharacterTask {
+  id            String
+  name          String
+  type          TaskType
+  completedDate DateTime?
+
+  userId      String
+  characterId   String
+  character     Character @relation(fields: [userId, characterId], references: [userId, id], onDelete: Cascade)
+
+  @@id([id, characterId, userId])
+}
+
+model Friendship {
+  id         String   @id @default(uuid())
+  requester  User     @relation("FriendRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  requesterId String
+  addressee  User     @relation("FriendAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+  addresseeId String
+  status     FriendshipStatus @default(pending)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([requesterId, addresseeId])
+  @@map("friendship")
+}
+
+enum FriendshipStatus {
+  pending
+  accepted
+  blocked
+}

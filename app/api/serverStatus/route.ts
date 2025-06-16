@@ -6,6 +6,7 @@ import {
 } from "@/lib/servers";
 import axios from "axios";
 import * as cheerio from "cheerio";
+import { type NextRequest, NextResponse } from "next/server";
 
 export const revalidate = 300;
 
@@ -66,24 +67,21 @@ const parseServerStatus = (html: string) => {
 // Track last update time
 let lastUpdatedTimestamp = 0;
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
 	// Get the server name from URL query parameter
 	const url = new URL(request.url);
 	const serverName = url.searchParams.get("server");
 
 	// Require server parameter
 	if (!serverName) {
-		return new Response(
-			JSON.stringify({
-				error: "Missing server parameter",
-			}),
+		return NextResponse.json(
+			{ error: "Missing server parameter" },
 			{
 				status: 400,
 				headers: {
 					"Content-Type": "application/json",
-				},
-			},
-		);
+				}
+			});
 	}
 
 	try {
@@ -106,7 +104,7 @@ export async function GET(request: Request) {
 			status,
 		};
 
-		return new Response(JSON.stringify(response), {
+		return NextResponse.json(response, {
 			status: 200,
 			headers: {
 				"Content-Type": "application/json",
@@ -125,7 +123,7 @@ export async function GET(request: Request) {
 				error: "Using cached data due to fetch error",
 			};
 
-			return new Response(JSON.stringify(response), {
+			return NextResponse.json(response, {
 				status: 200,
 				headers: {
 					"Content-Type": "application/json",
@@ -141,7 +139,7 @@ export async function GET(request: Request) {
 			status: ServerStatus.OFFLINE, // Default to offline when error occurs
 		};
 
-		return new Response(JSON.stringify(response), {
+		return NextResponse.json(response, {
 			status: 503,
 			headers: {
 				"Content-Type": "application/json",

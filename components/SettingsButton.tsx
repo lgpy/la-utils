@@ -3,11 +3,15 @@ import {
 	Database,
 	FlaskConical,
 	Import,
+	LogIn,
+	LogOut,
 	Moon,
 	Server,
 	SettingsIcon,
 	Sun,
 	SunMoon,
+	User,
+	Users,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -28,22 +32,25 @@ import {
 import { useSettingsStore } from "@/providers/MainStoreProvider";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth";
 
 export default function SettingsButton() {
 	const { setTheme, theme } = useTheme();
 	const settingsStore = useSettingsStore();
 	const router = useRouter();
 
+	const { data: session, isPending, error, refetch } = authClient.useSession();
+
 	const ThemeIcon = (() => {
 		switch (theme) {
 			case "light":
-				return <Sun className="mr-2 size-4" />;
+				return <Sun />;
 			case "dark":
-				return <Moon className="mr-2 size-4" />;
+				return <Moon />;
 			case "system":
-				return <SunMoon className="mr-2 size-4" />;
+				return <SunMoon />;
 			default:
-				return <SunMoon className="mr-2 size-4" />;
+				return <SunMoon />;
 		}
 	})();
 
@@ -58,6 +65,46 @@ export default function SettingsButton() {
 				<DropdownMenuLabel>Settings</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 
+				{session ? (
+					<DropdownMenuGroup>
+						<DropdownMenuSub>
+							<DropdownMenuSubTrigger>
+								<User />
+								<span>Logged in as {session.user?.name}</span>
+							</DropdownMenuSubTrigger>
+							<DropdownMenuPortal>
+								<DropdownMenuSubContent>
+									<DropdownMenuItem onClick={() => router.push("/friends")}>
+										<Users />
+										<span>Friends</span>
+									</DropdownMenuItem>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem
+										onClick={() => {
+											authClient.signOut();
+											refetch();
+										}}
+									>
+										<LogOut />
+										<span>Logout</span>
+									</DropdownMenuItem>
+								</DropdownMenuSubContent>
+							</DropdownMenuPortal>
+						</DropdownMenuSub>
+					</DropdownMenuGroup>
+				) : (
+					<DropdownMenuItem
+						onClick={() =>
+							authClient.signIn.social({
+								provider: "discord",
+							})
+						}
+					>
+						<LogIn />
+						<span>Login with Discord</span>
+					</DropdownMenuItem>
+				)}
+
 				<DropdownMenuItem onClick={() => router.push("/backup")}>
 					<Import />
 					<span>Import/Export Data</span>
@@ -68,7 +115,7 @@ export default function SettingsButton() {
 				</DropdownMenuItem>
 				<DropdownMenuGroup>
 					<DropdownMenuSub>
-						<DropdownMenuSubTrigger className="focus:text-background data-[state=open]:text-background">
+						<DropdownMenuSubTrigger>
 							{ThemeIcon}
 							<span>Theme</span>
 						</DropdownMenuSubTrigger>
@@ -102,16 +149,14 @@ export default function SettingsButton() {
 				</DropdownMenuGroup>
 				<DropdownMenuGroup>
 					<DropdownMenuSub>
-						<DropdownMenuSubTrigger className="focus:text-background data-[state=open]:text-background">
-							<Server className="mr-2 size-4" />
+						<DropdownMenuSubTrigger>
+							<Server />
 							<span>Server</span>
 						</DropdownMenuSubTrigger>
 						<DropdownMenuPortal>
 							<DropdownMenuSubContent>
 								<DropdownMenuSub>
-									<DropdownMenuSubTrigger className="focus:text-background data-[state=open]:text-background">
-										NAW
-									</DropdownMenuSubTrigger>
+									<DropdownMenuSubTrigger>NAW</DropdownMenuSubTrigger>
 									<DropdownMenuPortal>
 										<DropdownMenuSubContent>
 											<DropdownMenuCheckboxItem
@@ -134,9 +179,7 @@ export default function SettingsButton() {
 									</DropdownMenuPortal>
 								</DropdownMenuSub>
 								<DropdownMenuSub>
-									<DropdownMenuSubTrigger className="focus:text-background data-[state=open]:text-background">
-										NAE
-									</DropdownMenuSubTrigger>
+									<DropdownMenuSubTrigger>NAE</DropdownMenuSubTrigger>
 									<DropdownMenuPortal>
 										<DropdownMenuSubContent>
 											<DropdownMenuCheckboxItem
@@ -183,9 +226,7 @@ export default function SettingsButton() {
 									</DropdownMenuPortal>
 								</DropdownMenuSub>
 								<DropdownMenuSub>
-									<DropdownMenuSubTrigger className="focus:text-background data-[state=open]:text-background">
-										EUC
-									</DropdownMenuSubTrigger>
+									<DropdownMenuSubTrigger>EUC</DropdownMenuSubTrigger>
 									<DropdownMenuPortal>
 										<DropdownMenuSubContent>
 											<DropdownMenuCheckboxItem
@@ -233,8 +274,8 @@ export default function SettingsButton() {
 				</DropdownMenuGroup>
 				<DropdownMenuGroup>
 					<DropdownMenuSub>
-						<DropdownMenuSubTrigger className="focus:text-background data-[state=open]:text-background">
-							<FlaskConical className="mr-2 size-4" />
+						<DropdownMenuSubTrigger>
+							<FlaskConical />
 							<span>Experiments</span>
 						</DropdownMenuSubTrigger>
 						<DropdownMenuPortal>

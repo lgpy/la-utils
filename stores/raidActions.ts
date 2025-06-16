@@ -1,6 +1,7 @@
 import { getGateResetDate } from "@/lib/dates";
-import { type Difficulty, isGateCompleted, raids } from "@/lib/raids";
+import { isGateCompleted } from "@/lib/raids";
 import type { SetType } from "./main";
+import type { Difficulty } from "@/generated/prisma";
 
 export function charAddRaid(
 	set: SetType,

@@ -1,10 +1,9 @@
-import { Class } from "@/lib/classes";
 import {
 	getGateResetDate,
 	getLatestWeeklyReset,
 	getTaskResetDate,
 } from "@/lib/dates";
-import { Difficulty, isGateCompleted, raids } from "@/lib/raids";
+import { isGateCompleted, raids } from "@/lib/raids";
 import { isTaskCompleted } from "@/lib/tasks";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
@@ -21,6 +20,7 @@ import {
 	charEditRaid,
 	raidAction,
 } from "./raidActions";
+import { Class, Difficulty } from "@/generated/prisma";
 
 export const zodTask = z.object({
 	id: z.string(),
@@ -35,8 +35,8 @@ export const zodChar = z.object({
 	class: z.nativeEnum(Class),
 	itemLevel: z.number(),
 	isGoldEarner: z.boolean(),
-	assignedRaids: z.record(
-		z.record(
+	assignedRaids: z.record( //raidId
+		z.record( //gateId
 			z.object({
 				difficulty: z.nativeEnum(Difficulty),
 				completedDate: z.string().optional(),
@@ -105,6 +105,10 @@ export type MainActions = {
 	charToggleTask: (charId: string, taskId: string) => void;
 	reorderChars: (charIds: string[]) => void;
 	setGate: (charId: string, raidId: string, gateId: string, completedDate: Date) => void;
+	availableRaids: () => {
+		raidId: string;
+		difficulty: Difficulty;
+	}[];
 };
 
 export type MainStore = MainState & MainActions;
@@ -112,7 +116,7 @@ export type MainStore = MainState & MainActions;
 export const createMainStore = () =>
 	createStore<MainStore>()(
 		persist(
-			(set) => ({
+			(set, get) => ({
 				characters: [],
 				updateCharacter: (charId, char) => updateCharacter(set, charId, char),
 				createCharacter: (char) => CreateCharacter(set, char),
@@ -442,6 +446,45 @@ export const createMainStore = () =>
 						gate.completedDate = completedDate.toISOString();
 
 						return { ...state };
+					});
+				},
+				availableRaids: () => {
+					const uniqueAvailable = new Set<string>();
+					const result: { raidId: string; difficulty: Difficulty }[] = [];
+					const { characters } = get();
+					for (const char of characters) {
+						for (const [raidId, gates] of Object.entries(char.assignedRaids)) {
+							for (const [gateId, gate] of Object.entries(gates)) {
+								const resetDate = getGateResetDate(raidId, gateId);
+								const completed = gate.completedDate
+									? isGateCompleted(new Date(gate.completedDate), resetDate)
+									: false;
+								if (!completed) {
+									const key = `${raidId}:${gate.difficulty}`;
+									if (!uniqueAvailable.has(key)) {
+										uniqueAvailable.add(key);
+										result.push({ raidId, difficulty: gate.difficulty });
+									}
+								}
+							}
+						}
+					}
+					const raidKeys = Object.keys(raids).reverse();
+					// Sort by raid order, and if raidIds are the same, by difficulty: Hard > Normal > Solo
+					const difficultyOrder: Record<Difficulty, number> = {
+						[Difficulty.Hard]: 0,
+						[Difficulty.Normal]: 1,
+						[Difficulty.Solo]: 2,
+					};
+					return result.sort((a, b) => {
+						const aIndex = raidKeys.indexOf(a.raidId);
+						const bIndex = raidKeys.indexOf(b.raidId);
+						if (aIndex === -1 || bIndex === -1) return 0; // If not found, keep original order
+						if (aIndex !== bIndex) {
+							return aIndex - bIndex;
+						}
+						// If raidIds are the same, sort by difficulty order
+						return (difficultyOrder[a.difficulty] ?? 99) - (difficultyOrder[b.difficulty] ?? 99);
 					});
 				},
 			}),

@@ -139,7 +139,7 @@ newRaid: {
   gates: {
     G1: {
       difficulties: {
-        [Difficulty.normal]: {
+        [Difficulty.Normal]: {
           itemlevel: 1600,
           rewards: { gold: 1000 },
         },

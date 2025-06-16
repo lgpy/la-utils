@@ -22,7 +22,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Difficulty, raids } from "@/lib/raids";
+import { Difficulty } from "@/generated/prisma";
+import { raids } from "@/lib/raids";
 import { type Character, useMainStore } from "@/providers/MainStoreProvider";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { zodResolver } from "@hookform/resolvers/zod";

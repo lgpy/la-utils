@@ -1,6 +1,7 @@
 import type { Character } from "@/providers/MainStoreProvider";
 import { getLatestBiWeeklyReset, getLatestWeeklyReset } from "./dates";
 import { isGateCompleted, raids } from "./raids";
+import { Class } from "@/generated/prisma";
 
 export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
 	const ret = {} as Record<
@@ -153,4 +154,54 @@ export function getHighest3(
 export function sortRaidKeys(a: string, b: string) {
 	const keys = Object.keys(raids);
 	return keys.indexOf(a) - keys.indexOf(b);
+}
+
+export function getSupportAndDpsCount(classes: Class[]) {
+	const ret = {
+		support: 0,
+		dps: 0,
+	};
+
+	for (const cls of classes) {
+		switch (cls) {
+			// Support classes
+			case Class.Bard:
+			case Class.Paladin:
+			case Class.Artist:
+				ret.support++;
+				break;
+			// DPS classes
+			case Class.Berserker:
+			case Class.Destroyer:
+			case Class.Gunlancer:
+			case Class.Slayer:
+			case Class.Arcanist:
+			case Class.Sorceress:
+			case Class.Summoner:
+			case Class.Glaivier:
+			case Class.Scrapper:
+			case Class.Soulfist:
+			case Class.Wardancer:
+			case Class.Striker:
+			case Class.Breaker:
+			case Class.Artillerist:
+			case Class.Deadeye:
+			case Class.Gunslinger:
+			case Class.Machinist:
+			case Class.Sharpshooter:
+			case Class.Deathblade:
+			case Class.Reaper:
+			case Class.Shadowhunter:
+			case Class.Souleater:
+			case Class.Aeromancer:
+			case Class.Wildsoul:
+				ret.dps++;
+				break;
+			default: {
+				const _exhaustiveCheck: never = cls;
+				break;
+			}
+		}
+	}
+	return ret;
 }

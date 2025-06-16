@@ -1,11 +1,11 @@
 "use client";
 
-import { Class } from "@/lib/classes";
 import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
 import { type Character, useMainStore } from "./MainStoreProvider";
+import { Class } from "@/generated/prisma";
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
@@ -21,6 +21,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
 			capture_pageview: false, // We capture pageviews manually
 			capture_pageleave: true, // Enable pageleave capture
 			debug: false,
+			autocapture: false,
 		});
 	}, []);
 
