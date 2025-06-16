@@ -53,8 +53,8 @@ export default function OldWebsiteDeprecatedMessage() {
 							to access all new features and updates.
 						</span>
 						<span>
-							To transfer your data, use the "Import/Export Data" option by
-							clicking the cogwheel in the top right corner.
+							To transfer your data, use the &quot;Import/Export Data&quot;
+							option by clicking the cogwheel in the top right corner.
 						</span>
 						<span className="text-right">
 							Thank you for using Lost Ark Utils!
