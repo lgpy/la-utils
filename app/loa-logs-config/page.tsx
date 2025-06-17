@@ -242,6 +242,22 @@ export default function LoaLogsConfigPage() {
 					</Alert>
 				)}
 
+				{supported && (
+					<Alert className="mt-4">
+						<AlertTriangle className="h-4 w-4" />
+						<AlertDescription>
+							<p>
+								<strong>Disclaimer:</strong> This feature has only been tested
+								on <span className="font-semibold">Chrome</span> and{" "}
+								<span className="font-semibold">Edge</span>.<br />
+								If you encounter any issues, please drag and drop the file again
+								and use <span className="font-semibold">Clear Access</span> to
+								reset permissions.
+							</p>
+						</AlertDescription>
+					</Alert>
+				)}
+
 				{error && (
 					<Alert variant="destructive">
 						<XCircle className="h-4 w-4" />
