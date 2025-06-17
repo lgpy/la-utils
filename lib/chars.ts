@@ -156,19 +156,19 @@ export function sortRaidKeys(a: string, b: string) {
 	return keys.indexOf(a) - keys.indexOf(b);
 }
 
-export function getSupportAndDpsCount(classes: Class[]) {
+export function separateSupportAndDps<T extends { class: Class }>(objWithClass: T[]) {
 	const ret = {
-		support: 0,
-		dps: 0,
+		support: [] as T[],
+		dps: [] as T[],
 	};
 
-	for (const cls of classes) {
-		switch (cls) {
+	for (const cls of objWithClass) {
+		switch (cls.class) {
 			// Support classes
 			case Class.Bard:
 			case Class.Paladin:
 			case Class.Artist:
-				ret.support++;
+				ret.support.push(cls);
 				break;
 			// DPS classes
 			case Class.Berserker:
@@ -195,10 +195,10 @@ export function getSupportAndDpsCount(classes: Class[]) {
 			case Class.Souleater:
 			case Class.Aeromancer:
 			case Class.Wildsoul:
-				ret.dps++;
+				ret.dps.push(cls);
 				break;
 			default: {
-				const _exhaustiveCheck: never = cls;
+				const _exhaustiveCheck: never = cls.class;
 				break;
 			}
 		}

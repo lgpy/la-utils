@@ -13,7 +13,7 @@ import { useMainStore } from "@/providers/MainStoreProvider";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import type { Difficulty } from "@/generated/prisma";
+import type { Class, Difficulty } from "@/generated/prisma";
 import type { InferRouterOutputs } from "@orpc/server";
 import type { router } from "@/router";
 import type { MainStore } from "@/stores/main";
@@ -23,8 +23,9 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { ChevronDown } from "lucide-react";
-import { getSupportAndDpsCount } from "@/lib/chars";
+import { separateSupportAndDps } from "@/lib/chars";
 import { Button } from "./ui/button";
+import ClassIcon from "./class-icons/ClassIcon";
 
 export type Outputs = InferRouterOutputs<typeof router>;
 
@@ -128,41 +129,100 @@ function RaidGateAvatars({
 					<ChevronDown className="shrink-0" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent>
+			<PopoverContent className=" w-max max-w-[40vw]">
 				{runsArr.map((run) => {
 					const user = data?.userInfo?.[run.userId];
 					if (!user) return null;
-					const supportDpsCount = getSupportAndDpsCount(
-						Object.values(user.characters).map((char) => char.class),
+					const { dps, support } = separateSupportAndDps(
+						Object.entries(user.characters).map(([charId, char]) => ({
+							id: charId,
+							...char,
+						})),
 					);
-					const dpsText =
-						supportDpsCount.dps > 0 ? `${supportDpsCount.dps} DPS` : "";
-					const supportText =
-						supportDpsCount.support > 0
-							? `${supportDpsCount.support} Support`
-							: "";
-					const sep = dpsText && supportText ? ", " : "";
+
+					// Simplified: Collect up to 3 unique DPS and 3 unique supports by class, then fill up to 6
+					const getUniqueByClass = (arr: typeof dps | typeof support) => {
+						const seen = new Set<string>();
+						return arr.filter((c) => {
+							if (seen.has(c.class)) return false;
+							seen.add(c.class);
+							return true;
+						});
+					};
+					const uniqueDps = getUniqueByClass(dps).slice(0, 3);
+					const uniqueSupport = getUniqueByClass(support).slice(0, 3);
+					let unitedArray = [...uniqueDps, ...uniqueSupport];
+
+					// If less than 6, fill with remaining DPS then supports (no duplicate classes)
+					if (unitedArray.length < 6) {
+						const addMore = (arr: typeof dps | typeof support) => {
+							for (const c of arr) {
+								if (unitedArray.length === 6) break;
+								if (!unitedArray.some((u) => u.class === c.class)) {
+									unitedArray.push(c);
+								}
+							}
+						};
+						addMore(dps);
+						addMore(support);
+					}
+					// Ensure DPS first, supports last
+					unitedArray = [
+						...unitedArray.filter((c) => dps.some((d) => d.class === c.class)),
+						...unitedArray.filter((c) =>
+							support.some((s) => s.class === c.class),
+						),
+					];
+					// unitedArray now contains up to 6 unique classes, with DPS first and supports last
+
 					return (
 						<div
 							key={`${raidId}-${difficulty}-${gateId}-${run.userId}`}
-							className="flex items-center gap-2 p-2 hover:bg-muted rounded"
+							className="flex justify-between items-center p-2 hover:bg-muted rounded w-max gap-4"
 						>
-							<Avatar className="shrink-0">
-								{user.image ? (
-									<AvatarImage src={user.image} alt={user.name} />
-								) : (
-									<AvatarFallback>
-										{user.name?.[0]?.toUpperCase() || "?"}
-									</AvatarFallback>
+							<div className="flex items-center gap-2 hover:bg-muted rounded">
+								<Avatar className="shrink-0 size-10">
+									{user.image ? (
+										<AvatarImage src={user.image} alt={user.name} />
+									) : (
+										<AvatarFallback>
+											{user.name?.[0]?.toUpperCase() || "?"}
+										</AvatarFallback>
+									)}
+								</Avatar>
+								<div className="flex flex-col">
+									<span className="font-medium">{user.name}</span>
+									<span className="text-xs text-muted-foreground flex items-center gap-1">
+										{unitedArray.map((c) => (
+											<ClassIcon
+												c={c.class as Class}
+												key={c.id}
+												className="size-5"
+											/>
+										))}
+										{Object.keys(user.characters).length >
+											unitedArray.length && (
+											<span className="font-semibold">
+												+
+												{Object.keys(user.characters).length -
+													unitedArray.length}{" "}
+											</span>
+										)}
+									</span>
+								</div>
+							</div>
+
+							<div className="flex flex-col justify-around gap-0.5 text-end">
+								{dps.length > 0 && (
+									<span className="text-xs text-muted-foreground">
+										{dps.length} DPS
+									</span>
 								)}
-							</Avatar>
-							<div className="flex flex-col">
-								<span className="font-medium">{user.name}</span>
-								<span className="text-xs text-muted-foreground">
-									{dpsText}
-									{sep}
-									{supportText}
-								</span>
+								{support.length > 0 && (
+									<span className="text-xs text-muted-foreground">
+										{support.length} SUP
+									</span>
+								)}
 							</div>
 						</div>
 					);
@@ -208,7 +268,7 @@ function RaidCardGroup({
 					}));
 					if (runsArr.length === 0) return null;
 					return (
-						<div key={raidId + difficulty} className="flex items-center gap-4">
+						<div key={raidId + difficulty} className="flex items-center gap-4 ">
 							<span className="text-accent font-semibold mr-2 min-w-[64px]">
 								{difficulty}
 							</span>
@@ -257,14 +317,12 @@ function FriendRaidsContent({
 			const raidInfo = raids[raidId];
 			if (!raidInfo) continue;
 			const gateEntries = Object.entries(raidInfo.gates).filter(
-				([, gateInfo]) =>
-					difficulties.some((d) => gateInfo.difficulties[d]),
+				([, gateInfo]) => difficulties.some((d) => gateInfo.difficulties[d]),
 			);
 			// Only show if at least one difficulty has users
 			const hasAnyUsers = difficulties.some((difficulty) =>
 				gateEntries.some(([gateId]) => {
-					const runsArr =
-						data.raids?.[raidId]?.[gateId]?.[difficulty] || [];
+					const runsArr = data.raids?.[raidId]?.[gateId]?.[difficulty] || [];
 					return Array.isArray(runsArr) && runsArr.length > 0;
 				}),
 			);
@@ -277,7 +335,7 @@ function FriendRaidsContent({
 						raidInfo={raidInfo}
 						gateEntries={gateEntries}
 						data={data}
-					/>
+					/>,
 				);
 			}
 		}
