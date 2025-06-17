@@ -166,12 +166,18 @@ export const sendFriendRequest = os
       throw new ORPCError("BAD_REQUEST", { message: "Cannot friend yourself" });
     }
 
-    const existing = await db.friendship.findUnique({
+    const existing = await db.friendship.findFirst({
       where: {
-        requesterId_addresseeId: {
-          requesterId: user.id,
-          addresseeId: input.userId,
-        },
+        OR: [
+          {
+            requesterId: user.id,
+            addresseeId: input.userId,
+          },
+          {
+            requesterId: input.userId,
+            addresseeId: user.id,
+          },
+        ]
       },
     });
 
