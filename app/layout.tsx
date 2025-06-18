@@ -29,7 +29,7 @@ export default async function RootLayout({
 	children: React.ReactNode;
 }>) {
 	try {
-		await auth.api.getSession({
+		await auth?.api.getSession({
 			headers: await headers(),
 		});
 	} catch (error) {

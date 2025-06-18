@@ -6,6 +6,12 @@ import { zodChar } from "@/stores/main";
 import { headers } from "next/headers";
 
 export async function POST(request: NextRequest) {
+  if (auth === null) {
+    return NextResponse.json({
+      error: "Authentication service not initialized"
+    }, { status: 500 });
+  }
+
   const session = await auth.api.getSession({
     headers: await headers()
   });
