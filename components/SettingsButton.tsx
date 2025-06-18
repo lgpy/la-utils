@@ -94,14 +94,22 @@ export default function SettingsButton() {
 					</DropdownMenuGroup>
 				) : (
 					<DropdownMenuItem
+						disabled={isPending || error !== null}
 						onClick={() =>
+							!isPending &&
 							authClient.signIn.social({
 								provider: "discord",
 							})
 						}
 					>
 						<LogIn />
-						<span>Login with Discord</span>
+						<span>
+							{isPending
+								? "Logging in..."
+								: error
+									? "Login Failed"
+									: "Login with Discord"}
+						</span>
 					</DropdownMenuItem>
 				)}
 
