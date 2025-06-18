@@ -1,7 +1,4 @@
-import PostHogClient from "@/lib/posthog";
 import { type NextRequest, NextResponse } from "next/server";
-
-const phClient = PostHogClient();
 
 /**
  * API endpoint that serves as a middleman to the OCR service
