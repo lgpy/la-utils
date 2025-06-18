@@ -22,7 +22,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, RussianRuble } from "lucide-react";
 import { separateSupportAndDps } from "@/lib/chars";
 import { Button } from "./ui/button";
 import ClassIcon from "./class-icons/ClassIcon";
@@ -133,8 +133,17 @@ function RaidGateAvatars({
 				{runsArr.map((run) => {
 					const user = data?.userInfo?.[run.userId];
 					if (!user) return null;
+					const runChars = Object.entries(user.characters).filter(
+						([charId, _]) => run.charactersIds.includes(charId),
+					);
+					console.log(
+						Object.entries(user.characters),
+						runChars,
+						run.charactersIds,
+						run,
+					);
 					const { dps, support } = separateSupportAndDps(
-						Object.entries(user.characters).map(([charId, char]) => ({
+						runChars.map(([charId, char]) => ({
 							id: charId,
 							...char,
 						})),
@@ -178,7 +187,7 @@ function RaidGateAvatars({
 					return (
 						<div
 							key={`${raidId}-${difficulty}-${gateId}-${run.userId}`}
-							className="flex justify-between items-center p-2 hover:bg-muted rounded w-max gap-4"
+							className="flex justify-between items-center p-2 hover:bg-muted rounded w-full gap-4"
 						>
 							<div className="flex items-center gap-2 hover:bg-muted rounded">
 								<Avatar className="shrink-0 size-10">
@@ -200,11 +209,9 @@ function RaidGateAvatars({
 												className="size-5"
 											/>
 										))}
-										{Object.keys(user.characters).length >
-											unitedArray.length && (
+										{Object.keys(runChars).length > unitedArray.length && (
 											<span className="font-semibold">
-												+
-												{Object.keys(user.characters).length -
+												+{Object.keys(runChars).length -
 													unitedArray.length}{" "}
 											</span>
 										)}
@@ -252,20 +259,24 @@ function RaidCardGroup({
 			</div>
 			<div className="flex flex-col gap-4">
 				{difficulties.map((difficulty) => {
-					// Collect all unique userIds who have runs in any gate for this raid/difficulty
-					const userIds = Array.from(
-						new Set(
-							gateEntries.flatMap(([gateId]) =>
-								(data?.raids?.[raidId]?.[gateId]?.[difficulty] || []).map(
-									(run) => run.userId,
-								),
-							),
-						),
+					// Collect all unique userIds and their characterIds who have runs in any gate for this raid/difficulty
+					const userIdToCharIds: Record<string, Set<string>> = {};
+					for (const [gateId] of gateEntries) {
+						const runs = data?.raids?.[raidId]?.[gateId]?.[difficulty] || [];
+						for (const run of runs) {
+							if (!userIdToCharIds[run.userId])
+								userIdToCharIds[run.userId] = new Set();
+							for (const cid of run.charactersIds) {
+								userIdToCharIds[run.userId].add(cid);
+							}
+						}
+					}
+					const runsArr = Object.entries(userIdToCharIds).map(
+						([userId, charIdSet]) => ({
+							userId,
+							charactersIds: Array.from(charIdSet),
+						}),
 					);
-					const runsArr = userIds.map((userId) => ({
-						userId,
-						charactersIds: [],
-					}));
 					if (runsArr.length === 0) return null;
 					return (
 						<div key={raidId + difficulty} className="flex items-center gap-4 ">
