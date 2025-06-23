@@ -12,9 +12,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { formatDistanceToNowStrict } from "date-fns";
 
 const STORAGE_KEY = "hide-v2-domain-deprecation-notice-until";
 const HIDE_DURATION_MS = 12 * 60 * 60 * 1000; // 12 hours
+const FINAL_SHUTDOWN_DATE = new Date("2025-07-02T00:00:00Z"); // 7 more days
 
 const OLD_KEYS = [
 	"hide-domain-change-notice",
@@ -23,6 +25,7 @@ const OLD_KEYS = [
 
 export default function OldWebsiteDeprecatedMessage() {
 	const [isOpen, setIsOpen] = useState(false);
+	const [remaining, setRemaining] = useState("");
 
 	useEffect(() => {
 		if (typeof window === "undefined") {
@@ -43,6 +46,16 @@ export default function OldWebsiteDeprecatedMessage() {
 				setIsOpen(true);
 			}
 		}
+
+		// Update remaining time every minute
+		const updateRemaining = () => {
+			setRemaining(
+				formatDistanceToNowStrict(FINAL_SHUTDOWN_DATE, { addSuffix: false })
+			);
+		};
+		updateRemaining();
+		const interval = setInterval(updateRemaining, 60000);
+		return () => clearInterval(interval);
 	}, []);
 
 	const handleHideForNow = () => {
@@ -57,11 +70,14 @@ export default function OldWebsiteDeprecatedMessage() {
 				<AlertDialogHeader>
 					<AlertDialogTitle>Notice</AlertDialogTitle>
 					<AlertDialogDescription className="flex flex-col gap-2">
+						<span className="text-red font-semibold">
+							This website (<b>la-utilsv2.vercel.app</b>) will be <b>permanently shut down on July 2nd</b>.
+						</span>
 						<span>
-							The current domain (<b>la-utilsv2.vercel.app</b>) will be{" "}
-							<b>taken down on June 25th</b> to make way for new updates and
-							improvements to Lost Ark Utils. Please switch to the main domain
-							at{" "}
+							You have <b>{remaining}</b> to migrate your data. After this date, you will <b>lose access</b> to your data and all features here.
+						</span>
+						<span>
+							Please switch to the main domain at {" "}
 							<Link
 								href="https://la-utils.vercel.app/"
 								className="underline text-primary hover:primary/80"
@@ -72,8 +88,7 @@ export default function OldWebsiteDeprecatedMessage() {
 							to access all new features and updates.
 						</span>
 						<span>
-							To transfer your data, use the &quot;Import/Export Data&quot;
-							option by clicking the cogwheel in the top right corner.
+							To transfer your data, use the &quot;Import/Export Data&quot; option by clicking the cogwheel in the top right corner.
 						</span>
 						<span className="text-right">
 							Thank you for using Lost Ark Utils!
@@ -82,7 +97,7 @@ export default function OldWebsiteDeprecatedMessage() {
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel onClick={handleHideForNow}>
-						Hide for Now
+						Hide for 12 hours
 					</AlertDialogCancel>
 					<AlertDialogAction onClick={() => setIsOpen(false)} autoFocus>
 						Okay
