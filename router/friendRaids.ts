@@ -80,28 +80,23 @@ export const getFriendsRaids = os
 
     // Change: structuredFriendRaids is now a nested Record structure
     const structuredFriendRaids = {} as Record<string, // RaidID
-      Record<string, // GateID
-        Record<Difficulty, // Difficulty
-          Array<{
-            userId: string;
-            charactersIds: Array<string>;
-          }>
-        >
+      Record<Difficulty, // Difficulty
+        Array<{
+          userId: string;
+          charactersIds: Array<string>;
+        }>
       >
     >;
 
     for (const raid of filteredFriendRaids) {
-      if (!structuredFriendRaids[raid.raidId]) {
-        structuredFriendRaids[raid.raidId] = {};
-      }
       for (const gate of raid.gates) {
-        if (!structuredFriendRaids[raid.raidId][gate.gateId]) {
-          structuredFriendRaids[raid.raidId][gate.gateId] = {} as Record<Difficulty, Array<{ userId: string; charactersIds: Array<string> }>>;
+        if (!structuredFriendRaids[raid.raidId]) {
+          structuredFriendRaids[raid.raidId] = {} as Record<Difficulty, Array<{ userId: string; charactersIds: Array<string> }>>;
         }
-        if (!structuredFriendRaids[raid.raidId][gate.gateId][gate.difficulty as Difficulty]) {
-          structuredFriendRaids[raid.raidId][gate.gateId][gate.difficulty as Difficulty] = [];
+        if (!structuredFriendRaids[raid.raidId][gate.difficulty as Difficulty]) {
+          structuredFriendRaids[raid.raidId][gate.difficulty as Difficulty] = [];
         }
-        const usersArr = structuredFriendRaids[raid.raidId][gate.gateId][gate.difficulty as Difficulty];
+        const usersArr = structuredFriendRaids[raid.raidId][gate.difficulty as Difficulty];
         let userEntry = usersArr.find(u => u.userId === raid.character.user.id);
         if (!userEntry) {
           userEntry = {

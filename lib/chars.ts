@@ -1,7 +1,7 @@
 import type { Character } from "@/providers/MainStoreProvider";
 import { getLatestBiWeeklyReset, getLatestWeeklyReset } from "./dates";
 import { isGateCompleted, raids } from "./raids";
-import { Class } from "@/generated/prisma";
+import { Class, Difficulty } from "@/generated/prisma";
 
 export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
 	const ret = {} as Record<
@@ -154,6 +154,19 @@ export function getHighest3(
 export function sortRaidKeys(a: string, b: string) {
 	const keys = Object.keys(raids);
 	return keys.indexOf(a) - keys.indexOf(b);
+}
+
+const difficultyOrder: Record<Difficulty, number> = {
+	[Difficulty.Hard]: 0,
+	[Difficulty.Normal]: 1,
+	[Difficulty.Solo]: 2,
+};
+
+export function sortDifficulties(
+	a: Difficulty,
+	b: Difficulty,
+) {
+	return (difficultyOrder[a] ?? 99) - (difficultyOrder[b] ?? 99);
 }
 
 export function separateSupportAndDps<T extends { class: Class }>(objWithClass: T[]) {

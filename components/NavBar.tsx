@@ -5,7 +5,7 @@ import { Menu } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import ChangelogNotification from "./Changelog/ChangelogNotification";
+import ChangelogNotification from "./NotificationDropdown";
 import Logo from "./Logo";
 import ServerStatusWidget from "./ServerStatusWidget";
 import SettingsButton from "./SettingsButton";

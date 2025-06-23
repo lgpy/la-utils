@@ -1,18 +1,19 @@
 "use client";
 
-import { Users } from "lucide-react";
+import { Loader2Icon, Users } from "lucide-react";
 import { useState } from "react";
 import FriendRaids from "./FriendRaids";
 import { ExpandableButton } from "./ExpandableButton";
 import { FabButtonWrapper } from "./FabButtonWrapper";
 import { authClient } from "@/lib/auth";
+import { Button } from "./ui/button";
 
 export default function FriendRaidsFAB() {
 	const [isOpen, setIsOpen] = useState(false);
 
 	const session = authClient.useSession();
 
-	if (session.isPending || session.data === null) {
+	if (!session.isPending && session.data === null) {
 		return null;
 	}
 
@@ -23,8 +24,13 @@ export default function FriendRaidsFAB() {
 					variant="secondary"
 					label="Friend Raids"
 					onClick={() => setIsOpen(!isOpen)}
+					disabled={session.isPending}
 				>
-					<Users className="size-6" />
+					{session.isPending ? (
+						<Loader2Icon className="animate-spin size-6" />
+					) : (
+						<Users className="size-6" />
+					)}
 				</ExpandableButton>
 			</FabButtonWrapper>
 			<FriendRaids isOpen={isOpen} onOpenChange={setIsOpen} />

@@ -27,12 +27,6 @@ interface ChangelogEntryCardProps {
 function ChangelogEntryCard({ entry }: ChangelogEntryCardProps) {
 	const isNew = entry.isNew === true;
 
-	// Parse d/m/y date format to Date object
-	const parseDate = (dateString: string): Date => {
-		const [day, month, year] = dateString.split("/").map(Number);
-		return new Date(year, month - 1, day);
-	};
-
 	return (
 		<Card id={entry.id}>
 			<CardHeader className="flex justify-between items-start">
@@ -41,7 +35,7 @@ function ChangelogEntryCard({ entry }: ChangelogEntryCardProps) {
 						<span>{entry.title}</span>
 					</CardTitle>
 					<CardDescription className="flex items-center gap-2 mt-1">
-						<span>{format(parseDate(entry.date), "MMM dd, yyyy")}</span>
+						<span>{format(new Date(entry.date), "MMM dd, yyyy")}</span>
 					</CardDescription>
 				</div>
 				{isNew && (
@@ -183,11 +177,7 @@ export default function ChangelogContent() {
 	}, [setLastViewedDate]);
 
 	const sortedEntries = [...entries].sort((a, b) => {
-		const parseDate = (dateString: string): Date => {
-			const [day, month, year] = dateString.split("/").map(Number);
-			return new Date(year, month - 1, day);
-		};
-		return parseDate(b.date).getTime() - parseDate(a.date).getTime();
+		return new Date(b.date).getTime() - new Date(a.date).getTime();
 	});
 
 	const handleLoadMore = () => {

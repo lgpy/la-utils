@@ -42,6 +42,7 @@ export async function GET(request: NextRequest) {
     // Mark entries as new if they're after the last viewed date
     const entriesWithNewFlag = paginatedEntries.map((entry) => ({
       ...entry,
+      date: parseChangelogDate(entry.date).toISOString(), // Convert date to ISO string for consistency
       isNew: lastViewedDate ? parseChangelogDate(entry.date) > new Date(lastViewedDate) : true
     }));
 
