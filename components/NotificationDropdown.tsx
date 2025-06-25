@@ -126,7 +126,7 @@ export default function NotificationDropdown() {
 							{entries.map((entry) => {
 								let href = "";
 								if (entry.type === "changelog") {
-									href = `/changelog/${entry.id}`;
+									href = `/changelog#${entry.id}`;
 								} else if (entry.type === "friendRequest") {
 									href = "/friends";
 								}

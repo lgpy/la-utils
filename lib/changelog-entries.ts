@@ -1,3 +1,4 @@
+'server only';
 
 import { z } from "zod";
 
@@ -307,5 +308,19 @@ export const changelogEntries: ChangelogEntry[] = [
       ["fixed", "Issue with reading large databases in LOA Logs integration"],
       ["improved", "Performance of LOA Logs database queries"],
     ],
-  }
+  },
+  {
+    id: "25-6-2025-solo-mode-friends-discord-raids-ui",
+    date: "25/6/2025",
+    title: "Solo Mode, Friends, Discord Auth & Raid Updates",
+    description: "Added solo mode difficulty, Discord authentication, friend list and raid availability systems, updated old raid gold amounts, and various UI improvements.",
+    details: [
+      ["added", "Solo mode difficulty for raids"],
+      ["added", "Discord authentication support"],
+      ["added", "Friend list system"],
+      ["added", "Friend raid availability system"],
+      ["changed", "Updated old raid gold amounts"],
+      ["improved", "User interface"],
+    ],
+  },
 ];

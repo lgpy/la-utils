@@ -5,7 +5,7 @@ import { Menu } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import ChangelogNotification from "./NotificationDropdown";
+import NotificationDropdown from "./NotificationDropdown";
 import Logo from "./Logo";
 import ServerStatusWidget from "./ServerStatusWidget";
 import SettingsButton from "./SettingsButton";
@@ -100,7 +100,7 @@ export default function NavBar() {
 			</Sheet>
 			<div className="ml-auto flex flex-row gap-2">
 				<ServerStatusWidget />
-				<ChangelogNotification />
+				<NotificationDropdown />
 				<Button variant="ghost" size="icon">
 					<Link href="https://ko-fi.com/leo213" target="_blank">
 						<svg

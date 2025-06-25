@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { changelogEntries, zodChangelogEntry } from "./entries";
+import { changelogEntries, zodChangelogEntry } from "../../../lib/changelog-entries";
 
 
 // Helper function to parse d/m/y format to Date object
