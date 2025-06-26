@@ -161,16 +161,7 @@ export const items = [
 		name: "Fish",
 		rarity: "common",
 		marketQty: 100,
-		exchange: [
-			{
-				id: "redflesh-fish",
-				rate: 0.5,
-			},
-			{
-				id: "oreha-solar-carp",
-				rate: 0.2,
-			},
-		],
+		exchange: [],
 	},
 	{
 		type: "tradeskills",
@@ -225,16 +216,7 @@ export const items = [
 		name: "Ancient Relic",
 		rarity: "common",
 		marketQty: 100,
-		exchange: [
-			{
-				id: "rare-relic",
-				rate: 0.5,
-			},
-			{
-				id: "oreha-relic",
-				rate: 0.2,
-			},
-		],
+		exchange: [],
 	},
 	{
 		type: "tradeskills",
@@ -353,16 +335,7 @@ export const items = [
 		name: "Wild Flower",
 		rarity: "common",
 		marketQty: 100,
-		exchange: [
-			{
-				id: "shy-wild-flower",
-				rate: 0.5,
-			},
-			{
-				id: "bright-wild-flower",
-				rate: 0.2,
-			},
-		],
+		exchange: [],
 	},
 	{
 		type: "tradeskills",
@@ -481,16 +454,7 @@ export const items = [
 		name: "Thick Raw Meat",
 		rarity: "common",
 		marketQty: 100,
-		exchange: [
-			{
-				id: "treated-meat",
-				rate: 0.5,
-			},
-			{
-				id: "oreha-thick-meat",
-				rate: 0.2,
-			},
-		],
+		exchange: [],
 	},
 	{
 		type: "tradeskills",
