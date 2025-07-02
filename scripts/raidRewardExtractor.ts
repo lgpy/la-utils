@@ -1,6 +1,7 @@
 // scripts/raidRewardExtractor.ts
 // Fetches and parses raid reward data from a public Google Sheet
 // Usage: bun run scripts/raidRewardExtractor.ts
+import { raids } from "@/lib/raids";
 import { parse } from "csv-parse/sync";
 
 const SHEET_ID = "1YQpWt8iOK6yO5_7r3rvZZKkoRy8Z0aEAPHy11gYZZQ8";
@@ -11,6 +12,22 @@ async function fetchSheetCSV(url: string): Promise<string> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch sheet: ${res.status}`);
   return await res.text();
+}
+
+const raidMatch: Record<string, keyof typeof raids> = {
+  "Act 1: Aegir": "aegir",
+  "Act 2: Brelshaza": "brelshaza2",
+  "Act 3: Mordum": "mordum",
+  "Akkan": "akkan",
+  "Behemoth": "behemoth",
+  "Brelshaza": "brel",
+  "Ivory  Tower": "voldis",
+  "Kakul- Saydon": "kakul",
+  "Kayangel": "kayangel",
+  "Overture: Echidna": "echidna",
+  "Thaemine": "thaemine",
+  "Valtan": "valtan",
+  "Vykas": "vykas",
 }
 
 async function main() {
@@ -47,41 +64,59 @@ async function main() {
         itemLevel = Number.parseInt(iLvl, 10);
       }
 
-      const totalGold = (Number.parseInt(gold, 10) || 0) + (Number.parseInt(boundGold, 10) || 0);
-
       raidDifficultyGate.push({
         raid: raidName,
         difficulty: diff,
         itemLevel: itemLevel,
         gate: gate,
-        gold: totalGold,
+        gold: {
+          bound: Number.parseInt(boundGold, 10) || 0,
+          unbound: Number.parseInt(gold, 10) || 0,
+        },
       });
     }
 
-    const uniqueRaids = new Set(raidDifficultyGate.map(g => g.raid));
-    const result = {};
-    for (const raid of uniqueRaids) {
-      const raidGates = raidDifficultyGate.filter(g => g.raid === raid);
-      const uniqueGates = new Set(raidGates.map(g => g.gate));
-      // @ts-ignore
-      result[raid] = {
-        gates: Object.fromEntries(
-          Array.from(uniqueGates).map(gate => {
-            const gateData = raidGates.filter(g => g.gate === gate);
-            const difficulties = {};
-            for (const g of gateData) {
-              // @ts-ignore
-              difficulties[g.difficulty] = {
-                itemLevel: g.itemLevel,
-                gold: g.gold,
-              };
-            }
-            return [gate, { difficulties }];
-          })
-        )
-      };
-    }
-    console.log(JSON.stringify(result, null, 2));
+    raidDifficultyGate.sort((a, b) => {
+      if (a.raid < b.raid) return -1;
+      if (a.raid > b.raid) return 1;
+      if (a.gate < b.gate) return -1;
+      if (a.gate > b.gate) return 1;
+      if (a.difficulty < b.difficulty) return -1;
+      if (a.difficulty > b.difficulty) return 1;
+      return 0;
+    });
+
+    raidDifficultyGate.forEach(({ raid, difficulty, itemLevel, gate, gold }) => {
+      const raidKey = raidMatch[raid];
+      if (!raidKey) {
+        console.warn(`Raid "${raid}" not found in match map`);
+        return;
+      }
+      const raidData = raids[raidKey];
+      if (!raidData) {
+        console.warn(`Raid "${raidKey}" not found in local data`);
+        return;
+      }
+      const gateId = `G${gate.replace("Gate ", "")}`;
+      const gateData = raidData.gates[gateId];
+      if (!gateData) {
+        console.warn(`Gate "${gateId}" not found for raid "${raidKey}"`);
+        return;
+      }
+      const diffData = gateData.difficulties[difficulty as keyof typeof gateData.difficulties];
+      if (!diffData) {
+        console.warn(`Difficulty "${difficulty}" not found for raid "${raidKey}"`);
+        return;
+      }
+      if (diffData.itemlevel !== itemLevel) {
+        console.warn(`Item level mismatch for "${raidKey}" at "${gateId}" on "${difficulty}": expected ${itemLevel}, got ${diffData.itemlevel}`);
+      }
+      if (diffData.rewards.gold.bound !== gold.bound || diffData.rewards.gold.unbound !== gold.unbound) {
+        console.warn(`Gold rewards mismatch for "${raidKey}" at "${gateId}" on "${difficulty}": expected { bound: ${gold.bound}, unbound: ${gold.unbound} }, got { bound: ${diffData.rewards.gold.bound}, unbound: ${diffData.rewards.gold.unbound} }`);
+      }
+    });
+
+
   } catch (err) {
     console.error("Error extracting raid rewards:", err);
     process.exit(1);

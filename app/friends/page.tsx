@@ -20,16 +20,20 @@ type User = {
 };
 
 export default function FriendsPage() {
-	const { data: session, isPending } = authClient.useSession();
-	const userId = session?.user?.id;
+	const session = authClient.useSession();
+	const userId = session.data?.user.id;
 
-	const friendQuery = useQuery(orpc.friends.getFriends.queryOptions({}));
+	const friendQuery = useQuery(orpc.friends.getFriends.queryOptions({
+		enabled: session.data !== null,
+	}));
 	const requestsQuery = useQuery(
-		orpc.friends.getFriendRequests.queryOptions({}),
+		orpc.friends.getFriendRequests.queryOptions({
+			enabled: session.data !== null,
+		}),
 	);
 
 	const isLoading =
-		requestsQuery.isLoading || friendQuery.isLoading || isPending;
+		requestsQuery.isLoading || friendQuery.isLoading || session.isPending;
 
 	return (
 		<main className="max-w-lg mx-auto py-8 px-4">
@@ -38,7 +42,7 @@ export default function FriendsPage() {
 					<CardTitle>Friends</CardTitle>
 				</CardHeader>
 				<div className="px-6 pb-6 flex flex-col gap-6">
-					<AddFriendForm disabled={isPending || !userId} userId={userId} />
+					<AddFriendForm disabled={session.isPending || !userId} userId={userId} />
 					<Separator className="my-4" />
 					<div>
 						<div className="font-semibold mb-2">Current Friends</div>

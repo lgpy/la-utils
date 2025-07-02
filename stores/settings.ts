@@ -19,7 +19,6 @@ const zodSettings = z.object({
 			"Gienah",
 		])
 		.optional(),
-	rosterGoldTotal: z.enum(["total", "remaining"]),
 	experiments: z.object({
 		buttonV2: z.boolean(),
 		ignoreThaemineIfNoG4: z.boolean(),
@@ -31,9 +30,6 @@ export type SettingsState = z.infer<typeof zodSettings>;
 
 export type SettingsActions = {
 	setServer: (server: SettingsState["server"]) => void;
-	setRosterGoldTotal: (
-		rosterGoldTotal: SettingsState["rosterGoldTotal"],
-	) => void;
 	toggleExperiments: (
 		key: keyof SettingsState["experiments"],
 		value: boolean,
@@ -47,7 +43,6 @@ export const createSettingsStore = () =>
 		persist(
 			(set) => ({
 				server: undefined,
-				rosterGoldTotal: "total",
 				experiments: {
 					buttonV2: false,
 					ignoreThaemineIfNoG4: false,
@@ -55,9 +50,6 @@ export const createSettingsStore = () =>
 				},
 				setServer(server) {
 					set({ server });
-				},
-				setRosterGoldTotal(rosterGoldTotal) {
-					set({ rosterGoldTotal });
 				},
 				toggleExperiments(key, value) {
 					set((state) => ({
@@ -70,7 +62,7 @@ export const createSettingsStore = () =>
 			}),
 			{
 				name: "settings",
-				version: 4,
+				version: 5,
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 				migrate: (ps: any, version) => {
 					if (version <= 0) ps.rosterGoldTotal = "total";
@@ -78,6 +70,7 @@ export const createSettingsStore = () =>
 					if (version <= 1) ps.experiments.buttonV2 = false;
 					if (version <= 2) ps.experiments.ignoreThaemineIfNoG4 = false;
 					if (version <= 3) ps.experiments.compactRaidCard = false;
+					if (version <= 4) ps.rosterGoldTotal = undefined;
 					return ps;
 				},
 			},

@@ -3,43 +3,66 @@ import { getLatestBiWeeklyReset, getLatestWeeklyReset } from "./dates";
 import { isGateCompleted, raids } from "./raids";
 import { Class, Difficulty } from "@/generated/prisma";
 
+type RaidGoldInfo = Record<string, GoldInfo>;
+
+type GoldInfo = {
+	thisWeek: {
+		earnedGold: {
+			bound: number;
+			unbound: number;
+		};
+		totalGold: {
+			bound: number;
+			unbound: number;
+		};
+	};
+	nextWeek: {
+		earnableGold: {
+			bound: number;
+			unbound: number;
+		};
+	};
+}
+
 export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
-	const ret = {} as Record<
-		string,
-		{
-			thisWeek: {
-				earnedGold: number;
-				totalGold: number;
-			};
-			nextWeek: {
-				earnableGold: number;
-			};
-		}
-	>;
+	const ret = {} as RaidGoldInfo;
 
 	const lastWeeklyReset = getLatestWeeklyReset();
 	for (const [assignedRaidId, assignedRaid] of Object.entries(charRaids)) {
-		const raid = raids[assignedRaidId];
-		if (!raid) continue;
+		const raidInfo = raids[assignedRaidId];
+		if (!raidInfo) continue;
 
 		for (const [assignedGateId, assignedGate] of Object.entries(assignedRaid)) {
-			const actualGate = raid.gates[assignedGateId];
+			const actualGate = raidInfo.gates[assignedGateId];
 			const gateGoldReward =
-				actualGate.difficulties[assignedGate.difficulty]?.rewards.gold || 0;
+				actualGate.difficulties[assignedGate.difficulty]?.rewards.gold || {
+					bound: 0,
+					unbound: 0,
+				}
 
 			if (ret[assignedRaidId] === undefined) {
 				ret[assignedRaidId] = {
 					thisWeek: {
-						earnedGold: 0,
-						totalGold: 0,
+						earnedGold: {
+							bound: 0,
+							unbound: 0
+						},
+						totalGold: {
+							bound: 0,
+							unbound: 0
+						},
 					},
 					nextWeek: {
-						earnableGold: 0,
+						earnableGold: {
+							bound: 0,
+							unbound: 0
+						},
 					},
 				};
 			}
 
-			ret[assignedRaidId].thisWeek.totalGold += gateGoldReward;
+			ret[assignedRaidId].thisWeek.totalGold.bound += gateGoldReward.bound;
+			ret[assignedRaidId].thisWeek.totalGold.unbound += gateGoldReward.unbound;
 
 			if (
 				assignedGate.completed &&
@@ -48,12 +71,15 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
 			) {
 				//check if was completed this reset
 				if (new Date(assignedGate.completedDate) > lastWeeklyReset) {
-					ret[assignedRaidId].thisWeek.earnedGold += gateGoldReward;
+					ret[assignedRaidId].thisWeek.earnedGold.bound += gateGoldReward.bound;
+					ret[assignedRaidId].thisWeek.earnedGold.unbound += gateGoldReward.unbound;
 				} else {
-					ret[assignedRaidId].thisWeek.totalGold -= gateGoldReward;
+					ret[assignedRaidId].thisWeek.totalGold.bound -= gateGoldReward.bound;
+					ret[assignedRaidId].thisWeek.totalGold.unbound -= gateGoldReward.unbound;
 				}
 			} else if (assignedGate.completed) {
-				ret[assignedRaidId].thisWeek.earnedGold += gateGoldReward;
+				ret[assignedRaidId].thisWeek.earnedGold.bound += gateGoldReward.bound;
+				ret[assignedRaidId].thisWeek.earnedGold.unbound += gateGoldReward.unbound;
 			}
 
 			const now = new Date();
@@ -65,14 +91,17 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
 				assignedGate.completedDate === undefined
 			) {
 				//ignore weekly reset
-				ret[assignedRaidId].nextWeek.earnableGold += gateGoldReward;
+				ret[assignedRaidId].nextWeek.earnableGold.bound += gateGoldReward.bound;
+				ret[assignedRaidId].nextWeek.earnableGold.unbound += gateGoldReward.unbound;
 			} else {
 				const isGateComplete = isGateCompleted(
 					new Date(assignedGate.completedDate),
 					getLatestBiWeeklyReset(actualGate.isBiWeekly, plus1week),
 				);
-				if (!isGateComplete)
-					ret[assignedRaidId].nextWeek.earnableGold += gateGoldReward;
+				if (!isGateComplete) {
+					ret[assignedRaidId].nextWeek.earnableGold.bound += gateGoldReward.bound;
+					ret[assignedRaidId].nextWeek.earnableGold.unbound += gateGoldReward.unbound;
+				}
 			}
 		}
 	}
@@ -81,21 +110,10 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
 
 export function getHighest3(
 	charRaids: Character["assignedRaids"],
-	goldInfo: Record<
-		string,
-		{
-			thisWeek: {
-				earnedGold: number;
-				totalGold: number;
-			};
-			nextWeek: {
-				earnableGold: number;
-			};
-		}
-	>,
+	raidGoldInfo: RaidGoldInfo,
 	ignoreThaemineIfNoG4: boolean,
 ) {
-	const sortedGoldThisWeek = Object.entries(goldInfo).sort(
+	const sortedGoldThisWeek = Object.entries(raidGoldInfo).sort(
 		([aId, a], [bId, b]) => {
 			if (
 				ignoreThaemineIfNoG4 &&
@@ -115,18 +133,18 @@ export function getHighest3(
 				const bActualIndex = Object.keys(raids).indexOf(bId);
 				return bActualIndex - aActualIndex;
 			}
-			return b.thisWeek.totalGold - a.thisWeek.totalGold;
+			return b.thisWeek.totalGold.bound + b.thisWeek.totalGold.unbound - a.thisWeek.totalGold.bound - a.thisWeek.totalGold.unbound;
 		},
 	);
 
-	const sortedGoldNextWeek = Object.entries(goldInfo).sort(
+	const sortedGoldNextWeek = Object.entries(raidGoldInfo).sort(
 		([aId, a], [bId, b]) => {
 			if (a.nextWeek.earnableGold === b.nextWeek.earnableGold) {
 				const aActualIndex = Object.keys(raids).indexOf(aId);
 				const bActualIndex = Object.keys(raids).indexOf(bId);
 				return bActualIndex - aActualIndex;
 			}
-			return b.nextWeek.earnableGold - a.nextWeek.earnableGold;
+			return b.nextWeek.earnableGold.bound + b.nextWeek.earnableGold.unbound - a.nextWeek.earnableGold.bound - a.nextWeek.earnableGold.unbound;
 		},
 	);
 
@@ -136,8 +154,14 @@ export function getHighest3(
 			{} as Record<
 				string,
 				{
-					earnedGold: number;
-					totalGold: number;
+					earnedGold: {
+						bound: number;
+						unbound: number;
+					};
+					totalGold: {
+						bound: number;
+						unbound: number;
+					};
 				}
 			>,
 		),
@@ -146,7 +170,10 @@ export function getHighest3(
 			.reduce(
 				(acc, [raidId, info]) =>
 					Object.assign(acc, { [raidId]: info.nextWeek.earnableGold }),
-				{} as Record<string, number>,
+				{} as Record<string, {
+					bound: number;
+					unbound: number;
+				}>,
 			),
 	};
 }

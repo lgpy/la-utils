@@ -11,7 +11,7 @@ import { orpc } from "@/lib/orpc";
 import { raids } from "@/lib/raids";
 import { useMainStore } from "@/providers/MainStoreProvider";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import type { Class, Difficulty } from "@/generated/prisma";
 import type { InferRouterOutputs } from "@orpc/server";
@@ -36,6 +36,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
+import { authClient } from "@/lib/auth";
 
 export type Outputs = InferRouterOutputs<typeof router>;
 
@@ -311,9 +312,25 @@ function RaidCardGroup({
 export default function FriendRaids({ isOpen, onOpenChange }: Props) {
 	const mainStore = useMainStore();
 	const availableRaids = useMemo(() => mainStore.availableRaids(), [mainStore]);
+	const session = authClient.useSession();
 	const friendRaidsQuery = useQuery(
-		orpc.friendRaids.getFriendsRaids.queryOptions({ input: availableRaids }),
+		orpc.friendRaids.getFriendsRaids.queryOptions({
+			input: availableRaids,
+			enabled: session.data !== null,
+		}),
 	);
+
+	// Refetch if data is older than 5 minutes when dialog opens
+	useEffect(() => {
+		if (friendRaidsQuery.isSuccess && isOpen) {
+			const lastDateUpdated = new Date(friendRaidsQuery.dataUpdatedAt);
+			const now = new Date();
+			const diffInMinutes = (now.getTime() - lastDateUpdated.getTime()) / 1000 / 60;
+			if (diffInMinutes > 5) {
+				friendRaidsQuery.refetch();
+			}
+		}
+	}, [friendRaidsQuery, isOpen]);
 
 	const data = useMemo(() => {
 		if (friendRaidsQuery.data === undefined) return undefined;

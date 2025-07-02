@@ -6,7 +6,6 @@ import FriendRaids from "./FriendRaids";
 import { ExpandableButton } from "./ExpandableButton";
 import { FabButtonWrapper } from "./FabButtonWrapper";
 import { authClient } from "@/lib/auth";
-import { Button } from "./ui/button";
 
 export default function FriendRaidsFAB() {
 	const [isOpen, setIsOpen] = useState(false);

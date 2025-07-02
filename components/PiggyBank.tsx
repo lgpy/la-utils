@@ -16,11 +16,20 @@ type Props = {
 	highest3ThisWeek: Record<
 		string,
 		{
-			earnedGold: number;
-			totalGold: number;
+			earnedGold: {
+				bound: number;
+				unbound: number;
+			};
+			totalGold: {
+				bound: number;
+				unbound: number;
+			};
 		}
 	>;
-	highest3NextWeek: Record<string, number>;
+	highest3NextWeek: Record<string, {
+		bound: number;
+		unbound: number;
+	}>;
 };
 
 export default function PiggyBank(props: Props) {
@@ -28,15 +37,15 @@ export default function PiggyBank(props: Props) {
 
 	const thisWeek = Object.values(highest3ThisWeek).reduce(
 		(acc, thisWeek) => {
-			acc.earned += thisWeek.earnedGold;
-			acc.total += thisWeek.totalGold;
+			acc.earned += thisWeek.earnedGold.bound + thisWeek.earnedGold.unbound;
+			acc.total += thisWeek.totalGold.bound + thisWeek.totalGold.unbound;
 			return acc;
 		},
 		{ earned: 0, total: 0 },
 	);
 
 	const nextWeek = Object.values(highest3NextWeek).reduce(
-		(acc, earnable) => acc + earnable,
+		(acc, earnable) => acc + earnable.bound + earnable.unbound,
 		0,
 	);
 

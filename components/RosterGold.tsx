@@ -5,6 +5,20 @@ import { raids } from "@/lib/raids";
 import { useMainStore, useSettingsStore } from "@/providers/MainStoreProvider";
 import { useMemo } from "react";
 import AnimatedNumber from "./AnimatedNumber";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { formatGold } from "@/lib/format";
+import {
+	Table,
+	TableHeader,
+	TableRow,
+	TableHead,
+	TableBody,
+	TableCell,
+} from "@/components/ui/table";
 
 export default function RosterGold() {
 	const mainStore = useMainStore();
@@ -24,30 +38,40 @@ export default function RosterGold() {
 					settingsStore.experiments.ignoreThaemineIfNoG4,
 				);
 				for (const thisWeek of Object.values(highest3.thisWeek)) {
-					acc.thisWeek.earnedGold += thisWeek.earnedGold;
-					acc.thisWeek.totalGold += thisWeek.totalGold;
+					acc.thisWeek.earnedGold.bound += thisWeek.earnedGold.bound;
+					acc.thisWeek.earnedGold.unbound += thisWeek.earnedGold.unbound;
+					acc.thisWeek.totalGold.bound += thisWeek.totalGold.bound;
+					acc.thisWeek.totalGold.unbound += thisWeek.totalGold.unbound;
 				}
 				for (const earnable of Object.values(highest3.nextWeek)) {
-					acc.nextWeek.earnableGold += earnable;
+					acc.nextWeek.earnableGold.bound += earnable.bound;
+					acc.nextWeek.earnableGold.unbound += earnable.unbound;
 				}
 				return acc;
 			},
 			{
-				thisWeek: { earnedGold: 0, totalGold: 0 },
-				nextWeek: { earnableGold: 0 },
+				thisWeek: {
+					earnedGold: {
+						bound: 0,
+						unbound: 0,
+					}, totalGold: {
+						bound: 0,
+						unbound: 0,
+					}
+				},
+				nextWeek: {
+					earnableGold: {
+						bound: 0,
+						unbound: 0,
+					}
+				},
 			},
 		);
-		if (settingsStore.rosterGoldTotal === "remaining") {
-			ret.thisWeek.earnedGold = -(
-				ret.thisWeek.totalGold - ret.thisWeek.earnedGold
-			);
-		}
 		return ret;
 	}, [
 		mainStore.characters,
 		mainStore.hasHydrated,
 		settingsStore.hasHydrated,
-		settingsStore.rosterGoldTotal,
 		settingsStore.experiments.ignoreThaemineIfNoG4,
 	]);
 
@@ -68,34 +92,97 @@ export default function RosterGold() {
 	}
 
 	return (
-		<div className="grid grid-cols-[auto_auto] gap-x-2 fixed left-4 bottom-4 text-yellow/60 select-none">
-			<h2 className="col-span-2 text-xl font-bold">Roster Gold</h2>
-			<p className="font-extralight">This Week:</p>
-			{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-			<p
-				className="cursor-pointer"
-				onClick={() =>
-					settingsStore.setRosterGoldTotal(
-						settingsStore.rosterGoldTotal === "total" ? "remaining" : "total",
-					)
-				}
-			>
-				<AnimatedNumber n={rosterGold.thisWeek.earnedGold} format="gold" />
-				/
-				<AnimatedNumber n={rosterGold.thisWeek.totalGold} format="gold" />
-			</p>
-			{hasBiweekly && (
-				<>
-					<p className="font-extralight">Next Week:</p>
 
-					<p>
-						<AnimatedNumber
-							n={rosterGold.nextWeek.earnableGold}
-							format="gold"
-						/>
+		<Tooltip>
+			<TooltipTrigger asChild>
+				<div className="grid grid-cols-[auto_auto] gap-x-2 fixed left-4 bottom-4 text-yellow/60 select-none">
+					<h2 className="col-span-2 text-xl font-bold">Roster Gold</h2>
+					<p className="font-extralight">This Week:</p>
+					{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+					<p
+						className="cursor-pointer"
+					>
+						<AnimatedNumber n={rosterGold.thisWeek.earnedGold.bound + rosterGold.thisWeek.earnedGold.unbound} format="gold" />
+						/
+						<AnimatedNumber n={rosterGold.thisWeek.totalGold.bound + rosterGold.thisWeek.totalGold.unbound} format="gold" />
 					</p>
-				</>
-			)}
-		</div>
+					{hasBiweekly && (
+						<>
+							<p className="font-extralight">Next Week:</p>
+
+							<p>
+								<AnimatedNumber
+									n={rosterGold.nextWeek.earnableGold.bound + rosterGold.nextWeek.earnableGold.unbound}
+									format="gold"
+								/>
+							</p>
+						</>
+					)}
+				</div>
+			</TooltipTrigger>
+			<TooltipContent collisionPadding={10}>
+				<div className="space-y-4 p-2">
+					<h3 className="font-semibold text-lg mb-2 text-center">Roster Gold Breakdown</h3>
+					<div className="font-bold text-secondary-foreground mb-2">This Week</div>
+					<div className="bg-muted/40 rounded-md border border-muted">
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead className="w-1/4">Type</TableHead>
+									<TableHead className="w-1/4 text-center">Bound</TableHead>
+									<TableHead className="w-1/4 text-center">Unbound</TableHead>
+									<TableHead className="w-1/4 text-center">Both</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody className="text-center text-yellow">
+								<TableRow>
+									<TableCell className="text-muted-foreground text-left">Earned</TableCell>
+									<TableCell>{formatGold(rosterGold.thisWeek.earnedGold.bound)}</TableCell>
+									<TableCell>{formatGold(rosterGold.thisWeek.earnedGold.unbound)}</TableCell>
+									<TableCell>{formatGold(rosterGold.thisWeek.earnedGold.bound + rosterGold.thisWeek.earnedGold.unbound)}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell className="text-muted-foreground text-left">Remaining</TableCell>
+									<TableCell>{formatGold(rosterGold.thisWeek.totalGold.bound - rosterGold.thisWeek.earnedGold.bound)}</TableCell>
+									<TableCell>{formatGold(rosterGold.thisWeek.totalGold.unbound - rosterGold.thisWeek.earnedGold.unbound)}</TableCell>
+									<TableCell>{formatGold((rosterGold.thisWeek.totalGold.bound + rosterGold.thisWeek.totalGold.unbound) - (rosterGold.thisWeek.earnedGold.bound + rosterGold.thisWeek.earnedGold.unbound))}</TableCell>
+								</TableRow>
+								<TableRow>
+									<TableCell className="text-muted-foreground text-left">Total</TableCell>
+									<TableCell>{formatGold(rosterGold.thisWeek.totalGold.bound)}</TableCell>
+									<TableCell>{formatGold(rosterGold.thisWeek.totalGold.unbound)}</TableCell>
+									<TableCell>{formatGold(rosterGold.thisWeek.totalGold.bound + rosterGold.thisWeek.totalGold.unbound)}</TableCell>
+								</TableRow>
+							</TableBody>
+						</Table>
+					</div>
+					{hasBiweekly && (
+						<>
+							<div className="font-bold text-secondary-foreground mb-2">Next Week</div>
+							<div className="bg-muted/40 rounded-md border border-muted">
+								<Table>
+									<TableHeader>
+										<TableRow>
+											<TableHead className="w-1/4">Type</TableHead>
+											<TableHead className="w-1/4 text-center">Bound</TableHead>
+											<TableHead className="w-1/4 text-center">Unbound</TableHead>
+											<TableHead className="w-1/4 text-center">Both</TableHead>
+										</TableRow>
+									</TableHeader>
+									<TableBody className="text-center text-yellow">
+										<TableRow>
+											<TableCell className="text-muted-foreground text-left">Earnable</TableCell>
+											<TableCell>{formatGold(rosterGold.nextWeek.earnableGold.bound)}</TableCell>
+											<TableCell>{formatGold(rosterGold.nextWeek.earnableGold.unbound)}</TableCell>
+											<TableCell>{formatGold(rosterGold.nextWeek.earnableGold.bound + rosterGold.nextWeek.earnableGold.unbound)}</TableCell>
+										</TableRow>
+									</TableBody>
+								</Table>
+							</div>
+						</>
+					)}
+				</div>
+			</TooltipContent>
+		</Tooltip>
 	);
 }

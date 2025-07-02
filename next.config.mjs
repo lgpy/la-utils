@@ -1,27 +1,10 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-	compiler: {
-		// The regexes defined here are processed in Rust so the syntax is different from
-		// JavaScript `RegExp`s. See https://docs.rs/regex.
-	},
-	async rewrites() {
-		return [
-			{
-				source: "/i/static/:path*",
-				destination: "https://eu-assets.i.posthog.com/static/:path*",
-			},
-			{
-				source: "/i/:path*",
-				destination: "https://eu.i.posthog.com/:path*",
-			},
-			{
-				source: "/i/decide",
-				destination: "https://eu.i.posthog.com/decide",
-			},
-		];
-	},
-	// This is required to support PostHog trailing slash API requests
-	skipTrailingSlashRedirect: true,
-};
+import BundleAnalyzer from  '@next/bundle-analyzer';
 
-export default nextConfig;
+/** @type {import('next').NextConfig} */
+const nextConfig = {}
+ 
+const withBundleAnalyzer = BundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
+ 
+export default withBundleAnalyzer(nextConfig)

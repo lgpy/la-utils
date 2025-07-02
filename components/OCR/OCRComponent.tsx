@@ -15,7 +15,6 @@ import { usePriceStore } from "@/providers/PriceStoreProvider";
 import { AlertCircle, CheckCircle2, ScanText, Upload } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { usePostHog } from "posthog-js/react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -36,7 +35,6 @@ export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const [result, setResult] = useState<OCRResult[] | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const ph = usePostHog();
 
 	// Handle paste events globally
 	useEffect(() => {
@@ -115,7 +113,6 @@ export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
 
 		const file = fileInputRef.current.files[0];
 		setIsProcessing(true);
-		ph.capture("OCR Image Upload");
 
 		try {
 			const formData = new FormData();

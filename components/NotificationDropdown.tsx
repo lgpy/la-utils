@@ -9,6 +9,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { authClient } from "@/lib/auth";
 import {
 	fetchChangelogEntries,
 	type ChangelogEntryWithNew,
@@ -29,9 +30,12 @@ type NotificationEntry = {
 
 export default function NotificationDropdown() {
 	const { lastViewedDate, isHydrated } = useChangelogStore();
+	const session = authClient.useSession();
 
 	const friendRequestQuery = useQuery(
-		orpc.friends.getFriendRequests.queryOptions(),
+		orpc.friends.getFriendRequests.queryOptions({
+			enabled: session.data !== null,
+		}),
 	);
 
 	const [changelogNotifications, setChangelogNotifications] = useState<{
