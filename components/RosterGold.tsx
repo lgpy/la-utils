@@ -5,11 +5,6 @@ import { raids } from "@/lib/raids";
 import { useMainStore, useSettingsStore } from "@/providers/MainStoreProvider";
 import { useMemo } from "react";
 import AnimatedNumber from "./AnimatedNumber";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { formatGold } from "@/lib/format";
 import {
 	Table,
@@ -19,6 +14,12 @@ import {
 	TableBody,
 	TableCell,
 } from "@/components/ui/table";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover"
+import { Info } from "lucide-react";
 
 export default function RosterGold() {
 	const mainStore = useMainStore();
@@ -93,10 +94,13 @@ export default function RosterGold() {
 
 	return (
 
-		<Tooltip>
-			<TooltipTrigger asChild>
-				<div className="grid grid-cols-[auto_auto] gap-x-2 fixed left-4 bottom-4 text-yellow/60 select-none">
-					<h2 className="col-span-2 text-xl font-bold">Roster Gold</h2>
+		<Popover>
+			<PopoverTrigger asChild>
+				<div className="grid grid-cols-[auto_auto] gap-x-2 fixed left-4 bottom-4 text-yellow/60 select-none cursor-pointer">
+					<div className="col-span-2 flex items-center gap-2">
+						<h2 className="text-xl font-bold">Roster Gold</h2>
+						<Info className="size-4" />
+					</div>
 					<p className="font-extralight">This Week:</p>
 					{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 					<p
@@ -119,12 +123,12 @@ export default function RosterGold() {
 						</>
 					)}
 				</div>
-			</TooltipTrigger>
-			<TooltipContent collisionPadding={10}>
+			</PopoverTrigger>
+			<PopoverContent collisionPadding={10} className="w-fit">
 				<div className="space-y-4 p-2">
-					<h3 className="font-semibold text-lg mb-2 text-center">Roster Gold Breakdown</h3>
-					<div className="font-bold text-secondary-foreground mb-2">This Week</div>
-					<div className="bg-muted/40 rounded-md border border-muted">
+					<h3 className="font-bold text-lg mb-2 text-center">Roster Gold Breakdown</h3>
+					<div className="font-semibold text-secondary-foreground mb-2">This Week</div>
+					<div className="bg-muted/20 rounded-md border border-border">
 						<Table>
 							<TableHeader>
 								<TableRow>
@@ -158,8 +162,8 @@ export default function RosterGold() {
 					</div>
 					{hasBiweekly && (
 						<>
-							<div className="font-bold text-secondary-foreground mb-2">Next Week</div>
-							<div className="bg-muted/40 rounded-md border border-muted">
+							<div className="font-semibold text-secondary-foreground mb-2">Next Week</div>
+							<div className="bg-muted/20 rounded-md border border-border">
 								<Table>
 									<TableHeader>
 										<TableRow>
@@ -182,7 +186,7 @@ export default function RosterGold() {
 						</>
 					)}
 				</div>
-			</TooltipContent>
-		</Tooltip>
+			</PopoverContent>
+		</Popover>
 	);
 }
