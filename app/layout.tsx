@@ -6,7 +6,6 @@ import { ChangelogStoreProvider } from "@/providers/ChangelogStoreProvider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ReactScan } from "@/components/ReactScanComponent";
 import { Toaster } from "@/components/ui/sonner";
 import { UserInfoUpdater } from "@/components/UserInfoUpdater";
 import "@/lib/orpc.server";
@@ -26,7 +25,6 @@ export default async function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<ReactScan />
 			<body
 				className={cn(
 					inter.className,
