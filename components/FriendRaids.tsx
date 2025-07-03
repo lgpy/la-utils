@@ -339,15 +339,13 @@ export default function FriendRaids({ isOpen, onOpenChange }: Props) {
 
 	return (
 		<FriendRaidsDialog isOpen={isOpen} onOpenChange={onOpenChange}>
-			{friendRaidsQuery.isLoading && (
+			{friendRaidsQuery.isLoading ? (
 				<div className="text-center py-8">Loading...</div>
-			)}
-			{friendRaidsQuery.isError && (
+			) : friendRaidsQuery.isError ? (
 				<div className="text-center py-8 text-destructive">
 					Error loading friend raids.
 				</div>
-			)}
-			{data === undefined || Object.keys(data).length === 0 ? (
+			) : data === undefined || Object.keys(data).length === 0 ? (
 				<div className="text-center py-8 text-muted-foreground">
 					You have no available raids.
 				</div>

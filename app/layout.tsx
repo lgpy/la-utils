@@ -10,6 +10,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { UserInfoUpdater } from "@/components/UserInfoUpdater";
 import "@/lib/orpc.server";
 import { OrpcProvider } from "@/providers/OrpcProvider";
+import { GlobalAlertDialog } from "@/components/AlertDialog";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -60,6 +61,7 @@ export default async function RootLayout({
 									</p>
 								</footer>
 								<Toaster position="bottom-center" />
+								<GlobalAlertDialog />
 								<UserInfoUpdater />
 							</ThemeProvider>
 						</ChangelogStoreProvider>

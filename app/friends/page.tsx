@@ -12,6 +12,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { orpc } from "@/lib/orpc";
 import CopyButton from "@/components/CopyButton";
+import { showAlert } from "@/components/AlertDialog.hooks";
 
 type User = {
 	id: string;
@@ -282,7 +283,22 @@ function FriendItem({ friend }: { friend: User }) {
 			<Button
 				size="sm"
 				variant="destructive"
-				onClick={() => deleteMutation.mutate({ friendId: friend.id })}
+				onClick={async () => {
+					try {
+						const decision = await showAlert({
+							title: "Remove Friend",
+							description: `Are you sure you want to remove ${friend.name || friend.id} from your friends?`,
+							confirmButton: { text: "Remove" },
+							cancelButton: { text: "Cancel" },
+						});
+
+						if (decision) {
+							deleteMutation.mutate({ friendId: friend.id });
+						}
+					} catch (error) {
+						console.error("Alert error:", error instanceof Error ? error.message : error);
+					}
+				}}
 				disabled={deleteMutation.isPending}
 			>
 				Delete
