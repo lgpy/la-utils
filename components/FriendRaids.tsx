@@ -143,7 +143,7 @@ function FriendRaidsDialog({
 }: Props & { children: React.ReactNode }) {
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
-			<DialogContent>
+			<DialogContent className="min-w-5xl">
 				<DialogHeader>
 					<DialogTitle>Friend Raids</DialogTitle>
 					<DialogDescription>
@@ -210,9 +210,9 @@ function RaidGateAvatars({
 		return (
 			<div
 				key={`${raidId}-${difficulty}-${user.id}`}
-				className="flex justify-between items-center p-2 hover:bg-muted w-full gap-4"
+				className="flex justify-between items-center p-2 gap-4 w-full bg-secondary/20 border-secondary/50 border-1 rounded-md"
 			>
-				<div className="flex items-center gap-2 hover:bg-muted rounded">
+				<div className="flex items-center gap-2">
 					<Avatar className="shrink-0 size-10">
 						{user.image ? (
 							<AvatarImage src={user.image} alt={user.name} />
@@ -293,7 +293,7 @@ function RaidCardGroup({
 										})}
 									</div>
 								</AccordionTrigger>
-								<AccordionContent className="flex flex-col divide-y-[1px] divide-border/50">
+								<AccordionContent className="grid grid-cols-1 lg:grid-cols-3 justify-around gap-2">
 									<RaidGateAvatars
 										raidId={raidId}
 										difficulty={difficulty as Difficulty}
@@ -352,10 +352,13 @@ export default function FriendRaids({ isOpen, onOpenChange }: Props) {
 					You have no available raids.
 				</div>
 			) : (
-				<div className="space-y-6 max-h-[60vh] overflow-y-scroll p-2">
-					{Object.entries(data).map(([raidId, raidData]) => (
-						<RaidCardGroup key={raidId} raidId={raidId} raidData={raidData} />
-					))}
+				<div className="flex flex-col space-y-6 max-h-[60vh] overflow-y-scroll p-2">
+					{Object.entries(data).map(([raidId, raidData]) => {
+						if (Object.keys(raidData.difficulties).length === 0) return null;
+						return (
+							<RaidCardGroup key={raidId} raidId={raidId} raidData={raidData} />
+						)
+					})}
 				</div>
 			)}
 		</FriendRaidsDialog>
