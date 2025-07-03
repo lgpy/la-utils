@@ -1,6 +1,6 @@
-
 import { getFriendsRaids } from "./friendRaids";
 import { getFriends, getFriendRequests, respondToFriendRequest, revokeRequest, sendFriendRequest, revokeFriendship } from "./friends";
+import { getServerStatus } from "./serverStatus";
 
 export const router = {
   friends: {
@@ -13,5 +13,8 @@ export const router = {
   },
   friendRaids: {
     getFriendsRaids
+  },
+  serverStatus: {
+    getServerStatus
   }
 }

@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
 	getStoredLoaLogsFileHandle,
 	zEntries,
 } from "@/components/LoaLogAccess/utils";
 import { getLatestWeeklyReset } from "@/lib/dates";
 import { toast } from "sonner";
+import { DBWorkerResponse } from "@/workers/dbWorker";
 
 interface FileAccessState {
 	fileHandle: FileSystemFileHandle | null;
@@ -12,27 +13,77 @@ interface FileAccessState {
 	fileSize: number | null;
 }
 
-/**
- * Hook to get real-time LOA Logs file access status
- * This checks the actual file handle instead of relying on cached state
- */
-export function useLoaLogsDb() {
+export function useLoaLogsDb(onResponse?: (data: {
+	difficulty: string;
+	current_boss: string;
+	local_player: string;
+	fight_start: number;
+}[]) => void) {
 	const [fileAccess, setFileAccess] = useState<FileAccessState>({
 		fileHandle: null,
 		hasPermission: false,
 		fileSize: null,
 	});
 
+	const onResponseRef = useRef(onResponse);
+
+	useEffect(() => {
+		if (onResponse) {
+			onResponseRef.current = onResponse;
+		}
+	}, [onResponse]);
+
 	// Persist worker instance for the lifetime of the hook
 	const workerRef = useRef<Worker | null>(null);
 
+	const [isWorkerReady, setIsWorkerReady] = useState(false);
+
+	const handleWorkerMessage = (event: MessageEvent<DBWorkerResponse>) => {
+		if (event.data.type === "init") {
+			if (event.data.payload.success) {
+				console.debug("Worker initialized successfully");
+				setIsWorkerReady(true);
+			} else {
+				console.error("Worker initialization failed");
+				toast.error("Failed to initialize LOA Logs worker");
+				setIsWorkerReady(false);
+			}
+		} else if (event.data.type === "query") {
+			const { payload: query } = event.data;
+			if (query.length === 0 || !query[0].rows.length) {
+				onResponseRef.current?.([]);
+				return;
+			}
+			const resToObjArray = query[0].rows.map((row) =>
+				Object.fromEntries(
+					query[0].columns.map((col, index) => [col, row[index]]),
+				),
+			);
+			const parsed = zEntries.safeParse(resToObjArray);
+			if (!parsed.success) {
+				console.error(
+					"Failed to parse weekly raids data:",
+					parsed.error,
+				);
+				throw new Error("Invalid data format in encounter_preview table");
+			}
+			onResponseRef.current?.(parsed.data);
+		} else if (event.data.type === "error") {
+			const errorMessage = event.data.payload.message;
+			console.error("Worker error:", errorMessage);
+			toast.error("Worker error, check console for more details");
+			setIsWorkerReady(false);
+		}
+	};
+
 	useEffect(() => {
-		let isMounted = true;
-		let worker: Worker | null = null;
+		const handleError = (error: ErrorEvent) => {
+			console.error("Worker error:", error);
+			toast.error("Worker error, check console for more details");
+		};
 
 		async function setupFileAccessAndWorker() {
 			const handle = await getStoredLoaLogsFileHandle();
-			if (!isMounted) return;
 			if (!handle) {
 				setFileAccess({
 					fileHandle: null,
@@ -42,12 +93,14 @@ export function useLoaLogsDb() {
 				return;
 			}
 			try {
-				let hasPermission = false;
 				const currentPermission = await handle.queryPermission();
-				if (currentPermission === "granted") {
-					hasPermission = true;
-				} else {
-					// Instead of requesting permission, show a toast with a link to /loa-logs-config
+				let hasPermission = currentPermission === "granted";
+				if (!hasPermission) {
+					setFileAccess({
+						fileHandle: null,
+						hasPermission: false,
+						fileSize: null,
+					});
 					toast(
 						<>
 							{"Persistent file permission required. "}
@@ -62,14 +115,6 @@ export function useLoaLogsDb() {
 						</>,
 						{ duration: 8000 },
 					);
-					hasPermission = false;
-				}
-				if (!hasPermission) {
-					setFileAccess({
-						fileHandle: null,
-						hasPermission: false,
-						fileSize: null,
-					});
 					return;
 				}
 				const file = await handle.getFile();
@@ -79,41 +124,18 @@ export function useLoaLogsDb() {
 					fileSize: file.size,
 				});
 				// Launch worker and send init message
-				worker = new Worker(
+				workerRef.current = new Worker(
 					new URL("../../workers/dbWorker.ts", import.meta.url),
 				);
-				workerRef.current = worker;
-				await new Promise<void>((resolve, reject) => {
-					const timeoutId = setTimeout(() => {
-						reject(new Error("Worker init timeout"));
-					}, 10000);
-					const handleInit = (event: MessageEvent) => {
-						if (
-							event.data &&
-							event.data.type === "init" &&
-							event.data.success
-						) {
-							clearTimeout(timeoutId);
-							worker?.removeEventListener("message", handleInit);
-							resolve();
-						} else if (event.data?.error) {
-							clearTimeout(timeoutId);
-							worker?.removeEventListener("message", handleInit);
-							reject(new Error(event.data.error));
-						}
-					};
-					if (worker) {
-						worker.addEventListener("message", handleInit);
-						worker.postMessage({
-							type: "init",
-							payload: { fileHandle: handle },
-						});
-					} else {
-						clearTimeout(timeoutId);
-						reject(new Error("Worker not initialized"));
-					}
+
+				workerRef.current.addEventListener("message", handleWorkerMessage);
+				workerRef.current.addEventListener("error", handleError);
+
+				workerRef.current.postMessage({
+					type: "init",
+					payload: { fileHandle: handle },
 				});
-			} catch (error) {
+			} catch {
 				setFileAccess({
 					fileHandle: null,
 					hasPermission: false,
@@ -125,8 +147,9 @@ export function useLoaLogsDb() {
 		setupFileAccessAndWorker();
 
 		return () => {
-			isMounted = false;
 			if (workerRef.current) {
+				workerRef.current.removeEventListener("message", handleWorkerMessage);
+				workerRef.current.removeEventListener("error", handleError);
 				workerRef.current.terminate();
 				workerRef.current = null;
 			}
@@ -134,8 +157,8 @@ export function useLoaLogsDb() {
 	}, []);
 
 	return {
-		hasAccess: fileAccess.hasPermission,
-		getWeeklyRaids: async () => {
+		isReady: isWorkerReady,
+		getWeeklyRaids: () => {
 			if (!fileAccess.fileHandle) {
 				throw new Error("No file handle available");
 			}
@@ -144,49 +167,13 @@ export function useLoaLogsDb() {
 			}
 			const weeklyResetTimestamp = getLatestWeeklyReset().getTime();
 			const query =
-				"SELECT * FROM encounter_preview WHERE cleared=1 AND fight_start > ? ORDER BY id DESC";
-			const result = await new Promise<
-				{ columns: string[]; rows: unknown[][] }[]
-			>((resolve, reject) => {
-				const timeoutId = setTimeout(() => {
-					reject(new Error("Worker query timeout"));
-				}, 30000);
-				const handleMessage = (event: MessageEvent) => {
-					clearTimeout(timeoutId);
-					resolve(event.data);
-					workerRef.current?.removeEventListener("message", handleMessage);
-				};
-				const handleError = (error: Event) => {
-					clearTimeout(timeoutId);
-					reject(error);
-					workerRef.current?.removeEventListener("error", handleError);
-				};
-				workerRef.current?.addEventListener("message", handleMessage);
-				workerRef.current?.addEventListener("error", handleError);
-				workerRef.current?.postMessage({
-					type: "query",
-					payload: {
-						query: query.replace("?", weeklyResetTimestamp.toString()),
-					},
-				});
+				"SELECT current_boss, difficulty, local_player, fight_start FROM encounter_preview WHERE cleared=1 AND fight_start > ? ORDER BY id DESC";
+			workerRef.current?.postMessage({
+				type: "query",
+				payload: {
+					query: query.replace("?", weeklyResetTimestamp.toString()),
+				},
 			});
-			if (result.length === 0 || !result[0].rows.length) {
-				return [];
-			}
-			const resToObjArray = result[0].rows.map((row) =>
-				Object.fromEntries(
-					result[0].columns.map((col, index) => [col, row[index]]),
-				),
-			);
-			const parsedEntries = zEntries.safeParse(resToObjArray);
-			if (!parsedEntries.success) {
-				console.error(
-					"Failed to parse weekly raids data:",
-					parsedEntries.error,
-				);
-				throw new Error("Invalid data format in encounter_preview table");
-			}
-			return parsedEntries.data;
 		},
 	};
 }

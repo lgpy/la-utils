@@ -3,6 +3,7 @@
 import { authClient } from "@/lib/auth";
 import { fetchCompressed } from "@/lib/requests";
 import { useMainStore } from "@/providers/MainStoreProvider";
+import { isEqual } from "lodash";
 import { useEffect, useRef } from "react";
 
 const DEBOUNCE_DELAY = 2000;
@@ -14,6 +15,16 @@ export function UserInfoUpdater() {
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const latestCharactersRef = useRef(characters);
 	const isFirstRun = useRef(true);
+
+	const lastUploadedDataRef = useRef<typeof characters | null>(null);
+
+	//initial upload of characters
+	useEffect(() => {
+		if (!hasHydrated || lastUploadedDataRef.current !== null) return;
+		lastUploadedDataRef.current = characters;
+	}, [hasHydrated, characters]);
+
+	const isUploadedSameAsCurrent = () => isEqual(latestCharactersRef.current, lastUploadedDataRef.current);
 
 	// Keep latest characters in a ref for beforeunload
 	useEffect(() => {
@@ -30,8 +41,8 @@ export function UserInfoUpdater() {
 			return;
 		}
 
-		if (timeoutRef.current) {
-			clearTimeout(timeoutRef.current);
+		if (isUploadedSameAsCurrent()) {
+			return;
 		}
 
 		timeoutRef.current = setTimeout(() => {
@@ -59,11 +70,16 @@ export function UserInfoUpdater() {
 				}
 			};
 
+
+			lastUploadedDataRef.current = latestCharactersRef.current;
 			uploadData();
 		}, DEBOUNCE_DELAY);
 
 		const handleBeforeUnload = () => {
 			try {
+				if (isUploadedSameAsCurrent()) {
+					return;
+				}
 				const jsonString = JSON.stringify(latestCharactersRef.current);
 				const blob = new Blob([jsonString], { type: "application/json" });
 				navigator.sendBeacon(API_URL, blob);

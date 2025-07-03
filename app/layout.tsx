@@ -59,7 +59,7 @@ export default async function RootLayout({
 										</a>
 									</p>
 								</footer>
-								<Toaster />
+								<Toaster position="bottom-center" />
 								<UserInfoUpdater />
 							</ThemeProvider>
 						</ChangelogStoreProvider>

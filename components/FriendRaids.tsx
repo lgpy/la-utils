@@ -143,7 +143,7 @@ function FriendRaidsDialog({
 }: Props & { children: React.ReactNode }) {
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
-			<DialogContent className="min-w-5xl">
+			<DialogContent className="lg:min-w-5xl">
 				<DialogHeader>
 					<DialogTitle>Friend Raids</DialogTitle>
 					<DialogDescription>

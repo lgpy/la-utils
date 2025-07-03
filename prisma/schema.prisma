@@ -203,3 +203,37 @@ enum FriendshipStatus {
   accepted
   blocked
 }
+
+enum ServerName {
+	// NAW servers
+	Thaemine
+	Brelshaza
+
+	// NAE servers
+	Luterra
+	Balthorr
+	Nineveh
+	Inanna
+	Vairgrys
+
+	// EUC servers
+	Ortuus
+	Elpon
+	Ratik
+	Arcturus
+	Gienah
+}
+
+enum ServerStatus {
+  ONLINE
+  OFFLINE
+  MAINTENANCE
+  BUSY
+  FULL
+}
+
+model Server {
+  id          ServerName @id
+  status      ServerStatus
+  updatedAt   DateTime @updatedAt
+}

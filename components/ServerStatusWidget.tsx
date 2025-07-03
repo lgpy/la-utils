@@ -1,28 +1,70 @@
 "use client";
 
-import { ServerStatus, getServerStatusString } from "@/lib/servers";
 import { useSettingsStore } from "@/providers/MainStoreProvider";
 import { formatDistanceToNow } from "date-fns";
 import { Construction, Power, WifiOff } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useServerStatus } from "./ServerStatusWidget.hooks";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "./ui/tooltip";
+import { ServerStatus } from "@/generated/prisma";
+import { useQuery } from "@tanstack/react-query";
+import { orpc } from "@/lib/orpc";
+
+function getServerStatusString(status: ServerStatus): string {
+	switch (status) {
+		case ServerStatus.OFFLINE:
+			return "Offline";
+		case ServerStatus.ONLINE:
+			return "Online";
+		case ServerStatus.FULL:
+			return "Online - Full";
+		case ServerStatus.BUSY:
+			return "Online - Busy";
+		case ServerStatus.MAINTENANCE:
+			return "In Maintenance";
+	}
+}
+
+const POLLING_INTERVALS = {
+	FAST: 5 * 60 * 1000, // 5 minutes for offline/maintenance
+	SLOW: 60 * 60 * 1000, // 1 hour for online servers
+} as const;
 
 export default function ServerStatusWidget() {
 	const settingsStore = useSettingsStore();
-	const { server: selectedServer } = settingsStore;
+	const { server: selectedServer, hasHydrated } = settingsStore;
 
-	const {
+	/*const {
 		status: serverStatus,
 		lastUpdated,
 		isLoading,
 		hasError,
-	} = useServerStatus(selectedServer);
+	} = useServerStatus(selectedServer);*/
+
+	const serverQuery = useQuery(
+		orpc.serverStatus.getServerStatus.queryOptions({
+			input: selectedServer!,
+			enabled: selectedServer !== undefined && hasHydrated,
+			staleTime(query) {
+				if (query.state.data?.status === ServerStatus.OFFLINE ||
+					query.state.data?.status === ServerStatus.MAINTENANCE) {
+					return POLLING_INTERVALS.FAST;
+				}
+				return POLLING_INTERVALS.SLOW;
+			},
+			refetchInterval(query) {
+				if (query.state.data?.status === ServerStatus.OFFLINE ||
+					query.state.data?.status === ServerStatus.MAINTENANCE) {
+					return POLLING_INTERVALS.FAST;
+				}
+				return POLLING_INTERVALS.SLOW;
+			},
+		})
+	);
 
 	const [tooltipLastUpdated, setTooltipLastUpdated] = useState<string | null>(
 		null,
@@ -30,11 +72,11 @@ export default function ServerStatusWidget() {
 
 	// Update relative time display
 	useEffect(() => {
-		if (lastUpdated === null) return;
+		if (serverQuery.data === undefined) return;
 
 		const updateRelativeTime = () => {
 			setTooltipLastUpdated(
-				formatDistanceToNow(new Date(lastUpdated), {
+				formatDistanceToNow(serverQuery.data.updatedAt, {
 					addSuffix: true,
 				}),
 			);
@@ -44,21 +86,21 @@ export default function ServerStatusWidget() {
 		const interval = setInterval(updateRelativeTime, 60000); // Update every minute
 
 		return () => clearInterval(interval);
-	}, [lastUpdated]);
+	}, [serverQuery.data]);
 
 	if (!settingsStore.hasHydrated || !selectedServer) return null;
 
 	// Determine which icon to show based on server status
 	const icon = (() => {
-		if (isLoading) {
+		if (serverQuery.isLoading) {
 			return <Power className="size-4 stroke-muted-foreground animate-pulse" />;
 		}
 
-		if (hasError) {
+		if (serverQuery.isError) {
 			return <WifiOff className="size-4 stroke-destructive" />;
 		}
 
-		switch (serverStatus) {
+		switch (serverQuery.data?.status) {
 			case ServerStatus.OFFLINE:
 				return <Power className="size-4 stroke-destructive" />;
 			case ServerStatus.ONLINE:
@@ -73,12 +115,12 @@ export default function ServerStatusWidget() {
 		}
 	})();
 
-	const tooltipServerStatus = hasError
+	const tooltipServerStatus = serverQuery.isError
 		? "Connection Error"
-		: isLoading
+		: serverQuery.isLoading
 			? "Checking..."
-			: serverStatus !== null
-				? getServerStatusString(serverStatus)
+			: serverQuery.data !== undefined
+				? getServerStatusString(serverQuery.data.status)
 				: "Unknown";
 
 	return (
@@ -88,7 +130,7 @@ export default function ServerStatusWidget() {
 					<div className="flex gap-1 items-center select-none cursor-help">
 						{icon}
 						<span
-							className={`text-xs ${hasError ? "text-destructive" : "text-muted-foreground"}`}
+							className={`text-xs ${serverQuery.isError ? "text-destructive" : "text-muted-foreground"}`}
 						>
 							{selectedServer}
 						</span>
@@ -104,7 +146,7 @@ export default function ServerStatusWidget() {
 							Last updated:{" "}
 							{tooltipLastUpdated !== null ? tooltipLastUpdated : "never"}
 						</p>
-						{hasError && (
+						{serverQuery.isError && (
 							<p className="text-xs text-destructive">
 								Could not connect to status service
 							</p>

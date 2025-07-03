@@ -1,35 +1,24 @@
+import { ServerName } from "@/generated/prisma";
 import { z } from "zod";
 import { createStore } from "zustand";
 import { persist } from "zustand/middleware";
 
 const zodSettings = z.object({
 	server: z
-		.enum([
-			"Thaemine",
-			"Brelshaza",
-			"Luterra",
-			"Balthorr",
-			"Nineveh",
-			"Inanna",
-			"Vairgrys",
-			"Ortuus",
-			"Elpon",
-			"Ratik",
-			"Arcturus",
-			"Gienah",
-		])
+		.nativeEnum(ServerName)
 		.optional(),
 	experiments: z.object({
 		buttonV2: z.boolean(),
 		ignoreThaemineIfNoG4: z.boolean(),
 		compactRaidCard: z.boolean(),
+		autoUpdateRaids: z.boolean(),
 	}),
 });
 
 export type SettingsState = z.infer<typeof zodSettings>;
 
 export type SettingsActions = {
-	setServer: (server: SettingsState["server"]) => void;
+	setServer: (server: ServerName) => void;
 	toggleExperiments: (
 		key: keyof SettingsState["experiments"],
 		value: boolean,
@@ -47,6 +36,7 @@ export const createSettingsStore = () =>
 					buttonV2: false,
 					ignoreThaemineIfNoG4: false,
 					compactRaidCard: false,
+					autoUpdateRaids: false,
 				},
 				setServer(server) {
 					set({ server });
@@ -62,7 +52,7 @@ export const createSettingsStore = () =>
 			}),
 			{
 				name: "settings",
-				version: 5,
+				version: 6,
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 				migrate: (ps: any, version) => {
 					if (version <= 0) ps.rosterGoldTotal = "total";
@@ -71,6 +61,9 @@ export const createSettingsStore = () =>
 					if (version <= 2) ps.experiments.ignoreThaemineIfNoG4 = false;
 					if (version <= 3) ps.experiments.compactRaidCard = false;
 					if (version <= 4) ps.rosterGoldTotal = undefined;
+					if (version <= 5) {
+						ps.experiments.autoUpdateRaids = false;
+					}
 					return ps;
 				},
 			},

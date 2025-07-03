@@ -321,6 +321,17 @@ export default function SettingsButton() {
 								>
 									<span>Compact Raid Card</span>
 								</DropdownMenuCheckboxItem>
+								<DropdownMenuCheckboxItem
+									checked={settingsStore.experiments.autoUpdateRaids}
+									onCheckedChange={() =>
+										settingsStore.toggleExperiments(
+											"autoUpdateRaids",
+											!settingsStore.experiments.autoUpdateRaids,
+										)
+									}
+								>
+									<span>Auto Update Raids</span>
+								</DropdownMenuCheckboxItem>
 							</DropdownMenuSubContent>
 						</DropdownMenuPortal>
 					</DropdownMenuSub>
