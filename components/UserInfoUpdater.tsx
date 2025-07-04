@@ -2,38 +2,62 @@
 
 import { authClient } from "@/lib/auth";
 import { fetchCompressed } from "@/lib/requests";
-import { useMainStore } from "@/providers/MainStoreProvider";
+import { useMainStore, useSettingsStore } from "@/providers/MainStoreProvider";
 import { isEqual } from "lodash";
 import { useEffect, useRef } from "react";
 
-const DEBOUNCE_DELAY = 2000;
+const DEBOUNCE_DELAY = 3000;
 const API_URL = "/api/user/uploadData";
+
+type CharData = ReturnType<typeof useMainStore>["characters"][number];
+
+function removeIgnoredRaids(characters: CharData[], ignoredRaids: { cId: string; rId: string }[]): CharData[] {
+	const characters_copy: CharData[] = JSON.parse(JSON.stringify(characters));
+
+	for (const ignoredRaid of ignoredRaids) {
+		const character = characters_copy.find(c => c.id === ignoredRaid.cId);
+		if (character) {
+			delete character.assignedRaids[ignoredRaid.rId];
+		}
+	}
+
+	return characters_copy;
+}
 
 export function UserInfoUpdater() {
 	const auth = authClient.useSession();
-	const { hasHydrated, characters } = useMainStore();
+	const mainStore = useMainStore();
+	const settingsStore = useSettingsStore();
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-	const latestCharactersRef = useRef(characters);
+	const latestCharactersRef = useRef(mainStore.characters);
 	const isFirstRun = useRef(true);
 
-	const lastUploadedDataRef = useRef<typeof characters | null>(null);
+	const lastUploadedDataRef = useRef<typeof mainStore.characters | null>(null);
+
+	const areStoresHydrated = mainStore.hasHydrated && settingsStore.hasHydrated;
 
 	//initial upload of characters
 	useEffect(() => {
-		if (!hasHydrated || lastUploadedDataRef.current !== null) return;
-		lastUploadedDataRef.current = characters;
-	}, [hasHydrated, characters]);
+		if (!areStoresHydrated || lastUploadedDataRef.current !== null) return;
+		lastUploadedDataRef.current = removeIgnoredRaids(
+			mainStore.characters,
+			settingsStore.upload.ignoreRaids
+		);
+	}, [areStoresHydrated, mainStore.characters, settingsStore.upload.ignoreRaids]);
 
 	const isUploadedSameAsCurrent = () => isEqual(latestCharactersRef.current, lastUploadedDataRef.current);
 
 	// Keep latest characters in a ref for beforeunload
 	useEffect(() => {
-		latestCharactersRef.current = characters;
-	}, [characters]);
+		latestCharactersRef.current = removeIgnoredRaids(
+			mainStore.characters,
+			settingsStore.upload.ignoreRaids
+		);
+	}, [mainStore.characters, settingsStore.upload.ignoreRaids]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: characters is needed here
 	useEffect(() => {
-		if (!hasHydrated || auth.isPending || auth.error || auth.data == null)
+		if (!areStoresHydrated || auth.isPending || auth.error || auth.data == null)
 			return;
 
 		if (isFirstRun.current) {
@@ -96,7 +120,7 @@ export function UserInfoUpdater() {
 			}
 			window.removeEventListener("beforeunload", handleBeforeUnload);
 		};
-	}, [auth, hasHydrated, characters]);
+	}, [auth, areStoresHydrated, mainStore.characters, settingsStore.upload.ignoreRaids]);
 
 	return null;
 }

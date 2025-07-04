@@ -13,6 +13,12 @@ const zodSettings = z.object({
 		compactRaidCard: z.boolean(),
 		autoUpdateRaids: z.boolean(),
 	}),
+	upload: z.object({
+		ignoreRaids: z.object({
+			cId: z.string(),
+			rId: z.string(),
+		}).array()
+	})
 });
 
 export type SettingsState = z.infer<typeof zodSettings>;
@@ -23,6 +29,8 @@ export type SettingsActions = {
 		key: keyof SettingsState["experiments"],
 		value: boolean,
 	) => void;
+	addIgnoreRaid: (cId: string, rId: string) => void;
+	removeIgnoreRaid: (cId: string, rId: string) => void;
 };
 
 export type SettingsStore = SettingsState & SettingsActions;
@@ -38,6 +46,9 @@ export const createSettingsStore = () =>
 					compactRaidCard: false,
 					autoUpdateRaids: false,
 				},
+				upload: {
+					ignoreRaids: [],
+				},
 				setServer(server) {
 					set({ server });
 				},
@@ -49,10 +60,31 @@ export const createSettingsStore = () =>
 						},
 					}));
 				},
+				addIgnoreRaid(cId, rId) {
+					set((state) => ({
+						upload: {
+							...state.upload,
+							ignoreRaids: [
+								...state.upload.ignoreRaids,
+								{ cId, rId },
+							],
+						},
+					}));
+				},
+				removeIgnoreRaid(cId, rId) {
+					set((state) => ({
+						upload: {
+							...state.upload,
+							ignoreRaids: state.upload.ignoreRaids.filter(
+								(r) => r.cId !== cId || r.rId !== rId,
+							),
+						},
+					}));
+				}
 			}),
 			{
 				name: "settings",
-				version: 6,
+				version: 7,
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 				migrate: (ps: any, version) => {
 					if (version <= 0) ps.rosterGoldTotal = "total";
@@ -63,6 +95,11 @@ export const createSettingsStore = () =>
 					if (version <= 4) ps.rosterGoldTotal = undefined;
 					if (version <= 5) {
 						ps.experiments.autoUpdateRaids = false;
+					}
+					if (version <= 6) {
+						ps.upload = {
+							ignoreRaids: [],
+						};
 					}
 					return ps;
 				},

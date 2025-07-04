@@ -7,7 +7,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import NotificationDropdown from "./NotificationDropdown";
 import Logo from "./Logo";
-import ServerStatusWidget from "./ServerStatusWidget";
 import SettingsButton from "./SettingsButton";
 import { Button } from "./ui/button";
 import {
