@@ -158,131 +158,6 @@ export default function SettingsButton() {
 				<DropdownMenuGroup>
 					<DropdownMenuSub>
 						<DropdownMenuSubTrigger>
-							<Server />
-							<span>Server</span>
-						</DropdownMenuSubTrigger>
-						<DropdownMenuPortal>
-							<DropdownMenuSubContent>
-								<DropdownMenuSub>
-									<DropdownMenuSubTrigger>NAW</DropdownMenuSubTrigger>
-									<DropdownMenuPortal>
-										<DropdownMenuSubContent>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Thaemine"}
-												onCheckedChange={() =>
-													settingsStore.setServer("Thaemine")
-												}
-											>
-												<span>Thaemine</span>
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Brelshaza"}
-												onCheckedChange={() =>
-													settingsStore.setServer("Brelshaza")
-												}
-											>
-												<span>Brelshaza</span>
-											</DropdownMenuCheckboxItem>
-										</DropdownMenuSubContent>
-									</DropdownMenuPortal>
-								</DropdownMenuSub>
-								<DropdownMenuSub>
-									<DropdownMenuSubTrigger>NAE</DropdownMenuSubTrigger>
-									<DropdownMenuPortal>
-										<DropdownMenuSubContent>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Luterra"}
-												onCheckedChange={() =>
-													settingsStore.setServer("Luterra")
-												}
-											>
-												<span>Luterra</span>
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Balthorr"}
-												onCheckedChange={() =>
-													settingsStore.setServer("Balthorr")
-												}
-											>
-												<span>Balthorr</span>
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Nineveh"}
-												onCheckedChange={() =>
-													settingsStore.setServer("Nineveh")
-												}
-											>
-												<span>Nineveh</span>
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Inanna"}
-												onCheckedChange={() =>
-													settingsStore.setServer("Inanna")
-												}
-											>
-												<span>Inanna</span>
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Vairgrys"}
-												onCheckedChange={() =>
-													settingsStore.setServer("Vairgrys")
-												}
-											>
-												<span>Vairgrys</span>
-											</DropdownMenuCheckboxItem>
-										</DropdownMenuSubContent>
-									</DropdownMenuPortal>
-								</DropdownMenuSub>
-								<DropdownMenuSub>
-									<DropdownMenuSubTrigger>EUC</DropdownMenuSubTrigger>
-									<DropdownMenuPortal>
-										<DropdownMenuSubContent>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Ortuus"}
-												onCheckedChange={() =>
-													settingsStore.setServer("Ortuus")
-												}
-											>
-												<span>Ortuus</span>
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Elpon"}
-												onCheckedChange={() => settingsStore.setServer("Elpon")}
-											>
-												<span>Elpon</span>
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Ratik"}
-												onCheckedChange={() => settingsStore.setServer("Ratik")}
-											>
-												<span>Ratik</span>
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Arcturus"}
-												onCheckedChange={() =>
-													settingsStore.setServer("Arcturus")
-												}
-											>
-												<span>Arcturus</span>
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={settingsStore.server === "Gienah"}
-												onCheckedChange={() =>
-													settingsStore.setServer("Gienah")
-												}
-											>
-												<span>Gienah</span>
-											</DropdownMenuCheckboxItem>
-										</DropdownMenuSubContent>
-									</DropdownMenuPortal>
-								</DropdownMenuSub>
-							</DropdownMenuSubContent>
-						</DropdownMenuPortal>
-					</DropdownMenuSub>
-				</DropdownMenuGroup>
-				<DropdownMenuGroup>
-					<DropdownMenuSub>
-						<DropdownMenuSubTrigger>
 							<FlaskConical />
 							<span>Experiments</span>
 						</DropdownMenuSubTrigger>
@@ -336,6 +211,20 @@ export default function SettingsButton() {
 						</DropdownMenuPortal>
 					</DropdownMenuSub>
 				</DropdownMenuGroup>
+
+				<DropdownMenuSeparator />
+				<DropdownMenuItem onClick={() => window.open("https://ko-fi.com/leo213", "_blank")}>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="currentColor"
+						viewBox="0 0 24 24"
+						role="img"
+						aria-hidden="true"
+					>
+						<path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z" />
+					</svg>
+					<span>Support on Ko-fi</span>
+				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
