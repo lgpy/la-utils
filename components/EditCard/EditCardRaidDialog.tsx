@@ -104,7 +104,7 @@ export default function EditCardRaidDialog({
 
 			close();
 			toast.success(`Raid ${raidId ? "updated" : "added"} successfully!`);
-		} catch (error) {
+		} catch {
 			toast.error(`Failed to ${raidId ? "update" : "add"} raid!`);
 		}
 	}
@@ -178,13 +178,13 @@ export default function EditCardRaidDialog({
 			raidId: actualRaid ? watchRaidId : "",
 			gates: actualRaid
 				? Object.entries(actualRaid.gates).map(
-						([gateId, gateInfo]) =>
-							character.assignedRaids[watchRaidId]?.[gateId]?.difficulty ||
-							Object.entries(gateInfo.difficulties).findLast(
-								([, diffData]) => diffData.itemlevel <= character.itemLevel,
-							)?.[0] ||
-							"none",
-					)
+					([gateId, gateInfo]) =>
+						character.assignedRaids[watchRaidId]?.[gateId]?.difficulty ||
+						Object.entries(gateInfo.difficulties).findLast(
+							([, diffData]) => diffData.itemlevel <= character.itemLevel,
+						)?.[0] ||
+						"none",
+				)
 				: [],
 		});
 	}, [

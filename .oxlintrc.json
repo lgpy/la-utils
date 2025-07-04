@@ -16,5 +16,7 @@
     ".vercel/",
     "generated/",
     "test-results/",
+    "lib/wa-sqlite/dist",
+    "lib/wa-sqlite/src"
   ]
 }

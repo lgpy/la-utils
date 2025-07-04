@@ -43,7 +43,7 @@ export default function TodoCardCompleteButton({
 					mode: event.shiftKey ? "all" : "last",
 					type: "complete",
 				});
-			} catch (e) {
+			} catch {
 				toast.error(
 					event.shiftKey
 						? "Failed to complete all gates"
@@ -60,7 +60,7 @@ export default function TodoCardCompleteButton({
 					mode: event.shiftKey ? "all" : "last",
 					type: "uncomplete",
 				});
-			} catch (e) {
+			} catch {
 				toast.error(
 					event.shiftKey
 						? "Failed to uncomplete all gates"

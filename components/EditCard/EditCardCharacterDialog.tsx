@@ -28,7 +28,7 @@ import {
 import { Class } from "@/generated/prisma";
 import { type Character, useMainStore } from "@/providers/MainStoreProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash2Icon, TrashIcon } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -74,7 +74,7 @@ export default function EditCardCharacterDialog({
 			toast.success(
 				`Character ${existingCharacter ? "updated" : "created"} successfully!`,
 			);
-		} catch (error) {
+		} catch {
 			toast.error(
 				`Failed to ${existingCharacter ? "update" : "create"} character!`,
 			);

@@ -1,6 +1,6 @@
 import PiggyBank from "@/components/PiggyBank";
 import ClassIcon from "@/components/class-icons/ClassIcon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getHighest3, parseGoldInfo, sortRaidKeys } from "@/lib/chars";
@@ -15,7 +15,6 @@ import { motion } from "motion/react";
 import { Fragment, type JSX, useMemo } from "react";
 import TodoCardCompleteButton from "./TodoCardCompleteButton";
 import TodoCardCompleteButtonV2 from "./TodoCardCompleteButtonV2";
-import TodoCardRaid from "./TodoCardRaid";
 import TodoCardRaidV2 from "./TodoCardRaidV2";
 import TodoCardTask from "./TodoCardTask";
 
@@ -52,7 +51,7 @@ export default function TodoCard({ char }: Props) {
 							char.isGoldEarner &&
 							highest3.thisWeek[raidId] !== undefined &&
 							Object.keys(highest3.thisWeek).length <
-								Object.keys(char.assignedRaids).length
+							Object.keys(char.assignedRaids).length
 						}
 					>
 						{settingsStore.experiments.buttonV2 ? (

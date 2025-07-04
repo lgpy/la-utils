@@ -107,6 +107,7 @@ export class StoneGameOptimizer {
 		s3: number,
 		c1: number,
 		c2: number,
+		// oxlint-disable-next-line no-unused-vars
 		c3: number,
 	): boolean {
 		// Early termination: check if it's impossible to win

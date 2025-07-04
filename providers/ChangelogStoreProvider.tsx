@@ -8,7 +8,7 @@ import {
 	type ReactNode,
 } from "react";
 import { useStore } from "zustand";
-import { createChangelogStore, type ChangelogStore } from "@/stores/changelog";
+import { createChangelogStore } from "@/stores/changelog";
 
 const ChangelogStoreContext = createContext<ReturnType<
 	typeof createChangelogStore

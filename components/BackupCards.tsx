@@ -24,7 +24,7 @@ export default function BackupCards() {
 			const data = JSON.parse(jsonImport);
 			mainStore.restoreData(data);
 			toast.success("Data imported successfully.");
-		} catch (e) {
+		} catch {
 			toast.error("Failed to import data. Make sure the data is correct.");
 		}
 		setJsonImport("");
@@ -62,7 +62,7 @@ export default function BackupCards() {
 				<CardContent>
 					<Textarea
 						value={JSON.stringify(mainStore, null, 2)}
-						onChange={() => {}}
+						onChange={() => { }}
 						className="h-80 break-all"
 					/>
 				</CardContent>

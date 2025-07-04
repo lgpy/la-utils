@@ -29,7 +29,7 @@ type PricesOCRProps = {
 };
 
 export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
-	const { store, hasHydrated } = usePriceStore((state) => state);
+	const { store } = usePriceStore((state) => state);
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);

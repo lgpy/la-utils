@@ -18,17 +18,10 @@ import type { InferRouterOutputs } from "@orpc/server";
 import type { router } from "@/router";
 import type { MainStore } from "@/stores/main";
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
-import { ChevronDown } from "lucide-react";
-import {
 	separateSupportAndDps,
 	sortDifficulties,
 	sortRaidKeys,
 } from "@/lib/chars";
-import { Button } from "./ui/button";
 import ClassIcon from "./class-icons/ClassIcon";
 import {
 	Accordion,

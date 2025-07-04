@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
 import { ScanText } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";

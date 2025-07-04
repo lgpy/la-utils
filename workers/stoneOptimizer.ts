@@ -2,7 +2,6 @@ import {
 	type GoalCondition,
 	StoneGameOptimizer,
 	type StoneState,
-	type StoneStateInterface,
 } from "@/lib/stone";
 
 let optimizer: StoneGameOptimizer | null = null;

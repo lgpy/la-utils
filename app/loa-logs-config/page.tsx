@@ -102,7 +102,7 @@ export default function LoaLogsConfigPage() {
 						lastAccessed: new Date(),
 						fileSize: file.size,
 					}));
-				} catch (error) {
+				} catch {
 					setError("File access failed after permission granted");
 				}
 			} else {
@@ -437,11 +437,10 @@ export default function LoaLogsConfigPage() {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							<div
-								className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-									isDragOver
+								className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isDragOver
 										? "border-primary bg-primary/5"
 										: "border-muted-foreground/25 hover:border-muted-foreground/50"
-								}`}
+									}`}
 								onDragOver={(e) => {
 									e.preventDefault();
 									setIsDragOver(true);

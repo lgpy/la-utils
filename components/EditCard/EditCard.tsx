@@ -1,6 +1,6 @@
 import ClassIcon from "@/components/class-icons/ClassIcon";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { sortRaidKeys } from "@/lib/chars";

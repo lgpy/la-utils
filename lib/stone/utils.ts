@@ -58,7 +58,7 @@ export class ImageProcessor {
 	constructor(
 		private ctx: CanvasRenderingContext2D,
 		private region: Region | undefined,
-	) {}
+	) { }
 
 	static async fromImageBitmap(
 		imageBitmap: ImageBitmap,
@@ -174,7 +174,7 @@ export function parseSuccessRate(ocrString: string): number | null {
 	const trimmedString = ocrString.trim();
 	if (trimmedString.length === 0) return null;
 
-	const regexRes = trimmedString.match(/^(\d{2})(?:\%)?$/);
+	const regexRes = trimmedString.match(/^(\d{2})(?:%)?$/);
 
 	if (regexRes === null) return null;
 

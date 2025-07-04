@@ -83,7 +83,7 @@ export function UserInfoUpdater() {
 				const jsonString = JSON.stringify(latestCharactersRef.current);
 				const blob = new Blob([jsonString], { type: "application/json" });
 				navigator.sendBeacon(API_URL, blob);
-			} catch (e) {
+			} catch {
 				// ignore
 			}
 		};

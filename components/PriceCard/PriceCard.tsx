@@ -91,7 +91,7 @@ const ExchangeSection = ({
 	item,
 	marketPrice,
 }: { item: Props["item"]; marketPrice: number }) => {
-	const { store, hasHydrated } = usePriceStore((state) => state);
+	const { store } = usePriceStore((state) => state);
 	if (!item.exchange) return null;
 
 	const singleMarketValue = marketPrice / item.marketQty;

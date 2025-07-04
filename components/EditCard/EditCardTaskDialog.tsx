@@ -48,17 +48,17 @@ const presets: {
 	name: string;
 	type: (typeof types)[number];
 }[] = [
-	{
-		id: "chaos-dungeon",
-		name: "Chaos Dungeon",
-		type: "daily",
-	},
-	{
-		id: "abyss-dungeon",
-		name: "Guardian Raid",
-		type: "daily",
-	},
-];
+		{
+			id: "chaos-dungeon",
+			name: "Chaos Dungeon",
+			type: "daily",
+		},
+		{
+			id: "abyss-dungeon",
+			name: "Guardian Raid",
+			type: "daily",
+		},
+	];
 
 interface Props {
 	character: Character;
@@ -85,8 +85,8 @@ export default function EditCardTaskDialog({
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		try {
 			/*if (taskId !== undefined)
-        state.charEditRaid(character.id, taskId, fgates);
-      else state.charAddRaid(character.id, values.raidId, fgates);*/
+				state.charEditRaid(character.id, taskId, fgates);
+			else state.charAddRaid(character.id, values.raidId, fgates);*/
 			if (taskId !== undefined)
 				mainStore.charEditTask(character.id, taskId, {
 					name: values.name,
@@ -102,7 +102,7 @@ export default function EditCardTaskDialog({
 			toast.success(
 				`Raid has been ${taskId ? "updated" : "added"} successfully!`,
 			);
-		} catch (error) {
+		} catch {
 			toast.error(`Failed to ${taskId ? "update" : "add"} task!`);
 		}
 	}

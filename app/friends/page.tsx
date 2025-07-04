@@ -169,7 +169,7 @@ function FriendRequestItem({ req }: { req: User }) {
 					description: error.message,
 				});
 			},
-			onSettled(data, error, variables, context) {
+			onSettled(data, error, variables) {
 				if (variables.action === "accept") {
 					queryClient.invalidateQueries({
 						queryKey: orpc.friends.getFriends.queryKey({}),

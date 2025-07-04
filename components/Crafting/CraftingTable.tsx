@@ -11,7 +11,7 @@ import { type CraftingParents, craftingItems } from "@/stores/crafting";
 import { items } from "@/stores/prices";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, useMemo } from "react";
+import { Fragment } from "react";
 
 function NavigationAnchor({
 	children,
@@ -89,7 +89,7 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
 			(type?.greatSuccessChance || 0) / 100 +
 			1) *
 			5) /
-			100;
+		100;
 
 	const sellPrice =
 		Math.floor(itemMarketPrice * 0.95) * item.returns * gsChance;
@@ -247,7 +247,7 @@ function CraftingType({
 }
 
 export default function CraftingTable() {
-	const { store, hasHydrated } = useCraftingStore((store) => store);
+	const { hasHydrated } = useCraftingStore((store) => store);
 
 	if (!hasHydrated) {
 		return null;

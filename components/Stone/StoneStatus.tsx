@@ -94,7 +94,7 @@ export default function StoneStatus({
 						</div>
 						<div className="grid grid-cols-[repeat(10,40px)_65px] items-center justify-center text-center gap-2">
 							<AnimatePresence mode="popLayout">
-								{stoneState?.line1.map((cell, _, line) => (
+								{stoneState?.line1.map((cell) => (
 									<motion.div
 										key={`l1-${cell.pos}-${cell.detectedStatus}`}
 										className={cn(
@@ -128,20 +128,20 @@ export default function StoneStatus({
 										className={cn("text-sm font-medium", {
 											"text-red-400":
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
-													optimalMove.rowDecisionProbabilities[0] &&
+												optimalMove.rowDecisionProbabilities[0] &&
 												optimalMove.rowDecisionProbabilities[0] > 0,
 											"text-gray-400":
 												optimalMove.rowDecisionProbabilities[0] === -1,
 											"text-gray-300":
 												optimalMove.rowDecisionProbabilities[0] !== -1 &&
 												Math.max(...optimalMove.rowDecisionProbabilities) !==
-													optimalMove.rowDecisionProbabilities[0],
+												optimalMove.rowDecisionProbabilities[0],
 										})}
 										animate={{
 											color:
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
 													optimalMove.rowDecisionProbabilities[0] &&
-												optimalMove.rowDecisionProbabilities[0] > 0
+													optimalMove.rowDecisionProbabilities[0] > 0
 													? "rgb(248 113 113)" // red-400
 													: optimalMove.rowDecisionProbabilities[0] === -1
 														? "rgb(156 163 175)" // gray-400
@@ -155,15 +155,15 @@ export default function StoneStatus({
 										{optimalMove.rowDecisionProbabilities[0] === -1
 											? "0%"
 											: `${Number(
-													(
-														optimalMove.rowDecisionProbabilities[0] * 100
-													).toFixed(2),
-												)}%`}
+												(
+													optimalMove.rowDecisionProbabilities[0] * 100
+												).toFixed(2),
+											)}%`}
 									</motion.span>
 								)}
 							</div>
 							<AnimatePresence mode="popLayout">
-								{stoneState?.line2.map((cell, _, line) => (
+								{stoneState?.line2.map((cell) => (
 									<motion.div
 										key={`l2-${cell.pos}-${cell.detectedStatus}`}
 										className={cn(
@@ -197,20 +197,20 @@ export default function StoneStatus({
 										className={cn("text-sm font-medium", {
 											"text-red-400":
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
-													optimalMove.rowDecisionProbabilities[1] &&
+												optimalMove.rowDecisionProbabilities[1] &&
 												optimalMove.rowDecisionProbabilities[1] > 0,
 											"text-gray-400":
 												optimalMove.rowDecisionProbabilities[1] === -1,
 											"text-gray-300":
 												optimalMove.rowDecisionProbabilities[1] !== -1 &&
 												Math.max(...optimalMove.rowDecisionProbabilities) !==
-													optimalMove.rowDecisionProbabilities[1],
+												optimalMove.rowDecisionProbabilities[1],
 										})}
 										animate={{
 											color:
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
 													optimalMove.rowDecisionProbabilities[1] &&
-												optimalMove.rowDecisionProbabilities[1] > 0
+													optimalMove.rowDecisionProbabilities[1] > 0
 													? "rgb(248 113 113)" // red-400
 													: optimalMove.rowDecisionProbabilities[1] === -1
 														? "rgb(156 163 175)" // gray-400
@@ -224,15 +224,15 @@ export default function StoneStatus({
 										{optimalMove.rowDecisionProbabilities[1] === -1
 											? "0%"
 											: `${Number(
-													(
-														optimalMove.rowDecisionProbabilities[1] * 100
-													).toFixed(2),
-												)}%`}
+												(
+													optimalMove.rowDecisionProbabilities[1] * 100
+												).toFixed(2),
+											)}%`}
 									</motion.span>
 								)}
 							</div>
 							<AnimatePresence mode="popLayout">
-								{stoneState?.line3.map((cell, _, line) => (
+								{stoneState?.line3.map((cell) => (
 									<motion.div
 										key={`l3-${cell.pos}-${cell.detectedStatus}`}
 										className={cn(
@@ -266,20 +266,20 @@ export default function StoneStatus({
 										className={cn("text-sm font-medium", {
 											"text-red-400":
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
-													optimalMove.rowDecisionProbabilities[2] &&
+												optimalMove.rowDecisionProbabilities[2] &&
 												optimalMove.rowDecisionProbabilities[2] > 0,
 											"text-gray-400":
 												optimalMove.rowDecisionProbabilities[2] === -1,
 											"text-gray-300":
 												optimalMove.rowDecisionProbabilities[2] !== -1 &&
 												Math.max(...optimalMove.rowDecisionProbabilities) !==
-													optimalMove.rowDecisionProbabilities[2],
+												optimalMove.rowDecisionProbabilities[2],
 										})}
 										animate={{
 											color:
 												Math.max(...optimalMove.rowDecisionProbabilities) ===
 													optimalMove.rowDecisionProbabilities[2] &&
-												optimalMove.rowDecisionProbabilities[2] > 0
+													optimalMove.rowDecisionProbabilities[2] > 0
 													? "rgb(248 113 113)" // red-400
 													: optimalMove.rowDecisionProbabilities[2] === -1
 														? "rgb(156 163 175)" // gray-400
@@ -293,10 +293,10 @@ export default function StoneStatus({
 										{optimalMove.rowDecisionProbabilities[2] === -1
 											? "0%"
 											: `${Number(
-													(
-														optimalMove.rowDecisionProbabilities[2] * 100
-													).toFixed(2),
-												)}%`}
+												(
+													optimalMove.rowDecisionProbabilities[2] * 100
+												).toFixed(2),
+											)}%`}
 									</motion.span>
 								)}
 							</div>
