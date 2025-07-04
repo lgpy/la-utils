@@ -78,11 +78,11 @@ export default function LoaLogUpdateRaidCompletion() {
 				hasError = true;
 			}
 		}
-
 		toast.success("Weekly raids updated successfully", {
 			description: hasError
 				? "Some errors occurred while updating raids. Please check the console for details."
 				: undefined,
+			id: "loa-log-update-raids",
 		});
 		// oxlint-disable-next-line exhaustive-deps
 	}, [hasHydrated]);
