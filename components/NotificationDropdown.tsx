@@ -35,6 +35,8 @@ export default function NotificationDropdown() {
 	const friendRequestQuery = useQuery(
 		orpc.friends.getFriendRequests.queryOptions({
 			enabled: session.data !== null,
+			refetchOnWindowFocus: false,
+			refetchOnMount: false,
 		}),
 	);
 

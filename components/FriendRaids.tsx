@@ -309,7 +309,8 @@ export default function FriendRaids({ isOpen, onOpenChange }: Props) {
 	const friendRaidsQuery = useQuery(
 		orpc.friendRaids.getFriendsRaids.queryOptions({
 			input: availableRaids,
-			enabled: session.data !== null,
+			enabled: session.data !== null && isOpen,
+			staleTime: 5 * 60 * 1000,
 		}),
 	);
 
