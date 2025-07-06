@@ -43,7 +43,7 @@ function classifyColor(
 			(H >= 355 || H <= 7) && S >= 24 && S <= 65 && L >= 24 && L <= 60;
 		//* Red Milestone Constraints: H 10-20 | S 57-82 | L 55-87
 		const isRedMilestone =
-			H >= 10 && H <= 20 && S >= 57 && S <= 82 && L >= 55 && L <= 87;
+			H >= 10 && H <= 20 && S >= 57 && S <= 82 && L >= 50 && L <= 87;
 		const isRedRange = isRedNormal || isRedMilestone;
 
 		if (isRedRange) {
