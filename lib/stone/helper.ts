@@ -55,7 +55,7 @@ function classifyColor(
 			H >= 185 && H <= 203 && S >= 31 && S <= 64 && L >= 35 && L <= 54;
 		//* Blue Milestone Constraints:  H 183-205 | S 75-92 | L 55-70
 		const isBlueMilestone =
-			H >= 183 && H <= 205 && S >= 75 && S <= 92 && L >= 55 && L <= 70;
+			H >= 183 && H <= 205 && S >= 75 && S <= 95 && L >= 52 && L <= 70;
 		const isBlueRange = isBlueNormal || isBlueMilestone;
 
 		if (isBlueRange) {
