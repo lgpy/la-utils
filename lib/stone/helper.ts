@@ -35,35 +35,22 @@ function classifyColor(
 	if (S <= 25 && L < 70) {
 		return "failure";
 	}
-
-	// Apply constraints based on the 'contains' parameter
 	if (contains === "red") {
-		//* Red Normal Constraints: H 355-0-7 | S 24-65 | L 24-60
-		const isRedNormal =
-			(H >= 355 || H <= 7) && S >= 24 && S <= 65 && L >= 24 && L <= 60;
-		//* Red Milestone Constraints: H 10-20 | S 57-82 | L 55-87
-		const isRedMilestone =
-			H >= 10 && H <= 20 && S >= 57 && S <= 82 && L >= 50 && L <= 87;
-		const isRedRange = isRedNormal || isRedMilestone;
+		const isRed = H >= 0 && H <= 4 && S >= 26 && S <= 72 && L >= 21 && L <= 54;
+		const isRedMilestone = H >= 11 && H <= 18 && S >= 60 && S <= 77 && L >= 51 && L <= 82;
 
-		if (isRedRange) {
+		if (isRed || isRedMilestone) {
 			return "success";
 		}
 	} else if (contains === "blue") {
-		//* Blue Normal Constraints: H 185-203 | S 31-64 | L 35-54
-		const isBlueNormal =
-			H >= 185 && H <= 203 && S >= 31 && S <= 64 && L >= 35 && L <= 54;
-		//* Blue Milestone Constraints:  H 183-205 | S 75-92 | L 55-70
-		const isBlueMilestone =
-			H >= 183 && H <= 205 && S >= 75 && S <= 95 && L >= 52 && L <= 70;
-		const isBlueRange = isBlueNormal || isBlueMilestone;
+		const isBlue = H >= 185 && H <= 195 && S >= 41 && S <= 67 && L >= 35 && L <= 48;
+		const isBlueMilestone = H >= 187 && H <= 200 && S >= 72 && S <= 87 && L >= 62 && L <= 74;
 
-		if (isBlueRange) {
+		if (isBlue || isBlueMilestone) {
 			return "success";
 		}
 	}
 
-	// If no specific classification matches or constraints prevent classification
 	return "unknown";
 }
 
@@ -130,7 +117,7 @@ export class StoneHelper {
 			const lineType = getLineType(line);
 
 			// Use the optimized getColorAverage method
-			const [avgR, avgG, avgB] = imgProcessor.getColorAverage(x, y, GRID_SIZE);
+			const [avgR, avgG, avgB] = imgProcessor.getColorAverageDiamond(x, y, 5);
 
 			// Convert to HSL and classify
 			const [h, s, l] = rgbToHsl(avgR, avgG, avgB);

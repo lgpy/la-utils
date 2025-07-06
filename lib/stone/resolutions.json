@@ -20,27 +20,6 @@
 		},
 		"spacing": 38
 	},
-	"1870x1078": {
-		"line1": {
-			"baseX": 727,
-			"y": 400
-		},
-		"line2": {
-			"baseX": 726,
-			"y": 490
-		},
-		"line3": {
-			"baseX": 727,
-			"y": 615
-		},
-		"successRateRegion": {
-			"x": 1155,
-			"y": 331,
-			"width": 39,
-			"height": 19
-		},
-		"spacing": 37
-	},
 	"2560x1440": {
 		"line1": {
 			"baseX": 994,
@@ -61,26 +40,5 @@
 			"height": 27
 		},
 		"spacing": 51
-	},
-	"2510x1438": {
-		"line1": {
-			"baseX": 975,
-			"y": 528
-		},
-		"line2": {
-			"baseX": 974,
-			"y": 649
-		},
-		"line3": {
-			"baseX": 974,
-			"y": 816
-		},
-		"successRateRegion": {
-			"x": 1553,
-			"y": 439,
-			"width": 52,
-			"height": 22
-		},
-		"spacing": 50
 	}
 }

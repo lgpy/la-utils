@@ -168,6 +168,61 @@ export class ImageProcessor {
 
 		return [avgR, avgG, avgB];
 	}
+
+	getColorAverageDiamond(
+		x: number,
+		y: number,
+		radius: number,
+	): [number, number, number] {
+		// If there's a crop region, adjust coordinates
+		const [adjustedX, adjustedY] = this._translateCoords(x, y);
+
+		// Cache canvas dimensions to avoid repeated method calls
+		const canvasWidth = this.ctx.canvas.width;
+		const canvasHeight = this.ctx.canvas.height;
+
+		// Calculate the bounds of the diamond
+		const startX = Math.max(0, adjustedX - radius);
+		const startY = Math.max(0, adjustedY - radius);
+		const endX = Math.min(canvasWidth, adjustedX + radius + 1);
+		const endY = Math.min(canvasHeight, adjustedY + radius + 1);
+
+		const width = endX - startX;
+		const height = endY - startY;
+
+		// Get image data for the entire bounding rectangle
+		const imageData = this.ctx.getImageData(startX, startY, width, height);
+		const data = imageData.data;
+
+		let totalR = 0;
+		let totalG = 0;
+		let totalB = 0;
+		let pixelCount = 0;
+
+		// Iterate through each pixel in the bounding rectangle
+		for (let py = startY; py < endY; py++) {
+			for (let px = startX; px < endX; px++) {
+				// Calculate Manhattan distance from center
+				const manhattanDistance = Math.abs(px - adjustedX) + Math.abs(py - adjustedY);
+
+				// Only include pixels within the diamond (Manhattan distance <= radius)
+				if (manhattanDistance <= radius) {
+					const dataIndex = ((py - startY) * width + (px - startX)) * 4;
+					totalR += data[dataIndex]; // Red
+					totalG += data[dataIndex + 1]; // Green
+					totalB += data[dataIndex + 2]; // Blue
+					pixelCount++;
+				}
+			}
+		}
+
+		// Calculate averages
+		const avgR = pixelCount > 0 ? Math.round(totalR / pixelCount) : 0;
+		const avgG = pixelCount > 0 ? Math.round(totalG / pixelCount) : 0;
+		const avgB = pixelCount > 0 ? Math.round(totalB / pixelCount) : 0;
+
+		return [avgR, avgG, avgB];
+	}
 }
 
 export function parseSuccessRate(ocrString: string): number | null {
