@@ -44,7 +44,7 @@ function classifyColor(
 		}
 	} else if (contains === "blue") {
 		const isBlue = H >= 185 && H <= 195 && S >= 41 && S <= 67 && L >= 35 && L <= 48;
-		const isBlueMilestone = H >= 187 && H <= 200 && S >= 72 && S <= 87 && L >= 62 && L <= 74;
+		const isBlueMilestone = H >= 187 && H <= 200 && S >= 72 && S <= 91 && L >= 62 && L <= 74;
 
 		if (isBlue || isBlueMilestone) {
 			return "success";
