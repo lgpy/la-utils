@@ -103,7 +103,7 @@ function translateToUsableData(
 ) {
 	return Object.fromEntries(
 		Object.entries(data.raids)
-			.sort(([a], [b]) => sortRaidKeys(a, b))
+			.sort(([a], [b]) => sortRaidKeys(b, a)) // Sort raids by keys in reverse order
 			.map(([raidId, diffs]) => {
 				return [
 					raidId,
@@ -279,7 +279,7 @@ function RaidCardGroup({
 								key={raidId + difficulty}
 								className="bg-input/30 border-0 rounded-base"
 							>
-								<AccordionTrigger className="items-center flex text-md py-2 px-4 data-[state=open]:rounded-b-none hover:no-underline bg-input/60 cursor-pointer hover:bg-input">
+								<AccordionTrigger className="items-center flex text-md py-2 px-4 data-[state=open]:rounded-b-none hover:no-underline bg-input/60 cursor-pointer hover:text-text/80 hover:bg-input/50">
 									<span className="min-w-[60px]">{difficulty}</span>
 									<div className="*:data-[slot=avatar]:ring-base flex -space-x-2 *:data-[slot=avatar]:ring-2">
 										{users.map((user) => {
