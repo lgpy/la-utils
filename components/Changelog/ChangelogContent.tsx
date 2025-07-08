@@ -161,24 +161,33 @@ export default function ChangelogContent() {
 		}
 	}, [entries.length, hasScrolledToHash]); // Only run when entries are loaded and haven't scrolled yet
 
+
+	const sortedEntries = [...entries].sort((a, b) => {
+		return new Date(b.date).getTime() - new Date(a.date).getTime();
+	});
+
 	// Mark as viewed when user leaves the page
 	useEffect(() => {
+		if (sortedEntries.length === 0) return;
+
 		const handleBeforeUnload = () => {
-			setLastViewedDate(new Date().toISOString());
+			if (sortedEntries.length > 0) {
+				const mostRecentEntry = sortedEntries[0];
+				setLastViewedDate(mostRecentEntry.date);
+			}
 		};
 
 		window.addEventListener("beforeunload", handleBeforeUnload);
 
 		return () => {
 			window.removeEventListener("beforeunload", handleBeforeUnload);
-			// Mark as viewed when component unmounts
-			setLastViewedDate(new Date().toISOString());
+			if (sortedEntries.length > 0) {
+				const mostRecentEntry = sortedEntries[0];
+				setLastViewedDate(mostRecentEntry.date);
+			}
 		};
-	}, [setLastViewedDate]);
+	}, [setLastViewedDate, sortedEntries]);
 
-	const sortedEntries = [...entries].sort((a, b) => {
-		return new Date(b.date).getTime() - new Date(a.date).getTime();
-	});
 
 	const handleLoadMore = () => {
 		loadNextPage();

@@ -5,7 +5,7 @@ import { changelogEntries, zodChangelogEntry } from "../../../lib/changelog-entr
 // Helper function to parse d/m/y format to Date object
 function parseChangelogDate(dateString: string): Date {
   const [day, month, year] = dateString.split('/').map(Number);
-  return new Date(year, month - 1, day); // month is 0-indexed in Date constructor
+  return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
 }
 
 export async function GET(request: NextRequest) {
