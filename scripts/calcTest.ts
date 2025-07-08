@@ -1,4 +1,4 @@
-import { StoneGameOptimizer, StoneState } from "@/lib/stone";
+import { StoneState, StoneGameOptimizer } from "@/lib/stone/";
 import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
 import { cpus } from 'os';
 
@@ -69,13 +69,11 @@ class StoneGame {
   }
 }
 
-const Iterations = 1000000;
+const Iterations = 10000000;
 const Goals =
   [
     { r1MinSuccess: 9, r2MinSuccess: 7 },
-    { r1MinSuccess: 7, r2MinSuccess: 9 },
     { r1MinSuccess: 10, r2MinSuccess: 6 },
-    { r1MinSuccess: 6, r2MinSuccess: 10 },
   ];
 
 interface WorkerResult {
@@ -84,33 +82,25 @@ interface WorkerResult {
 }
 
 function runSimulation(iterations: number): WorkerResult {
-  const optimizer = new StoneGameOptimizer(Goals);
+  const optimizer = new StoneGameOptimizer(Goals, 10);
   let successCount = 0;
 
   for (let i = 0; i < iterations; i++) {
     const game = new StoneGame();
-    while (game.r1.includes('pending') || game.r2.includes('pending') || game.r3.includes('pending')) {
+    while (true) {
       const move = optimizer.getOptimalMove(new StoneState({
         line1: game.r1.map((status, idx) => ({ detectedStatus: status, pos: idx })),
         line2: game.r2.map((status, idx) => ({ detectedStatus: status, pos: idx })),
         line3: game.r3.map((status, idx) => ({ detectedStatus: status, pos: idx })),
         percentage: game.percentage,
       }));
-      if (!move.rowDecisionProbabilities) {
-        console.error("No valid move found, exiting game loop.");
+      const lineToFacet = optimizer.getBestRow(move.rowDecisionProbabilities);
+      if (lineToFacet === null)
         break;
+      game.facet(lineToFacet);
+      if (game.isSuccess) {
+        successCount++;
       }
-      const lineToFacet = move.rowDecisionProbabilities.indexOf(Math.max(...move.rowDecisionProbabilities)) + 1;
-      try {
-        game.facet(lineToFacet);
-      }
-      catch (error) {
-        console.error(`Error faceting line ${lineToFacet}:`, error);
-        break;
-      }
-    }
-    if (game.isSuccess) {
-      successCount++;
     }
   }
 
@@ -138,6 +128,7 @@ if (!isMainThread) {
     const workers: Worker[] = [];
     const workerPromises: Promise<WorkerResult>[] = [];
 
+    console.time('Total execution time');
     // Create workers
     for (let i = 0; i < numThreads; i++) {
       const worker = new Worker(__filename, {
@@ -168,6 +159,7 @@ if (!isMainThread) {
       const totalSuccessCount = results.reduce((sum, result) => sum + result.successCount, 0) + mainThreadResult.successCount;
       const totalIterations = results.reduce((sum, result) => sum + result.iterations, 0) + mainThreadResult.iterations;
 
+      console.timeEnd('Total execution time');
       console.log(`Total games succeeded: ${totalSuccessCount} out of ${totalIterations}`);
       console.log(`Success rate: ${(totalSuccessCount / totalIterations) * 100}%`);
     } catch (error) {
