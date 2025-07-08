@@ -18,12 +18,12 @@ export default function WarningTooltipIcon(props: Props) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<TriangleAlertIcon
-						className={cn("text-yellow", className)}
+						className={cn("text-ctp-yellow", className)}
 						{...rest}
 					/>
 				</TooltipTrigger>
 				<TooltipContent>
-					<p className="text-yellow font-semibold">{tooltip}</p>
+					<p className="text-ctp-yellow font-semibold">{tooltip}</p>
 				</TooltipContent>
 			</Tooltip>
 		</TooltipProvider>

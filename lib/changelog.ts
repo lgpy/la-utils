@@ -71,14 +71,14 @@ export async function fetchChangelogEntries(options?: {
 export function getDetailCategoryColor(category: "added" | "fixed" | "removed" | "improved" | "changed"): string {
   switch (category) {
     case "added":
-      return "bg-green text-background";
+      return "bg-ctp-green text-background";
     case "fixed":
-      return "bg-blue text-background";
+      return "bg-ctp-blue text-background";
     case "removed":
-      return "bg-red text-background";
+      return "bg-ctp-red text-background";
     case "improved":
-      return "bg-mauve text-background";
+      return "bg-ctp-mauve text-background";
     case "changed":
-      return "bg-peach text-background";
+      return "bg-ctp-peach text-background";
   }
 }

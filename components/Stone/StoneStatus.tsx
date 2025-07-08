@@ -89,7 +89,7 @@ export default function StoneStatus({
 							</div>
 							<div>
 								Success rate{" "}
-								<span className="text-yellow">{stoneState?.percentage}%</span>
+								<span className="text-ctp-yellow">{stoneState?.percentage}%</span>
 							</div>
 						</div>
 						<div className="grid grid-cols-[repeat(10,40px)_65px] items-center justify-center text-center gap-2">

@@ -35,16 +35,16 @@ function NavigationAnchor({
 
 const getRarityClasses = (rarity?: string) => ({
 	header: cn("bg-linear-to-b from-card to-card", {
-		"from-mauve/30 dark:from-mauve/15": rarity === "epic",
-		"from-blue/30 dark:from-blue/15": rarity === "rare",
-		"from-green/30 dark:from-green/15": rarity === "uncommon",
-		"from-overlay1/40 dark:from-overlay1/20": rarity === "common",
+		"from-ctp-mauve/30 dark:from-ctp-mauve/15": rarity === "epic",
+		"from-ctp-blue/30 dark:from-ctp-blue/15": rarity === "rare",
+		"from-ctp-green/30 dark:from-ctp-green/15": rarity === "uncommon",
+		"from-ctp-overlay1/40 dark:from-ctp-overlay1/20": rarity === "common",
 	}),
 	text: cn("", {
-		"text-mauve": rarity === "epic",
-		"text-blue": rarity === "rare",
-		"text-green": rarity === "uncommon",
-		"text-overlay1": rarity === "common",
+		"text-ctp-mauve": rarity === "epic",
+		"text-ctp-blue": rarity === "rare",
+		"text-ctp-green": rarity === "uncommon",
+		"text-ctp-overlay1": rarity === "common",
 	}),
 });
 
@@ -192,7 +192,7 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
 						<p
 							className={cn("font-semibold self-center", {
 								"text-destructive": recipe.marketdiff > 0,
-								"text-green": recipe.marketdiff < 0,
+								"text-ctp-green": recipe.marketdiff < 0,
 							})}
 						>
 							{recipe.marketdiff > 0 && "+"}

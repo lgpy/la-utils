@@ -75,7 +75,7 @@ export default function TodoCardRaidV2({
 			{goldEarner && (
 				<HandCoins
 					className={cn(
-						"transition-opacity size-4 stroke-yellow absolute right-0.5 bottom-0.5 opacity-80",
+						"transition-opacity size-4 stroke-ctp-yellow absolute right-0.5 bottom-0.5 opacity-80",
 						{
 							"opacity-40": completedRaids === Object.keys(raid).length,
 							"right-px bottom-px": isCompactCardEnabled,

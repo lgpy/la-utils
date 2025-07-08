@@ -159,7 +159,7 @@ export default function TodoCard({ char }: Props) {
 					<h2 className="font-bold">{char.name}</h2>
 					<div
 						className={cn(
-							"flex items-center gap-1 text-sm font-semibold text-yellow",
+							"flex items-center gap-1 text-sm font-semibold text-ctp-yellow",
 						)}
 					>
 						<SwordsIcon className="size-5" />

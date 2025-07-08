@@ -100,7 +100,7 @@ export default function EditCardTaskDialog({
 
 			close();
 			toast.success(
-				`Raid has been ${taskId ? "updated" : "added"} successfully!`,
+				`Task has been ${taskId ? "updated" : "added"} successfully!`,
 			);
 		} catch {
 			toast.error(`Failed to ${taskId ? "update" : "add"} task!`);

@@ -96,7 +96,7 @@ export default function RosterGold() {
 
 		<Popover>
 			<PopoverTrigger asChild>
-				<div className="grid grid-cols-[auto_auto] gap-x-2 fixed left-4 bottom-4 text-yellow/60 select-none cursor-pointer">
+				<div className="grid grid-cols-[auto_auto] gap-x-2 fixed left-4 bottom-4 text-ctp-yellow/60 select-none cursor-pointer">
 					<div className="col-span-2 flex items-center gap-2">
 						<h2 className="text-xl font-bold">Roster Gold</h2>
 						<Info className="size-4" />
@@ -138,7 +138,7 @@ export default function RosterGold() {
 									<TableHead className="w-1/4 text-center">Both</TableHead>
 								</TableRow>
 							</TableHeader>
-							<TableBody className="text-center text-yellow">
+							<TableBody className="text-center text-ctp-yellow">
 								<TableRow>
 									<TableCell className="text-muted-foreground text-left">Earned</TableCell>
 									<TableCell>{formatGold(rosterGold.thisWeek.earnedGold.bound)}</TableCell>
@@ -173,7 +173,7 @@ export default function RosterGold() {
 											<TableHead className="w-1/4 text-center">Both</TableHead>
 										</TableRow>
 									</TableHeader>
-									<TableBody className="text-center text-yellow">
+									<TableBody className="text-center text-ctp-yellow">
 										<TableRow>
 											<TableCell className="text-muted-foreground text-left">Earnable</TableCell>
 											<TableCell>{formatGold(rosterGold.nextWeek.earnableGold.bound)}</TableCell>

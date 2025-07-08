@@ -74,11 +74,11 @@ export default function CellOverviewCard({
 													<span
 														className={cn(
 															"font-medium",
-															cell.detectedStatus === "success" && "text-green",
-															cell.detectedStatus === "failure" && "text-red",
+															cell.detectedStatus === "success" && "text-ctp-green",
+															cell.detectedStatus === "failure" && "text-ctp-red",
 															cell.detectedStatus === "pending" &&
-																"text-yellow",
-															cell.detectedStatus === "unknown" && "text-gray",
+															"text-ctp-yellow",
+															cell.detectedStatus === "unknown" && "text-gray-500",
 														)}
 													>
 														{cell.detectedStatus?.toUpperCase() || "N/A"}

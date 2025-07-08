@@ -46,10 +46,10 @@ export const getColorClasses = (
 ) => {
 	return {
 		background: cn("", {
-			"bg-red": status === "success" && !isBlueLine,
-			"bg-blue": status === "success" && isBlueLine,
-			"bg-surface2": status === "failure",
-			"bg-peach": status === "unknown",
+			"bg-ctp-red": status === "success" && !isBlueLine,
+			"bg-ctp-blue": status === "success" && isBlueLine,
+			"bg-ctp-surface2": status === "failure",
+			"bg-ctp-peach": status === "unknown",
 		}),
 	};
 };

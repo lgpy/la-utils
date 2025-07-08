@@ -2,9 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { authClient } from "@/lib/auth";
 import { toast } from "sonner";
@@ -37,33 +35,21 @@ export default function FriendsPage() {
 		requestsQuery.isLoading || friendQuery.isLoading || session.isPending;
 
 	return (
-		<main className="max-w-lg mx-auto py-8 px-4">
-			<Card>
-				<CardHeader>
-					<CardTitle>Friends</CardTitle>
-				</CardHeader>
-				<div className="px-6 pb-6 flex flex-col gap-6">
-					<AddFriendForm disabled={session.isPending || !userId} userId={userId} />
-					<Separator className="my-4" />
-					<div>
-						<div className="font-semibold mb-2">Current Friends</div>
-						{friendQuery.isLoading ? (
-							<div>Loading...</div>
-						) : friendQuery.isError ? (
-							<div className="text-destructive">
-								Failed to load friends. Please try again later.
-							</div>
-						) : friendQuery.isSuccess && friendQuery.data.length === 0 ? (
-							<div className="text-muted-foreground">No friends yet.</div>
-						) : (
-							friendQuery.data?.map((friend) => (
-								<FriendItem key={friend.id} friend={friend} />
-							))
-						)}
-					</div>
-					<Separator className="my-4" />
-					<div>
-						<div className="font-semibold mb-2">Friend Requests</div>
+		<main className="py-8 px-4 flex flex-col lg:flex-row gap-6 justify-center">
+			<div className="flex flex-col gap-6 w-full max-w-md">
+				<Card>
+					<CardHeader>
+						<CardTitle>Add Friend</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<AddFriendForm disabled={session.isPending || !userId} userId={userId} />
+					</CardContent>
+				</Card>
+				<Card>
+					<CardHeader>
+						<CardTitle>Friend Requests</CardTitle>
+					</CardHeader>
+					<CardContent className="flex flex-col gap-1">
 						{isLoading ? (
 							<div>Loading...</div>
 						) : requestsQuery.isError ? (
@@ -77,10 +63,13 @@ export default function FriendsPage() {
 								<FriendRequestItem key={req.id} req={req} />
 							))
 						)}
-					</div>
-					<Separator className="my-4" />
-					<div>
-						<div className="font-semibold mb-2">Sent Friend Requests</div>
+					</CardContent>
+				</Card>
+				<Card>
+					<CardHeader>
+						<CardTitle>Sent Friend Requests</CardTitle>
+					</CardHeader>
+					<CardContent className="flex flex-col gap-1">
 						{isLoading ? (
 							<div>Loading...</div>
 						) : requestsQuery.isError ? (
@@ -94,9 +83,31 @@ export default function FriendsPage() {
 								<SentFriendRequestItem key={req.id} req={req} />
 							))
 						)}
-					</div>
-				</div>
-			</Card>
+					</CardContent>
+				</Card>
+			</div>
+			<div className="flex flex-col gap-6 w-full max-w-md lg:max-w-2xl">
+				<Card>
+					<CardHeader>
+						<CardTitle>Friends</CardTitle>
+					</CardHeader>
+					<CardContent className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+						{friendQuery.isLoading ? (
+							<div>Loading...</div>
+						) : friendQuery.isError ? (
+							<div className="text-destructive">
+								Failed to load friends. Please try again later.
+							</div>
+						) : friendQuery.isSuccess && friendQuery.data.length === 0 ? (
+							<div className="text-muted-foreground">No friends yet.</div>
+						) : (
+							friendQuery.data?.map((friend) => (
+								<FriendItem key={friend.id} friend={friend} />
+							))
+						)}
+					</CardContent>
+				</Card>
+			</div>
 		</main>
 	);
 }
@@ -112,6 +123,7 @@ function AddFriendForm({
 		orpc.friends.sendFriendRequest.mutationOptions({
 			onSuccess: () => {
 				toast.success("Friend request sent successfully");
+				setUserIdToFriend("");
 			},
 			onError: (error) => {
 				toast.error("Failed to send friend request", {
@@ -128,7 +140,6 @@ function AddFriendForm({
 
 	return (
 		<div className="gap-2 flex flex-col">
-			<Label htmlFor="friend-id">Add Friend by User ID</Label>
 			<Input
 				type="text"
 				value={userIdToFriend}
@@ -142,17 +153,17 @@ function AddFriendForm({
 					Copy my User ID
 				</CopyButton>
 				<Button
-					onClick={() =>
+					onClick={() => {
 						sendFriendRequestMutation.mutate({
 							userId: userIdToFriend,
 						})
-					}
+					}}
 					disabled={disabled || sendFriendRequestMutation.isPending}
 				>
 					Send Friend Request
 				</Button>
 			</div>
-		</div>
+		</div >
 	);
 }
 
@@ -221,10 +232,35 @@ function FriendRequestItem({ req }: { req: User }) {
 function SentFriendRequestItem({ req }: { req: User }) {
 	const queryClient = useQueryClient();
 
+	const sendFriendRequestMutation = useMutation(
+		orpc.friends.sendFriendRequest.mutationOptions({
+			onSuccess: () => { },
+			onError: (error) => {
+				toast.error("Failed to send friend request", {
+					description: error.message,
+				});
+			},
+			onSettled: () => {
+				queryClient.invalidateQueries({
+					queryKey: orpc.friends.getFriendRequests.queryKey({}),
+				});
+			},
+		}),
+	);
+
 	const revokeMutation = useMutation(
 		orpc.friends.revokeRequest.mutationOptions({
 			onSuccess: () => {
-				toast.success("Friend request revoked successfully");
+				toast.success("Friend request revoked successfully", {
+					action: {
+						label: "Undo",
+						onClick: () => {
+							sendFriendRequestMutation.mutate({
+								userId: req.id,
+							});
+						},
+					}
+				});
 			},
 			onError: (error) => {
 				toast.error("Failed to revoke friend request", {
@@ -301,7 +337,7 @@ function FriendItem({ friend }: { friend: User }) {
 				}}
 				disabled={deleteMutation.isPending}
 			>
-				Delete
+				Remove
 			</Button>
 		</UserCard>
 	);

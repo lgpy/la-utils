@@ -19,7 +19,7 @@ const PiggyBankProgressBar = forwardRef<HTMLDivElement, Props>(
 
 		const clipPathId = useRef(
 			Math.random().toString(36).substring(2, 15) +
-				Math.random().toString(36).substring(2, 15),
+			Math.random().toString(36).substring(2, 15),
 		);
 
 		return (
@@ -27,7 +27,7 @@ const PiggyBankProgressBar = forwardRef<HTMLDivElement, Props>(
 				<div className="relative aspect-square">
 					<svg
 						viewBox="0 0 24 24"
-						className="w-full h-full stroke-yellow stroke-[1.5px] fill-none"
+						className="w-full h-full stroke-ctp-yellow stroke-[1.5px] fill-none"
 						style={{
 							filter: "drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.1))",
 						}}
@@ -48,7 +48,7 @@ const PiggyBankProgressBar = forwardRef<HTMLDivElement, Props>(
 						{/* Fill */}
 						<path
 							d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"
-							className="fill-yellow/60"
+							className="fill-ctp-yellow/60"
 							clipPath={`url(#${clipPathId.current})`}
 						/>
 						<clipPath id={clipPathId.current}>

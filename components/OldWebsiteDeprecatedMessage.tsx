@@ -70,7 +70,7 @@ export default function OldWebsiteDeprecatedMessage() {
 				<AlertDialogHeader>
 					<AlertDialogTitle>Notice</AlertDialogTitle>
 					<AlertDialogDescription className="flex flex-col gap-2">
-						<span className="text-red font-semibold">
+						<span className="text-ctp-red font-semibold">
 							This website (<b>la-utilsv2.vercel.app</b>) will be <b>permanently shut down on July 2nd</b>.
 						</span>
 						<span>

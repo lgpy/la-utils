@@ -104,12 +104,12 @@ export default function ServerStatusWidget() {
 			case ServerStatus.OFFLINE:
 				return <Power className="size-4 stroke-destructive" />;
 			case ServerStatus.ONLINE:
-				return <Power className="size-4 stroke-green" />;
+				return <Power className="size-4 stroke-ctp-green" />;
 			case ServerStatus.BUSY:
 			case ServerStatus.FULL:
-				return <Power className="size-4 stroke-peach" />;
+				return <Power className="size-4 stroke-ctp-peach" />;
 			case ServerStatus.MAINTENANCE:
-				return <Construction className="size-4 stroke-blue" />;
+				return <Construction className="size-4 stroke-ctp-blue" />;
 			default:
 				return <Power className="size-4 stroke-muted-foreground" />;
 		}
