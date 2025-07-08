@@ -213,7 +213,7 @@ function RaidGateAvatars({
 		return (
 			<div
 				key={`${raidId}-${difficulty}-${user.id}`}
-				className="flex justify-between items-center p-2 gap-4 w-full bg-secondary/20 border-secondary/30 border-1 rounded-md"
+				className="flex justify-between items-center p-2 gap-4 w-full bg-secondary dark:bg-secondary/20 border-border border-1 rounded-md"
 			>
 				<div className="flex items-center gap-2">
 					<Avatar className="shrink-0 size-10">
@@ -277,9 +277,9 @@ function RaidCardGroup({
 							<AccordionItem
 								value={raidId + difficulty}
 								key={raidId + difficulty}
-								className="bg-input/30 border-0 rounded-base"
+								className="bg-input/40 dark:bg-input/30 border-0 rounded-base"
 							>
-								<AccordionTrigger className="items-center flex text-md py-2 px-4 data-[state=open]:rounded-b-none hover:no-underline bg-input/60 cursor-pointer hover:text-text/80 hover:bg-input/50">
+								<AccordionTrigger className="items-center flex text-md py-2 px-4 data-[state=open]:rounded-b-none hover:no-underline bg-input/70 dark:bg-input/60 cursor-pointer hover:text-text/80 hover:bg-input/50">
 									<span className="min-w-[60px]">{difficulty}</span>
 									<div className="*:data-[slot=avatar]:ring-base flex -space-x-2 *:data-[slot=avatar]:ring-2">
 										{users.map((user) => {

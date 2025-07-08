@@ -36,6 +36,8 @@ import { authClient } from "@/lib/auth";
 import RaidUploadManagerDialog from "./RaidUploadManagerDialog";
 import { useState } from "react";
 import { showAlert } from "./AlertDialog.hooks";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { cn } from "@/lib/utils";
 
 export default function SettingsButton() {
 	const { setTheme, theme } = useTheme();
@@ -59,31 +61,42 @@ export default function SettingsButton() {
 		}
 	})();
 
-	const isLoading = session.isPending || !settingsStore.hasHydrated;
-
 	return (
 		<>
 			<DropdownMenu>
-				<DropdownMenuTrigger asChild disabled={isLoading}>
-					<Button variant="outline">
-						{isLoading ? (
+				<DropdownMenuTrigger asChild>
+					<button disabled={!settingsStore.hasHydrated} className={
+						cn("flex flex-row gap-2 items-center hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 rounded-base outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]", {
+							"pr-2": session.data,
+							"px-2": !session.data,
+						})
+					}>
+						{session.isPending ? (
 							<>
 								<LoaderCircleIcon className="animate-spin" />
 							</>
 						) : session.data ? (
 							<>
-								<span>{session.data.user.name}</span>
-								<SettingsIcon />
+								<Avatar className="size-9 rounded-lg">
+									<AvatarImage src={session.data.user.image ?? undefined} alt={session.data.user.name} />
+									<AvatarFallback className="rounded-lg">CN</AvatarFallback>
+								</Avatar>
+								<div className="grid flex-1 text-left text-sm leading-tight">
+									<span className="truncate font-medium">{session.data.user.name}</span>
+								</div>
+								<SettingsIcon className="size-4" />
 							</>
 						) : (
 							<>
-								<span>Guest</span>
-								<SettingsIcon />
+								<div className="grid flex-1 text-left text-sm leading-tight">
+									<span className="truncate font-medium">Guest</span>
+								</div>
+								<SettingsIcon className="size-4" />
 							</>
 						)}
-					</Button>
+					</button>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent className="w-56 hover:">
+				<DropdownMenuContent className="w-56 hover:" side="bottom" align="end">
 					<DropdownMenuLabel>Local Settings</DropdownMenuLabel>
 					<DropdownMenuItem onClick={() => router.push("/backup")}>
 						<Import />
