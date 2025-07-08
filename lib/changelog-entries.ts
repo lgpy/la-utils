@@ -323,4 +323,22 @@ export const changelogEntries: ChangelogEntry[] = [
       ["improved", "User interface"],
     ],
   },
+  {
+    id: "8-7-2025-ocr-removal-improvements",
+    date: "8/7/2025",
+    title: "OCR Removal & System Improvements",
+    description: "Removed OCR functionality, fixed material exchanges, added roster gold breakdown popover, and various improvements to stone cutter and friend raids systems.",
+    details: [
+      ["added", "Roster gold breakdown popover on click"],
+      ["added", "Experiment to auto update raids on window focus (5 minute cooldown)"],
+      ["added", "Manage shared raids in settings to choose which raids are shared with friends"],
+      ["fixed", "Material exchanges in prices page"],
+      ["removed", "OCR functionality from prices page (hopefully superseded by API soon)"],
+      ["removed", "Server status widget due to being unnecessary and API route spam"],
+      ["improved", "Stone cutter tool accuracy, removed windowed support (working on 1080 and 1440 fullscreen/borderless)"],
+      ["improved", "Friend raids UI and added toggle to filter friend raids by your own available raids"],
+      ["improved", "Memory management when updating raids with LOA Logs database in quick succession"],
+      ["improved", "Settings layout"],
+    ],
+  },
 ];
