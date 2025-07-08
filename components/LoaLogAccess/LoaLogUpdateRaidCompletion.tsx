@@ -101,7 +101,7 @@ export default function LoaLogUpdateRaidCompletion() {
 	}, [loa_logs_db]);
 
 	useEffect(() => {
-		if (!settingsStore.hasHydrated || !settingsStore.experiments.autoUpdateRaids) {
+		if (!settingsStore.hasHydrated || !settingsStore.experiments.autoUpdateRaids || !loa_logs_db.isReady) {
 			return;
 		}
 
@@ -116,10 +116,15 @@ export default function LoaLogUpdateRaidCompletion() {
 
 		window.addEventListener("focus", updateRaidsOnFocus);
 
+		if (lastUpdatedTime.current === 0) {
+			lastUpdatedTime.current = Date.now();
+			updateRaids();
+		}
+
 		return () => {
 			window.removeEventListener("focus", updateRaidsOnFocus);
 		};
-	}, [settingsStore.hasHydrated, settingsStore.experiments.autoUpdateRaids, updateRaids]);
+	}, [settingsStore.hasHydrated, settingsStore.experiments.autoUpdateRaids, updateRaids, loa_logs_db.isReady]);
 
 	return (
 		<FabButtonWrapper>
