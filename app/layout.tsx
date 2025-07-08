@@ -11,6 +11,8 @@ import { UserInfoUpdater } from "@/components/UserInfoUpdater";
 import "@/lib/orpc.server";
 import { OrpcProvider } from "@/providers/OrpcProvider";
 import { GlobalAlertDialog } from "@/components/AlertDialog";
+import { auth } from "@/lib/auth.server";
+import { headers } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +26,15 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+
+	try {
+		await auth?.api.getSession({
+			headers: await headers(),
+		});
+	} catch (error) {
+		console.error(error);
+	}
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body

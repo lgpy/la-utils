@@ -10,15 +10,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAlertManager, type QueuedAlert } from "./AlertDialog.hooks"
 
 export function GlobalAlertDialog() {
   const [currentAlert, setCurrentAlert] = useState<QueuedAlert | null>(null);
   const { resolveCurrentAlert, subscribe } = useAlertManager();
+  const alertConfig = useRef<QueuedAlert["config"]>({
+    title: "Alert",
+  });
 
   useEffect(() => {
     const unsubscribe = subscribe((alert) => {
+      alertConfig.current = alert.config;
       setCurrentAlert(alert);
     });
 
@@ -28,33 +32,31 @@ export function GlobalAlertDialog() {
   const handleDecision = (decision: boolean) => {
     if (currentAlert) {
       resolveCurrentAlert(decision);
-      // The alert will be cleared by the subscription update
+      setCurrentAlert(null);
     }
   };
 
-  if (!currentAlert) {
-    return null;
-  }
-
-  const { config } = currentAlert;
-
   return (
-    <AlertDialog open={true}>
+    <AlertDialog open={currentAlert !== null} onOpenChange={(open) => {
+      if (!open) {
+        handleDecision(false);
+      }
+    }}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{config.title}</AlertDialogTitle>
-          {config.description && (
+          <AlertDialogTitle>{alertConfig.current.title}</AlertDialogTitle>
+          {alertConfig.current.description !== undefined && (
             <AlertDialogDescription>
-              {config.description}
+              {alertConfig.current.description}
             </AlertDialogDescription>
           )}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={() => handleDecision(false)}>
-            {config.cancelButton?.text ?? "Cancel"}
+            {alertConfig.current.cancelButton?.text ?? "Cancel"}
           </AlertDialogCancel>
           <AlertDialogAction onClick={() => handleDecision(true)}>
-            {config.confirmButton?.text ?? "Continue"}
+            {alertConfig.current.confirmButton?.text ?? "Continue"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

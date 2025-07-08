@@ -4,13 +4,13 @@ import {
 	FlaskConical,
 	Import,
 	ListTodoIcon,
+	LoaderCircleIcon,
 	LogIn,
 	LogOut,
 	Moon,
 	SettingsIcon,
 	Sun,
 	SunMoon,
-	User,
 	Users,
 } from "lucide-react";
 
@@ -35,13 +35,14 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth";
 import RaidUploadManagerDialog from "./RaidUploadManagerDialog";
 import { useState } from "react";
+import { showAlert } from "./AlertDialog.hooks";
 
 export default function SettingsButton() {
 	const { setTheme, theme } = useTheme();
 	const settingsStore = useSettingsStore();
 	const router = useRouter();
 
-	const { data: session, isPending, error, refetch } = authClient.useSession();
+	const session = authClient.useSession();
 
 	const [isRaidUploadManagerOpen, setRaidUploadManagerOpen] = useState(false);
 
@@ -58,70 +59,32 @@ export default function SettingsButton() {
 		}
 	})();
 
+	const isLoading = session.isPending || !settingsStore.hasHydrated;
+
 	return (
 		<>
 			<DropdownMenu>
-				<DropdownMenuTrigger asChild disabled={!settingsStore.hasHydrated}>
-					<Button variant="outline" size="icon">
-						<SettingsIcon />
+				<DropdownMenuTrigger asChild disabled={isLoading}>
+					<Button variant="outline">
+						{isLoading ? (
+							<>
+								<LoaderCircleIcon className="animate-spin" />
+							</>
+						) : session.data ? (
+							<>
+								<span>{session.data.user.name}</span>
+								<SettingsIcon />
+							</>
+						) : (
+							<>
+								<span>Guest</span>
+								<SettingsIcon />
+							</>
+						)}
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent className="w-56 hover:">
-					<DropdownMenuLabel>Settings</DropdownMenuLabel>
-					<DropdownMenuSeparator />
-
-					{session ? (
-						<DropdownMenuGroup>
-							<DropdownMenuSub>
-								<DropdownMenuSubTrigger>
-									<User />
-									<span>Logged in as {session.user?.name}</span>
-								</DropdownMenuSubTrigger>
-								<DropdownMenuPortal>
-									<DropdownMenuSubContent>
-										<DropdownMenuItem onClick={() => router.push("/friends")}>
-											<Users />
-											<span>Friends</span>
-										</DropdownMenuItem>
-										<DropdownMenuItem onClick={() => setRaidUploadManagerOpen(true)}>
-											<ListTodoIcon />
-											<span>Manage shared raids</span>
-										</DropdownMenuItem>
-										<DropdownMenuSeparator />
-										<DropdownMenuItem
-											onClick={() => {
-												authClient.signOut();
-												refetch();
-											}}
-										>
-											<LogOut />
-											<span>Logout</span>
-										</DropdownMenuItem>
-									</DropdownMenuSubContent>
-								</DropdownMenuPortal>
-							</DropdownMenuSub>
-						</DropdownMenuGroup>
-					) : (
-						<DropdownMenuItem
-							disabled={isPending || error !== null}
-							onClick={() =>
-								!isPending &&
-								authClient.signIn.social({
-									provider: "discord",
-								})
-							}
-						>
-							<LogIn />
-							<span>
-								{isPending
-									? "Logging in..."
-									: error
-										? "Login Failed"
-										: "Login with Discord"}
-							</span>
-						</DropdownMenuItem>
-					)}
-
+					<DropdownMenuLabel>Local Settings</DropdownMenuLabel>
 					<DropdownMenuItem onClick={() => router.push("/backup")}>
 						<Import />
 						<span>Import/Export Data</span>
@@ -220,6 +183,65 @@ export default function SettingsButton() {
 							</DropdownMenuPortal>
 						</DropdownMenuSub>
 					</DropdownMenuGroup>
+					<DropdownMenuSeparator />
+					<DropdownMenuLabel>My Account</DropdownMenuLabel>
+
+					{session.data ? (
+						<>
+							<DropdownMenuItem onClick={() => router.push("/friends")}>
+								<Users />
+								<span>Friends</span>
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => setRaidUploadManagerOpen(true)}>
+								<ListTodoIcon />
+								<span>Manage shared raids</span>
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={async () => {
+									try {
+										const decision = await showAlert({
+											title: "Logout",
+											description: "Are you sure you want to logout?",
+											confirmButton: {
+												text: "Logout",
+											},
+											cancelButton: {
+												text: "Cancel",
+											},
+										})
+										if (decision) {
+											authClient.signOut();
+											session.refetch();
+										}
+									} catch (error) {
+										console.error("Error showing alert:", error);
+									}
+								}}
+							>
+								<LogOut />
+								<span>Logout</span>
+							</DropdownMenuItem>
+						</>
+					) : (
+						<DropdownMenuItem
+							disabled={session.isPending || session.error !== null}
+							onClick={() =>
+								!session.isPending &&
+								authClient.signIn.social({
+									provider: "discord",
+								})
+							}
+						>
+							<LogIn />
+							<span>
+								{session.isPending
+									? "Logging in..."
+									: session.error
+										? "Login Failed"
+										: "Login with Discord"}
+							</span>
+						</DropdownMenuItem>
+					)}
 
 					<DropdownMenuSeparator />
 					<DropdownMenuItem onClick={() => window.open("https://ko-fi.com/leo213", "_blank")}>

@@ -18,7 +18,7 @@ export interface QueuedAlert {
   timestamp: number;
 }
 
-type AlertSubscriber = (alert: QueuedAlert | null) => void;
+type AlertSubscriber = (alert: QueuedAlert) => void;
 
 
 class AlertManager {
@@ -83,9 +83,6 @@ class AlertManager {
       this.currentAlert.decisionCallback(decision);
       this.currentAlert = null;
 
-      // Immediately notify subscribers that the alert is cleared
-      this.notifySubscribers(null);
-
       // Process next alert after a short delay to allow UI transitions
       setTimeout(() => {
         this.processQueue();
@@ -93,7 +90,7 @@ class AlertManager {
     }
   }
 
-  private notifySubscribers(alert: QueuedAlert | null): void {
+  private notifySubscribers(alert: QueuedAlert): void {
     this.subscribers.forEach(subscriber => {
       try {
         subscriber(alert);
@@ -133,7 +130,6 @@ class AlertManager {
     if (this.currentAlert) {
       this.currentAlert.decisionCallback(false);
       this.currentAlert = null;
-      this.notifySubscribers(null);
     }
   }
 
