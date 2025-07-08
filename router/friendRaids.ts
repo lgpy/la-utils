@@ -1,7 +1,7 @@
 import { os } from "@orpc/server";
 import { dbProviderMiddleware } from "./middleware/db";
 import { requiredAuthMiddleware } from "./middleware/auth";
-import type { Class, Difficulty } from "@/generated/prisma";
+import { Class, Difficulty } from "@/generated/prisma";
 import { FriendRaidsSchema } from "./friendRaids.schema";
 import { getGateResetDate } from "@/lib/dates";
 import { isGateCompleted } from "@/lib/raids";
@@ -30,11 +30,11 @@ export const getFriendsRaids = os
       where: {
         userId: { in: friendIds },
         raidId: input.filterByRaids ? { in: input.raids.map(r => r.raidId) } : undefined,
-        gates: input.filterByRaids ? {
+        gates: {
           some: {
-            difficulty: { in: input.raids.map(r => r.difficulty) },
+            difficulty: { not: Difficulty.Solo },
           },
-        } : undefined,
+        },
       },
       include: {
         character: {
