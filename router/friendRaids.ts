@@ -29,12 +29,12 @@ export const getFriendsRaids = os
     const friendRaids = await db.assignedRaid.findMany({
       where: {
         userId: { in: friendIds },
-        raidId: { in: input.map(r => r.raidId) },
-        gates: {
+        raidId: input.filterByRaids ? { in: input.raids.map(r => r.raidId) } : undefined,
+        gates: input.filterByRaids ? {
           some: {
-            difficulty: { in: input.map(r => r.difficulty) },
+            difficulty: { in: input.raids.map(r => r.difficulty) },
           },
-        },
+        } : undefined,
       },
       include: {
         character: {

@@ -2,7 +2,7 @@
 
 import { Loader2Icon, Users } from "lucide-react";
 import { useState } from "react";
-import FriendRaids from "./FriendRaids";
+import FriendRaidsDialog from "./FriendRaids";
 import { ExpandableButton } from "./ExpandableButton";
 import { FabButtonWrapper } from "./FabButtonWrapper";
 import { authClient } from "@/lib/auth";
@@ -32,7 +32,7 @@ export default function FriendRaidsFAB() {
 					)}
 				</ExpandableButton>
 			</FabButtonWrapper>
-			<FriendRaids isOpen={isOpen} onOpenChange={setIsOpen} />
+			<FriendRaidsDialog isOpen={isOpen} onOpenChange={setIsOpen} />
 		</>
 	);
 }

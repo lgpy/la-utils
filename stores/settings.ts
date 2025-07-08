@@ -18,6 +18,9 @@ const zodSettings = z.object({
 			cId: z.string(),
 			rId: z.string(),
 		}).array()
+	}),
+	friendRaids: z.object({
+		filterByRaids: z.boolean(),
 	})
 });
 
@@ -31,6 +34,7 @@ export type SettingsActions = {
 	) => void;
 	addIgnoreRaid: (cId: string, rId: string) => void;
 	removeIgnoreRaid: (cId: string, rId: string) => void;
+	togglefilterByRaids: (value: boolean) => void;
 };
 
 export type SettingsStore = SettingsState & SettingsActions;
@@ -48,6 +52,9 @@ export const createSettingsStore = () =>
 				},
 				upload: {
 					ignoreRaids: [],
+				},
+				friendRaids: {
+					filterByRaids: true,
 				},
 				setServer(server) {
 					set({ server });
@@ -80,11 +87,19 @@ export const createSettingsStore = () =>
 							),
 						},
 					}));
-				}
+				},
+				togglefilterByRaids(value) {
+					set((state) => ({
+						friendRaids: {
+							...state.friendRaids,
+							filterByRaids: value,
+						},
+					}));
+				},
 			}),
 			{
 				name: "settings",
-				version: 7,
+				version: 8,
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 				migrate: (ps: any, version) => {
 					if (version <= 0) ps.rosterGoldTotal = "total";
@@ -99,6 +114,11 @@ export const createSettingsStore = () =>
 					if (version <= 6) {
 						ps.upload = {
 							ignoreRaids: [],
+						};
+					}
+					if (version <= 7) {
+						ps.friendRaids = {
+							filterByRaids: true,
 						};
 					}
 					return ps;

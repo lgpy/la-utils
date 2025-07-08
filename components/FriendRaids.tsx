@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { orpc } from "@/lib/orpc";
 import { raids } from "@/lib/raids";
-import { useMainStore } from "@/providers/MainStoreProvider";
+import { useMainStore, useSettingsStore } from "@/providers/MainStoreProvider";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -30,6 +30,8 @@ import {
 	AccordionTrigger,
 } from "@/components/ui/accordion";
 import { authClient } from "@/lib/auth";
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 
 export type Outputs = InferRouterOutputs<typeof router>;
 
@@ -58,15 +60,49 @@ export interface RaidInfo {
 	gates: Record<string, RaidGateInfo>;
 }
 
-function translateToUsableData(
+function filterFriendDataByAvailableRaids(
 	data: FriendRaidsData,
 	availableRaids: FriendRaidsAvailableRaid[],
-) {
-	return Object.fromEntries(
+): FriendRaidsData {
+
+	const raids = Object.fromEntries(
 		Object.entries(data.raids)
 			.filter(([raidId]) =>
 				availableRaids.some((raid) => raid.raidId === raidId),
-			)
+			).map(([raidId, diffs]) => {
+				return [
+					raidId,
+					Object.fromEntries(
+						Object.entries(diffs)
+							.filter(([difficulty]) =>
+								availableRaids.some(
+									(raid) =>
+										raid.difficulty === difficulty && raid.raidId === raidId,
+								),
+							)
+					) as Record<Difficulty, FriendRaidsRun[]>,
+				];
+			})
+	);
+
+	const userInfo = Object.fromEntries(
+		Object.entries(data.userInfo)
+			.filter(([userId]) =>
+				Object.values(raids).some((raid) => Object.values(raid).some((diff) => diff.some((run) => run.userId === userId)))
+			),
+	)
+
+	return {
+		raids: raids,
+		userInfo: userInfo,
+	};
+}
+
+function translateToUsableData(
+	data: FriendRaidsData
+) {
+	return Object.fromEntries(
+		Object.entries(data.raids)
 			.sort(([a], [b]) => sortRaidKeys(a, b))
 			.map(([raidId, diffs]) => {
 				return [
@@ -75,12 +111,6 @@ function translateToUsableData(
 						name: raids[raidId]?.name || "Unknown Raid",
 						difficulties: Object.fromEntries(
 							Object.entries(diffs)
-								.filter(([difficulty]) =>
-									availableRaids.some(
-										(raid) =>
-											raid.difficulty === difficulty && raid.raidId === raidId,
-									),
-								)
 								.sort(([a], [b]) =>
 									sortDifficulties(a as Difficulty, b as Difficulty),
 								)
@@ -127,26 +157,6 @@ type UsableData = ReturnType<typeof translateToUsableData>;
 interface Props {
 	isOpen: boolean;
 	onOpenChange?: (open: boolean) => void;
-}
-
-function FriendRaidsDialog({
-	isOpen,
-	onOpenChange,
-	children,
-}: Props & { children: React.ReactNode }) {
-	return (
-		<Dialog open={isOpen} onOpenChange={onOpenChange}>
-			<DialogContent className="lg:min-w-5xl">
-				<DialogHeader>
-					<DialogTitle>Friend Raids</DialogTitle>
-					<DialogDescription>
-						See which friends have raids available for you to join.
-					</DialogDescription>
-				</DialogHeader>
-				{children}
-			</DialogContent>
-		</Dialog>
-	);
 }
 
 function RaidGateAvatars({
@@ -203,7 +213,7 @@ function RaidGateAvatars({
 		return (
 			<div
 				key={`${raidId}-${difficulty}-${user.id}`}
-				className="flex justify-between items-center p-2 gap-4 w-full bg-secondary/20 border-secondary/50 border-1 rounded-md"
+				className="flex justify-between items-center p-2 gap-4 w-full bg-secondary/20 border-secondary/30 border-1 rounded-md"
 			>
 				<div className="flex items-center gap-2">
 					<Avatar className="shrink-0 size-10">
@@ -260,15 +270,16 @@ function RaidCardGroup({
 				<span>{raidData.name}</span>
 			</div>
 			<div className="flex flex-col gap-4">
-				<Accordion type="multiple">
+				<Accordion type="multiple" className="flex flex-col gap-1">
 					{Object.entries(raidData.difficulties).map(([difficulty, users]) => {
 						if (users.length === 0) return null;
 						return (
 							<AccordionItem
 								value={raidId + difficulty}
 								key={raidId + difficulty}
+								className="bg-input/30 border-0 rounded-base"
 							>
-								<AccordionTrigger className="items-center flex text-md">
+								<AccordionTrigger className="items-center flex text-md py-2 px-4 data-[state=open]:rounded-b-none hover:no-underline bg-input/60 cursor-pointer hover:bg-input">
 									<span className="min-w-[60px]">{difficulty}</span>
 									<div className="*:data-[slot=avatar]:ring-base flex -space-x-2 *:data-[slot=avatar]:ring-2">
 										{users.map((user) => {
@@ -286,7 +297,7 @@ function RaidCardGroup({
 										})}
 									</div>
 								</AccordionTrigger>
-								<AccordionContent className="grid grid-cols-1 lg:grid-cols-3 justify-around gap-2">
+								<AccordionContent className="grid grid-cols-1 lg:grid-cols-3 justify-around p-2 gap-2">
 									<RaidGateAvatars
 										raidId={raidId}
 										difficulty={difficulty as Difficulty}
@@ -302,14 +313,18 @@ function RaidCardGroup({
 	);
 }
 
-export default function FriendRaids({ isOpen, onOpenChange }: Props) {
+export default function FriendRaidsDialog({ isOpen, onOpenChange }: Props) {
 	const mainStore = useMainStore();
 	const availableRaids = useMemo(() => mainStore.availableRaids(), [mainStore]);
+	const settingsStore = useSettingsStore();
 	const session = authClient.useSession();
 	const friendRaidsQuery = useQuery(
 		orpc.friendRaids.getFriendsRaids.queryOptions({
-			input: availableRaids,
-			enabled: session.data !== null && isOpen,
+			input: {
+				filterByRaids: settingsStore.friendRaids.filterByRaids,
+				raids: settingsStore.friendRaids.filterByRaids ? availableRaids : [],
+			},
+			enabled: settingsStore.hasHydrated && session.data !== null && isOpen,
 			staleTime: 5 * 60 * 1000,
 		}),
 	);
@@ -326,33 +341,51 @@ export default function FriendRaids({ isOpen, onOpenChange }: Props) {
 		}
 	}, [friendRaidsQuery, isOpen]);
 
+
 	const data = useMemo(() => {
 		if (friendRaidsQuery.data === undefined) return undefined;
-		return translateToUsableData(friendRaidsQuery.data, availableRaids);
-	}, [friendRaidsQuery.data, availableRaids]);
+		let data = friendRaidsQuery.data;
+		if (settingsStore.friendRaids.filterByRaids)
+			data = filterFriendDataByAvailableRaids(data, availableRaids);
+		return translateToUsableData(data);
+	}, [friendRaidsQuery.data, availableRaids, settingsStore.friendRaids.filterByRaids]);
 
 	return (
-		<FriendRaidsDialog isOpen={isOpen} onOpenChange={onOpenChange}>
-			{friendRaidsQuery.isLoading ? (
-				<div className="text-center py-8">Loading...</div>
-			) : friendRaidsQuery.isError ? (
-				<div className="text-center py-8 text-destructive">
-					Error loading friend raids.
-				</div>
-			) : data === undefined || Object.keys(data).length === 0 ? (
-				<div className="text-center py-8 text-muted-foreground">
-					You have no available raids.
-				</div>
-			) : (
-				<div className="flex flex-col space-y-6 max-h-[60vh] overflow-y-scroll p-2">
-					{Object.entries(data).map(([raidId, raidData]) => {
-						if (Object.keys(raidData.difficulties).length === 0) return null;
-						return (
-							<RaidCardGroup key={raidId} raidId={raidId} raidData={raidData} />
-						)
-					})}
-				</div>
-			)}
-		</FriendRaidsDialog>
+		<Dialog open={isOpen} onOpenChange={onOpenChange}>
+			<DialogContent className="lg:min-w-5xl">
+				<DialogHeader>
+					<DialogTitle>Friend Raids</DialogTitle>
+					<div className="flex flex-row justify-between">
+						<DialogDescription>
+							See which friends have raids available for you to join.
+						</DialogDescription>
+						<div className="flex items-center gap-3">
+							<Label htmlFor="filterRaids">Ignore raids I don't have available</Label>
+							<Checkbox id="filterRaids" checked={settingsStore.friendRaids.filterByRaids} onCheckedChange={settingsStore.togglefilterByRaids} />
+						</div>
+					</div>
+				</DialogHeader>
+				{friendRaidsQuery.isLoading ? (
+					<div className="text-center py-8">Loading...</div>
+				) : friendRaidsQuery.isError ? (
+					<div className="text-center py-8 text-destructive">
+						Error loading friend raids.
+					</div>
+				) : data === undefined || Object.keys(data).length === 0 ? (
+					<div className="text-center py-8 text-muted-foreground">
+						You have no available raids.
+					</div>
+				) : (
+					<div className="flex flex-col gap-4 max-h-[60vh] overflow-y-scroll p-2">
+						{Object.entries(data).map(([raidId, raidData]) => {
+							if (Object.keys(raidData.difficulties).length === 0) return null;
+							return (
+								<RaidCardGroup key={raidId} raidId={raidId} raidData={raidData} />
+							)
+						})}
+					</div>
+				)}
+			</DialogContent>
+		</Dialog>
 	);
 }
