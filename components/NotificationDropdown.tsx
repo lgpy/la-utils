@@ -42,6 +42,9 @@ export default function NotificationDropdown() {
 				lastViewedDate: lastViewedDate ?? new Date(0).toISOString(),
 			},
 			enabled: isHydrated,
+			refetchOnWindowFocus: false,
+			refetchOnMount: false,
+			refetchOnReconnect: false,
 		}),
 	);
 
