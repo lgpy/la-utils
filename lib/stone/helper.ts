@@ -1,4 +1,4 @@
-import { GRID_SIZE, PADDING } from "./constants";
+import { PADDING } from "./constants";
 import { type ResolutionConfig, resolutionConfigs } from "./resolutions";
 import type {
 	CellInfo,

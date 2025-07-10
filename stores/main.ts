@@ -104,7 +104,7 @@ export type MainActions = {
 	charDelTask: (charId: string, taskId: string) => void;
 	charToggleTask: (charId: string, taskId: string) => void;
 	reorderChars: (charIds: string[]) => void;
-	setGate: (charId: string, raidId: string, gateId: string, completedDate: Date) => void;
+	setGate: (charId: string, raidId: string, gateId: string, completedDate: Date) => boolean;
 	availableRaids: () => {
 		raidId: string;
 		difficulty: Difficulty;
@@ -432,6 +432,8 @@ export const createMainStore = () =>
 					});
 				},
 				setGate: (charId, raidId, gateId, completedDate) => {
+					let completedDateChanged = false;
+
 					set((state) => {
 						const charIndex = state.characters.findIndex(
 							(c) => c.id === charId,
@@ -443,10 +445,24 @@ export const createMainStore = () =>
 						const gate = assignedRaid[gateId];
 						if (gate === undefined) throw new Error("Gate not assigned");
 
-						gate.completedDate = completedDate.toISOString();
+						const isCompleted =
+							gate.completedDate !== undefined
+								? isGateCompleted(
+									new Date(gate.completedDate),
+									getGateResetDate(raidId, gateId),
+								)
+								: false;
 
-						return { ...state };
+						if (!isCompleted) {
+							gate.completedDate = completedDate.toISOString();
+							completedDateChanged = true;
+							return { ...state };
+						} else {
+							return state;
+						}
 					});
+
+					return completedDateChanged;
 				},
 				availableRaids: () => {
 					const uniqueAvailable = new Set<string>();
