@@ -18,23 +18,19 @@ if (process.env.VERCEL === "1" && process.env.NODE_ENV === "production") {
   baseUrl = "http://localhost:3000";
 }
 
-let auth: ReturnType<typeof betterAuth> | null = null;
-
-if (process.env.PLAYWRIGHT_TEST !== "true") {
-  auth = betterAuth({
-    baseURL: baseUrl,
-    database: prismaAdapter(prisma, {
-      provider: "postgresql",
-    }),
-    trustedOrigins: [baseUrl],
-    socialProviders: {
-      discord: {
-        clientId: process.env.DISCORD_CLIENT_ID as string,
-        clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
-      },
+const auth = betterAuth({
+  baseURL: baseUrl,
+  database: prismaAdapter(prisma, {
+    provider: "postgresql",
+  }),
+  trustedOrigins: [baseUrl],
+  socialProviders: {
+    discord: {
+      clientId: process.env.DISCORD_CLIENT_ID as string,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
     },
-  })
-}
+  },
+})
 
 
 
