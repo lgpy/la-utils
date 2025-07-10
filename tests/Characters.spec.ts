@@ -27,15 +27,13 @@ const setCharacterState = async (
 
 test("navigate to Characters", async ({ page }) => {
 	await page.goto("/");
-	await page.click("text=Characters");
 	await page.getByRole("link", { name: "Characters" }).click();
 	await expect(page).toHaveURL("/characters");
 });
 
 test("no characters message", async ({ page }) => {
 	await page.goto("/characters");
-	await page.getByText("You have no characters").isVisible();
-	await expect(page.getByText("You have no characters")).toBeVisible();
+	await expect(page.getByText('You have no characters')).toBeVisible();
 });
 
 test("create character", async ({ page }) => {
