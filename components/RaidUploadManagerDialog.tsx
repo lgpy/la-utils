@@ -58,7 +58,7 @@ export default function RaidUploadManagerDialog({ open, onOpenChange }: Props) {
             <span className="text-muted-foreground">Loading...</span>
           </div>
         ) : (
-          <ScrollArea className="max-h- p-4">
+          <ScrollArea className="max-h-[70vh] p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {data.map((character) => (
                 <div key={character.id} className="p-4 border rounded-md space-y-2">
