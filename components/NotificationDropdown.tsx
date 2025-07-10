@@ -10,16 +10,12 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { authClient } from "@/lib/auth";
-import {
-	fetchChangelogEntries,
-	type ChangelogEntryWithNew,
-} from "@/lib/changelog";
 import { orpc } from "@/lib/orpc";
 import { useChangelogStore } from "@/providers/ChangelogStoreProvider";
 import { useQuery } from "@tanstack/react-query";
 import { Bell, BellRing } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useMemo } from "react";
 
 type NotificationEntry = {
 	type: "friendRequest" | "changelog";
@@ -40,58 +36,41 @@ export default function NotificationDropdown() {
 		}),
 	);
 
-	const [changelogNotifications, setChangelogNotifications] = useState<{
-		entries: NotificationEntry[];
-		total: number;
-	}>({
-		entries: [],
-		total: 0,
-	});
-
-	// Fetch new entries function
-	const fetchNewEntries = useCallback(async () => {
-		try {
-			const response = await fetchChangelogEntries({
-				newerThan: lastViewedDate !== null ? lastViewedDate : undefined,
-				limit: 5, // Keep limit low, use total from pagination
-			});
-
-			setChangelogNotifications({
-				entries: response.entries.map((entry: ChangelogEntryWithNew) => ({
-					id: entry.id,
-					type: "changelog",
-					title: entry.title,
-					date: new Date(entry.date),
-				})),
-				total: response.pagination.total,
-			});
-		} catch (error) {
-			console.error("Failed to fetch new notifications:", error);
-		}
-	}, [lastViewedDate]);
-
-	// Fetch new entries when component mounts
-	useEffect(() => {
-		if (!isHydrated) return;
-		fetchNewEntries();
-	}, [fetchNewEntries, isHydrated]);
+	const changelogEntries = useQuery(
+		orpc.changelog.last5Changelog.queryOptions({
+			input: {
+				lastViewedDate: lastViewedDate ?? new Date(0).toISOString(),
+			},
+			enabled: isHydrated,
+		}),
+	);
 
 	const friendRequestNotifications = useMemo(() => {
 		if (!friendRequestQuery.data) return [];
 		return friendRequestQuery.data.received.map((request) => ({
 			id: request.id,
 			title: `New friend request from ${request.name}`,
-			type: "friendRequest",
 			date: new Date(request.createdAt),
 		}));
 	}, [friendRequestQuery.data]);
 
-	const entries = [
-		...changelogNotifications.entries,
-		...friendRequestNotifications,
-	].sort((a, b) => {
-		return new Date(b.date).getTime() - new Date(a.date).getTime();
-	});
+	const entries: NotificationEntry[] = useMemo(() => {
+
+		return [
+			...changelogEntries.data?.map((entry) => ({
+				type: "changelog" as const,
+				id: `cl-${entry.id}`,
+				title: entry.title,
+				date: entry.date,
+			})) ?? [],
+			...friendRequestNotifications.map((request) => ({
+				type: "friendRequest" as const,
+				id: `fr-${request.id}`,
+				title: request.title,
+				date: request.date,
+			})),
+		].sort((a, b) => b.date.getTime() - a.date.getTime());
+	}, [changelogEntries.data, friendRequestNotifications]);
 
 	const hasUnread = entries.length > 0;
 	const totalCount = entries.length;

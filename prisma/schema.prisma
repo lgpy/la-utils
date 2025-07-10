@@ -135,6 +135,7 @@ model Character {
   updatedAt     DateTime        @updatedAt
 
   @@id([userId, id])
+  @@map("character")
 }
 
 model AssignedRaid {
@@ -145,6 +146,7 @@ model AssignedRaid {
   gates       RaidGate[]
 
   @@id([raidId, characterId, userId])
+  @@map("assigned_raid")
 }
 
 enum Difficulty {
@@ -164,6 +166,7 @@ model RaidGate {
   assignedRaid   AssignedRaid @relation(fields: [assignedRaidId, characterId, userId], references: [raidId, characterId, userId], onDelete: Cascade)
 
   @@id([gateId, assignedRaidId, characterId, userId])
+  @@map("raid_gate")
 }
 
 enum TaskType {
@@ -182,6 +185,7 @@ model CharacterTask {
   character     Character @relation(fields: [userId, characterId], references: [userId, id], onDelete: Cascade)
 
   @@id([id, characterId, userId])
+  @@map("character_task")
 }
 
 model Friendship {
@@ -236,4 +240,36 @@ model Server {
   id          ServerName @id
   status      ServerStatus
   updatedAt   DateTime @updatedAt
+
+  @@map("server")
+}
+
+enum ChangelogDetailType {
+  adition
+  fix
+  removal
+  change
+  improvement
+}
+
+model ChangelogDetail {
+  id          Int      @default(autoincrement())
+  changelogId Int
+  changelog   Changelog @relation(fields: [changelogId], references: [id], onDelete: Cascade)
+
+  type        ChangelogDetailType
+  description String
+
+  @@id([id, changelogId])
+  @@map("changelog_detail")
+}
+
+model Changelog {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  title       String
+  description String
+  details     ChangelogDetail[]
+
+  @@map("changelog")
 }

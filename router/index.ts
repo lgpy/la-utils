@@ -1,3 +1,4 @@
+import { last5Changelog, paginatedChangelog } from "./changelog";
 import { getFriendsRaids } from "./friendRaids";
 import { getFriends, getFriendRequests, respondToFriendRequest, revokeRequest, sendFriendRequest, revokeFriendship } from "./friends";
 import { getServerStatus } from "./serverStatus";
@@ -16,5 +17,9 @@ export const router = {
   },
   serverStatus: {
     getServerStatus
+  },
+  changelog: {
+    paginatedChangelog,
+    last5Changelog
   }
 }
