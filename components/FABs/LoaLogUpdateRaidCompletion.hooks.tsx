@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import {
 	getStoredLoaLogsFileHandle,
 	zEntries,
-} from "@/components/LoaLogAccess/utils";
+} from "@/components/FABs/LoaLogUpdateRaidCompletion.utils";
 import { getLatestWeeklyReset } from "@/lib/dates";
 import { toast } from "sonner";
 import { DBWorkerResponse } from "@/workers/dbWorker";

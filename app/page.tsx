@@ -1,6 +1,6 @@
-import AuctionCalculatorFAB from "@/components/AuctionCalculator/AuctionCalculatorFAB";
-import FriendRaidsFAB from "@/components/FriendRaidsFAB";
-import LoaLogUpdateRaidCompletion from "@/components/LoaLogAccess/LoaLogUpdateRaidCompletion";
+import AuctionCalculatorFAB from "@/components/FABs/AuctionCalculatorFAB";
+import FriendRaidsFAB from "@/components/FABs/FriendRaidsFAB";
+import LoaLogUpdateRaidCompletion from "@/components/FABs/LoaLogUpdateRaidCompletion";
 import RosterGold from "@/components/RosterGold";
 import TodoCards from "@/components/TodoCard/TodoCards";
 import type { Metadata } from "next";

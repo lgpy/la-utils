@@ -2,11 +2,11 @@
 
 import { useLoaLogsDb } from "./LoaLogUpdateRaidCompletion.hooks";
 import { useMainStore, useSettingsStore } from "@/providers/MainStoreProvider";
-import { getGateInfoFromClearBossName, ignoreBosses } from "./utils";
+import { getGateInfoFromClearBossName, ignoreBosses } from "./LoaLogUpdateRaidCompletion.utils";
 import { DatabaseBackup } from "lucide-react";
 import { Difficulty } from "@/generated/prisma";
 import { ExpandableButton } from "../ExpandableButton";
-import { FabButtonWrapper } from "../FabButtonWrapper";
+import { FabButtonWrapper } from "./FabButtonWrapper";
 import { useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 

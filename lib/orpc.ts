@@ -1,5 +1,5 @@
 import type { router } from '@/router'
-import type { RouterClient } from '@orpc/server'
+import type { InferRouterOutputs, RouterClient } from '@orpc/server'
 import { createORPCClient } from '@orpc/client'
 import { RPCLink } from '@orpc/client/fetch'
 import { createRouterUtils } from '@orpc/tanstack-query'
@@ -29,3 +29,5 @@ const link = new RPCLink({
 export const client: RouterClient<typeof router> = globalThis.$client ?? createORPCClient(link)
 
 export const orpc = createRouterUtils(client)
+
+export type OrpcOutputs = InferRouterOutputs<typeof router>;

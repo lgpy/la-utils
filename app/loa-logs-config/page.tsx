@@ -20,7 +20,7 @@ import {
 	isFileSystemAccessSupported,
 	requestPersistentPermission,
 	type LoaLogsFileAccess,
-} from "@/components/LoaLogAccess/utils";
+} from "@/components/FABs/LoaLogUpdateRaidCompletion.utils";
 
 export default function LoaLogsConfigPage() {
 	const [fileAccess, setFileAccess] = useState<LoaLogsFileAccess>({
@@ -438,8 +438,8 @@ export default function LoaLogsConfigPage() {
 						<CardContent className="space-y-4">
 							<div
 								className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isDragOver
-										? "border-primary bg-primary/5"
-										: "border-muted-foreground/25 hover:border-muted-foreground/50"
+									? "border-primary bg-primary/5"
+									: "border-muted-foreground/25 hover:border-muted-foreground/50"
 									}`}
 								onDragOver={(e) => {
 									e.preventDefault();

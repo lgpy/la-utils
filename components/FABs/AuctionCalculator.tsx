@@ -1,14 +1,10 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAutionStore } from "@/stores/auction";
-import { CheckIcon, ClipboardIcon, GavelIcon, UsersIcon } from "lucide-react";
+import { CheckIcon, ClipboardIcon, UsersIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 function BidAmtButton({ bidAmt }: { bidAmt: number }) {
@@ -69,7 +65,7 @@ function AuctionAmt({
 	);
 }
 
-export default function AuctionCalculatorModalContent() {
+export default function AuctionCalculator() {
 	const auction = useAutionStore();
 
 	const changeValue = (value: string) => {
@@ -80,15 +76,7 @@ export default function AuctionCalculatorModalContent() {
 	};
 
 	return (
-		<>
-			<DialogHeader>
-				<DialogTitle className="flex flex-row gap-2 items-center">
-					<GavelIcon className="size-6" /> Auction Calculator
-				</DialogTitle>
-				<DialogDescription>
-					Calculate the bid amount for an auction based on the market value.
-				</DialogDescription>
-			</DialogHeader>
+		<div className="flex flex-col gap-4">
 			<div className="flex flex-row gap-6">
 				<div className="grid w-full gap-1.5">
 					<Label htmlFor="picture">Market Value</Label>
@@ -133,6 +121,6 @@ export default function AuctionCalculatorModalContent() {
 					playerNumber={16}
 				/>
 			</div>
-		</>
+		</div>
 	);
 }

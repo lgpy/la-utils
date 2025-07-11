@@ -1,98 +1,15 @@
 "use client";
 
-import { orpc } from "@/lib/orpc";
-import { type router } from "@/router";
-import { type InferRouterOutputs } from "@orpc/server";
+import { orpc, OrpcOutputs } from "@/lib/orpc";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Fragment, useEffect, useRef } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Clock, Loader2 } from "lucide-react";
-import { ChangelogDetailType } from "@/generated/prisma";
 import { useChangelogStore } from "@/providers/ChangelogStoreProvider";
-import { has } from "lodash";
-
-export type Outputs = InferRouterOutputs<typeof router>;
-
-export type ChangelogEntry = Outputs["changelog"]["paginatedChangelog"]["entries"][number];
-
-type ChangelogEntryCardProps = {
-  entry: ChangelogEntry;
-  isNew?: boolean;
-}
-
-function getDetailTypeUiConfig(type: ChangelogDetailType) {
-  switch (type) {
-    case ChangelogDetailType.adition:
-      return { label: "Added", color: "bg-ctp-green text-background" };
-    case ChangelogDetailType.fix:
-      return { label: "Fixed", color: "bg-ctp-blue text-background" };
-    case ChangelogDetailType.removal:
-      return { label: "Removed", color: "bg-ctp-red text-background" };
-    case ChangelogDetailType.improvement:
-      return { label: "Improved", color: "bg-ctp-mauve text-background" };
-    case ChangelogDetailType.change:
-      return { label: "Changed", color: "bg-ctp-peach text-background" };
-    default:
-      const _exhaustiveCheck: never = type;
-      return { label: "Unknown", color: "bg-gray-500 text-white" };
-  }
-}
-
-function ChangelogEntryCard({ entry, isNew }: ChangelogEntryCardProps) {
-
-  return (
-    <Card id={`cl-${entry.id}`}>
-      <CardHeader className="flex justify-between items-start">
-        <div>
-          <CardTitle className="text-lg flex items-center justify-between">
-            <span>{entry.title}</span>
-          </CardTitle>
-          <CardDescription className="flex items-center gap-2 mt-1">
-            <span>{format(entry.date, "MMM dd, yyyy")}</span>
-          </CardDescription>
-        </div>
-        {isNew && (
-          <Badge variant="destructive" className="text-xs px-2 py-0.5">
-            NEW
-          </Badge>
-        )}
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground mb-3">
-          {entry.description}
-        </p>
-        {entry.details && entry.details.length > 0 && (
-          <ul className="text-sm flex flex-col gap-1.5">
-            {entry.details.map((detail) => {
-              const detailUiConfig = getDetailTypeUiConfig(detail.type);
-
-              return (
-                <li
-                  key={`${entry.id}-detail-${detail.id}`}
-                  className="grid grid-cols-[65px_1fr] gap-3 items-start"
-                >
-                  <Badge
-                    variant="secondary"
-                    className={cn(`text-xs px-2 py-0.5 w-full justify-center`, detailUiConfig.color)}
-                  >
-                    {detailUiConfig.label}
-                  </Badge>
-                  <span className="text-sm">{detail.description}</span>
-                </li>
-              )
-            })}
-          </ul>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
+import ChangelogEntryCard from "./ChangelogCard";
 
 interface ChangelogContentProps {
-  changelogs?: Outputs["changelog"]["paginatedChangelog"];
+  changelogs?: OrpcOutputs["changelog"]["paginatedChangelog"];
 }
 
 export default function ChangelogContent({ changelogs }: ChangelogContentProps) {
@@ -114,7 +31,7 @@ export default function ChangelogContent({ changelogs }: ChangelogContentProps) 
   const lastViewedDate = useRef<Date | undefined>(undefined);
   const hasScrolledToHash = useRef(false);
 
-  const isLoading = changelogQuery.isLoading;
+  const isLoading = changelogQuery.isLoading || isHydrated === false;
 
   // Mark as viewed when user leaves the page
   useEffect(() => {
@@ -172,79 +89,66 @@ export default function ChangelogContent({ changelogs }: ChangelogContentProps) 
     }, 100); // Small delay to ensure DOM is ready
   }, [changelogQuery.data]);
 
+  if (isLoading)
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <Loader2 className="h-12 w-12 text-muted-foreground mx-auto mb-4 animate-spin" />
+            <h3 className="text-lg font-semibold mb-2">
+              Loading changelog...
+            </h3>
+            <p className="text-muted-foreground">
+              Fetching the latest updates for you.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+
+  if (changelogQuery.isError)
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">
+              Failed to load changelog
+            </h3>
+            <p className="text-muted-foreground mb-4">{changelogQuery.error.message}</p>
+            <button
+              type="button"
+              onClick={() => changelogQuery.refetch()}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+            >
+              Try Again
+            </button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+
+  const entries = changelogQuery.data.pages.flatMap(page => page.entries) || [];
+
+  if (entries.length === 0)
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">
+              No changelog entries yet
+            </h3>
+          </div>
+        </CardContent>
+      </Card>
+    );
 
   return (
-
-    <div className="container mx-auto py-6 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Changelog</h1>
-          </div>
-        </div>
-
-        {isLoading && (
-          <Card>
-            <CardContent className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <Loader2 className="h-12 w-12 text-muted-foreground mx-auto mb-4 animate-spin" />
-                <h3 className="text-lg font-semibold mb-2">
-                  Loading changelog...
-                </h3>
-                <p className="text-muted-foreground">
-                  Fetching the latest updates for you.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {changelogQuery.isError && (
-          <Card>
-            <CardContent className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  Failed to load changelog
-                </h3>
-                <p className="text-muted-foreground mb-4">{changelogQuery.error.message}</p>
-                <button
-                  type="button"
-                  onClick={() => changelogQuery.refetch()}
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-                >
-                  Try Again
-                </button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {!isLoading && !changelogQuery.isError && (
-          <div className="flex flex-col gap-6">
-            {changelogQuery.data?.pages.map((group, i) => (
-              <Fragment key={i}>
-                {group.entries.map((entry) => (
-                  <ChangelogEntryCard key={entry.id} entry={entry} isNew={lastViewedDate.current !== undefined ? entry.date > lastViewedDate.current : undefined} />
-                ))}
-              </Fragment>
-            ))}
-          </div>
-        )}
-
-        {!isLoading && !changelogQuery.isError && changelogQuery.data?.pages.length === 1 && changelogQuery.data?.pages[0].entries.length === 0 && (
-          <Card>
-            <CardContent className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  No changelog entries yet
-                </h3>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+    <div className="flex flex-col gap-6">
+      {entries.map((entry) => (
+        <ChangelogEntryCard key={entry.id} entry={entry} isNew={lastViewedDate.current !== undefined ? entry.date > lastViewedDate.current : undefined} />
+      ))}
     </div>
-  )
+  );
 }
