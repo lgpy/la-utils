@@ -4,6 +4,7 @@ import {
 	getLatestBiWeeklyReset,
 	getLatestDailyReset,
 	getLatestWeeklyReset,
+	getRestedReset,
 } from "@/lib/dates";
 import { isGateCompleted, raids } from "@/lib/raids";
 import { isTaskCompleted } from "@/lib/tasks";
@@ -87,6 +88,7 @@ export const useMainStore = () => {
 	const characters = useMemo(() => {
 		const weeklyReset = getLatestWeeklyReset();
 		const dailyReset = getLatestDailyReset();
+		const restedReset = getRestedReset();
 		const oddBiWeeklyReset = getLatestBiWeeklyReset("odd");
 		const evenBiWeeklyReset = getLatestBiWeeklyReset("even");
 
@@ -96,19 +98,31 @@ export const useMainStore = () => {
 				(acc, [raidId, raid]) => {
 					const gates = Object.entries(raid).reduce(
 						(gateAcc, [gateId, gate]) => {
+							if (gate.completedDate === undefined) {
+								gateAcc[gateId] = {
+									...gate,
+									completed: false,
+								};
+								return gateAcc;
+							}
+
+							let resetDate: Date;
+							if (raids[raidId].gates[gateId].isBiWeekly === undefined) {
+								resetDate = weeklyReset;
+							} else if (
+								raids[raidId].gates[gateId].isBiWeekly === "odd"
+							) {
+								resetDate = oddBiWeeklyReset;
+							} else {
+								resetDate = evenBiWeeklyReset;
+							}
+
 							gateAcc[gateId] = {
 								...gate,
-								completed:
-									gate.completedDate !== undefined
-										? isGateCompleted(
-												new Date(gate.completedDate),
-												raids[raidId].gates[gateId].isBiWeekly === undefined
-													? weeklyReset
-													: raids[raidId].gates[gateId].isBiWeekly === "odd"
-														? oddBiWeeklyReset
-														: evenBiWeeklyReset,
-											)
-										: false,
+								completed: isGateCompleted(
+									new Date(gate.completedDate),
+									resetDate,
+								),
 							};
 							return gateAcc;
 						},
@@ -119,16 +133,34 @@ export const useMainStore = () => {
 				},
 				{} as ExtendedAssignedRaids,
 			),
-			tasks: character.tasks.map((task) => ({
-				...task,
-				completed:
-					task.completedDate !== undefined
-						? isTaskCompleted(
-								task,
-								task.type === "daily" ? dailyReset : weeklyReset,
-							)
-						: false,
-			})),
+			tasks: character.tasks.map((task) => {
+				if (task.completedDate === undefined)
+					return {
+						...task,
+						completed: false,
+					};
+
+				let resetDate: Date;
+				switch (task.type) {
+					case "daily":
+						resetDate = dailyReset;
+						break;
+					case "rested":
+						resetDate = restedReset;
+						break;
+					case "weekly":
+						resetDate = weeklyReset;
+						break;
+					default:
+						const _exhaustiveCheck: never = task.type;
+						resetDate = new Date(); // Fallback, should never happen
+				}
+
+				return {
+					...task,
+					completed: isTaskCompleted(task, resetDate),
+				};
+			}),
 		}));
 		return ret;
 	}, [store]);

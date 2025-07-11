@@ -28,6 +28,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { TaskType } from "@/generated/prisma";
 import { type Character, useMainStore } from "@/providers/MainStoreProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash2Icon } from "lucide-react";
@@ -38,25 +39,23 @@ import { z } from "zod";
 
 const formSchema = z.object({
 	name: z.string().min(2).max(50),
-	type: z.enum(["daily", "weekly"]),
+	type: z.nativeEnum(TaskType)
 });
-
-const types = formSchema.shape.type._def.values;
 
 const presets: {
 	id: string;
 	name: string;
-	type: (typeof types)[number];
+	type: TaskType;
 }[] = [
 		{
 			id: "chaos-dungeon",
 			name: "Chaos Dungeon",
-			type: "daily",
+			type: TaskType.daily,
 		},
 		{
 			id: "abyss-dungeon",
 			name: "Guardian Raid",
-			type: "daily",
+			type: TaskType.daily,
 		},
 	];
 
@@ -157,9 +156,9 @@ export default function EditCardTaskDialog({
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											{types.map((type) => (
+											{Object.values(TaskType).map((type) => (
 												<SelectItem key={type} value={type}>
-													{type}
+													{type.charAt(0).toUpperCase() + type.slice(1)}
 												</SelectItem>
 											))}
 										</SelectContent>

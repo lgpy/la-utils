@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils";
 import type { Character } from "@/providers/MainStoreProvider";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
-import { Fragment, type JSX, useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
 import EditCardTask from "./EditCardTask";
+import { TaskType } from "@/generated/prisma";
 
 type Props = {
 	char: Character;
@@ -47,43 +48,7 @@ export default function EditCard(props: Props) {
 			</Fragment>
 		));
 
-	const tasks = useMemo(() => {
-		const filteredTasks = {
-			daily: char.tasks.filter((t) => t.type === "daily"),
-			weekly: char.tasks.filter((t) => t.type === "weekly"),
-		};
-
-		return Object.entries(filteredTasks).reduce<{
-			daily: JSX.Element[];
-			weekly: JSX.Element[];
-		}>(
-			(acc, [type, tasks]) => {
-				if (tasks.length === 0) return acc;
-
-				acc[type as "daily" | "weekly"] = tasks.map((task, i) => (
-					<Fragment key={task.id}>
-						<CardContent
-							key={task.id}
-							data-pw={`character-task-${i}`}
-							className="p-0"
-						>
-							<EditCardTask
-								task={task}
-								openTaskDialog={() => openTaskDialog(task.id)}
-							/>
-						</CardContent>
-						{i < tasks.length - 1 && <Separator className="opacity-75" />}
-					</Fragment>
-				));
-
-				return acc;
-			},
-			{
-				daily: [],
-				weekly: [],
-			},
-		);
-	}, [char.tasks, openTaskDialog]);
+	const tasksByType = useMemo(() => Object.fromEntries(Object.values(TaskType).map((type) => ([type, char.tasks.filter((t) => t.type === type)]))), [char.tasks]);
 
 	return (
 		<Card className="h-fit w-56 py-0 gap-0 overflow-hidden" {...divProps}>
@@ -171,25 +136,31 @@ export default function EditCard(props: Props) {
 				</TabsContent>
 				<TabsContent value="tasks" className="m-0">
 					<div ref={parent2}>
-						{tasks.daily.length > 0 && (
-							<>
-								<CardContent className="p-1 text-center text-sm bg-background/60">
-									Daily
-								</CardContent>
-								<Separator />
-								{tasks.daily}
-							</>
-						)}
-						{tasks.weekly.length > 0 && tasks.daily.length > 0 && <Separator />}
-						{tasks.weekly.length > 0 && (
-							<>
-								<CardContent className="p-1 text-center text-sm bg-background/60">
-									Weekly
-								</CardContent>
-								<Separator />
-								{tasks.weekly}
-							</>
-						)}
+						{Object.entries(tasksByType).map(([type, tasks], typeIdx, typeArr) => (
+							tasks.length > 0 && (
+								<Fragment key={type}>
+									<CardContent className="p-1 text-center text-sm bg-background/60">
+										{type.charAt(0).toUpperCase() + type.slice(1)}
+									</CardContent>
+									<Separator />
+									{tasks.map((task, taskIdx) => (
+										<Fragment key={task.id}>
+											<EditCardTask
+												task={task}
+												openTaskDialog={() => openTaskDialog(task.id)}
+											/>
+											{taskIdx < tasks.length - 1 && (
+												<Separator className="opacity-75" />
+											)}
+										</Fragment>
+									))}
+									{typeIdx < typeArr.length - 1 && (
+										<Separator />
+									)}
+								</Fragment>
+							)
+						))}
+
 						{char.tasks.length === 0 && (
 							<CardContent className="p-3 text-center">
 								No tasks assigned

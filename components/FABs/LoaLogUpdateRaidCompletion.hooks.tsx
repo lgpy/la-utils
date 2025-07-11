@@ -152,6 +152,7 @@ export function useLoaLogsDb(onResponse?: (data: {
 				workerRef.current.removeEventListener("error", handleError);
 				workerRef.current.terminate();
 				workerRef.current = null;
+				setIsWorkerReady(false);
 			}
 		};
 	}, []);

@@ -59,6 +59,13 @@ export function getLatestDailyReset(currentDateOverride?: Date): Date {
 	return reset;
 }
 
+export function getRestedReset(currentDateOverride?: Date): Date {
+	const dailyReset = getLatestDailyReset(currentDateOverride);
+	const restedReset = new Date(dailyReset);
+	restedReset.setUTCDate(restedReset.getUTCDate() - 2);
+	return restedReset;
+}
+
 export function getGateResetDate(raidId: string, gateId: string) {
 	const isBiWeekly = raids[raidId].gates[gateId].isBiWeekly;
 	if (isBiWeekly === undefined) return getLatestWeeklyReset();
@@ -72,5 +79,10 @@ export function getTaskResetDate(taskType: Task["type"]) {
 			return getLatestDailyReset();
 		case "weekly":
 			return getLatestWeeklyReset();
+		case "rested":
+			return getRestedReset();
+		default:
+			const _exhaustiveCheck: never = taskType;
+			return new Date(); // Fallback, should never happen
 	}
 }

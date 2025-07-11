@@ -20,12 +20,12 @@ import {
 	charEditRaid,
 	raidAction,
 } from "./raidActions";
-import { Class, Difficulty } from "@/generated/prisma";
+import { Class, Difficulty, TaskType } from "@/generated/prisma";
 
 export const zodTask = z.object({
 	id: z.string(),
 	name: z.string(),
-	type: z.enum(["daily", "weekly"]), //! IF YOU ADD A NEW TASK TYPE, FIX THE CODE TO HANDLE IT
+	type: z.nativeEnum(TaskType),
 	completedDate: z.string().optional(),
 });
 

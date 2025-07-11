@@ -12,11 +12,12 @@ import {
 } from "@/providers/MainStoreProvider";
 import { Check, SwordsIcon } from "lucide-react";
 import { motion } from "motion/react";
-import { Fragment, type JSX, useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import TodoCardCompleteButton from "./TodoCardCompleteButton";
 import TodoCardCompleteButtonV2 from "./TodoCardCompleteButtonV2";
 import TodoCardRaidV2 from "./TodoCardRaidV2";
 import TodoCardTask from "./TodoCardTask";
+import { TaskType } from "@/generated/prisma";
 
 interface Props {
 	char: Character;
@@ -73,57 +74,9 @@ export default function TodoCard({ char }: Props) {
 			</Fragment>
 		));
 
-	const filteredTasks = useMemo(() => {
-		return {
-			daily: char.tasks.filter((t) => t.type === "daily"),
-			weekly: char.tasks.filter((t) => t.type === "weekly"),
-		};
-	}, [char.tasks]);
-
-	const tasks = useMemo(() => {
-		return Object.entries(filteredTasks).reduce<{
-			daily: JSX.Element[];
-			weekly: JSX.Element[];
-		}>(
-			(acc, [type, tasks]) => {
-				if (tasks.length === 0) return acc;
-
-				acc[type as "daily" | "weekly"] = tasks.map((task, i) => (
-					<Fragment key={task.id}>
-						<CardContent
-							key={task.id}
-							data-pw={`character-task-${i}`}
-							className="p-0"
-						>
-							<TodoCardTask
-								task={task}
-								toggleTask={() => mainStore.charToggleTask(char.id, task.id)}
-							/>
-						</CardContent>
-						{i < tasks.length - 1 && <Separator className="opacity-75" />}
-					</Fragment>
-				));
-
-				return acc;
-			},
-			{
-				daily: [],
-				weekly: [],
-			},
-		);
-	}, [char.id, mainStore, filteredTasks]);
+	const tasksByType = useMemo(() => Object.fromEntries(Object.values(TaskType).map((type) => ([type, char.tasks.filter((t) => t.type === type)]))), [char.tasks]);
 
 	const completedTasks = char.tasks.reduce(
-		(acc, t) => (t.completed ? acc + 1 : acc),
-		0,
-	);
-
-	const completedDailyTasks = filteredTasks.daily.reduce(
-		(acc, t) => (t.completed ? acc + 1 : acc),
-		0,
-	);
-
-	const completedWeeklyTasks = filteredTasks.weekly.reduce(
 		(acc, t) => (t.completed ? acc + 1 : acc),
 		0,
 	);
@@ -225,7 +178,7 @@ export default function TodoCard({ char }: Props) {
 								className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/40 group-data-[state=active]:bg-primary/50 transform -translate-x-1/2"
 								initial={false}
 								animate={{
-									width: `${((completedWeeklyTasks + completedDailyTasks) / (filteredTasks.daily.length + filteredTasks.weekly.length)) * 100}%`,
+									width: char.tasks.length === 0 ? "0%" : `${(completedTasks / char.tasks.length) * 100}%`
 								}}
 								transition={{
 									duration: 0.4,
@@ -243,30 +196,30 @@ export default function TodoCard({ char }: Props) {
 						)}
 					</TabsContent>
 					<TabsContent value="tasks" className="m-0">
-						{tasks.daily.length > 0 && (
-							<>
-								<CardContent className="p-1 text-center text-sm bg-background/60">
-									Daily
-								</CardContent>
-								<Separator />
-								{tasks.daily}
-								<Separator />
-							</>
-						)}
-						{tasks.weekly.length > 0 && (
-							<>
-								<CardContent className="p-1 text-center text-sm bg-background/60">
-									Weekly
-								</CardContent>
-								<Separator />
-								{tasks.weekly}
-							</>
-						)}
-						{char.tasks.length === 0 && (
-							<CardContent className="p-3 text-center">
-								No tasks assigned
-							</CardContent>
-						)}
+						{Object.entries(tasksByType).map(([type, tasks], typeIdx, typeArr) => (
+							tasks.length > 0 && (
+								<Fragment key={type}>
+									<CardContent className="p-1 text-center text-sm bg-background/60">
+										{type.charAt(0).toUpperCase() + type.slice(1)}
+									</CardContent>
+									<Separator />
+									{tasks.map((task, i) => (
+										<Fragment key={task.id}>
+											<TodoCardTask
+												task={task}
+												toggleTask={() =>
+													mainStore.charToggleTask(char.id, task.id)
+												}
+											/>
+											{i < tasks.length - 1 && (
+												<Separator className="opacity-75" />
+											)}
+										</Fragment>
+									))}
+									{typeIdx < typeArr.length - 1 && <Separator />}
+								</Fragment>
+							)
+						))}
 					</TabsContent>
 				</Tabs>
 			)}

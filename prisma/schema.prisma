@@ -171,6 +171,7 @@ model RaidGate {
 
 enum TaskType {
   daily
+  rested
   weekly
 }
 
