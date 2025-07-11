@@ -32,6 +32,7 @@ import {
 import { authClient } from "@/lib/auth";
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { ScrollArea } from "./ui/scroll-area";
 
 export type Outputs = InferRouterOutputs<typeof router>;
 
@@ -365,26 +366,28 @@ export default function FriendRaidsDialog({ isOpen, onOpenChange }: Props) {
 						</div>
 					</div>
 				</DialogHeader>
-				{friendRaidsQuery.isLoading ? (
-					<div className="text-center py-8">Loading...</div>
-				) : friendRaidsQuery.isError ? (
-					<div className="text-center py-8 text-destructive">
-						Error loading friend raids.
-					</div>
-				) : data === undefined || Object.keys(data).length === 0 ? (
-					<div className="text-center py-8 text-muted-foreground">
-						You have no available raids.
-					</div>
-				) : (
-					<div className="flex flex-col gap-4 max-h-[60vh] overflow-y-scroll p-2">
-						{Object.entries(data).map(([raidId, raidData]) => {
-							if (Object.keys(raidData.difficulties).length === 0) return null;
-							return (
-								<RaidCardGroup key={raidId} raidId={raidId} raidData={raidData} />
-							)
-						})}
-					</div>
-				)}
+				<ScrollArea className="max-h-[70vh] p-4">
+					{friendRaidsQuery.isLoading ? (
+						<div className="text-center py-8">Loading...</div>
+					) : friendRaidsQuery.isError ? (
+						<div className="text-center py-8 text-destructive">
+							Error loading friend raids.
+						</div>
+					) : data === undefined || Object.keys(data).length === 0 ? (
+						<div className="text-center py-8 text-muted-foreground">
+							You have no available raids.
+						</div>
+					) : (
+						<div className="flex flex-col gap-4">
+							{Object.entries(data).map(([raidId, raidData]) => {
+								if (Object.keys(raidData.difficulties).length === 0) return null;
+								return (
+									<RaidCardGroup key={raidId} raidId={raidId} raidData={raidData} />
+								)
+							})}
+						</div>
+					)}
+				</ScrollArea>
 			</DialogContent>
 		</Dialog>
 	);
