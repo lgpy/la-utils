@@ -1,5 +1,5 @@
+import { TaskType } from "@/generated/prisma";
 import { raids } from "./raids";
-import type { Task } from "./tasks";
 
 export function getLatestBiWeeklyReset(
 	BiWeekly: "odd" | "even",
@@ -73,7 +73,7 @@ export function getGateResetDate(raidId: string, gateId: string) {
 	return getLatestBiWeeklyReset("even");
 }
 
-export function getTaskResetDate(taskType: Task["type"]) {
+export function getTaskResetDate(taskType: TaskType) {
 	switch (taskType) {
 		case "daily":
 			return getLatestDailyReset();

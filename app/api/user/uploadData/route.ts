@@ -2,8 +2,8 @@ import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth.server";
 import prisma from "@/lib/db";
 import { getUncompressedBody } from "@/lib/requests.server";
-import { zodChar } from "@/stores/main";
 import { headers } from "next/headers";
+import { zodChar } from "@/stores/main/types";
 
 export async function POST(request: NextRequest) {
   if (auth === null) {

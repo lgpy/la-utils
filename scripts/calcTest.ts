@@ -74,6 +74,8 @@ const Goals =
   [
     { r1MinSuccess: 9, r2MinSuccess: 7 },
     { r1MinSuccess: 10, r2MinSuccess: 6 },
+    { r1MinSuccess: 7, r2MinSuccess: 9 },
+    { r1MinSuccess: 8, r2MinSuccess: 10 },
   ];
 
 interface WorkerResult {
@@ -82,7 +84,7 @@ interface WorkerResult {
 }
 
 function runSimulation(iterations: number): WorkerResult {
-  const optimizer = new StoneGameOptimizer(Goals, 10);
+  const optimizer = new StoneGameOptimizer(Goals);
   let successCount = 0;
 
   for (let i = 0; i < iterations; i++) {
