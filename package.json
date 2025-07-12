@@ -10,7 +10,8 @@
 		"lint": "bunx oxlint --fix",
 		"check": "bunx oxlint",
 		"format": "bunx prettier . --write",
-		"test": "bunx playwright test"
+		"test": "bunx playwright test",
+		"postinstall": "prisma generate"
 	},
 	"dependencies": {
 		"@formkit/auto-animate": "^0.8.2",
