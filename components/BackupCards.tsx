@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainStore } from "@/providers/MainStoreProvider";
-import { useState } from "react";
+import { MainState } from "@/stores/main";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export default function BackupCards() {
@@ -29,6 +30,13 @@ export default function BackupCards() {
 		}
 		setJsonImport("");
 	};
+
+	const mainStoreState: string = useMemo(() => {
+		const state: MainState = {
+			characters: mainStore.characters,
+		}
+		return JSON.stringify(state, null, 2)
+	}, [mainStore]);
 
 	return (
 		<>
@@ -61,13 +69,13 @@ export default function BackupCards() {
 				</CardHeader>
 				<CardContent>
 					<Textarea
-						value={JSON.stringify(mainStore, null, 2)}
+						value={mainStoreState}
 						onChange={() => { }}
 						className="h-80 break-all"
 					/>
 				</CardContent>
 				<CardFooter className="flex justify-end">
-					<CopyButton textToCopy={JSON.stringify(mainStore)}>Copy</CopyButton>
+					<CopyButton textToCopy={mainStoreState}>Copy</CopyButton>
 				</CardFooter>
 			</Card>
 		</>

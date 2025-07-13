@@ -40,7 +40,7 @@ import { cn } from "@/lib/utils";
 
 export default function SettingsButton() {
 	const { setTheme, theme } = useTheme();
-	const settingsStore = useSettingsStore();
+	const settingsStore = useSettingsStore((store) => store);
 	const router = useRouter();
 
 	const session = authClient.useSession();
@@ -148,44 +148,44 @@ export default function SettingsButton() {
 							<DropdownMenuPortal>
 								<DropdownMenuSubContent>
 									<DropdownMenuCheckboxItem
-										checked={settingsStore.experiments.buttonV2}
+										checked={settingsStore.state.experiments.buttonV2}
 										onCheckedChange={() =>
-											settingsStore.toggleExperiments(
+											settingsStore.state.toggleExperiments(
 												"buttonV2",
-												!settingsStore.experiments.buttonV2,
+												!settingsStore.state.experiments.buttonV2,
 											)
 										}
 									>
 										<span>Raid Button V2</span>
 									</DropdownMenuCheckboxItem>
 									<DropdownMenuCheckboxItem
-										checked={settingsStore.experiments.ignoreThaemineIfNoG4}
+										checked={settingsStore.state.experiments.ignoreThaemineIfNoG4}
 										onCheckedChange={() =>
-											settingsStore.toggleExperiments(
+											settingsStore.state.toggleExperiments(
 												"ignoreThaemineIfNoG4",
-												!settingsStore.experiments.ignoreThaemineIfNoG4,
+												!settingsStore.state.experiments.ignoreThaemineIfNoG4,
 											)
 										}
 									>
 										<span>Ignore Thaemine if no G4</span>
 									</DropdownMenuCheckboxItem>
 									<DropdownMenuCheckboxItem
-										checked={settingsStore.experiments.compactRaidCard}
+										checked={settingsStore.state.experiments.compactRaidCard}
 										onCheckedChange={() =>
-											settingsStore.toggleExperiments(
+											settingsStore.state.toggleExperiments(
 												"compactRaidCard",
-												!settingsStore.experiments.compactRaidCard,
+												!settingsStore.state.experiments.compactRaidCard,
 											)
 										}
 									>
 										<span>Compact Raid Card</span>
 									</DropdownMenuCheckboxItem>
 									<DropdownMenuCheckboxItem
-										checked={settingsStore.experiments.autoUpdateRaids}
+										checked={settingsStore.state.experiments.autoUpdateRaids}
 										onCheckedChange={() =>
-											settingsStore.toggleExperiments(
+											settingsStore.state.toggleExperiments(
 												"autoUpdateRaids",
-												!settingsStore.experiments.autoUpdateRaids,
+												!settingsStore.state.experiments.autoUpdateRaids,
 											)
 										}
 									>

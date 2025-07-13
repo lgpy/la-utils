@@ -35,8 +35,7 @@ const POLLING_INTERVALS = {
 } as const;
 
 export default function ServerStatusWidget() {
-	const settingsStore = useSettingsStore();
-	const { server: selectedServer, hasHydrated } = settingsStore;
+	const selectedServerSetting = useSettingsStore((store) => store.server);
 
 	/*const {
 		status: serverStatus,
@@ -47,8 +46,8 @@ export default function ServerStatusWidget() {
 
 	const serverQuery = useQuery(
 		orpc.serverStatus.getServerStatus.queryOptions({
-			input: selectedServer!,
-			enabled: selectedServer !== undefined && hasHydrated,
+			input: selectedServerSetting.state!,
+			enabled: selectedServerSetting.state !== undefined && selectedServerSetting.hasHydrated,
 			staleTime(query) {
 				if (query.state.data?.status === ServerStatus.OFFLINE ||
 					query.state.data?.status === ServerStatus.MAINTENANCE) {
@@ -88,7 +87,7 @@ export default function ServerStatusWidget() {
 		return () => clearInterval(interval);
 	}, [serverQuery.data]);
 
-	if (!settingsStore.hasHydrated || !selectedServer) return null;
+	if (!selectedServerSetting.hasHydrated || !selectedServerSetting.state) return null;
 
 	// Determine which icon to show based on server status
 	const icon = (() => {
@@ -132,7 +131,7 @@ export default function ServerStatusWidget() {
 						<span
 							className={`text-xs ${serverQuery.isError ? "text-destructive" : "text-muted-foreground"}`}
 						>
-							{selectedServer}
+							{selectedServerSetting.state}
 						</span>
 					</div>
 				</TooltipTrigger>

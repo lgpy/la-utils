@@ -1,5 +1,6 @@
 "use client";
 
+import { useHydration } from "@/hooks/use-hydration";
 import {
 	getLatestBiWeeklyReset,
 	getLatestDailyReset,
@@ -14,10 +15,8 @@ import {
 	type ReactNode,
 	createContext,
 	useContext,
-	useEffect,
 	useMemo,
 	useRef,
-	useState,
 } from "react";
 import { useStore } from "zustand";
 
@@ -68,20 +67,13 @@ type ExtendedAssignedRaids = {
 
 export const useMainStore = () => {
 	const mainStoreContext = useContext(MainStoreContext);
-	const [hydrated, setHydrated] = useState(false);
 
 	if (!mainStoreContext) {
 		throw new Error("useMainStore must be used within MainStoreProvider");
 	}
 
-	useEffect(() => {
-		if (mainStoreContext.persist.hasHydrated) {
-			setHydrated(mainStoreContext.persist.hasHydrated());
-		}
-		mainStoreContext.persist.onFinishHydration(() => {
-			setHydrated(true);
-		});
-	}, [mainStoreContext.persist]);
+
+	const hasHydrated = useHydration(mainStoreContext);
 
 	const store = useStore(mainStoreContext, (s) => s);
 
@@ -168,35 +160,28 @@ export const useMainStore = () => {
 	return {
 		...store,
 		characters,
-		hasHydrated: hydrated,
+		hasHydrated,
 	};
 };
 
-export const useSettingsStore = (): SettingsStore & {
+export const useSettingsStore = <T,>(
+	selector: (store: SettingsStore) => T,
+): {
+	state: T;
 	hasHydrated: boolean;
 } => {
-	const settingsStoreContext = useContext(SettingsStoreContext);
-	const [hydrated, setHydrated] = useState(false);
+	const settingsStoreContext = useContext(SettingsStoreContext)
 
 	if (!settingsStoreContext) {
-		throw new Error("useSettingsStore must be used within MainStoreProvider");
+		throw new Error(`useSettingsStore must be used within SettingsStoreProvider`)
 	}
 
-	useEffect(() => {
-		if (settingsStoreContext.persist.hasHydrated) {
-			setHydrated(settingsStoreContext.persist.hasHydrated());
-		}
-		settingsStoreContext.persist.onFinishHydration(() => {
-			setHydrated(true);
-		});
-	}, [settingsStoreContext.persist]);
-
-	const store = useStore(settingsStoreContext, (s) => s);
+	const hasHydrated = useHydration(settingsStoreContext);
 
 	return {
-		...store,
-		hasHydrated: hydrated,
-	};
-};
+		state: useStore(settingsStoreContext, selector),
+		hasHydrated,
+	}
+}
 
 export type Character = ReturnType<typeof useMainStore>["characters"][number];

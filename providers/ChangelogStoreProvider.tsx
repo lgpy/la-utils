@@ -3,12 +3,11 @@
 import {
 	createContext,
 	useContext,
-	useEffect,
-	useState,
 	type ReactNode,
 } from "react";
 import { useStore } from "zustand";
 import { createChangelogStore } from "@/stores/changelog";
+import { useHydration } from "@/hooks/use-hydration";
 
 const ChangelogStoreContext = createContext<ReturnType<
 	typeof createChangelogStore
@@ -32,7 +31,6 @@ export const ChangelogStoreProvider = ({
 
 export const useChangelogStore = () => {
 	const context = useContext(ChangelogStoreContext);
-	const [isHydrated, setIsHydrated] = useState(false);
 
 	if (!context) {
 		throw new Error(
@@ -40,19 +38,13 @@ export const useChangelogStore = () => {
 		);
 	}
 
-	useEffect(() => {
-		if (context.persist.hasHydrated) {
-			setIsHydrated(context.persist.hasHydrated());
-		}
-		context.persist.onFinishHydration(() => {
-			setIsHydrated(true);
-		});
-	}, [context.persist]);
+
+	const hasHydrated = useHydration(context);
 
 	const store = useStore(context);
 
 	return {
 		...store,
-		isHydrated,
+		hasHydrated,
 	};
 };

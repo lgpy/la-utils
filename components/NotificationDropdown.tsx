@@ -25,7 +25,7 @@ type NotificationEntry = {
 };
 
 export default function NotificationDropdown() {
-	const { lastViewedDate, isHydrated } = useChangelogStore();
+	const { lastViewedDate, hasHydrated } = useChangelogStore();
 	const session = authClient.useSession();
 
 	const friendRequestQuery = useQuery(
@@ -41,7 +41,7 @@ export default function NotificationDropdown() {
 			input: {
 				lastViewedDate: lastViewedDate ?? new Date(0).toISOString(),
 			},
-			enabled: isHydrated,
+			enabled: hasHydrated,
 			refetchOnWindowFocus: false,
 			refetchOnMount: false,
 			refetchOnReconnect: false,

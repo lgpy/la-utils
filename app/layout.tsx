@@ -46,19 +46,7 @@ export default async function RootLayout({
 									{children}
 								</main>
 								<footer className="mb-2 text-center text-xs text-muted-foreground/50">
-									<p>Made by Slayersen (EUC)</p>
-									<p>
-										Feel free to contact me on{" "}
-										<a
-											href="discord://discord.com/users/119529240587796482"
-											target="_blank"
-											rel="noopener noreferrer"
-											className="underline"
-											title="@leo213"
-										>
-											Discord (@leo213)
-										</a>
-									</p>
+									For feedback, bug reports, or feature requests, join the <a href="https://discord.gg/zHzU8HZfWp" target="_blank" rel="noopener noreferrer" className="underline">Discord server</a>.
 								</footer>
 								<Toaster position="bottom-center" />
 								<GlobalAlertDialog />

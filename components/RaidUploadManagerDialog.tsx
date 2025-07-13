@@ -21,14 +21,14 @@ interface Props {
 }
 
 export default function RaidUploadManagerDialog({ open, onOpenChange }: Props) {
-  const settingsStore = useSettingsStore();
+  const settingsStore = useSettingsStore((store) => store);
   const mainStore = useMainStore();
 
   const isLoading = !settingsStore.hasHydrated || !mainStore.hasHydrated;
 
   const data = useMemo(() => mainStore.characters.map((character) => {
     const assignedRaids = Object.keys(character.assignedRaids).map((raidId) => {
-      const ignoreRaid = settingsStore.upload.ignoreRaids.some((ignore) => ignore.cId === character.id && ignore.rId === raidId);
+      const ignoreRaid = settingsStore.state.upload.ignoreRaids.some((ignore) => ignore.cId === character.id && ignore.rId === raidId);
 
       return {
         id: raidId,
@@ -42,7 +42,7 @@ export default function RaidUploadManagerDialog({ open, onOpenChange }: Props) {
       class: character.class,
       assignedRaids: assignedRaids,
     }
-  }), [settingsStore.upload.ignoreRaids, mainStore]);
+  }), [settingsStore.state.upload.ignoreRaids, mainStore]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -75,9 +75,9 @@ export default function RaidUploadManagerDialog({ open, onOpenChange }: Props) {
                           checked={!raid.ignore}
                           onCheckedChange={(checked) => {
                             if (checked) {
-                              settingsStore.removeIgnoreRaid(character.id, raid.id);
+                              settingsStore.state.removeIgnoreRaid(character.id, raid.id);
                             } else {
-                              settingsStore.addIgnoreRaid(character.id, raid.id);
+                              settingsStore.state.addIgnoreRaid(character.id, raid.id);
                             }
                           }}
                         />

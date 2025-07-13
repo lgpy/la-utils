@@ -23,7 +23,7 @@ export default function FriendRaidsFAB() {
 
 	const session = authClient.useSession();
 
-	const settingsStore = useSettingsStore();
+	const settingsStore = useSettingsStore((store) => store);
 
 	if (!session.isPending && session.data === null) {
 		return null;
@@ -55,12 +55,12 @@ export default function FriendRaidsFAB() {
 							</DialogDescription>
 							<div className="flex items-center gap-3">
 								<Label htmlFor="filterRaids">Ignore raids I don't have available</Label>
-								<Checkbox id="filterRaids" checked={settingsStore.friendRaids.filterByRaids} onCheckedChange={settingsStore.togglefilterByRaids} />
+								<Checkbox id="filterRaids" checked={settingsStore.state.friendRaids.filterByRaids} onCheckedChange={settingsStore.state.togglefilterByRaids} />
 							</div>
 						</div>
 					</DialogHeader>
 					<ScrollArea className="max-h-[70vh] p-4">
-						<FriendRaids filterByRaids={settingsStore.friendRaids.filterByRaids} isVisible={isOpen} />
+						<FriendRaids filterByRaids={settingsStore.state.friendRaids.filterByRaids} isVisible={isOpen} />
 					</ScrollArea>
 				</DialogContent>
 			</Dialog>

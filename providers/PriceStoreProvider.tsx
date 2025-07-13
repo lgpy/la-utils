@@ -1,13 +1,12 @@
 "use client";
 
+import { useHydration } from "@/hooks/use-hydration";
 import { type PricesStore, createPriceStore } from "@/stores/prices";
 import {
 	type ReactNode,
 	createContext,
 	useContext,
-	useEffect,
 	useRef,
-	useState,
 } from "react";
 import { useStore } from "zustand";
 
@@ -38,25 +37,18 @@ export const usePriceStore = <T,>(
 	selector: (store: PricesStore) => T,
 ): { store: T; hasHydrated: boolean } => {
 	const priceStoreContext = useContext(PriceStoreContext);
-	const [hydrated, setHydrated] = useState(false);
 
 	if (!priceStoreContext) {
 		throw new Error("usePriceStore must be used within PriceStoreProvider");
 	}
 
-	useEffect(() => {
-		if (priceStoreContext.persist.hasHydrated) {
-			setHydrated(priceStoreContext.persist.hasHydrated());
-		}
-		priceStoreContext.persist.onFinishHydration(() => {
-			setHydrated(true);
-		});
-	}, [priceStoreContext.persist]);
+	const hasHydrated = useHydration(priceStoreContext);
+
 
 	const store = useStore(priceStoreContext, selector);
 
 	return {
 		store,
-		hasHydrated: hydrated,
+		hasHydrated,
 	};
 };

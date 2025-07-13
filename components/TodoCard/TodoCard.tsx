@@ -25,16 +25,16 @@ interface Props {
 
 export default function TodoCard({ char }: Props) {
 	const mainStore = useMainStore();
-	const settingsStore = useSettingsStore();
+	const experimentsStore = useSettingsStore((store) => store.experiments);
 	const highest3 = useMemo(() => {
 		const goldInfo = parseGoldInfo(char.assignedRaids);
 		const highest3 = getHighest3(
 			char.assignedRaids,
 			goldInfo,
-			settingsStore.experiments.ignoreThaemineIfNoG4,
+			experimentsStore.state.ignoreThaemineIfNoG4,
 		);
 		return highest3;
-	}, [char, settingsStore.experiments.ignoreThaemineIfNoG4]);
+	}, [char, experimentsStore.state.ignoreThaemineIfNoG4]);
 
 	const assignedRaids = Object.keys(char.assignedRaids)
 		.sort(sortRaidKeys)
@@ -55,7 +55,7 @@ export default function TodoCard({ char }: Props) {
 							Object.keys(char.assignedRaids).length
 						}
 					>
-						{settingsStore.experiments.buttonV2 ? (
+						{experimentsStore.state.buttonV2 ? (
 							<TodoCardCompleteButtonV2
 								assignedGates={char.assignedRaids[raidId]}
 								charId={char.id}

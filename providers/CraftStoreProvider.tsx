@@ -1,13 +1,12 @@
 "use client";
 
+import { useHydration } from "@/hooks/use-hydration";
 import { type CraftingStore, createCraftingStore } from "@/stores/crafting";
 import {
 	type ReactNode,
 	createContext,
 	useContext,
-	useEffect,
 	useRef,
-	useState,
 } from "react";
 import { useStore } from "zustand";
 
@@ -40,7 +39,6 @@ export const useCraftingStore = <T,>(
 	selector: (store: CraftingStore) => T,
 ): { store: T; hasHydrated: boolean } => {
 	const craftingStoreContext = useContext(CraftingStoreContext);
-	const [hydrated, setHydrated] = useState(false);
 
 	if (!craftingStoreContext) {
 		throw new Error(
@@ -48,19 +46,12 @@ export const useCraftingStore = <T,>(
 		);
 	}
 
-	useEffect(() => {
-		if (craftingStoreContext.persist.hasHydrated) {
-			setHydrated(craftingStoreContext.persist.hasHydrated());
-		}
-		craftingStoreContext.persist.onFinishHydration(() => {
-			setHydrated(true);
-		});
-	}, [craftingStoreContext.persist]);
+	const hasHydrated = useHydration(craftingStoreContext);
 
 	const store = useStore(craftingStoreContext, selector);
 
 	return {
 		store,
-		hasHydrated: hydrated,
+		hasHydrated,
 	};
 };

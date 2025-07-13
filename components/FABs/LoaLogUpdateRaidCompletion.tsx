@@ -54,7 +54,7 @@ function assignCharIdsToLocalPlayers(raidDataArr: DbRaidData[], characters: Retu
 }
 
 export default function LoaLogUpdateRaidCompletion() {
-	const settingsStore = useSettingsStore();
+	const autoUpdateSetting = useSettingsStore((store) => store.experiments.autoUpdateRaids);
 	const { characters, hasHydrated, setGate } = useMainStore();
 
 	const lastUpdatedTime = useRef(0);
@@ -144,7 +144,7 @@ export default function LoaLogUpdateRaidCompletion() {
 	}, [loa_logs_db]);
 
 	useEffect(() => {
-		if (!settingsStore.hasHydrated || !settingsStore.experiments.autoUpdateRaids || !loa_logs_db.isReady) {
+		if (!autoUpdateSetting.hasHydrated || !autoUpdateSetting.state || !loa_logs_db.isReady) {
 			return;
 		}
 
@@ -167,7 +167,7 @@ export default function LoaLogUpdateRaidCompletion() {
 		return () => {
 			window.removeEventListener("focus", updateRaidsOnFocus);
 		};
-	}, [settingsStore.hasHydrated, settingsStore.experiments.autoUpdateRaids, updateRaids, loa_logs_db.isReady]);
+	}, [autoUpdateSetting.hasHydrated, autoUpdateSetting.state, updateRaids, loa_logs_db.isReady]);
 
 	return (
 		<FabButtonWrapper>

@@ -23,10 +23,10 @@ import { Info } from "lucide-react";
 
 export default function RosterGold() {
 	const mainStore = useMainStore();
-	const settingsStore = useSettingsStore();
+	const ignoreThaemineIfNoG4Setting = useSettingsStore((store) => store.experiments.ignoreThaemineIfNoG4);
 
 	const rosterGold = useMemo(() => {
-		if (!mainStore.hasHydrated || !settingsStore.hasHydrated) {
+		if (!mainStore.hasHydrated || !ignoreThaemineIfNoG4Setting.hasHydrated) {
 			return;
 		}
 		const ret = mainStore.characters.reduce(
@@ -36,7 +36,7 @@ export default function RosterGold() {
 				const highest3 = getHighest3(
 					char.assignedRaids,
 					goldInfo,
-					settingsStore.experiments.ignoreThaemineIfNoG4,
+					ignoreThaemineIfNoG4Setting.state,
 				);
 				for (const thisWeek of Object.values(highest3.thisWeek)) {
 					acc.thisWeek.earnedGold.bound += thisWeek.earnedGold.bound;
@@ -72,8 +72,8 @@ export default function RosterGold() {
 	}, [
 		mainStore.characters,
 		mainStore.hasHydrated,
-		settingsStore.hasHydrated,
-		settingsStore.experiments.ignoreThaemineIfNoG4,
+		ignoreThaemineIfNoG4Setting.hasHydrated,
+		ignoreThaemineIfNoG4Setting.state,
 	]);
 
 	const hasBiweekly = mainStore.characters.some((char) =>
@@ -84,7 +84,7 @@ export default function RosterGold() {
 		),
 	);
 
-	if (!mainStore.hasHydrated || !settingsStore.hasHydrated) {
+	if (!mainStore.hasHydrated || !ignoreThaemineIfNoG4Setting.hasHydrated) {
 		return null;
 	}
 

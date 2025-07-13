@@ -26,17 +26,17 @@ export default function ChangelogContent({ changelogs }: ChangelogContentProps) 
     } : undefined,
   }));
 
-  const { setLastViewedDate, lastViewedDate: lastViewedDateString, isHydrated } = useChangelogStore();
+  const { setLastViewedDate, lastViewedDate: lastViewedDateString, hasHydrated } = useChangelogStore();
 
   const lastViewedDate = useRef<Date | undefined>(undefined);
   const hasScrolledToHash = useRef(false);
 
-  const isLoading = changelogQuery.isLoading || isHydrated === false;
+  const isLoading = changelogQuery.isLoading || hasHydrated === false;
 
   // Mark as viewed when user leaves the page
   useEffect(() => {
 
-    if (!isHydrated) return;
+    if (!hasHydrated) return;
     if (lastViewedDate.current === undefined) {
       lastViewedDate.current = new Date(lastViewedDateString ?? 0);
     }
@@ -50,7 +50,7 @@ export default function ChangelogContent({ changelogs }: ChangelogContentProps) 
       if (new Date(mostRecentEntry.date).getTime() === new Date(lastViewedDateString ?? 0).getTime()) return;
       setLastViewedDate(mostRecentEntry.date.toISOString());
     }
-  }, [setLastViewedDate, changelogQuery.data, lastViewedDateString, isHydrated]);
+  }, [setLastViewedDate, changelogQuery.data, lastViewedDateString, hasHydrated]);
 
 
   useEffect(() => {

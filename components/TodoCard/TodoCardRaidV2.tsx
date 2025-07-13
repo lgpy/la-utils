@@ -29,7 +29,7 @@ export default function TodoCardRaidV2({
 	children,
 	showBackground = true,
 }: Props) {
-	const settingsStore = useSettingsStore();
+	const compactRaidCardSetting = useSettingsStore((store) => store.experiments.compactRaidCard);
 	const actualraid = raids[raidId];
 
 	if (!actualraid) {
@@ -37,7 +37,7 @@ export default function TodoCardRaidV2({
 		return null;
 	}
 
-	if (!settingsStore.hasHydrated) {
+	if (!compactRaidCardSetting.hasHydrated) {
 		return null;
 	}
 
@@ -48,7 +48,7 @@ export default function TodoCardRaidV2({
 
 	const progress = completedRaids / Object.keys(raid).length;
 
-	const isCompactCardEnabled = settingsStore.experiments.compactRaidCard;
+	const isCompactCardEnabled = compactRaidCardSetting.state;
 
 	return (
 		<div

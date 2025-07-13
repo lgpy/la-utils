@@ -27,23 +27,23 @@ function removeIgnoredRaids(characters: CharData[], ignoredRaids: { cId: string;
 export function UserInfoUpdater() {
 	const auth = authClient.useSession();
 	const mainStore = useMainStore();
-	const settingsStore = useSettingsStore();
+	const ignoreRaidsSetting = useSettingsStore((store) => store.upload.ignoreRaids);
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const latestCharactersRef = useRef(mainStore.characters);
 	const isFirstRun = useRef(true);
 
 	const lastUploadedDataRef = useRef<typeof mainStore.characters | null>(null);
 
-	const areStoresHydrated = mainStore.hasHydrated && settingsStore.hasHydrated;
+	const areStoresHydrated = mainStore.hasHydrated && ignoreRaidsSetting.hasHydrated;
 
 	//initial upload of characters
 	useEffect(() => {
 		if (!areStoresHydrated || lastUploadedDataRef.current !== null) return;
 		lastUploadedDataRef.current = removeIgnoredRaids(
 			mainStore.characters,
-			settingsStore.upload.ignoreRaids
+			ignoreRaidsSetting.state
 		);
-	}, [areStoresHydrated, mainStore.characters, settingsStore.upload.ignoreRaids]);
+	}, [areStoresHydrated, mainStore.characters, ignoreRaidsSetting.state]);
 
 	const isUploadedSameAsCurrent = () => isEqual(latestCharactersRef.current, lastUploadedDataRef.current);
 
@@ -51,9 +51,9 @@ export function UserInfoUpdater() {
 	useEffect(() => {
 		latestCharactersRef.current = removeIgnoredRaids(
 			mainStore.characters,
-			settingsStore.upload.ignoreRaids
+			ignoreRaidsSetting.state
 		);
-	}, [mainStore.characters, settingsStore.upload.ignoreRaids]);
+	}, [mainStore.characters, ignoreRaidsSetting.state]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: characters is needed here
 	useEffect(() => {
@@ -120,7 +120,7 @@ export function UserInfoUpdater() {
 			}
 			window.removeEventListener("beforeunload", handleBeforeUnload);
 		};
-	}, [auth, areStoresHydrated, mainStore.characters, settingsStore.upload.ignoreRaids]);
+	}, [auth, areStoresHydrated, mainStore.characters, ignoreRaidsSetting.state]);
 
 	return null;
 }
