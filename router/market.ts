@@ -20,8 +20,6 @@ export const getMarketPrices = os
     const isOldData = prices.length > 0 && new Date(prices[0].updatedAt).getTime() < Date.now() - 6 * 60 * 60 * 1000;
 
     if (prices.length === 0 || isOldData) {
-      console.log(`Fetching new prices for server: ${server}`);
-      console.log(`Prices before fetching: ${JSON.stringify(prices)}`);
       const newPrices = await fetchMarketPrices(server);
 
       const idk = newPrices.map(item => ({

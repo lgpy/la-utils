@@ -106,6 +106,10 @@ export default function LoaBuddyPricesFetcher() {
     <Button
       disabled={!isReady || fetching || !isOlderThanSixHours}
       onClick={async () => {
+        if (settingsStore.state.server === undefined) {
+          toast.error("Please select a server first.");
+          return;
+        }
         setFetching(true);
         const uuid = uuidv4();
         toast.loading("Fetching LoaBuddy prices...", {
@@ -113,12 +117,13 @@ export default function LoaBuddyPricesFetcher() {
           description: "This may take a few seconds",
         });
         try {
-          const prices = await client.market.getMarketPrices({ server: ServerRegionFromServerName(settingsStore.state.server!) });
+          const prices = await client.market.getMarketPrices({ server: ServerRegionFromServerName(settingsStore.state.server) });
           for (const item of prices) {
             priceStore.store.changePrice(item.itemId, item.price, item.updatedAt);
           }
-          toast.success("LoaBuddy prices fetched successfully", {
+          toast.success("Fetched prices successfully", {
             id: `loaBuddyPrices-${uuid}`,
+            description: "Prices updated.",
           });
         } catch (error) {
           toast.error("Failed to fetch prices", {
