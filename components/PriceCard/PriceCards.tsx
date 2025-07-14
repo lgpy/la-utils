@@ -7,6 +7,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Link from "next/link";
 import { Fragment } from "react";
 import PriceCard from "./PriceCard";
+import LoaBuddyPricesFetcher from "../LoaBuddyPricesFetcher";
 
 function NavigationAnchor({
 	type,
@@ -96,23 +97,30 @@ function PricesType({
 	);
 }
 
-const types = [
-	{ type: "store", name: "Store" },
-	{ type: "honing-t4", name: "Honing T4" },
-	{ type: "honing", name: "Honing T3" },
-	{
-		type: "tradeskills",
-		name: "Trade Skills",
-		subtypes: [
-			{ type: "foraging", name: "Foraging" },
-			{ type: "logging", name: "Logging" },
-			{ type: "mining", name: "Mining" },
-			{ type: "hunting", name: "Hunting" },
-			{ type: "fishing", name: "Fishing" },
-			{ type: "excavating", name: "Excavating" },
-		],
-	},
-];
+const types: {
+	type: (typeof items)[number]["type"];
+	name: string;
+	subtypes?: {
+		type: (typeof items)[number]["subtype"];
+		name: string;
+	}[];
+}[] = [
+		{ type: "store", name: "Store" },
+		{ type: "honing-t4", name: "Honing T4" },
+		{ type: "honing", name: "Honing T3" },
+		{
+			type: "tradeskills",
+			name: "Trade Skills",
+			subtypes: [
+				{ type: "foraging", name: "Foraging" },
+				{ type: "logging", name: "Logging" },
+				{ type: "mining", name: "Mining" },
+				{ type: "hunting", name: "Hunting" },
+				{ type: "fishing", name: "Fishing" },
+				{ type: "excavating", name: "Excavating" },
+			],
+		},
+	];
 
 export default function PriceCards() {
 	const { store, hasHydrated } = usePriceStore((state) => state);
@@ -144,6 +152,7 @@ export default function PriceCards() {
 							))}
 						</Fragment>
 					))}
+					<LoaBuddyPricesFetcher />
 				</div>
 			</div>
 

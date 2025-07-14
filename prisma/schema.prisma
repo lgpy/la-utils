@@ -274,3 +274,20 @@ model Changelog {
 
   @@map("changelog")
 }
+
+enum ServerRegion {
+  NAW
+  NAE
+  EUC
+}
+
+model MarketPrice {
+  itemId      String
+  price       Int
+  updatedAt   DateTime
+
+  region     ServerRegion
+
+  @@id([itemId, region])
+  @@map("market_price")
+}

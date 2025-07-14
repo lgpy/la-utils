@@ -2,7 +2,71 @@ import { z } from "zod";
 import { persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 
-export const items = [
+const ITEM_IDS = {
+	BLUE_CRYSTAL: "blue-crystal",
+	OREHA_FUSION_MATERIAL: "oreha-fusion-material",
+	SUPERIOR_OREHA_FUSION_MATERIAL: "superior-oreha-fusion-material",
+	PRIME_OREHA_FUSION_MATERIAL: "prime-oreha-fusion-material",
+	ABIDOS_FUSION_MATERIAL: "abidos-fusion-material",
+	MARVELOUS_HONOR_LEAPSTONE: "marvelous-honor-leapstone",
+	RADIANT_HONOR_LEAPSTONE: "radiant-honor-leapstone",
+	HONOR_SHARD_POUCH_S: "honor-shard-pouch-s",
+	HONOR_SHARD_POUCH_M: "honor-shard-pouch-m",
+	HONOR_SHARD_POUCH_L: "honor-shard-pouch-l",
+	DESTINY_SHARD_POUCH_S: "destiny-shard-pouch-s",
+	DESTINY_SHARD_POUCH_M: "destiny-shard-pouch-m",
+	SOLAR_GRACE: "solar-grace",
+	SOLAR_BLESSING: "solar-blessing",
+	SOLAR_PROTECTION: "solar-protection",
+	GLACIERS_BREATH: "glaciers-breath",
+	LAVAS_BREATH: "lavas-breath",
+	FISH: "fish",
+	REDFLESH_FISH: "redflesh-fish",
+	OREHA_SOLAR_CARP: "oreha-solar-carp",
+	ABIDOS_SOLAR_CARP: "abidos-solar-carp",
+	ANCIENT_RELIC: "ancient-relic",
+	RARE_RELIC: "rare-relic",
+	OREHA_RELIC: "oreha-relic",
+	ABIDOS_RELIC: "abidos-relic",
+	TIMBER: "timber",
+	TENDER_TIMBER: "tender-timber",
+	STURDY_TIMBER: "sturdy-timber",
+	ABIDOS_TIMBER: "abidos-timber",
+	WILD_FLOWER: "wild-flower",
+	SHY_WILD_FLOWER: "shy-wild-flower",
+	BRIGHT_WILD_FLOWER: "bright-wild-flower",
+	ABIDOS_WILD_FLOWER: "abidos-wild-flower",
+	IRON_ORE: "iron-ore",
+	HEAVY_IRON_ORE: "heavy-iron-ore",
+	STRONG_IRON_ORE: "strong-iron-ore",
+	ABIDOS_IRON_ORE: "abidos-iron-ore",
+	THICK_RAW_MEAT: "thick-raw-meat",
+	TREATED_MEAT: "treated-meat",
+	OREHA_THICK_MEAT: "oreha-thick-meat",
+	ABIDOS_THICK_RAW_MEAT: "abidos-thick-raw-meat",
+};
+
+type ItemID = typeof ITEM_IDS[keyof typeof ITEM_IDS];
+
+
+type ItemType = {
+	type: "store" | "honing" | "honing-t4" | "tradeskills",
+	subtype?: "fishing" | "excavating" | "logging" | "foraging" | "mining" | "hunting",
+	id: ItemID,
+	name: string,
+	rarity?: "common" | "uncommon" | "rare" | "epic",
+	marketQty: number,
+	mari?: {
+		qty: number,
+		bc: number,
+	},
+	exchange?: {
+		id: ItemID,
+		rate: number,
+	}[]
+}
+
+export const items: ItemType[] = [
 	{
 		type: "store",
 		id: "blue-crystal",
@@ -97,6 +161,13 @@ export const items = [
 		id: "destiny-shard-pouch-s",
 		name: "Destiny Shard Pouch (S)",
 		rarity: "uncommon",
+		marketQty: 1,
+	},
+	{
+		type: "honing-t4",
+		id: "destiny-shard-pouch-m",
+		name: "Destiny Shard Pouch (M)",
+		rarity: "rare",
 		marketQty: 1,
 	},
 	{
@@ -517,7 +588,7 @@ const zodPrices = z.object({
 export type PricesState = z.infer<typeof zodPrices>;
 
 export type PricesActions = {
-	changePrice: (itemId: string, price: number) => void;
+	changePrice: (itemId: string, price: number, updatedOn?: Date) => void;
 };
 
 export type PricesStore = PricesState & PricesActions;
@@ -527,7 +598,7 @@ export const createPriceStore = () =>
 		persist(
 			(set) => ({
 				prices: [],
-				changePrice(itemId: string, price: number) {
+				changePrice(itemId, price, updatedOn) {
 					set((state) => {
 						const item = state.prices.find((i) => i.id === itemId);
 						if (!item)
@@ -538,12 +609,12 @@ export const createPriceStore = () =>
 									{
 										id: itemId,
 										price,
-										updatedOn: new Date().toISOString(),
+										updatedOn: updatedOn?.toISOString() || new Date().toISOString(),
 									},
 								],
 							};
 						item.price = price;
-						item.updatedOn = new Date().toISOString();
+						item.updatedOn = updatedOn?.toISOString() || new Date().toISOString();
 						return {
 							...state,
 							prices: state.prices,
