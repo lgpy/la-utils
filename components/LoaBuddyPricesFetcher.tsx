@@ -17,7 +17,6 @@ import {
 import { ServerName, ServerRegion } from "@/generated/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { useMemo, useState } from "react";
-import { containsSlug } from "@/lib/external-apis/loabuddy";
 
 function ServerRegionFromServerName(serverName: ServerName): ServerRegion {
   switch (serverName) {
@@ -55,21 +54,14 @@ export default function LoaBuddyPricesFetcher() {
 
   const isReady = priceStore.hasHydrated && settingsStore.hasHydrated;
 
-  const isOlderThanSixHours = useMemo(() => {
+  const hasFetchedIn3Hours = useMemo(() => {
     if (!priceStore.hasHydrated) return false;
-    const validIds = priceStore.store.prices
-      .filter(p => containsSlug(p.id));
-
-    if (validIds.length === 0) return true; // No prices available, consider it outdated
-
-    const oldestUpdatedAt = validIds
-      .reduce((oldest, item) => {
-        const updatedOn = new Date(item.updatedOn);
-        if (updatedOn < oldest)
-          return updatedOn;
-        return oldest;
-      }, new Date());
-    return oldestUpdatedAt.getTime() < Date.now() - 6 * 60 * 60 * 1000;
+    const lastFetch = priceStore.store.lastFetch;
+    if (!lastFetch) return false;
+    const lastFetchDate = new Date(lastFetch);
+    const now = new Date();
+    const threeHoursAgo = new Date(now.getTime() - 3 * 60 * 60 * 1000);
+    return lastFetchDate >= threeHoursAgo;
   }, [priceStore]);
 
   return <div className="flex flex-col items-center gap-2 bg-card p-2 rounded-base border-border border-1 min-w-[160px]">
@@ -104,7 +96,7 @@ export default function LoaBuddyPricesFetcher() {
       </SelectContent>
     </Select>
     <Button
-      disabled={!isReady || fetching || !isOlderThanSixHours}
+      disabled={!isReady || fetching || hasFetchedIn3Hours}
       onClick={async () => {
         if (settingsStore.state.server === undefined) {
           toast.error("Please select a server first.");
@@ -121,6 +113,7 @@ export default function LoaBuddyPricesFetcher() {
           for (const item of prices) {
             priceStore.store.changePrice(item.itemId, item.price, item.updatedAt);
           }
+          priceStore.store.setLastFetch(new Date());
           toast.success("Fetched prices successfully", {
             id: `loaBuddyPrices-${uuid}`,
             description: "Prices updated.",
@@ -137,11 +130,7 @@ export default function LoaBuddyPricesFetcher() {
       className="w-full"
     >
       {
-        isReady
-          ? isOlderThanSixHours
-            ? "Fetch Prices"
-            : "Up to Date"
-          : "Loading settings..."
+        fetching ? "Fetching..." : hasFetchedIn3Hours ? "Up to Date" : "Fetch Prices"
       }
     </Button>
     <p className="text-xs text-muted-foreground text-center">

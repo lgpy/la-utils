@@ -583,12 +583,14 @@ const zodPrices = z.object({
 			updatedOn: z.string(),
 		}),
 	),
+	lastFetch: z.string().optional(),
 });
 
 export type PricesState = z.infer<typeof zodPrices>;
 
 export type PricesActions = {
 	changePrice: (itemId: string, price: number, updatedOn?: Date) => void;
+	setLastFetch: (date: Date) => void;
 };
 
 export type PricesStore = PricesState & PricesActions;
@@ -613,6 +615,10 @@ export const createPriceStore = () =>
 									},
 								],
 							};
+						// if updatedOn is older than the updatedOn of the item, do not update
+						if (updatedOn && new Date(item.updatedOn) >= updatedOn) {
+							return state;
+						}
 						item.price = price;
 						item.updatedOn = updatedOn?.toISOString() || new Date().toISOString();
 						return {
@@ -620,6 +626,12 @@ export const createPriceStore = () =>
 							prices: state.prices,
 						};
 					});
+				},
+				setLastFetch(date) {
+					set((state) => ({
+						...state,
+						lastFetch: date.toISOString(),
+					}));
 				},
 			}),
 			{
