@@ -1,0 +1,480 @@
+{
+  "blue-crystal": {
+    "type": "store",
+    "name": "Blue Crystals",
+    "marketQty": 95
+  },
+  "oreha-fusion-material": {
+    "type": "honing",
+    "name": "Oreha Fusion Material",
+    "rarity": "rare",
+    "marketQty": 1
+  },
+  "superior-oreha-fusion-material": {
+    "type": "honing",
+    "name": "Superior Oreha Fusion Material",
+    "rarity": "epic",
+    "marketQty": 1,
+    "mari": {
+      "qty": 100,
+      "bc": 40
+    }
+  },
+  "prime-oreha-fusion-material": {
+    "type": "honing",
+    "name": "Prime Oreha Fusion Material",
+    "rarity": "epic",
+    "marketQty": 1,
+    "mari": {
+      "qty": 100,
+      "bc": 80
+    }
+  },
+  "abidos-fusion-material": {
+    "type": "honing-t4",
+    "name": "Abidos Fusion Material",
+    "rarity": "rare",
+    "marketQty": 1,
+    "mari": {
+      "qty": 50,
+      "bc": 65
+    }
+  },
+  "marvelous-honor-leapstone": {
+    "type": "honing",
+    "name": "Marvelous Honor Leapstone",
+    "rarity": "rare",
+    "marketQty": 1
+  },
+  "radiant-honor-leapstone": {
+    "type": "honing",
+    "name": "Radiant Honor Leapstone",
+    "rarity": "rare",
+    "marketQty": 1,
+    "mari": {
+      "qty": 100,
+      "bc": 150
+    }
+  },
+  "honor-shard-pouch-s": {
+    "type": "honing",
+    "name": "Honor Shard Pouch (S)",
+    "rarity": "uncommon",
+    "marketQty": 1
+  },
+  "honor-shard-pouch-m": {
+    "type": "honing",
+    "name": "Honor Shard Pouch (M)",
+    "rarity": "rare",
+    "marketQty": 1
+  },
+  "honor-shard-pouch-l": {
+    "type": "honing",
+    "name": "Honor Shard Pouch (L)",
+    "rarity": "epic",
+    "marketQty": 1,
+    "mari": {
+      "qty": 20,
+      "bc": 154
+    }
+  },
+  "destiny-shard-pouch-s": {
+    "type": "honing-t4",
+    "name": "Destiny Shard Pouch (S)",
+    "rarity": "uncommon",
+    "marketQty": 1
+  },
+  "destiny-shard-pouch-m": {
+    "type": "honing-t4",
+    "name": "Destiny Shard Pouch (M)",
+    "rarity": "rare",
+    "marketQty": 1
+  },
+  "solar-grace": {
+    "type": "honing",
+    "name": "Solar Grace",
+    "rarity": "uncommon",
+    "marketQty": 1,
+    "mari": {
+      "qty": 120,
+      "bc": 40
+    }
+  },
+  "solar-blessing": {
+    "type": "honing",
+    "name": "Solar Blessing",
+    "rarity": "rare",
+    "marketQty": 1,
+    "mari": {
+      "qty": 80,
+      "bc": 60
+    }
+  },
+  "solar-protection": {
+    "type": "honing",
+    "name": "Solar Protection",
+    "rarity": "epic",
+    "marketQty": 1,
+    "mari": {
+      "qty": 100,
+      "bc": 90
+    }
+  },
+  "glaciers-breath": {
+    "type": "honing-t4",
+    "name": "Glacier's Breath",
+    "rarity": "epic",
+    "marketQty": 1,
+    "mari": {
+      "qty": 20,
+      "bc": 96
+    }
+  },
+  "lavas-breath": {
+    "type": "honing-t4",
+    "name": "Lava's Breath",
+    "rarity": "epic",
+    "marketQty": 1,
+    "mari": {
+      "qty": 10,
+      "bc": 150
+    }
+  },
+  "fish": {
+    "type": "tradeskills",
+    "subtype": "fishing",
+    "name": "Fish",
+    "rarity": "common",
+    "marketQty": 100
+  },
+  "redflesh-fish": {
+    "type": "tradeskills",
+    "subtype": "fishing",
+    "name": "Redflesh Fish",
+    "rarity": "uncommon",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "fish",
+        "rate": 2.5
+      }
+    ]
+  },
+  "natural-pearl": {
+    "type": "tradeskills",
+    "subtype": "fishing",
+    "name": "Natural Pearl",
+    "rarity": "uncommon",
+    "marketQty": 100
+  },
+  "oreha-solar-carp": {
+    "type": "tradeskills",
+    "subtype": "fishing",
+    "name": "Oreha Solar Carp",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "fish",
+        "rate": 12.5
+      }
+    ]
+  },
+  "abidos-solar-carp": {
+    "type": "tradeskills",
+    "subtype": "fishing",
+    "name": "Abidos Solar Carp",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "fish",
+        "rate": 12.5
+      },
+      {
+        "id": "redflesh-fish",
+        "rate": 6.25
+      }
+    ]
+  },
+  "ancient-relic": {
+    "type": "tradeskills",
+    "subtype": "excavating",
+    "name": "Ancient Relic",
+    "rarity": "common",
+    "marketQty": 100,
+    "exchange": []
+  },
+  "rare-relic": {
+    "type": "tradeskills",
+    "subtype": "excavating",
+    "name": "Rare Relic",
+    "rarity": "uncommon",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "ancient-relic",
+        "rate": 2.5
+      }
+    ]
+  },
+  "oreha-relic": {
+    "type": "tradeskills",
+    "subtype": "excavating",
+    "name": "Oreha Relic",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "ancient-relic",
+        "rate": 12.5
+      }
+    ]
+  },
+  "abidos-relic": {
+    "type": "tradeskills",
+    "subtype": "excavating",
+    "name": "Abidos Relic",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "ancient-relic",
+        "rate": 12.5
+      },
+      {
+        "id": "rare-relic",
+        "rate": 6.25
+      }
+    ]
+  },
+  "timber": {
+    "type": "tradeskills",
+    "subtype": "logging",
+    "name": "Timber",
+    "rarity": "common",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "tender-timber",
+        "rate": 0.5
+      },
+      {
+        "id": "sturdy-timber",
+        "rate": 0.2
+      }
+    ]
+  },
+  "tender-timber": {
+    "type": "tradeskills",
+    "subtype": "logging",
+    "name": "Tender Timber",
+    "rarity": "uncommon",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "timber",
+        "rate": 2.5
+      }
+    ]
+  },
+  "sturdy-timber": {
+    "type": "tradeskills",
+    "subtype": "logging",
+    "name": "Sturdy Timber",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "timber",
+        "rate": 12.5
+      }
+    ]
+  },
+  "abidos-timber": {
+    "type": "tradeskills",
+    "subtype": "logging",
+    "name": "Abidos Timber",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "timber",
+        "rate": 12.5
+      },
+      {
+        "id": "tender-timber",
+        "rate": 6.25
+      }
+    ]
+  },
+  "wild-flower": {
+    "type": "tradeskills",
+    "subtype": "foraging",
+    "name": "Wild Flower",
+    "rarity": "common",
+    "marketQty": 100,
+    "exchange": []
+  },
+  "shy-wild-flower": {
+    "type": "tradeskills",
+    "subtype": "foraging",
+    "name": "Shy Wild Flower",
+    "rarity": "uncommon",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "wild-flower",
+        "rate": 2.5
+      }
+    ]
+  },
+  "bright-wild-flower": {
+    "type": "tradeskills",
+    "subtype": "foraging",
+    "name": "Bright Wild Flower",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "wild-flower",
+        "rate": 12.5
+      }
+    ]
+  },
+  "abidos-wild-flower": {
+    "type": "tradeskills",
+    "subtype": "foraging",
+    "name": "Abidos Wild Flower",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "wild-flower",
+        "rate": 12.5
+      },
+      {
+        "id": "shy-wild-flower",
+        "rate": 6.25
+      }
+    ]
+  },
+  "iron-ore": {
+    "type": "tradeskills",
+    "subtype": "mining",
+    "name": "Iron Ore",
+    "rarity": "common",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "heavy-iron-ore",
+        "rate": 0.5
+      },
+      {
+        "id": "strong-iron-ore",
+        "rate": 0.2
+      }
+    ]
+  },
+  "heavy-iron-ore": {
+    "type": "tradeskills",
+    "subtype": "mining",
+    "name": "Heavy Iron Ore",
+    "rarity": "uncommon",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "iron-ore",
+        "rate": 2.5
+      }
+    ]
+  },
+  "strong-iron-ore": {
+    "type": "tradeskills",
+    "subtype": "mining",
+    "name": "Strong Iron Ore",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "iron-ore",
+        "rate": 12.5
+      }
+    ]
+  },
+  "abidos-iron-ore": {
+    "type": "tradeskills",
+    "subtype": "mining",
+    "name": "Abidos Iron Ore",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "iron-ore",
+        "rate": 12.5
+      },
+      {
+        "id": "heavy-iron-ore",
+        "rate": 6.25
+      }
+    ]
+  },
+  "thick-raw-meat": {
+    "type": "tradeskills",
+    "subtype": "hunting",
+    "name": "Thick Raw Meat",
+    "rarity": "common",
+    "marketQty": 100,
+    "exchange": []
+  },
+  "treated-meat": {
+    "type": "tradeskills",
+    "subtype": "hunting",
+    "name": "Treated Meat",
+    "rarity": "uncommon",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "thick-raw-meat",
+        "rate": 2.5
+      }
+    ]
+  },
+  "tough-leather": {
+    "type": "tradeskills",
+    "subtype": "hunting",
+    "name": "Tough Leather",
+    "rarity": "uncommon",
+    "marketQty": 100
+  },
+  "oreha-thick-meat": {
+    "type": "tradeskills",
+    "subtype": "hunting",
+    "name": "Oreha Thick Meat",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "thick-raw-meat",
+        "rate": 12.5
+      }
+    ]
+  },
+  "abidos-thick-raw-meat": {
+    "type": "tradeskills",
+    "subtype": "hunting",
+    "name": "Abidos Thick Raw Meat",
+    "rarity": "rare",
+    "marketQty": 100,
+    "exchange": [
+      {
+        "id": "thick-raw-meat",
+        "rate": 12.5
+      },
+      {
+        "id": "treated-meat",
+        "rate": 6.25
+      }
+    ]
+  }
+}

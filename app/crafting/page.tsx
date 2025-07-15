@@ -1,13 +1,75 @@
 import CraftingOptions from "@/components/Crafting/CraftingOptions";
-import CraftingTable from "@/components/Crafting/CraftingTable";
+import CraftingItemCard from "@/components/Crafting/CraftingItemCard";
+import { craftingItems } from "@/lib/game-info";
+import { cn } from "@/lib/utils";
 import { CraftingStoreProvider } from "@/providers/CraftStoreProvider";
 import { PriceStoreProvider } from "@/providers/PriceStoreProvider";
+import { CraftingParents } from "@/stores/crafting";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
 	title: "Crafting | Lost Ark Utils",
 	description: "",
 };
+
+
+function NavigationAnchor({
+	children,
+	className,
+}: {
+	children: string;
+	className?: string;
+}) {
+	return (
+		<Link
+			href={`#${""}`}
+			className={cn(
+				"text-lg text-muted-foreground hover:text-foreground",
+				className,
+			)}
+		>
+			<span>{children}</span>
+		</Link>
+	);
+}
+
+function CraftingType({
+	type,
+	subtype,
+	children,
+}: {
+	type: CraftingParents;
+	subtype?: string;
+	children: string;
+}) {
+	const items = Array.from(craftingItems.entries()).filter(([, item]) => item.type === type);
+
+	return (
+		<div>
+			<div
+				className="block relative top-[-70px] invisible"
+				id={subtype || type}
+			/>
+			<h1
+				className={cn("text-2xl font-bold text-center md:text-start", {
+					"text-xl": subtype !== undefined,
+				})}
+			>
+				{children}
+			</h1>
+			<div
+				className={cn(
+					"mt-6 flex flex-row flex-wrap gap-3 justify-center md:justify-start",
+				)}
+			>
+				{items.map(([id, item]) => (
+					<CraftingItemCard key={id} id={id} item={item} />
+				))}
+			</div>
+		</div>
+	);
+}
 
 export default function CraftingPage() {
 	return (
@@ -17,9 +79,20 @@ export default function CraftingPage() {
 					<CraftingOptions parent="general" />
 					<CraftingOptions parent="special" />
 				</div>
-				<PriceStoreProvider>
-					<CraftingTable />
-				</PriceStoreProvider>
+				<div className="flex flex-row my-6 md:mx-12 gap-6">
+					<div className="hidden md:block">
+						<div className="flex flex-col gap-1 sticky top-[88px]">
+							<h1 className="text-2xl font-bold mb-3">Navigation</h1>
+							<NavigationAnchor>Special</NavigationAnchor>
+						</div>
+					</div>
+
+					<div className="flex flex-col gap-6">
+						<PriceStoreProvider>
+							<CraftingType type="special">Special</CraftingType>
+						</PriceStoreProvider>
+					</div>
+				</div>
 			</div>
 		</CraftingStoreProvider>
 	);

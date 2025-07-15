@@ -1,8 +1,6 @@
-import { items } from "@/stores/prices";
+import { ItemId } from "../game-info";
 
-type itemId = (typeof items)[number]["id"];
-
-export const itemSlugs: itemId[] = [
+export const itemSlugs: ItemId[] = [
   "abidos-wild-flower",
   "bright-wild-flower",
   "shy-wild-flower",
@@ -48,8 +46,11 @@ export const itemSlugs: itemId[] = [
   "solar-protection",
   "glaciers-breath",
   "lavas-breath",
+
+  "natural-pearl",
+  "tough-leather"
 ];
 
 export function containsSlug(slug: string): boolean {
-  return itemSlugs.includes(slug as itemId);
+  return itemSlugs.includes(slug as ItemId);
 }

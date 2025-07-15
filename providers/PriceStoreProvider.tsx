@@ -6,6 +6,7 @@ import {
 	type ReactNode,
 	createContext,
 	useContext,
+	useMemo,
 	useRef,
 } from "react";
 import { useStore } from "zustand";
@@ -33,7 +34,7 @@ export const PriceStoreProvider = ({ children }: PriceStoreProviderProps) => {
 	);
 };
 
-export const usePriceStore = <T,>(
+const _usePriceStore = <T,>(
 	selector: (store: PricesStore) => T,
 ): { store: T; hasHydrated: boolean } => {
 	const priceStoreContext = useContext(PriceStoreContext);
@@ -52,3 +53,21 @@ export const usePriceStore = <T,>(
 		hasHydrated,
 	};
 };
+
+export const usePriceStore = () => {
+	const priceStore = _usePriceStore((store) => store);
+
+	const single_bc_price = useMemo(() => {
+		if (!priceStore.hasHydrated)
+			return 0;
+
+		const bcItem = priceStore.store.prices.find((item) => item.id === "blue-crystal");
+		return (bcItem?.price || 0) / 95;
+	}, [priceStore]);
+
+	return {
+		store: priceStore.store,
+		single_bc_price,
+		hasHydrated: priceStore.hasHydrated,
+	}
+}

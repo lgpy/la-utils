@@ -1,38 +1,15 @@
 "use client";
 
-import TruncatedTooltip from "@/components/TruncatedTooltip";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Item, items } from "@/lib/game-info";
+import { getRarityClasses } from "@/lib/rarity";
 import { cn } from "@/lib/utils";
 import { usePriceStore } from "@/providers/PriceStoreProvider";
-import { type PricesState, items } from "@/stores/prices";
 import { formatDistanceToNowStrict } from "date-fns";
+import { Loader2Icon } from "lucide-react";
 import Image from "next/image";
-import type { ChangeEventHandler } from "react";
-
-type Props = {
-	item: (typeof items)[number];
-	pSitem?: PricesState["prices"][number];
-	changeValue: (value: number) => void;
-	bcValue: number;
-};
-
-// Helper function to get rarity-based styling
-const getRarityClasses = (rarity?: string) => ({
-	header: cn("bg-linear-to-b from-card to-card", {
-		"from-ctp-mauve/30 dark:from-ctp-mauve/15": rarity === "epic",
-		"from-ctp-blue/30 dark:from-ctp-blue/15": rarity === "rare",
-		"from-ctp-green/30 dark:from-ctp-green/15": rarity === "uncommon",
-		"from-ctp-overlay1/40 dark:from-ctp-overlay1/20": rarity === "common",
-	}),
-	text: cn("", {
-		"text-ctp-mauve": rarity === "epic",
-		"text-ctp-blue": rarity === "rare",
-		"text-ctp-green": rarity === "uncommon",
-		"text-ctp-overlay1": rarity === "common",
-	}),
-});
+import { useMemo } from "react";
 
 // Simple component for displaying percentage changes
 const PercentChange = ({ value }: { value: number }) => (
@@ -47,17 +24,30 @@ const PercentChange = ({ value }: { value: number }) => (
 	</p>
 );
 
-// Mari Shop comparison section
-const MariShopSection = ({
-	item,
-	bcValue,
-	marketPrice,
-}: { item: Props["item"]; bcValue: number; marketPrice: number }) => {
-	if (!item.mari) return null;
+interface MariShopSectionProps {
+	mari: NonNullable<Item["mari"]>;
+	marketQty: number;
+	itemId: string;
+}
 
-	const blueCrystalValue = bcValue * item.mari.bc;
-	const singleMarketValue = marketPrice / item.marketQty;
-	const singleMariValue = blueCrystalValue / item.mari.qty;
+// Mari Shop comparison section
+export const MariShopSection = ({
+	mari,
+	marketQty,
+	itemId,
+}: MariShopSectionProps) => {
+	const priceStore = usePriceStore();
+
+	const marketPrice = useMemo(() => {
+		if (!priceStore.hasHydrated)
+			return 0;
+		const item = priceStore.store.prices.find((i) => i.id === itemId);
+		return item?.price || 0;
+	}, [priceStore, itemId]);
+
+	const blueCrystalValue = priceStore.single_bc_price * mari.bc;
+	const singleMarketValue = marketPrice / marketQty;
+	const singleMariValue = blueCrystalValue / mari.qty;
 	const profit = singleMarketValue - singleMariValue;
 	const diff = -((profit / singleMarketValue) * 100);
 
@@ -67,13 +57,17 @@ const MariShopSection = ({
 				Mari Value
 				<span className="text-muted-foreground text-xs">
 					{" "}
-					(x{item.mari.qty})
+					(x{mari.qty})
 				</span>
 			</Label>
-			<p className="text-md mt-1.5">{singleMariValue.toFixed(2)}</p>
-			<PercentChange value={diff} />
-			<div className="flex items-center gap-1 text-muted-foreground">
-				<p className="text-xs">{item.mari.bc}</p>
+			{priceStore.hasHydrated && (
+				<div className="flex flex-col items-end">
+					<p className="text-md">{singleMariValue.toFixed(2)}</p>
+					<PercentChange value={diff} />
+				</div>
+			)}
+			< div className="flex items-center gap-1 text-muted-foreground">
+				<p className="text-xs">{mari.bc}</p>
 				<Image
 					src="/assets/blue-crystal.webp"
 					height={16}
@@ -82,30 +76,44 @@ const MariShopSection = ({
 					className="size-[16px]"
 				/>
 			</div>
-		</div>
+		</div >
 	);
 };
 
+interface ExchangeSectionProps {
+	item: Item
+	itemId: string;
+	exchange: NonNullable<Item["exchange"]>;
+}
+
 // Exchange comparison section
-const ExchangeSection = ({
+export const ExchangeSection = ({
 	item,
-	marketPrice,
-}: { item: Props["item"]; marketPrice: number }) => {
-	const { store } = usePriceStore((state) => state);
-	if (!item.exchange) return null;
+	itemId,
+	exchange
+}: ExchangeSectionProps) => {
+	const priceStore = usePriceStore();
+
+	const marketPrice = useMemo(() => {
+		if (!priceStore.hasHydrated)
+			return 0;
+		const item = priceStore.store.prices.find((i) => i.id === itemId);
+		return item?.price || 0;
+	}, [priceStore, itemId]);
 
 	const singleMarketValue = marketPrice / item.marketQty;
 
 	// Find best exchange option
-	const bestExchange = item.exchange.reduce<{
-		item?: (typeof items)[number];
+	const bestExchange = exchange.reduce<{
+		item?: Item;
 		value: number;
 		rate: number;
 		diff: number;
+		id?: string;
 	}>(
 		(best, curr) => {
-			const exchangeItem = items.find((i) => i.id === curr.id);
-			const storeItem = store.prices.find((i) => i.id === curr.id);
+			const exchangeItem = items.get(curr.id);
+			const storeItem = priceStore.store.prices.find((i) => i.id === curr.id);
 
 			if (!exchangeItem || !storeItem) return best;
 
@@ -114,11 +122,15 @@ const ExchangeSection = ({
 			const diff = -((profit / singleMarketValue) * 100);
 
 			return value < best.value
-				? { item: exchangeItem, value, rate: curr.rate, diff }
+				? { item: exchangeItem, value, rate: curr.rate, diff, id: curr.id }
 				: best;
 		},
-		{ item: undefined, value: Number.POSITIVE_INFINITY, rate: 0, diff: 0 },
+		{ item: undefined, value: Number.POSITIVE_INFINITY, rate: 0, diff: 0, id: undefined },
 	);
+
+	if (!priceStore.hasHydrated) return <div className="flex items-end h-full">
+		<Loader2Icon className="animate-spin" />
+	</div>;
 
 	if (!bestExchange.item) return null;
 
@@ -147,7 +159,7 @@ const ExchangeSection = ({
 					<PercentChange value={bestExchange.diff} />
 				</div>
 				<Image
-					src={`/assets/${bestExchange.item.id}.webp`}
+					src={`/assets/${bestExchange.id}.webp`}
 					height={32}
 					width={32}
 					alt=""
@@ -158,86 +170,42 @@ const ExchangeSection = ({
 	);
 };
 
-export default function PriceCard({
-	changeValue,
-	bcValue,
-	pSitem,
-	item,
-}: Props) {
-	const marketPrice = pSitem?.price || 0;
+export function PriceCardPriceInput({ itemId }: { itemId: string }) {
+	const priceStore = usePriceStore();
 
-	const dayfnsDaysSinceUpdate = pSitem?.updatedOn
-		? formatDistanceToNowStrict(pSitem.updatedOn, { addSuffix: true })
-		: "Never";
-
-	const rarityClasses = getRarityClasses(item.rarity);
-
-	const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-		const num = Number(event.target.value);
-		if (!Number.isNaN(num)) {
-			changeValue(num);
+	const {
+		marketPrice,
+		timeSinceUpdate,
+	} = useMemo(() => {
+		if (!priceStore.hasHydrated) {
+			return { marketPrice: 0, timeSinceUpdate: "Never" };
 		}
-	};
 
-	return (
-		<Card className="w-[350px] flex flex-col justify-between gap-0 py-0 overflow-hidden">
-			<CardHeader className="flex flex-row justify-between p-0">
-				<div
-					className={cn(
-						"flex flex-row items-center gap-3 p-3 w-full",
-						rarityClasses.header,
-					)}
-				>
-					<Image
-						src={`/assets/${item.id}.webp`}
-						width={48}
-						height={48}
-						alt=""
-						className="size-[48px] drop-shadow-2xl shadow-white"
-					/>
-					<TruncatedTooltip
-						text={item.name}
-						className={{
-							text: cn(
-								"text-xl font-semibold tracking-tight truncate",
-								rarityClasses.text,
-							),
-							tooltip: "text-center",
-						}}
-					/>
-				</div>
-			</CardHeader>
-			<CardContent className="flex flex-row justify-between p-3">
-				<div className="flex flex-col gap-1.5 max-w-44">
-					<Label htmlFor={`p-${item.id}`}>
-						Market Value
-						{item.marketQty && (
-							<span className="text-muted-foreground text-xs">
-								{" "}
-								(x{item.marketQty})
-							</span>
-						)}
-					</Label>
-					<Input
-						id={`p-${item.id}`}
-						placeholder="Market Value"
-						type="number"
-						value={marketPrice}
-						onChange={handleChange}
-					/>
-					<p className="text-xs text-muted-foreground">
-						Updated: {dayfnsDaysSinceUpdate}
-					</p>
-				</div>
+		const item = priceStore.store.prices.find((i) => i.id === itemId);
+		const timeSinceUpdate = item?.updatedOn
+			? formatDistanceToNowStrict(item.updatedOn, { addSuffix: true })
+			: "Never";
+		return {
+			marketPrice: item?.price || 0,
+			timeSinceUpdate
+		}
+	}, [priceStore, itemId]);
 
-				{/* Comparison sections */}
-				<MariShopSection
-					item={item}
-					bcValue={bcValue}
-					marketPrice={marketPrice}
-				/>
-				<ExchangeSection item={item} marketPrice={marketPrice} />
-			</CardContent>
-		</Card>
-	);
+	return (<>
+		<Input
+			id={`p-${itemId}`}
+			type="number"
+			disabled={!priceStore.hasHydrated}
+			value={priceStore.hasHydrated ? marketPrice : ""}
+			onChange={(event) => {
+				const num = Number(event.target.value);
+				if (!Number.isNaN(num)) {
+					priceStore.store.changePrice(itemId, num);
+				}
+			}}
+		/>
+		<p className="text-xs text-muted-foreground">
+			Updated: {priceStore.hasHydrated ? timeSinceUpdate : ""}
+		</p>
+	</>)
 }

@@ -48,7 +48,7 @@ function ServerRegionFromServerName(serverName: ServerName): ServerRegion {
 }
 
 export default function LoaBuddyPricesFetcher() {
-  const priceStore = usePriceStore((state) => state);
+  const priceStore = usePriceStore();
   const settingsStore = useSettingsStore((state) => state);
   const [fetching, setFetching] = useState(false);
 
@@ -64,7 +64,7 @@ export default function LoaBuddyPricesFetcher() {
     return lastFetchDate >= threeHoursAgo;
   }, [priceStore]);
 
-  return <div className="flex flex-col items-center gap-2 bg-card p-2 rounded-base border-border border-1 min-w-[160px]">
+  return <div className="flex flex-col items-center gap-2 bg-card p-2 rounded-base border-border border-1 min-w-[180px] mt-6">
     <Select
       disabled={!isReady}
       onValueChange={(value) => {

@@ -3,64 +3,26 @@
 import TruncatedTooltip from "@/components/TruncatedTooltip";
 import WarningTooltipIcon from "@/components/WarningTooltipIcon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { items, type CraftingItem } from "@/lib/game-info";
 import { isBadPriceItem, is_item_price_expired } from "@/lib/items";
+import { getRarityClasses } from "@/lib/rarity";
 import { cn } from "@/lib/utils";
 import { useCraftingStore } from "@/providers/CraftStoreProvider";
 import { usePriceStore } from "@/providers/PriceStoreProvider";
-import { type CraftingParents, craftingItems } from "@/stores/crafting";
-import { items } from "@/stores/prices";
 import Image from "next/image";
-import Link from "next/link";
 import { Fragment } from "react";
 
-function NavigationAnchor({
-	children,
-	className,
-}: {
-	children: string;
-	className?: string;
-}) {
-	return (
-		<Link
-			href={`#${""}`}
-			className={cn(
-				"text-lg text-muted-foreground hover:text-foreground",
-				className,
-			)}
-		>
-			<span>{children}</span>
-		</Link>
-	);
-}
-
-const getRarityClasses = (rarity?: string) => ({
-	header: cn("bg-linear-to-b from-card to-card", {
-		"from-ctp-mauve/30 dark:from-ctp-mauve/15": rarity === "epic",
-		"from-ctp-blue/30 dark:from-ctp-blue/15": rarity === "rare",
-		"from-ctp-green/30 dark:from-ctp-green/15": rarity === "uncommon",
-		"from-ctp-overlay1/40 dark:from-ctp-overlay1/20": rarity === "common",
-	}),
-	text: cn("", {
-		"text-ctp-mauve": rarity === "epic",
-		"text-ctp-blue": rarity === "rare",
-		"text-ctp-green": rarity === "uncommon",
-		"text-ctp-overlay1": rarity === "common",
-	}),
-});
-
-function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
-	const { store: pricesStore, hasHydrated: pricesHasHydrated } = usePriceStore(
-		(store) => store,
-	);
+export default function CraftingItemCard({ id, item }: { id: string, item: CraftingItem }) {
+	const { store: pricesStore, hasHydrated: pricesHasHydrated } = usePriceStore();
 	const { store, hasHydrated: craftHasHydrated } = useCraftingStore(
 		(store) => store,
 	);
 
 	if (!pricesHasHydrated || !craftHasHydrated) {
-		return <div>loading...</div>;
+		return null;
 	}
 
-	const item_price = pricesStore?.prices.find((i) => i.id === item.id);
+	const item_price = pricesStore?.prices.find((i) => i.id === id);
 
 	const recipe_items_price = Object.values(item.recipes).reduce(
 		(acc, items) => {
@@ -99,7 +61,7 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
 			const recipe_item_cost = Object.entries(recipe_items).reduce(
 				(acc, [key, amount]) => {
 					const price = recipe_items_price[key];
-					const storeItem = items.find((i) => i.id === key);
+					const storeItem = items.get(key);
 					const singleMarketItemCost = price / (storeItem?.marketQty || 1);
 					return acc + singleMarketItemCost * amount;
 				},
@@ -137,7 +99,7 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
 				>
 					<div className="relative">
 						<Image
-							src={`/assets/${item.id}.webp`}
+							src={`/assets/${id}.webp`}
 							width={48}
 							height={48}
 							alt=""
@@ -209,62 +171,4 @@ function CraftingItem({ item }: { item: (typeof craftingItems)[number] }) {
 	);
 }
 
-function CraftingType({
-	type,
-	subtype,
-	children,
-}: {
-	type: CraftingParents;
-	subtype?: string;
-	children: string;
-}) {
-	const items = craftingItems.filter((item) => item.type === type);
 
-	return (
-		<div>
-			<div
-				className="block relative top-[-70px] invisible"
-				id={subtype || type}
-			/>
-			<h1
-				className={cn("text-2xl font-bold text-center md:text-start", {
-					"text-xl": subtype !== undefined,
-				})}
-			>
-				{children}
-			</h1>
-			<div
-				className={cn(
-					"mt-6 flex flex-row flex-wrap gap-3 justify-center md:justify-start",
-				)}
-			>
-				{items.map((item) => (
-					<CraftingItem key={item.id} item={item} />
-				))}
-			</div>
-		</div>
-	);
-}
-
-export default function CraftingTable() {
-	const { hasHydrated } = useCraftingStore((store) => store);
-
-	if (!hasHydrated) {
-		return null;
-	}
-
-	return (
-		<div className="flex flex-row my-6 md:mx-12 gap-6">
-			<div className="hidden md:block">
-				<div className="flex flex-col gap-1 sticky top-[88px]">
-					<h1 className="text-2xl font-bold mb-3">Navigation</h1>
-					<NavigationAnchor>Special</NavigationAnchor>
-				</div>
-			</div>
-
-			<div className="flex flex-col gap-6">
-				<CraftingType type="special">Special</CraftingType>
-			</div>
-		</div>
-	);
-}
