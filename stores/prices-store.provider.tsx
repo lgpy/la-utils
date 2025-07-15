@@ -1,7 +1,7 @@
 "use client";
 
 import { useHydration } from "@/hooks/use-hydration";
-import { type PricesStore, createPriceStore } from "@/stores/prices";
+import { type PricesStore, createPriceStore } from "@/stores/prices-store";
 import {
 	type ReactNode,
 	createContext,

@@ -16,7 +16,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSettingsStore } from "@/providers/MainStoreProvider";
+import { useSettingsStore } from "@/stores/main-store/provider";
 
 export default function FriendRaidsFAB() {
 	const [isOpen, setIsOpen] = useState(false);

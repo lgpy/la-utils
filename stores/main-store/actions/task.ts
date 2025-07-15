@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { StateActions } from "..";
+import { StateActions } from "../main-store";
 import z from "zod";
 import { isTaskCompleted } from "@/lib/tasks";
 import { getIndexOrThrow, getOrThrow } from "@/lib/array";

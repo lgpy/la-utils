@@ -4,6 +4,9 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./db";
 
+import { admin as adminPlugin } from "better-auth/plugins"
+import { ac, admin, user } from "./auth.permissions";
+
 let baseUrl: string;
 
 if (process.env.VERCEL === "1" && process.env.NODE_ENV === "production") {
@@ -30,6 +33,15 @@ const auth = betterAuth({
       clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
     },
   },
+  plugins: [
+    adminPlugin({
+      ac,
+      roles: {
+        admin,
+        user,
+      }
+    })
+  ]
 })
 
 

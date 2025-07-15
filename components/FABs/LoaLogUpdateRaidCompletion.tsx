@@ -1,7 +1,7 @@
 "use client";
 
 import { useLoaLogsDb } from "./LoaLogUpdateRaidCompletion.hooks";
-import { useMainStore, useSettingsStore } from "@/providers/MainStoreProvider";
+import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
 import { getGateInfoFromClearBossName, ignoreBosses } from "./LoaLogUpdateRaidCompletion.utils";
 import { DatabaseBackup } from "lucide-react";
 import { Difficulty } from "@/generated/prisma";

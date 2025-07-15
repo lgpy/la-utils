@@ -2,7 +2,7 @@
 
 import { getHighest3, parseGoldInfo } from "@/lib/chars";
 import { raids } from "@/lib/raids";
-import { useMainStore, useSettingsStore } from "@/providers/MainStoreProvider";
+import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
 import { useMemo } from "react";
 import AnimatedNumber from "./AnimatedNumber";
 import { formatGold } from "@/lib/format";

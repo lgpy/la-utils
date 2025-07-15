@@ -1,6 +1,6 @@
 "use client";
 
-import { useMainStore } from "@/providers/MainStoreProvider";
+import { useMainStore } from "@/stores/main-store/provider";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useMemo } from "react";
 import TodoCard from "./TodoCard";

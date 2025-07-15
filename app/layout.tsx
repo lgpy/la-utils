@@ -1,15 +1,15 @@
 import NavBar from "@/components/NavBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { cn } from "@/lib/utils";
-import { MainStoreProvider } from "@/providers/MainStoreProvider";
-import { ChangelogStoreProvider } from "@/providers/ChangelogStoreProvider";
+import { MainStoreProvider } from "@/stores/main-store/provider";
+import { ChangelogStoreProvider } from "@/stores/changelog-store.provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { UserInfoUpdater } from "@/components/UserInfoUpdater";
 import "@/lib/orpc.server";
-import { OrpcProvider } from "@/providers/OrpcProvider";
+import { OrpcProvider } from "@/lib/orpc.provider";
 import { GlobalAlertDialog } from "@/components/AlertDialog";
 
 const inter = Inter({ subsets: ["latin"] });

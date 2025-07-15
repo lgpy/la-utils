@@ -9,8 +9,8 @@ import {
 } from "@/lib/dates";
 import { isGateCompleted, raids } from "@/lib/raids";
 import { isTaskCompleted } from "@/lib/tasks";
-import { type MainStore, createMainStore } from "@/stores/main";
-import { type SettingsStore, createSettingsStore } from "@/stores/settings";
+import { type MainStore, createMainStore } from "@/stores/main-store/main-store";
+import { type SettingsStore, createSettingsStore } from "@/stores/main-store/settings-store";
 import {
 	type ReactNode,
 	createContext,

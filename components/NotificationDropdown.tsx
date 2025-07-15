@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { authClient } from "@/lib/auth";
 import { orpc } from "@/lib/orpc";
-import { useChangelogStore } from "@/providers/ChangelogStoreProvider";
+import { useChangelogStore } from "@/stores/changelog-store.provider";
 import { useQuery } from "@tanstack/react-query";
 import { Bell, BellRing } from "lucide-react";
 import Link from "next/link";

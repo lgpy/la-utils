@@ -2,7 +2,7 @@
 
 import { authClient } from "@/lib/auth";
 import { fetchCompressed } from "@/lib/requests";
-import { useMainStore, useSettingsStore } from "@/providers/MainStoreProvider";
+import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
 import { isEqual } from "lodash";
 import { useEffect, useRef } from "react";
 

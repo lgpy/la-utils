@@ -28,7 +28,7 @@ import {
 	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useSettingsStore } from "@/providers/MainStoreProvider";
+import { useSettingsStore } from "@/stores/main-store/provider";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth";

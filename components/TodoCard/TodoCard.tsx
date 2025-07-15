@@ -9,7 +9,7 @@ import {
 	type Character,
 	useMainStore,
 	useSettingsStore,
-} from "@/providers/MainStoreProvider";
+} from "@/stores/main-store/provider";
 import { Check, SwordsIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { Fragment, useMemo } from "react";

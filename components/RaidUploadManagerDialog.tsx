@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { raids } from "@/lib/raids";
-import { useMainStore, useSettingsStore } from "@/providers/MainStoreProvider";
+import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
 import { useMemo } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area"

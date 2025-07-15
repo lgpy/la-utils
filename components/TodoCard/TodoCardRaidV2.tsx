@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import {
 	type Character,
 	useSettingsStore,
-} from "@/providers/MainStoreProvider";
+} from "@/stores/main-store/provider";
 import { HandCoins } from "lucide-react";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";

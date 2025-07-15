@@ -5,14 +5,15 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Clock, Loader2 } from "lucide-react";
-import { useChangelogStore } from "@/providers/ChangelogStoreProvider";
+import { useChangelogStore } from "@/stores/changelog-store.provider";
 import ChangelogEntryCard from "./ChangelogCard";
 
 interface ChangelogContentProps {
   changelogs?: OrpcOutputs["changelog"]["paginatedChangelog"];
+  showEditButton?: boolean;
 }
 
-export default function ChangelogContent({ changelogs }: ChangelogContentProps) {
+export default function ChangelogContent({ changelogs, showEditButton }: ChangelogContentProps) {
   const changelogQuery = useInfiniteQuery(orpc.changelog.paginatedChangelog.infiniteOptions({
     input: cursor => ({ cursor, limit: 10 }),
     getNextPageParam: lastPage => lastPage.nextCursor,
@@ -147,7 +148,7 @@ export default function ChangelogContent({ changelogs }: ChangelogContentProps) 
   return (
     <div className="flex flex-col gap-6">
       {entries.map((entry) => (
-        <ChangelogEntryCard key={entry.id} entry={entry} isNew={lastViewedDate.current !== undefined ? entry.date > lastViewedDate.current : undefined} />
+        <ChangelogEntryCard showEditButton={showEditButton} key={entry.id} entry={entry} isNew={lastViewedDate.current !== undefined ? entry.date > lastViewedDate.current : undefined} />
       ))}
     </div>
   );

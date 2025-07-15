@@ -7,8 +7,8 @@ import { items, type CraftingItem } from "@/lib/game-info";
 import { isBadPriceItem, is_item_price_expired } from "@/lib/items";
 import { getRarityClasses } from "@/lib/rarity";
 import { cn } from "@/lib/utils";
-import { useCraftingStore } from "@/providers/CraftStoreProvider";
-import { usePriceStore } from "@/providers/PriceStoreProvider";
+import { useCraftingStore } from "@/stores/crafting-store.provider";
+import { usePriceStore } from "@/stores/prices-store.provider";
 import Image from "next/image";
 import { Fragment } from "react";
 

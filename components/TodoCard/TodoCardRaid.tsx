@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/tooltip";
 import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { cn } from "@/lib/utils";
-import type { Character } from "@/providers/MainStoreProvider";
+import type { Character } from "@/stores/main-store/provider";
 import { HandCoins } from "lucide-react";
 import TodoCardCompleteButton from "./TodoCardCompleteButton";
 

@@ -1,4 +1,4 @@
-import type { PricesStore } from "@/stores/prices";
+import type { PricesStore } from "@/stores/prices-store";
 
 export function is_item_price_expired(
 	item: PricesStore["prices"][number] | undefined,

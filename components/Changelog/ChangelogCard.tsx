@@ -1,3 +1,4 @@
+"use client";
 
 import { OrpcOutputs } from "@/lib/orpc";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -5,6 +6,9 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { ChangelogDetailType } from "@/generated/prisma";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
+import { EyeOffIcon } from "lucide-react";
 
 function getDetailTypeUiConfig(type: ChangelogDetailType) {
   switch (type) {
@@ -27,26 +31,43 @@ function getDetailTypeUiConfig(type: ChangelogDetailType) {
 type ChangelogEntryCardProps = {
   entry: OrpcOutputs["changelog"]["paginatedChangelog"]["entries"][number];
   isNew?: boolean;
+  showEditButton?: boolean;
 }
 
-export default function ChangelogEntryCard({ entry, isNew }: ChangelogEntryCardProps) {
+export default function ChangelogEntryCard({ entry, isNew, showEditButton }: ChangelogEntryCardProps) {
+  const router = useRouter()
 
   return (
-    <Card id={`cl-${entry.id}`}>
+    <Card id={`cl-${entry.id}`} className={cn({
+      "border-dashed": entry.isVisible !== undefined && !entry.isVisible,
+    })}>
       <CardHeader className="flex justify-between items-start">
         <div>
-          <CardTitle className="text-lg flex items-center justify-between">
+          <CardTitle className="text-lg flex items-center justify-between gap-2">
             <span>{entry.title}</span>
+            {entry.isVisible !== undefined && !entry.isVisible && (
+              <EyeOffIcon className="size-5 text-destructive" />
+            )}
           </CardTitle>
           <CardDescription className="flex items-center gap-2 mt-1">
             <span>{format(entry.date, "MMM dd, yyyy")}</span>
           </CardDescription>
         </div>
-        {isNew && (
-          <Badge variant="destructive" className="text-xs px-2 py-0.5">
-            NEW
-          </Badge>
-        )}
+        <div className="flex flex-row gap-2">
+
+          {isNew && (
+            <Badge variant="destructive" className="text-xs px-2 py-0.5">
+              NEW
+            </Badge>
+          )}
+          {showEditButton && (
+            <Button
+              onClick={() => router.push(`/changelog/${entry.id}`)}
+            >
+              Edit
+            </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground mb-3">

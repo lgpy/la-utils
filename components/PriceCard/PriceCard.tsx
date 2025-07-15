@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Item, items } from "@/lib/game-info";
 import { getRarityClasses } from "@/lib/rarity";
 import { cn } from "@/lib/utils";
-import { usePriceStore } from "@/providers/PriceStoreProvider";
+import { usePriceStore } from "@/stores/prices-store.provider";
 import { formatDistanceToNowStrict } from "date-fns";
 import { Loader2Icon } from "lucide-react";
 import Image from "next/image";

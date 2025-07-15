@@ -6,7 +6,7 @@ import {
 	type ReactNode,
 } from "react";
 import { useStore } from "zustand";
-import { createChangelogStore } from "@/stores/changelog";
+import { createChangelogStore } from "@/stores/changelog-store";
 import { useHydration } from "@/hooks/use-hydration";
 
 const ChangelogStoreContext = createContext<ReturnType<

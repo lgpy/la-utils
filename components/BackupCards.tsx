@@ -11,8 +11,8 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { useMainStore } from "@/providers/MainStoreProvider";
-import { MainState } from "@/stores/main";
+import { useMainStore } from "@/stores/main-store/provider";
+import { MainState } from "@/stores/main-store/main-store";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 

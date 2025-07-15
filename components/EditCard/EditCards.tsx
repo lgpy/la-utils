@@ -7,7 +7,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { type Character, useMainStore } from "@/providers/MainStoreProvider";
+import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { dragAndDrop } from "@formkit/drag-and-drop/react";
 import { isEqual } from "lodash";
 import { LockIcon, LockOpenIcon, PlusIcon } from "lucide-react";

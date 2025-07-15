@@ -1,6 +1,6 @@
 import { getGateResetDate, getLatestWeeklyReset } from "@/lib/dates";
 import { isGateCompleted, raids } from "@/lib/raids";
-import { StateActions } from "..";
+import { StateActions } from "../main-store";
 import { Difficulty } from "@/generated/prisma";
 import { getIndexOrThrow, getOrThrow } from "@/lib/array";
 

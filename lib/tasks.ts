@@ -1,6 +1,6 @@
 import type { z } from "zod";
 import { getTaskResetDate } from "./dates";
-import { zodTask } from "@/stores/main/types";
+import { zodTask } from "@/stores/main-store/types";
 
 export type Task = z.infer<typeof zodTask>;
 

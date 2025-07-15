@@ -3,8 +3,8 @@
 import { client } from "@/lib/orpc";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
-import { usePriceStore } from "@/providers/PriceStoreProvider";
-import { useSettingsStore } from "@/providers/MainStoreProvider";
+import { usePriceStore } from "@/stores/prices-store.provider";
+import { useSettingsStore } from "@/stores/main-store/provider";
 import {
   Select,
   SelectContent,

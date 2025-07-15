@@ -1,6 +1,6 @@
 "use client";
 
-import { useSettingsStore } from "@/providers/MainStoreProvider";
+import { useSettingsStore } from "@/stores/main-store/provider";
 import { formatDistanceToNow } from "date-fns";
 import { Construction, Power, WifiOff } from "lucide-react";
 import { useEffect, useState } from "react";

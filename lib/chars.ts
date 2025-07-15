@@ -1,4 +1,4 @@
-import type { Character } from "@/providers/MainStoreProvider";
+import type { Character } from "@/stores/main-store/provider";
 import { getLatestBiWeeklyReset, getLatestWeeklyReset } from "./dates";
 import { isGateCompleted, raids } from "./raids";
 import { Class, Difficulty } from "@/generated/prisma";

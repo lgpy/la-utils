@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Difficulty } from "@/generated/prisma";
 import { raids } from "@/lib/raids";
-import { type Character, useMainStore } from "@/providers/MainStoreProvider";
+import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo } from "react";

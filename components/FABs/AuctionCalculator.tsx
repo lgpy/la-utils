@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAutionStore } from "@/stores/auction";
+import { useAutionStore } from "@/stores/auction-store";
 import { CheckIcon, ClipboardIcon, UsersIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 

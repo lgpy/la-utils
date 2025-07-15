@@ -7,7 +7,7 @@ import {
 import { formatGold } from "@/lib/format";
 import { raids } from "@/lib/raids";
 import { cn } from "@/lib/utils";
-import type { Character } from "@/providers/MainStoreProvider";
+import type { Character } from "@/stores/main-store/provider";
 import PiggyBankProgressBar from "./PiggyBankProgressBar";
 
 type Props = {

@@ -26,7 +26,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Class } from "@/generated/prisma";
-import { type Character, useMainStore } from "@/providers/MainStoreProvider";
+import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash2Icon } from "lucide-react";
 import { useEffect } from "react";

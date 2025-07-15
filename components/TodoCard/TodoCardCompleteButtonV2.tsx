@@ -1,5 +1,5 @@
 import { raids } from "@/lib/raids";
-import { type Character, useMainStore } from "@/providers/MainStoreProvider";
+import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { motion } from "motion/react";
 import type { MouseEventHandler } from "react";
 

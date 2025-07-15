@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Item, items } from "@/lib/game-info";
 import { getRarityClasses } from "@/lib/rarity";
 import { cn } from "@/lib/utils";
-import { PriceStoreProvider } from "@/providers/PriceStoreProvider";
+import { PriceStoreProvider } from "@/stores/prices-store.provider";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Fragment } from "react";

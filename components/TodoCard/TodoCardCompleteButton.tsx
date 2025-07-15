@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 
 import { raids } from "@/lib/raids";
-import { type Character, useMainStore } from "@/providers/MainStoreProvider";
+import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { CheckIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { type MouseEventHandler, useState } from "react";

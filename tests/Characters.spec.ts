@@ -1,5 +1,5 @@
 import { Class, Difficulty } from "@/generated/prisma";
-import type { MainState } from "@/stores/main";
+import type { MainState } from "@/stores/main-store/main-store";
 import { type Page, expect, test } from "@playwright/test";
 
 const setCharacterState = async (

@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth.server";
 import prisma from "@/lib/db";
 import { getUncompressedBody } from "@/lib/requests.server";
 import { headers } from "next/headers";
-import { zodChar } from "@/stores/main/types";
+import { zodChar } from "@/stores/main-store/types";
 
 export async function POST(request: NextRequest) {
   if (auth === null) {

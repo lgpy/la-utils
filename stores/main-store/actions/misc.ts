@@ -1,5 +1,5 @@
 import { Difficulty } from "@/generated/prisma";
-import { MainState, StateActions, zodChars } from "..";
+import { MainState, StateActions, zodChars } from "../main-store";
 import { getGateResetDate } from "@/lib/dates";
 import { isGateCompleted, raids } from "@/lib/raids";
 import { sortDifficulties } from "@/lib/chars";

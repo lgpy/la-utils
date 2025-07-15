@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { sortRaidKeys } from "@/lib/chars";
 import { cn } from "@/lib/utils";
-import type { Character } from "@/providers/MainStoreProvider";
+import type { Character } from "@/stores/main-store/provider";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
 import { Fragment, useMemo } from "react";

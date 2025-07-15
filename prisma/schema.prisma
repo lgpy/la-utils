@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider      = "prisma-client-js"
-  output        = "../generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -30,6 +30,11 @@ model User {
   friendshipsRequested Friendship[] @relation("FriendRequester")
   friendshipsReceived  Friendship[] @relation("FriendAddressee")
 
+  role       String?
+  banned     Boolean?
+  banReason  String?
+  banExpires DateTime?
+
   @@unique([email])
   @@map("user")
 }
@@ -44,6 +49,8 @@ model Session {
   userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  impersonatedBy String?
 
   @@unique([token])
   @@map("session")
@@ -124,11 +131,11 @@ model Character {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  id           String
-  name         String
-  class        Class
-  itemLevel    Int
-  isGoldEarner Boolean @default(false)
+  id            String
+  name          String
+  class         Class
+  itemLevel     Int
+  isGoldEarner  Boolean         @default(false)
   assignedRaids AssignedRaid[]
   tasks         CharacterTask[]
   createdAt     DateTime        @default(now())
@@ -159,9 +166,8 @@ model RaidGate {
   gateId         String
   difficulty     Difficulty
   completedDate  DateTime?
-  
-  userId      String
-  characterId   String
+  userId         String
+  characterId    String
   assignedRaidId String
   assignedRaid   AssignedRaid @relation(fields: [assignedRaidId, characterId, userId], references: [raidId, characterId, userId], onDelete: Cascade)
 
@@ -182,22 +188,22 @@ model CharacterTask {
   completedDate DateTime?
 
   userId      String
-  characterId   String
-  character     Character @relation(fields: [userId, characterId], references: [userId, id], onDelete: Cascade)
+  characterId String
+  character   Character @relation(fields: [userId, characterId], references: [userId, id], onDelete: Cascade)
 
   @@id([id, characterId, userId])
   @@map("character_task")
 }
 
 model Friendship {
-  id         String   @id @default(uuid())
-  requester  User     @relation("FriendRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  id          String           @id @default(uuid())
+  requester   User             @relation("FriendRequester", fields: [requesterId], references: [id], onDelete: Cascade)
   requesterId String
-  addressee  User     @relation("FriendAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+  addressee   User             @relation("FriendAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
   addresseeId String
-  status     FriendshipStatus @default(pending)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  status      FriendshipStatus @default(pending)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   @@unique([requesterId, addresseeId])
   @@map("friendship")
@@ -210,23 +216,23 @@ enum FriendshipStatus {
 }
 
 enum ServerName {
-	// NAW servers
-	Thaemine
-	Brelshaza
+  // NAW servers
+  Thaemine
+  Brelshaza
 
-	// NAE servers
-	Luterra
-	Balthorr
-	Nineveh
-	Inanna
-	Vairgrys
+  // NAE servers
+  Luterra
+  Balthorr
+  Nineveh
+  Inanna
+  Vairgrys
 
-	// EUC servers
-	Ortuus
-	Elpon
-	Ratik
-	Arcturus
-	Gienah
+  // EUC servers
+  Ortuus
+  Elpon
+  Ratik
+  Arcturus
+  Gienah
 }
 
 enum ServerStatus {
@@ -238,9 +244,9 @@ enum ServerStatus {
 }
 
 model Server {
-  id          ServerName @id
-  status      ServerStatus
-  updatedAt   DateTime @updatedAt
+  id        ServerName   @id
+  status    ServerStatus
+  updatedAt DateTime     @updatedAt
 
   @@map("server")
 }
@@ -254,7 +260,7 @@ enum ChangelogDetailType {
 }
 
 model ChangelogDetail {
-  id          Int      @default(autoincrement())
+  id          Int       @default(autoincrement())
   changelogId Int
   changelog   Changelog @relation(fields: [changelogId], references: [id], onDelete: Cascade)
 
@@ -266,11 +272,13 @@ model ChangelogDetail {
 }
 
 model Changelog {
-  id          Int      @id @default(autoincrement())
+  id          Int               @id @default(autoincrement())
   date        DateTime
   title       String
   description String
   details     ChangelogDetail[]
+
+  isVisible Boolean
 
   @@map("changelog")
 }
@@ -282,11 +290,11 @@ enum ServerRegion {
 }
 
 model MarketPrice {
-  itemId      String
-  price       Int
-  updatedAt   DateTime
+  itemId    String
+  price     Int
+  updatedAt DateTime
 
-  region     ServerRegion
+  region ServerRegion
 
   @@id([itemId, region])
   @@map("market_price")

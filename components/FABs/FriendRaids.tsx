@@ -2,12 +2,12 @@
 
 import { orpc, OrpcOutputs } from "@/lib/orpc";
 import { raids } from "@/lib/raids";
-import { useMainStore } from "@/providers/MainStoreProvider";
+import { useMainStore } from "@/stores/main-store/provider";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Class, Difficulty } from "@/generated/prisma";
-import type { MainStore } from "@/stores/main";
+import type { MainStore } from "@/stores/main-store/main-store";
 import {
 	separateSupportAndDps,
 	sortDifficulties,

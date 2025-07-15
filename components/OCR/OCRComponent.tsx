@@ -11,7 +11,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { usePriceStore } from "@/providers/PriceStoreProvider";
+import { usePriceStore } from "@/stores/prices-store.provider";
 import { AlertCircle, CheckCircle2, ScanText, Upload } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
