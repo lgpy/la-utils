@@ -1,6 +1,5 @@
 import CraftingOptions from "@/components/Crafting/CraftingOptions";
 import CraftingTable from "@/components/Crafting/CraftingTable";
-import CraftingCalculatorFAB from "@/components/FABs/CraftingCalculatorFAB";
 import { CraftingStoreProvider } from "@/providers/CraftStoreProvider";
 import { PriceStoreProvider } from "@/providers/PriceStoreProvider";
 import type { Metadata } from "next";
