@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCraftingStore } from "@/providers/CraftStoreProvider";
-import type { CraftingParents, CraftingStore } from "@/stores/crafting";
+import type { CraftingParents } from "@/stores/crafting";
 
 const getLabel = (parent: CraftingParents) => {
 	switch (parent) {
@@ -17,14 +17,13 @@ const getLabel = (parent: CraftingParents) => {
 	}
 };
 
-function CraftingOptions({
-	store,
+export default function CraftingOptions({
 	parent,
 }: {
-	store: CraftingStore;
 	parent: CraftingParents;
 }) {
-	const options = store[parent];
+	const craftingStore = useCraftingStore((store) => store);
+	const options = craftingStore.store[parent];
 	const label = getLabel(parent);
 
 	return (
@@ -40,8 +39,9 @@ function CraftingOptions({
 					className="text-center no-spinner"
 					value={options.costReduction}
 					onChange={(e) =>
-						store.changeKey(parent, "costReduction", Number(e.target.value))
+						craftingStore.store.changeKey(parent, "costReduction", Number(e.target.value))
 					}
+					disabled={!craftingStore.hasHydrated}
 				/>
 				<Label className="text-end justify-end">Great Success Chance</Label>
 				<Input
@@ -50,29 +50,15 @@ function CraftingOptions({
 					className="text-center no-spinner"
 					value={options.greatSuccessChance}
 					onChange={(e) =>
-						store.changeKey(
+						craftingStore.store.changeKey(
 							parent,
 							"greatSuccessChance",
 							Number(e.target.value),
 						)
 					}
+					disabled={!craftingStore.hasHydrated}
 				/>
 			</CardContent>
 		</Card>
-	);
-}
-
-export default function CraftingHeader() {
-	const { store, hasHydrated } = useCraftingStore((store) => store);
-
-	if (!hasHydrated) {
-		return null;
-	}
-
-	return (
-		<div className="flex flex-col md:flex-row gap-3 items-center justify-center">
-			<CraftingOptions store={store} parent="general" />
-			<CraftingOptions store={store} parent="special" />
-		</div>
 	);
 }
