@@ -1,10 +1,8 @@
 import { ChangelogDetailType } from "@/generated/prisma";
 import { z } from "zod";
+import { paginatedSchema } from "./general.schema";
 
-export const paginatedChangelogSchema = z.object({
-  limit: z.number().int().min(1).max(100).default(10),
-  cursor: z.number().int().min(0).default(0),
-});
+export const paginatedChangelogSchema = paginatedSchema
 
 export const paginatedChangelogOutputSchema = z.object({
   entries: z.object({

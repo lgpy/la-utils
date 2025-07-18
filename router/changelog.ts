@@ -1,34 +1,40 @@
-import { os } from "@orpc/server";
+import { ORPCError, os } from "@orpc/server";
 import { dbProviderMiddleware } from "./middleware/db";
 import { changelogEntrySchema, getChangelogEntrySchema, last5ChangelogSchema, paginatedChangelogOutputSchema, paginatedChangelogSchema } from "./changelog.schema";
-import { optionalAuthMiddleware } from "./middleware/auth";
-import { auth } from "@/lib/auth.server";
+import { optionalAuthMiddleware, requiredAuthMiddleware } from "./middleware/auth";
+import { hasPermission, Session } from "@/lib/auth.server";
+
+export const optionalPermission = os.
+  $context<{ session?: Session }>()
+  .middleware(async ({ context, next }) => {
+    let hasManagementPermission = false;
+    if (context.session)
+      hasManagementPermission = await hasPermission({ changelog: ["manage"] }, context.session);
+    return next({ context: { hasManagementPermission } });
+  });
+
+export const requiredPermission = os
+  .$context<{ session: Session }>()
+  .middleware(async ({ context, next }) => {
+    const permission = await hasPermission({ changelog: ["manage"] }, context.session);
+    if (!permission) {
+      throw new ORPCError("Unauthorized");
+    }
+    return next();
+  });
 
 export const paginatedChangelog = os
   .use(dbProviderMiddleware)
   .use(optionalAuthMiddleware)
+  .use(optionalPermission)
   .input(paginatedChangelogSchema)
   .output(paginatedChangelogOutputSchema)
-  .handler(async ({ context: { db, session }, input }) => {
+  .handler(async ({ context: { db, hasManagementPermission }, input }) => {
     const { limit, cursor } = input;
-
-    let hasPermission = false;
-
-    if (session) {
-      const ManagementPermission = await auth.api.userHasPermission({
-        body: {
-          userId: session.user.id,
-          permissions: {
-            changelog: ["manage"],
-          },
-        }
-      })
-      hasPermission = ManagementPermission.success;
-    }
 
     const changelog = await db.changelog.findMany({
       where: {
-        isVisible: hasPermission ? undefined : true,
+        isVisible: hasManagementPermission ? undefined : true,
       },
       take: limit,
       skip: cursor,
@@ -45,7 +51,7 @@ export const paginatedChangelog = os
         },
       },
       omit: {
-        isVisible: hasPermission ? false : true, // Only include isVisible if the user has management permissions
+        isVisible: hasManagementPermission ? false : true, // Only include isVisible if the user has management permissions
       }
     });
 
@@ -84,6 +90,8 @@ export const last5Changelog = os
 
 export const getChangelogEntry = os
   .use(dbProviderMiddleware)
+  .use(requiredAuthMiddleware)
+  .use(requiredPermission)
   .input(getChangelogEntrySchema)
   .handler(async ({ context: { db }, input }) => {
     const { id } = input;
@@ -104,6 +112,8 @@ export const getChangelogEntry = os
 
 export const upsertChangelogEntry = os
   .use(dbProviderMiddleware)
+  .use(requiredAuthMiddleware)
+  .use(requiredPermission)
   .input(changelogEntrySchema)
   .handler(async ({ context: { db }, input }) => {
     const { id, date, title, description, details, isVisible } = input;

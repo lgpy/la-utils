@@ -4,6 +4,7 @@ import { defaultStatements, adminAc, userAc } from "better-auth/plugins/admin/ac
 const statement = {
   ...defaultStatements,
   changelog: ["manage"],
+  dashboard: ["view"],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -14,5 +15,7 @@ export const user = ac.newRole({
 
 export const admin = ac.newRole({
   changelog: ["manage"],
+  dashboard: ["view"],
   ...adminAc.statements,
 });
+

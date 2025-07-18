@@ -45,5 +45,23 @@ const auth = betterAuth({
 })
 
 
+export type Session = ReturnType<typeof betterAuth>['$Infer']['Session']
+
+type PermissionStatements = {
+  [K in keyof typeof ac.statements]?: (typeof ac.statements[K] extends readonly unknown[] ? (typeof ac.statements[K])[number] : never)[]
+}
+
+export async function hasPermission(permissions: PermissionStatements, session: Session): Promise<boolean> {
+  const ManagementPermission = await auth.api.userHasPermission({
+    body: {
+      userId: session.user.id,
+      permissions,
+    }
+  })
+
+  return ManagementPermission.success;
+}
+
+
 
 export { auth }

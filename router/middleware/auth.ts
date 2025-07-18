@@ -1,9 +1,6 @@
-import { auth } from '@/lib/auth.server'
+import { auth, Session } from '@/lib/auth.server'
 import { os } from '@orpc/server'
-import type { betterAuth } from 'better-auth'
 import { headers } from 'next/headers'
-
-type Session = ReturnType<typeof betterAuth>['$Infer']['Session']
 
 export const requiredAuthMiddleware = os
   .$context<{ session?: Session }>()
