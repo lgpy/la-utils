@@ -55,7 +55,7 @@ export default function UserList({ initialData }: Props) {
   return (
     <ScrollArea
       ref={scrollAreaRef}
-      className="h-[300px] min-w-[500px] w-max rounded-md border"
+      className="h-[400px] min-w-[300px] rounded-md border w-full"
     >
       {userQuery.isLoading ? (
         <div className="flex items-center justify-center h-full">
@@ -81,8 +81,7 @@ export default function UserList({ initialData }: Props) {
             </div>
           )}
         </div>
-      )
-      }
+      )}
     </ScrollArea >
   );
 }

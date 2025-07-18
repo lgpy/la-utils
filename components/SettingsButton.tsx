@@ -78,7 +78,7 @@ export default function SettingsButton() {
 							<>
 								<Avatar className="size-9 rounded-lg">
 									<AvatarImage src={session.data.user.image ?? undefined} alt={session.data.user.name} />
-									<AvatarFallback className="rounded-lg">CN</AvatarFallback>
+									<AvatarFallback className="rounded-lg">{session.data.user.name.charAt(0)}</AvatarFallback>
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-medium">{session.data.user.name}</span>

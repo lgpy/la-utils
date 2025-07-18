@@ -3,7 +3,7 @@ import { getFriendsRaids } from "./friendRaids";
 import { getFriends, getFriendRequests, respondToFriendRequest, revokeRequest, sendFriendRequest, revokeFriendship } from "./friends";
 import { getMarketPrices } from "./market";
 import { getServerStatus } from "./serverStatus";
-import { listUsersInfinite, count } from "./users";
+import { listUsersInfinite, count, graphData } from "./users";
 
 export const router = {
   friends: {
@@ -31,6 +31,7 @@ export const router = {
   },
   users: {
     listUsersInfinite,
-    count
+    count,
+    graphData
   }
 }
