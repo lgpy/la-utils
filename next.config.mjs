@@ -1,4 +1,3 @@
-import BundleAnalyzer from  '@next/bundle-analyzer';
 import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
 
 /** @type {import('next').NextConfig} */
@@ -15,8 +14,4 @@ const nextConfig = {
   }
 }
  
-const withBundleAnalyzer = BundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true',
-})
- 
-export default withBundleAnalyzer(nextConfig)
+export default nextConfig;

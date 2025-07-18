@@ -1,6 +1,6 @@
 "use client";
 
-import { useHydration } from "@/hooks/use-hydration";
+import { useHydration } from "@/lib/hooks/use-hydration";
 import {
 	getLatestBiWeeklyReset,
 	getLatestDailyReset,

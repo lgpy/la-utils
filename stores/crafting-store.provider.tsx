@@ -1,6 +1,6 @@
 "use client";
 
-import { useHydration } from "@/hooks/use-hydration";
+import { useHydration } from "@/lib/hooks/use-hydration";
 import { type CraftingStore, createCraftingStore } from "@/stores/crafting-store";
 import {
 	type ReactNode,

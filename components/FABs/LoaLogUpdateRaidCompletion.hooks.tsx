@@ -6,6 +6,7 @@ import {
 import { getLatestWeeklyReset } from "@/lib/dates";
 import { toast } from "sonner";
 import { DBWorkerResponse } from "@/workers/dbWorker";
+import Link from "next/link";
 
 interface FileAccessState {
 	fileHandle: FileSystemFileHandle | null;
@@ -104,14 +105,14 @@ export function useLoaLogsDb(onResponse?: (data: {
 					toast(
 						<>
 							{"Persistent file permission required. "}
-							<a
+							<Link
 								href="/loa-logs-config"
 								className="underline text-primary"
 								target="_blank"
 								rel="noopener noreferrer"
 							>
 								Setup here
-							</a>
+							</Link>
 						</>,
 						{ duration: 8000 },
 					);
