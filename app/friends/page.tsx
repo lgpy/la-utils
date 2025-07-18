@@ -353,13 +353,10 @@ function UserCard({ user, children }: UserCardProps) {
 		<div className="flex items-center gap-3 border rounded-md px-3 py-2 mb-2 justify-between">
 			<div className="flex items-center gap-3 min-w-0">
 				<Avatar>
-					{user.image ? (
-						<AvatarImage src={user.image} alt={user.name || user.id} />
-					) : (
-						<AvatarFallback>
-							{(user.name || user.id)?.[0]?.toUpperCase() || "?"}
-						</AvatarFallback>
-					)}
+					<AvatarImage src={user.image ?? undefined} alt={user.name} />
+					<AvatarFallback>
+						{user.name.charAt(0).toUpperCase()}
+					</AvatarFallback>
 				</Avatar>
 				<div className="min-w-0">
 					<div className="font-medium truncate">{user.name || user.id}</div>

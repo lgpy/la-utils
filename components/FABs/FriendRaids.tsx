@@ -261,17 +261,14 @@ export default function FriendRaids({ filterByRaids, isVisible }: Props) {
 										>
 											<AccordionTrigger className="items-center flex text-md py-2 px-4 data-[state=open]:rounded-b-none hover:no-underline bg-muted cursor-pointer hover:text-ctp-text/80">
 												<span className="min-w-[60px]">{difficulty}</span>
-												<div className="*:data-[slot=avatar]:ring-muted flex -space-x-2 *:data-[slot=avatar]:ring-2">
+												<div className="*:data-[slot=avatar]:ring-ctp-surface1/50 flex -space-x-2 *:data-[slot=avatar]:ring-2">
 													{users.map((user) => {
 														return (
 															<Avatar key={`${raidId}-${difficulty}-${user.id}`}>
-																{user.image ? (
-																	<AvatarImage src={user.image} alt={user.name} />
-																) : (
-																	<AvatarFallback>
-																		{user.name?.[0]?.toUpperCase() || "?"}
-																	</AvatarFallback>
-																)}
+																<AvatarImage src={user.image ?? undefined} alt={user.name} />
+																<AvatarFallback>
+																	{user.name.charAt(0).toUpperCase()}
+																</AvatarFallback>
 															</Avatar>
 														);
 													})}
@@ -292,13 +289,10 @@ export default function FriendRaids({ filterByRaids, isVisible }: Props) {
 														>
 															<div className="flex items-center gap-2">
 																<Avatar className="shrink-0 size-10">
-																	{user.image ? (
-																		<AvatarImage src={user.image} alt={user.name} />
-																	) : (
-																		<AvatarFallback>
-																			{user.name?.[0]?.toUpperCase() || "?"}
-																		</AvatarFallback>
-																	)}
+																	<AvatarImage src={user.image ?? undefined} alt={user.name} />
+																	<AvatarFallback>
+																		{user.name.charAt(0).toUpperCase()}
+																	</AvatarFallback>
 																</Avatar>
 																<div className="flex flex-col">
 																	<span className="font-medium">{user.name}</span>
