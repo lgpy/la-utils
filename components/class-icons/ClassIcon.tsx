@@ -1,5 +1,6 @@
 import { Class } from "@/generated/prisma";
 import { cn } from "@/lib/utils";
+import { Loader2Icon } from "lucide-react";
 import type React from "react";
 import { Suspense, lazy } from "react";
 
@@ -77,10 +78,7 @@ export default function ClassIcon(
 	// TODO Provide a fallback for when the icon is loading
 	// You can customize the fallback (e.g., a spinner or a placeholder icon)
 	const fallback = (
-		<svg
-			viewBox="0 0 24 24"
-			className={cn("fill-current size-6", svgProps.className)}
-		/>
+		<Loader2Icon className={cn("animate-spin size-6", svgProps.className)} />
 	);
 
 	return (
