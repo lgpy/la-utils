@@ -37,8 +37,6 @@ model User {
 
   @@unique([email])
   @@map("user")
-
-  @@index([email], name: "user_email_index")
 }
 
 model Session {
@@ -58,7 +56,6 @@ model Session {
   @@map("session")
 
   @@index([userId], name: "session_user_id_index")
-  @@index([token], name: "session_token_index")
 }
 
 model Account {
