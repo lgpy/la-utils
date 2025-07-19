@@ -40,12 +40,11 @@ export default async function DashboardPage() {
     <div className="container py-6">
       <div className="max-w-4xl mx-auto flex flex-col gap-12">
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-lg">Total Users: {userCount}</p>
-        <div className="flex flex-row gap-4">
+        <div className="grid grid-cols-2 gap-6">
           <WeeklyGrowthChart data={graphData.weeklyGrowth} />
-          <UserList initialData={userList} />
+          <UserList initialData={userList} userCount={userCount} className="row-span-2 h-fit" scrollArea={{ className: "h-[554px]" }} />
+          <MonthlyGrowthChart data={graphData.monthlyGrowth} />
         </div>
-        <MonthlyGrowthChart data={graphData.monthlyGrowth} />
       </div>
     </div>
   );

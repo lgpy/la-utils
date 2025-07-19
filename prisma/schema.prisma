@@ -37,6 +37,8 @@ model User {
 
   @@unique([email])
   @@map("user")
+
+  @@index([email], name: "user_email_index")
 }
 
 model Session {
@@ -54,6 +56,9 @@ model Session {
 
   @@unique([token])
   @@map("session")
+
+  @@index([userId], name: "session_user_id_index")
+  @@index([token], name: "session_token_index")
 }
 
 model Account {
@@ -73,6 +78,8 @@ model Account {
   updatedAt             DateTime
 
   @@map("account")
+
+  @@index([userId], name: "account_user_id_index")
 }
 
 model Verification {
@@ -84,6 +91,8 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+
+  @@index([identifier], name: "verification_identifier_index")
 }
 
 enum Class {

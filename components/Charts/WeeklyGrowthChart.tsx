@@ -32,7 +32,7 @@ interface Props {
 
 export function WeeklyGrowthChart({ data }: Props) {
   return (
-    <Card className="w-full h-max">
+    <Card className="h-max">
       <CardHeader>
         <CardTitle>Weekly Growth</CardTitle>
         <CardDescription>Last 7 Weeks</CardDescription>

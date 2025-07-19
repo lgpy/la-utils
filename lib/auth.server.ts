@@ -41,7 +41,13 @@ const auth = betterAuth({
         user,
       }
     })
-  ]
+  ],
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60,
+    }
+  }
 })
 
 

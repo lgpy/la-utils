@@ -6,12 +6,27 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useEffect, useRef } from "react"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { cn } from "@/lib/utils";
 
 interface Props {
   initialData?: OrpcOutputs["users"]["listUsersInfinite"];
+  userCount: number;
+  className?: string;
+  scrollArea?: {
+    className?: string;
+  }
 }
 
-export default function UserList({ initialData }: Props) {
+export default function UserList({ initialData, userCount, className, scrollArea }: Props) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const userQuery = useInfiniteQuery(orpc.users.listUsersInfinite.infiniteOptions({
@@ -53,35 +68,42 @@ export default function UserList({ initialData }: Props) {
   const users = userQuery.data?.pages.flatMap(page => page.entries) || [];
 
   return (
-    <ScrollArea
-      ref={scrollAreaRef}
-      className="h-[400px] min-w-[300px] rounded-md border w-full"
-    >
-      {userQuery.isLoading ? (
-        <div className="flex items-center justify-center h-full">
-          <Loader2 className="animate-spin" />
-        </div>
-      ) : (
-        <div className="flex flex-col divide-border divide-y">
-          {users.map((user) => (
-            <div key={user.id} className="flex flex-row gap-6 items-center justify-between p-2">
-              <div className="flex items-center gap-2">
-                <Avatar className="size-12">
-                  <AvatarImage src={user.image ?? undefined} />
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                {user.name}
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle>Users</CardTitle>
+        <CardDescription>Total Users: {userCount}</CardDescription>
+        {userQuery.isFetchingNextPage && (
+          <CardAction>
+            <Loader2 className="animate-spin" />
+          </CardAction>
+        )}
+      </CardHeader>
+      <CardContent className="p-0">
+        <ScrollArea ref={scrollAreaRef} className={cn("h-[400px] px-6", scrollArea?.className)}>
+          <div className={cn("flex flex-col", {
+            "divide-border divide-y": users.length > 0,
+          })}>
+            {userQuery.isLoading ? (
+              <div className="flex justify-center p-4">
+                <Loader2 className="animate-spin" />
               </div>
-              {user.createdAt.toLocaleDateString("pt-PT")}
-            </div>
-          ))}
-          {userQuery.isFetchingNextPage && (
-            <div className="flex items-center justify-center p-4">
-              <Loader2 className="animate-spin" />
-            </div>
-          )}
-        </div>
-      )}
-    </ScrollArea >
+            ) : (
+              users.map((user) => (
+                <div key={user.id} className="flex flex-row gap-6 items-center justify-between p-2">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="size-12">
+                      <AvatarImage src={user.image ?? undefined} />
+                      <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    {user.name}
+                  </div>
+                  {user.createdAt.toLocaleDateString("pt-PT")}
+                </div>
+              ))
+            )}
+          </div>
+        </ScrollArea>
+      </CardContent>
+    </Card>
   );
 }

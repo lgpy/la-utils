@@ -32,7 +32,7 @@ interface Props {
 
 export function MonthlyGrowthChart({ data }: Props) {
   return (
-    <Card>
+    <Card className="h-max">
       <CardHeader>
         <CardTitle>Monthly Growth</CardTitle>
       </CardHeader>
