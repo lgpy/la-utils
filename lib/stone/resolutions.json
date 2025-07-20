@@ -40,5 +40,26 @@
 			"height": 27
 		},
 		"spacing": 51
+	},
+	"3440x1440": {
+		"line1": {
+			"baseX": 1433,
+			"y": 512
+		},
+		"line2": {
+			"baseX": 1432,
+			"y": 636
+		},
+		"line3": {
+			"baseX": 1432,
+			"y": 806
+		},
+		"successRateRegion": {
+			"x": 2023,
+			"y": 418,
+			"width": 55,
+			"height": 27
+		},
+		"spacing": 50.666
 	}
 }

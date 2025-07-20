@@ -10,7 +10,7 @@ function generateLineCellPositions(
 	spacing: number,
 ): PixelCoordinate[] {
 	return Array.from({ length: count }, (_, i) => ({
-		x: baseX + i * spacing,
+		x: baseX + Math.round(i * spacing),
 		y,
 	}));
 }
