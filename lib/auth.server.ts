@@ -6,6 +6,7 @@ import prisma from "./db";
 
 import { admin as adminPlugin } from "better-auth/plugins"
 import { ac, admin, user } from "./auth.permissions";
+import { fetchDiscordUser, getAvatarUrl } from "./discord";
 
 let baseUrl: string;
 
@@ -46,6 +47,65 @@ const auth = betterAuth({
     cookieCache: {
       enabled: true,
       maxAge: 5 * 60,
+    }
+  },
+  databaseHooks: {
+    session: {
+      create: {
+        before: async ({ userId }) => {
+          const existingUser = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+              image: true,
+              lastTimeImageValidated: true,
+              name: true,
+            }
+          });
+          if (!existingUser) {
+            console.error(`No user found with ID ${userId}. Skipping avatar validation.`);
+            return;
+          }
+
+          const now = new Date();
+
+          const acc = await prisma.account.findFirst({
+            where: { providerId: "discord", userId: userId },
+          });
+          if (!acc) {
+            console.error(`No Discord account found for user ${userId}. Skipping avatar validation.`);
+            return;
+          }
+
+          try {
+            const discordUser = await fetchDiscordUser(acc.accountId);
+            if (!discordUser) {
+              console.error(`Failed to fetch Discord user for account ${acc.accountId}. Skipping avatar validation.`);
+              return;
+            }
+
+            const newAvatarUrl = discordUser.avatar ? getAvatarUrl(discordUser.id, discordUser.avatar) : null;
+            const newName = discordUser.global_name || discordUser.username;
+
+            const isNewAvatar = newAvatarUrl !== existingUser.image;
+            const isNewName = newName !== existingUser.name;
+
+            await prisma.user.update({
+              where: { id: userId },
+              data: {
+                image: isNewAvatar ? newAvatarUrl : undefined,
+                lastTimeImageValidated: now,
+                name: isNewName ? newName : undefined,
+              },
+            });
+          } catch {
+            console.error(`Failed to fetch Discord user for account ${acc.accountId}. Skipping avatar validation.`);
+            return;
+          }
+
+
+        }
+      }
+
     }
   }
 })
