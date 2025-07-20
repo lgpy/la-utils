@@ -57,7 +57,6 @@ const auth = betterAuth({
             where: { id: userId },
             select: {
               image: true,
-              lastTimeImageValidated: true,
               name: true,
             }
           });
@@ -65,8 +64,6 @@ const auth = betterAuth({
             console.error(`No user found with ID ${userId}. Skipping avatar validation.`);
             return;
           }
-
-          const now = new Date();
 
           const acc = await prisma.account.findFirst({
             where: { providerId: "discord", userId: userId },
@@ -93,7 +90,6 @@ const auth = betterAuth({
               where: { id: userId },
               data: {
                 image: isNewAvatar ? newAvatarUrl : undefined,
-                lastTimeImageValidated: now,
                 name: isNewName ? newName : undefined,
               },
             });
