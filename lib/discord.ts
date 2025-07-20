@@ -4,10 +4,6 @@ import z from "zod";
 
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN as string;
 
-if (!DISCORD_BOT_TOKEN) {
-  throw new Error("DISCORD_BOT_TOKEN is not set");
-}
-
 export async function isDiscordAvatarValid(url: string): Promise<boolean> {
   if (url.startsWith("https://cdn.discordapp.com/embed/avatars/")) {
     return false; // This is a default avatar URL, not a custom avatar
@@ -33,6 +29,9 @@ const discordUserSchema = z.object({
 })
 
 export async function fetchDiscordUser(userId: string) {
+  if (!DISCORD_BOT_TOKEN) {
+    throw new Error("DISCORD_BOT_TOKEN is not set");
+  }
   const res = await fetch(`https://discord.com/api/users/${userId}`, {
     headers: {
       Authorization: `Bot ${DISCORD_BOT_TOKEN}`,
