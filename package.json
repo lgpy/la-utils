@@ -11,7 +11,7 @@
 		"check": "bunx oxlint",
 		"format": "bunx prettier . --write",
 		"test": "bunx playwright test",
-		"postinstall": "prisma generate && prisma migrate deploy"
+		"postinstall": "prisma generate && [ \"$CI\" = \"true\" ] || prisma migrate deploy"
 	},
 	"dependencies": {
 		"@formkit/auto-animate": "^0.8.2",

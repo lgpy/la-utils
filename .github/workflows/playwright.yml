@@ -38,7 +38,9 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lock') }}-
 
       - name: Install dependencies
-        run: bun install
+        run: |
+          export CI=true
+          bun install
 
       - name: Build app
         run: bun run build
