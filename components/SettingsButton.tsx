@@ -191,6 +191,17 @@ export default function SettingsButton() {
 									>
 										<span>Auto Update Raids</span>
 									</DropdownMenuCheckboxItem>
+									<DropdownMenuCheckboxItem
+										checked={settingsStore.state.experiments.separateTasks}
+										onCheckedChange={() =>
+											settingsStore.state.toggleExperiments(
+												"separateTasks",
+												!settingsStore.state.experiments.separateTasks,
+											)
+										}
+									>
+										<span>Separate Tasks</span>
+									</DropdownMenuCheckboxItem>
 								</DropdownMenuSubContent>
 							</DropdownMenuPortal>
 						</DropdownMenuSub>

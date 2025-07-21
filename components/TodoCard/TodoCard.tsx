@@ -21,9 +21,10 @@ import { TaskType } from "@/generated/prisma";
 
 interface Props {
 	char: Character;
+	mode: "default" | "raids" | "tasks";
 }
 
-export default function TodoCard({ char }: Props) {
+export default function TodoCard({ char, mode }: Props) {
 	const mainStore = useMainStore();
 	const experimentsStore = useSettingsStore((store) => store.experiments);
 	const highest3 = useMemo(() => {
@@ -128,7 +129,7 @@ export default function TodoCard({ char }: Props) {
 					/>
 				)}
 			</div>
-			{char.tasks.length > 0 && (
+			{mode === "default" && char.tasks.length > 0 && (
 				<Tabs defaultValue="raids" className="gap-0">
 					<TabsList className="w-full bg-primary/20 p-0 h-auto rounded-none">
 						<TabsTrigger
@@ -223,10 +224,45 @@ export default function TodoCard({ char }: Props) {
 					</TabsContent>
 				</Tabs>
 			)}
-			{char.tasks.length === 0 && assignedRaids.length > 0 && (
+			{mode === "default" && char.tasks.length === 0 && assignedRaids.length > 0 && (
 				<>
 					<Separator />
 					{assignedRaids}
+				</>
+			)}
+			{mode === "raids" && assignedRaids.length > 0 && (
+				<>
+					<Separator />
+					{assignedRaids}
+				</>
+			)}
+			{mode === "tasks" && char.tasks.length > 0 && (
+				<>
+					<Separator />
+					{Object.entries(tasksByType).map(([type, tasks], typeIdx, typeArr) => (
+						tasks.length > 0 && (
+							<Fragment key={type}>
+								<CardContent className="p-1 text-center text-sm bg-background/60">
+									{type.charAt(0).toUpperCase() + type.slice(1)}
+								</CardContent>
+								<Separator />
+								{tasks.map((task, i) => (
+									<Fragment key={task.id}>
+										<TodoCardTask
+											task={task}
+											toggleTask={() =>
+												mainStore.charToggleTask(char.id, task.id)
+											}
+										/>
+										{i < tasks.length - 1 && (
+											<Separator className="opacity-75" />
+										)}
+									</Fragment>
+								))}
+								{typeIdx < typeArr.length - 1 && <Separator />}
+							</Fragment>
+						)
+					))}
 				</>
 			)}
 			{char.tasks.length === 0 && assignedRaids.length === 0 && (

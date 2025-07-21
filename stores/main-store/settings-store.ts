@@ -12,6 +12,7 @@ const zodSettings = z.object({
 		ignoreThaemineIfNoG4: z.boolean(),
 		compactRaidCard: z.boolean(),
 		autoUpdateRaids: z.boolean(),
+		separateTasks: z.boolean(),
 	}),
 	upload: z.object({
 		ignoreRaids: z.object({
@@ -49,6 +50,7 @@ export const createSettingsStore = () =>
 					ignoreThaemineIfNoG4: false,
 					compactRaidCard: false,
 					autoUpdateRaids: false,
+					separateTasks: false,
 				},
 				upload: {
 					ignoreRaids: [],
@@ -99,7 +101,7 @@ export const createSettingsStore = () =>
 			}),
 			{
 				name: "settings",
-				version: 8,
+				version: 9,
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 				migrate: (ps: any, version) => {
 					if (version <= 0) ps.rosterGoldTotal = "total";
@@ -120,6 +122,9 @@ export const createSettingsStore = () =>
 						ps.friendRaids = {
 							filterByRaids: true,
 						};
+					}
+					if (version <= 8) {
+						ps.experiments.separateTasks = false;
 					}
 					return ps;
 				},

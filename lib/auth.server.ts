@@ -97,11 +97,8 @@ const auth = betterAuth({
             console.error(`Failed to fetch Discord user for account ${acc.accountId}. Skipping avatar validation.`);
             return;
           }
-
-
         }
       }
-
     }
   }
 })

@@ -57,6 +57,21 @@ const presets: {
 			name: "Guardian Raid",
 			type: TaskType.daily,
 		},
+		{
+			id: "cube",
+			name: "Cube",
+			type: TaskType.weekly,
+		},
+		{
+			id: "guild-shop",
+			name: "Guild Shop",
+			type: TaskType.weekly,
+		},
+		{
+			id: "solo-mode-shop",
+			name: "Solo Mode Shop",
+			type: TaskType.weekly,
+		}
 	];
 
 interface Props {
