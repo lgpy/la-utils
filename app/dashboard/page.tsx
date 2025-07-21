@@ -28,7 +28,6 @@ export default async function DashboardPage() {
     redirect('/');
   }
 
-  const userCount = await client.users.count();
   const userList = await client.users.listUsersInfinite({
     limit: 20,
     cursor: 0
@@ -42,7 +41,7 @@ export default async function DashboardPage() {
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <div className="grid grid-cols-2 gap-6">
           <WeeklyGrowthChart data={graphData.weeklyGrowth} />
-          <UserList initialData={userList} userCount={userCount} className="row-span-2 h-fit" scrollArea={{ className: "h-[554px]" }} />
+          <UserList initialData={userList} userCount={graphData.totalUsers} activeUsers={graphData.activeUsers} className="row-span-2 h-fit" scrollArea={{ className: "h-[554px]" }} />
           <MonthlyGrowthChart data={graphData.monthlyGrowth} />
         </div>
       </div>

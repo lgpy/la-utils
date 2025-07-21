@@ -20,13 +20,14 @@ import { cn } from "@/lib/utils";
 interface Props {
   initialData?: OrpcOutputs["users"]["listUsersInfinite"];
   userCount: number;
+  activeUsers: number;
   className?: string;
   scrollArea?: {
     className?: string;
   }
 }
 
-export default function UserList({ initialData, userCount, className, scrollArea }: Props) {
+export default function UserList({ initialData, userCount, className, scrollArea, activeUsers }: Props) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const userQuery = useInfiniteQuery(orpc.users.listUsersInfinite.infiniteOptions({
@@ -71,7 +72,7 @@ export default function UserList({ initialData, userCount, className, scrollArea
     <Card className={className}>
       <CardHeader>
         <CardTitle>Users</CardTitle>
-        <CardDescription>Total Users: {userCount}</CardDescription>
+        <CardDescription>Total Users: {userCount} ({activeUsers} active)</CardDescription>
         {userQuery.isFetchingNextPage && (
           <CardAction>
             <Loader2 className="animate-spin" />

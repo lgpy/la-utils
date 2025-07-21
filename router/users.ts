@@ -100,9 +100,22 @@ export const graphData = os
       .map(([month, users]) => ({ month, users }))
       .sort((a, b) => a.month.localeCompare(b.month));
 
+    const activeUsersCount = await db.user.count({
+      where: {
+        sessions: {
+          some: {
+            expiresAt: {
+              gt: new Date(),
+            },
+          },
+        },
+      },
+    })
+
     return {
       weeklyGrowth,
       monthlyGrowth,
-      totalUsers: users.length
+      totalUsers: users.length,
+      activeUsers: activeUsersCount,
     };
   });
