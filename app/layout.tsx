@@ -1,56 +1,61 @@
 import NavBar from "@/components/NavBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
-import { MainStoreProvider } from "@/providers/MainStoreProvider";
+import { MainStoreProvider } from "@/stores/main-store/provider";
+import { ChangelogStoreProvider } from "@/stores/changelog-store.provider";
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { CSPostHogProvider } from "./providers";
-import { SettingsStoreProvider } from "@/providers/SettingsProvider";
+import { Toaster } from "@/components/ui/sonner";
+import { UserInfoUpdater } from "@/components/UserInfoUpdater";
+import "@/lib/orpc.server";
+import { OrpcProvider } from "@/lib/orpc.provider";
+import { GlobalAlertDialog } from "@/components/AlertDialog";
 
 const inter = Inter({ subsets: ["latin"] });
-const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
-  ssr: false,
-});
 
 export const metadata: Metadata = {
-  title: "Lost Ark Utils",
-  description: "",
+	title: "Lost Ark Utils",
+	description: "",
 };
 
-export default function RootLayout({
-  children,
+export default async function RootLayout({
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <CSPostHogProvider>
-        <body
-          className={cn(
-            "min-h-screen bg-background font-sans antialiased",
-            inter.className,
-          )}
-        >
-          <PostHogPageView />
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className="flex min-h-screen w-full flex-col">
-              <SettingsStoreProvider>
-                <NavBar />
-                <MainStoreProvider>{children}</MainStoreProvider>
-              </SettingsStoreProvider>
-            </div>
-          </ThemeProvider>
-          <Toaster />
-        </body>
-      </CSPostHogProvider>
-    </html>
-  );
+	return (
+		<html lang="en" suppressHydrationWarning>
+			<body
+				className={cn(
+					inter.className,
+					"min-h-screen bg-background antialiased flex flex-col",
+				)}
+			>
+				<OrpcProvider>
+					<MainStoreProvider>
+						<ChangelogStoreProvider>
+							<ThemeProvider
+								attribute="class"
+								defaultTheme="system"
+								enableSystem
+								disableTransitionOnChange
+							>
+								<NavBar />
+								<main className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+									{children}
+								</main>
+								<footer className="mb-2 text-center text-xs text-muted-foreground/50">
+									For feedback, bug reports, or feature requests, join the <a href="https://discord.gg/zHzU8HZfWp" target="_blank" rel="noopener noreferrer" className="underline">Discord server</a>.
+								</footer>
+								<Toaster position="bottom-center" />
+								<GlobalAlertDialog />
+								<UserInfoUpdater />
+							</ThemeProvider>
+						</ChangelogStoreProvider>
+					</MainStoreProvider>
+				</OrpcProvider>
+			</body>
+		</html>
+	);
 }

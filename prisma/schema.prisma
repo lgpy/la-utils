@@ -1,0 +1,307 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+
+  characters Character[]
+
+  friendshipsRequested Friendship[] @relation("FriendRequester")
+  friendshipsReceived  Friendship[] @relation("FriendAddressee")
+
+  role       String?
+  banned     Boolean?
+  banReason  String?
+  banExpires DateTime?
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  impersonatedBy String?
+
+  @@unique([token])
+  @@map("session")
+
+  @@index([userId], name: "session_user_id_index")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+
+  @@index([userId], name: "account_user_id_index")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+
+  @@index([identifier], name: "verification_identifier_index")
+}
+
+enum Class {
+  //Warriors
+  Berserker
+  Destroyer
+  Gunlancer
+  Paladin
+  Slayer
+
+  //Mages
+  Arcanist
+  Bard
+  Sorceress
+  Summoner
+
+  //Fighters
+  Glaivier
+  Scrapper
+  Soulfist
+  Wardancer
+  Striker
+  Breaker
+
+  //Gunners
+  Artillerist
+  Deadeye
+  Gunslinger
+  Machinist
+  Sharpshooter
+
+  //Assassins
+  Deathblade
+  Reaper
+  Shadowhunter
+  Souleater
+
+  //Specialists
+  Aeromancer
+  Artist
+  Wildsoul
+}
+
+model Character {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  id            String
+  name          String
+  class         Class
+  itemLevel     Int
+  isGoldEarner  Boolean         @default(false)
+  assignedRaids AssignedRaid[]
+  tasks         CharacterTask[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@id([userId, id])
+  @@map("character")
+}
+
+model AssignedRaid {
+  raidId      String
+  characterId String
+  userId      String
+  character   Character  @relation(fields: [userId, characterId], references: [userId, id], onDelete: Cascade)
+  gates       RaidGate[]
+
+  @@id([raidId, characterId, userId])
+  @@map("assigned_raid")
+}
+
+enum Difficulty {
+  Solo
+  Normal
+  Hard
+}
+
+model RaidGate {
+  gateId         String
+  difficulty     Difficulty
+  completedDate  DateTime?
+  userId         String
+  characterId    String
+  assignedRaidId String
+  assignedRaid   AssignedRaid @relation(fields: [assignedRaidId, characterId, userId], references: [raidId, characterId, userId], onDelete: Cascade)
+
+  @@id([gateId, assignedRaidId, characterId, userId])
+  @@map("raid_gate")
+}
+
+enum TaskType {
+  daily
+  rested
+  weekly
+}
+
+model CharacterTask {
+  id            String
+  name          String
+  type          TaskType
+  completedDate DateTime?
+
+  userId      String
+  characterId String
+  character   Character @relation(fields: [userId, characterId], references: [userId, id], onDelete: Cascade)
+
+  @@id([id, characterId, userId])
+  @@map("character_task")
+}
+
+model Friendship {
+  id          String           @id @default(uuid())
+  requester   User             @relation("FriendRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  requesterId String
+  addressee   User             @relation("FriendAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+  addresseeId String
+  status      FriendshipStatus @default(pending)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([requesterId, addresseeId])
+  @@map("friendship")
+}
+
+enum FriendshipStatus {
+  pending
+  accepted
+  blocked
+}
+
+enum ServerName {
+  // NAW servers
+  Thaemine
+  Brelshaza
+
+  // NAE servers
+  Luterra
+  Balthorr
+  Nineveh
+  Inanna
+  Vairgrys
+
+  // EUC servers
+  Ortuus
+  Elpon
+  Ratik
+  Arcturus
+  Gienah
+}
+
+enum ServerStatus {
+  ONLINE
+  OFFLINE
+  MAINTENANCE
+  BUSY
+  FULL
+}
+
+model Server {
+  id        ServerName   @id
+  status    ServerStatus
+  updatedAt DateTime     @updatedAt
+
+  @@map("server")
+}
+
+enum ChangelogDetailType {
+  adition
+  fix
+  removal
+  change
+  improvement
+}
+
+model ChangelogDetail {
+  id          Int       @default(autoincrement())
+  changelogId Int
+  changelog   Changelog @relation(fields: [changelogId], references: [id], onDelete: Cascade)
+
+  type        ChangelogDetailType
+  description String
+
+  @@id([id, changelogId])
+  @@map("changelog_detail")
+}
+
+model Changelog {
+  id          Int               @id @default(autoincrement())
+  date        DateTime
+  title       String
+  description String
+  details     ChangelogDetail[]
+
+  isVisible Boolean
+
+  @@map("changelog")
+}
+
+enum ServerRegion {
+  NAW
+  NAE
+  EUC
+}
+
+model MarketPrice {
+  itemId    String
+  price     Int
+  updatedAt DateTime
+
+  region ServerRegion
+
+  @@id([itemId, region])
+  @@map("market_price")
+}

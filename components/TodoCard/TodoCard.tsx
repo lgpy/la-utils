@@ -1,169 +1,278 @@
-import { Character, useMainStore } from "@/hooks/mainstore";
+import PiggyBank from "@/components/PiggyBank";
+import ClassIcon from "@/components/class-icons/ClassIcon";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getHighest3, parseGoldInfo, sortRaidKeys } from "@/lib/chars";
 import { cn } from "@/lib/utils";
-import { SwordsIcon } from "lucide-react";
+import {
+	type Character,
+	useMainStore,
+	useSettingsStore,
+} from "@/stores/main-store/provider";
+import { Check, SwordsIcon } from "lucide-react";
+import { motion } from "motion/react";
 import { Fragment, useMemo } from "react";
-import ClassIcon from "@/components/class-icons/ClassIcon";
-import PiggyBank from "@/components/PiggyBank";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import TodoCardRaid from "./TodoCardRaid";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import TodoCardCompleteButton from "./TodoCardCompleteButton";
+import TodoCardCompleteButtonV2 from "./TodoCardCompleteButtonV2";
+import TodoCardRaidV2 from "./TodoCardRaidV2";
 import TodoCardTask from "./TodoCardTask";
-import { date } from "zod";
+import { TaskType } from "@/generated/prisma";
 
 interface Props {
-  char: Character;
-  isGoldEarner: boolean;
+	char: Character;
+	mode: "default" | "raids" | "tasks";
 }
 
-export default function TodoCard({ char, isGoldEarner }: Props) {
-  const { state } = useMainStore();
-  const highest3 = useMemo(() => {
-    const goldInfo = parseGoldInfo(char.assignedRaids);
-    const highest3 = getHighest3(goldInfo);
-    return highest3;
-  }, [char]);
+export default function TodoCard({ char, mode }: Props) {
+	const mainStore = useMainStore();
+	const experimentsStore = useSettingsStore((store) => store.experiments);
+	const highest3 = useMemo(() => {
+		const goldInfo = parseGoldInfo(char.assignedRaids);
+		const highest3 = getHighest3(
+			char.assignedRaids,
+			goldInfo,
+			experimentsStore.state.ignoreThaemineIfNoG4,
+		);
+		return highest3;
+	}, [char, experimentsStore.state.ignoreThaemineIfNoG4]);
 
-  const assignedRaids = Object.keys(char.assignedRaids)
-    .sort(sortRaidKeys)
-    .map((raidId, i, keys) => (
-      <Fragment key={char.id + raidId}>
-        <CardContent
-          className={cn("transition p-0", {
-            "rounded-b-lg": i === keys.length - 1,
-          })}
-        >
-          <TodoCardRaid
-            charId={char.id}
-            raidId={raidId}
-            raid={char.assignedRaids[raidId]}
-            goldEarner={
-              isGoldEarner &&
-              highest3[raidId] !== undefined &&
-              Object.keys(highest3).length <
-                Object.keys(char.assignedRaids).length
-            }
-          />
-        </CardContent>
-        {i < keys.length - 1 && <Separator className="opacity-75" />}
-      </Fragment>
-    ));
+	const assignedRaids = Object.keys(char.assignedRaids)
+		.sort(sortRaidKeys)
+		.map((raidId, i, keys) => (
+			<Fragment key={char.id + raidId}>
+				<CardContent
+					className={cn("transition p-0", {
+						"rounded-b-lg": i === keys.length - 1,
+					})}
+				>
+					<TodoCardRaidV2
+						raidId={raidId}
+						raid={char.assignedRaids[raidId]}
+						goldEarner={
+							char.isGoldEarner &&
+							highest3.thisWeek[raidId] !== undefined &&
+							Object.keys(highest3.thisWeek).length <
+							Object.keys(char.assignedRaids).length
+						}
+					>
+						{experimentsStore.state.buttonV2 ? (
+							<TodoCardCompleteButtonV2
+								assignedGates={char.assignedRaids[raidId]}
+								charId={char.id}
+								raidId={raidId}
+							/>
+						) : (
+							<TodoCardCompleteButton
+								assignedGates={char.assignedRaids[raidId]}
+								charId={char.id}
+								raidId={raidId}
+							/>
+						)}
+					</TodoCardRaidV2>
+				</CardContent>
+				{i < keys.length - 1 && <Separator className="opacity-75" />}
+			</Fragment>
+		));
 
-  const tasks = useMemo(() => {
-    const filteredTasks = {
-      daily: char.tasks.filter((t) => t.type === "daily"),
-      weekly: char.tasks.filter((t) => t.type === "weekly"),
-    };
+	const tasksByType = useMemo(() => Object.fromEntries(Object.values(TaskType).map((type) => ([type, char.tasks.filter((t) => t.type === type)]))), [char.tasks]);
 
-    return Object.entries(filteredTasks).reduce<{
-      daily: JSX.Element[];
-      weekly: JSX.Element[];
-    }>(
-      (acc, [type, tasks]) => {
-        if (tasks.length === 0) return acc;
+	const completedTasks = char.tasks.reduce(
+		(acc, t) => (t.completed ? acc + 1 : acc),
+		0,
+	);
 
-        acc[type as "daily" | "weekly"] = tasks.map((task, i) => (
-          <Fragment key={task.id}>
-            <CardContent
-              key={task.id}
-              data-pw={`character-task-${i}`}
-              className="p-0"
-            >
-              <TodoCardTask
-                task={task}
-                toggleTask={() => state.charToggleTask(char.id, task.id)}
-              />
-            </CardContent>
-            {i < tasks.length - 1 && <Separator className="opacity-75" />}
-          </Fragment>
-        ));
+	const completedRaids = Object.values(char.assignedRaids).reduce((acc, r) => {
+		if (Object.values(r).some((b) => !b.completed)) return acc;
+		return acc + 1;
+	}, 0);
 
-        return acc;
-      },
-      {
-        daily: [],
-        weekly: [],
-      },
-    );
-  }, [char.tasks, char.id, state]);
+	const completedGateCount = Object.values(char.assignedRaids).reduce(
+		(acc, r) => {
+			let count = acc;
+			for (const gate of Object.values(r)) {
+				if (gate.completed) count++;
+			}
+			return count;
+		},
+		0,
+	);
 
-  return (
-    <Card className="h-fit w-56 border-card border-1 select-none overflow-hidden">
-      <CardHeader className="p-4 flex flex-row gap-2 items-center relative">
-        <ClassIcon c={char.class} className="size-10 min-w-10" />
-        <div className="flex flex-col w-full">
-          <span className="text-xs text-default-500 text-muted-foreground">
-            {char.class}
-          </span>
-          <h2 className="font-bold">{char.name}</h2>
-          <div
-            className={cn(
-              "flex items-center gap-1 text-sm font-semibold text-yellow",
-            )}
-          >
-            <SwordsIcon className="size-5" />
-            {char.itemLevel}
-          </div>
-        </div>
+	const totalGateCount = Object.values(char.assignedRaids).reduce((acc, r) => {
+		return acc + Object.values(r).length;
+	}, 0);
 
-        {isGoldEarner && <PiggyBank goldInfo={highest3} />}
-      </CardHeader>
-      <Tabs defaultValue="raids">
-        <TabsList className="w-full bg-background/30 p-0 h-auto rounded-none">
-          <TabsTrigger value="raids" className="w-full rounded-none">
-            <p>
-              Raids{" "}
-              <span className="text-xs text-muted-foreground">
-                ({Object.keys(char.assignedRaids).length})
-              </span>
-            </p>
-          </TabsTrigger>
-          <TabsTrigger value="tasks" className="w-full rounded-none">
-            <p>
-              Tasks{" "}
-              <span className="text-xs text-muted-foreground">
-                ({char.tasks.length})
-              </span>
-            </p>
-          </TabsTrigger>
-        </TabsList>
-        <Separator />
-        <TabsContent value="raids" className="m-0">
-          {assignedRaids}
-          {assignedRaids.length === 0 && (
-            <CardContent className="p-3 text-center">
-              No raids assigned
-            </CardContent>
-          )}
-        </TabsContent>
-        <TabsContent value="tasks" className="m-0">
-          {tasks.daily.length > 0 && (
-            <>
-              <CardContent className="p-1 text-center text-sm bg-background/60">
-                Daily
-              </CardContent>
-              <Separator />
-              {tasks.daily}
-              <Separator />
-            </>
-          )}
-          {tasks.weekly.length > 0 && (
-            <>
-              <CardContent className="p-1 text-center text-sm bg-background/60">
-                Weekly
-              </CardContent>
-              <Separator />
-              {tasks.weekly}
-            </>
-          )}
-          {char.tasks.length === 0 && (
-            <CardContent className="p-3 text-center">
-              No tasks assigned
-            </CardContent>
-          )}
-        </TabsContent>
-      </Tabs>
-    </Card>
-  );
+	return (
+		<Card className="h-fit w-56 select-none overflow-hidden py-0 gap-0">
+			<div className="p-4 flex flex-row gap-2 items-center relative">
+				<ClassIcon c={char.class} className="size-10 min-w-10" />
+				<div className="flex flex-col w-full">
+					<span className="text-xs text-default-500 text-muted-foreground">
+						{char.class}
+					</span>
+					<h2 className="font-bold">{char.name}</h2>
+					<div
+						className={cn(
+							"flex items-center gap-1 text-sm font-semibold text-ctp-yellow",
+						)}
+					>
+						<SwordsIcon className="size-5" />
+						{char.itemLevel}
+					</div>
+				</div>
+
+				{char.isGoldEarner && (
+					<PiggyBank
+						highest3ThisWeek={highest3.thisWeek}
+						highest3NextWeek={highest3.nextWeek}
+						char={char}
+					/>
+				)}
+			</div>
+			{mode === "default" && char.tasks.length > 0 && (
+				<Tabs defaultValue="raids" className="gap-0">
+					<TabsList className="w-full bg-primary/20 p-0 h-auto rounded-none">
+						<TabsTrigger
+							value="raids"
+							className="w-full rounded-none relative group border-0 dark:data-[state=active]:text-primary-foreground data-[state=active]:text-foreground text-foreground/80 dark:text-primary-foreground/50 dark:data-[state=active]:bg-primary/30 data-[state=active]:bg-primary/30 shadow-none!"
+						>
+							<div className="flex items-center gap-1">
+								<span>Raids</span>{" "}
+								{completedRaids !== Object.keys(char.assignedRaids).length && (
+									<span className="text-xs">
+										({completedRaids}/{Object.keys(char.assignedRaids).length})
+									</span>
+								)}
+								{completedRaids === Object.keys(char.assignedRaids).length && (
+									<Check className="inline size-4" />
+								)}
+							</div>
+							<div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20 group-data-[state=active]:bg-primary/30" />
+							<motion.div
+								className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/40 group-data-[state=active]:bg-primary/50 transform -translate-x-1/2"
+								initial={false}
+								animate={{
+									width: `${(completedGateCount / totalGateCount) * 100}%`,
+								}}
+								transition={{
+									duration: 0.4,
+								}}
+							/>
+						</TabsTrigger>
+						<TabsTrigger
+							value="tasks"
+							className="w-full rounded-none relative group border-0 dark:data-[state=active]:text-primary-foreground data-[state=active]:text-foreground text-foreground/80 dark:text-primary-foreground/50 dark:data-[state=active]:bg-primary/30 data-[state=active]:bg-primary/30 shadow-none!"
+						>
+							<div className="flex items-center gap-1">
+								<span>Tasks</span>{" "}
+								{completedTasks !== char.tasks.length && (
+									<span className="text-xs ">
+										({completedTasks}/{char.tasks.length})
+									</span>
+								)}
+								{completedTasks === char.tasks.length && (
+									<Check className="inline size-4" />
+								)}
+							</div>
+							<div className="absolute left-0 bottom-0 h-1 w-full z-0 bg-primary/20 group-data-[state=active]:bg-primary/30" />
+							<motion.div
+								className="absolute left-1/2 bottom-0 z-0 h-1 bg-primary/40 group-data-[state=active]:bg-primary/50 transform -translate-x-1/2"
+								initial={false}
+								animate={{
+									width: char.tasks.length === 0 ? "0%" : `${(completedTasks / char.tasks.length) * 100}%`
+								}}
+								transition={{
+									duration: 0.4,
+								}}
+							/>
+						</TabsTrigger>
+					</TabsList>
+					<Separator />
+					<TabsContent value="raids" className="m-0">
+						{assignedRaids}
+						{assignedRaids.length === 0 && (
+							<CardContent className="p-3 text-center">
+								No raids assigned
+							</CardContent>
+						)}
+					</TabsContent>
+					<TabsContent value="tasks" className="m-0">
+						{Object.entries(tasksByType).map(([type, tasks], typeIdx, typeArr) => (
+							tasks.length > 0 && (
+								<Fragment key={type}>
+									<CardContent className="p-1 text-center text-sm bg-background/60">
+										{type.charAt(0).toUpperCase() + type.slice(1)}
+									</CardContent>
+									<Separator />
+									{tasks.map((task, i) => (
+										<Fragment key={task.id}>
+											<TodoCardTask
+												task={task}
+												toggleTask={() =>
+													mainStore.charToggleTask(char.id, task.id)
+												}
+											/>
+											{i < tasks.length - 1 && (
+												<Separator className="opacity-75" />
+											)}
+										</Fragment>
+									))}
+									{typeIdx < typeArr.length - 1 && <Separator />}
+								</Fragment>
+							)
+						))}
+					</TabsContent>
+				</Tabs>
+			)}
+			{mode === "default" && char.tasks.length === 0 && assignedRaids.length > 0 && (
+				<>
+					<Separator />
+					{assignedRaids}
+				</>
+			)}
+			{mode === "raids" && assignedRaids.length > 0 && (
+				<>
+					<Separator />
+					{assignedRaids}
+				</>
+			)}
+			{mode === "tasks" && char.tasks.length > 0 && (
+				<>
+					<Separator />
+					{Object.entries(tasksByType).map(([type, tasks], typeIdx, typeArr) => (
+						tasks.length > 0 && (
+							<Fragment key={type}>
+								<CardContent className="p-1 text-center text-sm bg-background/60">
+									{type.charAt(0).toUpperCase() + type.slice(1)}
+								</CardContent>
+								<Separator />
+								{tasks.map((task, i) => (
+									<Fragment key={task.id}>
+										<TodoCardTask
+											task={task}
+											toggleTask={() =>
+												mainStore.charToggleTask(char.id, task.id)
+											}
+										/>
+										{i < tasks.length - 1 && (
+											<Separator className="opacity-75" />
+										)}
+									</Fragment>
+								))}
+								{typeIdx < typeArr.length - 1 && <Separator />}
+							</Fragment>
+						)
+					))}
+				</>
+			)}
+			{char.tasks.length === 0 && assignedRaids.length === 0 && (
+				<>
+					<Separator />
+					<CardContent className="p-3 text-center">
+						No raids assigned
+					</CardContent>
+				</>
+			)}
+		</Card>
+	);
 }

@@ -1,0 +1,65 @@
+{
+	"1920x1080": {
+		"line1": {
+			"baseX": 746,
+			"y": 384
+		},
+		"line2": {
+			"baseX": 745,
+			"y": 477
+		},
+		"line3": {
+			"baseX": 745,
+			"y": 605
+		},
+		"successRateRegion": {
+			"x": 1185,
+			"y": 310,
+			"width": 46,
+			"height": 27
+		},
+		"spacing": 38
+	},
+	"2560x1440": {
+		"line1": {
+			"baseX": 994,
+			"y": 512
+		},
+		"line2": {
+			"baseX": 992,
+			"y": 636
+		},
+		"line3": {
+			"baseX": 992,
+			"y": 806
+		},
+		"successRateRegion": {
+			"x": 1583,
+			"y": 418,
+			"width": 55,
+			"height": 27
+		},
+		"spacing": 51
+	},
+	"3440x1440": {
+		"line1": {
+			"baseX": 1433,
+			"y": 512
+		},
+		"line2": {
+			"baseX": 1432,
+			"y": 636
+		},
+		"line3": {
+			"baseX": 1432,
+			"y": 806
+		},
+		"successRateRegion": {
+			"x": 2023,
+			"y": 418,
+			"width": 55,
+			"height": 27
+		},
+		"spacing": 50.666
+	}
+}

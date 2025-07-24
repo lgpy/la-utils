@@ -1,127 +1,158 @@
 "use client";
 
-import axios from "axios";
-import { Construction, Power } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useSettingsStore } from "@/stores/main-store/provider";
+import { formatDistanceToNow } from "date-fns";
+import { Construction, Power, WifiOff } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
 } from "./ui/tooltip";
-import { useSettingsStore } from "@/providers/SettingsProvider";
-import { useToast } from "./ui/use-toast";
-import {
-  getServerStatus,
-  getServerStatusString,
-  servers,
-  ServerStatus,
-} from "@/lib/servers";
+import { ServerStatus } from "@/generated/prisma";
+import { useQuery } from "@tanstack/react-query";
+import { orpc } from "@/lib/orpc";
 
-function beep(ac: AudioContext, volume: number) {
-  return new Promise<void>((resolve, reject) => {
-    volume = volume || 100;
-
-    try {
-      // You're in charge of providing a valid AudioFile that can be reached by your web app
-      let soundSource = "/ringtone.mp3";
-      let sound = new Audio(soundSource);
-
-      // Set volume
-      sound.volume = volume / 100;
-
-      sound.onended = () => {
-        resolve();
-      };
-
-      sound.play();
-    } catch (error) {
-      reject(error);
-    }
-  });
+function getServerStatusString(status: ServerStatus): string {
+	switch (status) {
+		case ServerStatus.OFFLINE:
+			return "Offline";
+		case ServerStatus.ONLINE:
+			return "Online";
+		case ServerStatus.FULL:
+			return "Online - Full";
+		case ServerStatus.BUSY:
+			return "Online - Busy";
+		case ServerStatus.MAINTENANCE:
+			return "In Maintenance";
+	}
 }
 
+const POLLING_INTERVALS = {
+	FAST: 5 * 60 * 1000, // 5 minutes for offline/maintenance
+	SLOW: 60 * 60 * 1000, // 1 hour for online servers
+} as const;
+
 export default function ServerStatusWidget() {
-  const { store, hasHydrated } = useSettingsStore((store) => store);
+	const selectedServerSetting = useSettingsStore((store) => store.server);
 
-  const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
-  const { toast } = useToast();
+	/*const {
+		status: serverStatus,
+		lastUpdated,
+		isLoading,
+		hasError,
+	} = useServerStatus(selectedServer);*/
 
-  const audioContext = useRef<AudioContext | null>(null);
+	const serverQuery = useQuery(
+		orpc.serverStatus.getServerStatus.queryOptions({
+			input: selectedServerSetting.state!,
+			enabled: selectedServerSetting.state !== undefined && selectedServerSetting.hasHydrated,
+			staleTime(query) {
+				if (query.state.data?.status === ServerStatus.OFFLINE ||
+					query.state.data?.status === ServerStatus.MAINTENANCE) {
+					return POLLING_INTERVALS.FAST;
+				}
+				return POLLING_INTERVALS.SLOW;
+			},
+			refetchInterval(query) {
+				if (query.state.data?.status === ServerStatus.OFFLINE ||
+					query.state.data?.status === ServerStatus.MAINTENANCE) {
+					return POLLING_INTERVALS.FAST;
+				}
+				return POLLING_INTERVALS.SLOW;
+			},
+		})
+	);
 
-  useEffect(() => {
-    if (!hasHydrated) return;
-    if (store.server === undefined) return;
-    if (serverStatus === null)
-      fetch(`/api/serverStatus`).then((res) =>
-        res.json().then((data) => {
-          const status = getServerStatus(data, store.server!);
-          setServerStatus(status);
-        }),
-      );
-    const delay =
-      serverStatus === ServerStatus.OFFLINE ||
-      serverStatus === ServerStatus.MAINTENANCE ||
-      serverStatus === null
-        ? 1000 * 60 * 5
-        : 1000 * 60 * 60 * 2;
-    const int = setInterval(async () => {
-      const res = await fetch(`/api/serverStatus`);
-      const data = await res.json();
-      const status = getServerStatus(data, store.server!);
-      if (
-        status === ServerStatus.ONLINE &&
-        (serverStatus === ServerStatus.OFFLINE ||
-          serverStatus === ServerStatus.MAINTENANCE)
-      ) {
-        if (!audioContext.current) audioContext.current = new AudioContext();
-        beep(audioContext.current, 30);
-        toast({
-          title: `Server ${store.server} is back online!`,
-          duration: 240000,
-        });
-      }
-      setServerStatus(status);
-    }, delay);
-    return () => {
-      clearInterval(int);
-    };
-  }, [store, hasHydrated, serverStatus]);
+	const [tooltipLastUpdated, setTooltipLastUpdated] = useState<string | null>(
+		null,
+	);
 
-  if (!hasHydrated) return null;
-  if (store.server === undefined) return null;
+	// Update relative time display
+	useEffect(() => {
+		if (serverQuery.data === undefined) return;
 
-  const icon = (() => {
-    switch (serverStatus) {
-      case ServerStatus.OFFLINE:
-        return <Power className="size-4 stroke-destructive" />;
-      case ServerStatus.ONLINE:
-      case ServerStatus.FULL:
-      case ServerStatus.BUSY:
-        return <Power className="size-4 stroke-green" />;
-      case ServerStatus.MAINTENANCE:
-        return <Construction className="size-4 stroke-blue" />;
-      default:
-        return undefined;
-    }
-  })();
+		const updateRelativeTime = () => {
+			setTooltipLastUpdated(
+				formatDistanceToNow(serverQuery.data.updatedAt, {
+					addSuffix: true,
+				}),
+			);
+		};
 
-  const tooltip =
-    serverStatus !== null ? getServerStatusString(serverStatus) : "not set";
+		updateRelativeTime();
+		const interval = setInterval(updateRelativeTime, 60000); // Update every minute
 
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger>
-          <div className="flex gap-1 items-center select-none">
-            {icon}
-            <span className="text-muted-foreground text-xs">
-              {store.server}
-            </span>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>{tooltip}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
+		return () => clearInterval(interval);
+	}, [serverQuery.data]);
+
+	if (!selectedServerSetting.hasHydrated || !selectedServerSetting.state) return null;
+
+	// Determine which icon to show based on server status
+	const icon = (() => {
+		if (serverQuery.isLoading) {
+			return <Power className="size-4 stroke-muted-foreground animate-pulse" />;
+		}
+
+		if (serverQuery.isError) {
+			return <WifiOff className="size-4 stroke-destructive" />;
+		}
+
+		switch (serverQuery.data?.status) {
+			case ServerStatus.OFFLINE:
+				return <Power className="size-4 stroke-destructive" />;
+			case ServerStatus.ONLINE:
+				return <Power className="size-4 stroke-ctp-green" />;
+			case ServerStatus.BUSY:
+			case ServerStatus.FULL:
+				return <Power className="size-4 stroke-ctp-peach" />;
+			case ServerStatus.MAINTENANCE:
+				return <Construction className="size-4 stroke-ctp-blue" />;
+			default:
+				return <Power className="size-4 stroke-muted-foreground" />;
+		}
+	})();
+
+	const tooltipServerStatus = serverQuery.isError
+		? "Connection Error"
+		: serverQuery.isLoading
+			? "Checking..."
+			: serverQuery.data !== undefined
+				? getServerStatusString(serverQuery.data.status)
+				: "Unknown";
+
+	return (
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<div className="flex gap-1 items-center select-none cursor-help">
+						{icon}
+						<span
+							className={`text-xs ${serverQuery.isError ? "text-destructive" : "text-muted-foreground"}`}
+						>
+							{selectedServerSetting.state}
+						</span>
+					</div>
+				</TooltipTrigger>
+				<TooltipContent>
+					<div className="space-y-1">
+						<p className="font-medium">
+							Server status:{" "}
+							<span className="font-normal">{tooltipServerStatus}</span>
+						</p>
+						<p className="text-sm text-muted-foreground">
+							Last updated:{" "}
+							{tooltipLastUpdated !== null ? tooltipLastUpdated : "never"}
+						</p>
+						{serverQuery.isError && (
+							<p className="text-xs text-destructive">
+								Could not connect to status service
+							</p>
+						)}
+					</div>
+				</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
+	);
 }

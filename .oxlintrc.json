@@ -1,0 +1,22 @@
+{
+  "plugins": [
+    "import",
+    "react",
+    "nextjs",
+    "react-perf",
+    "typescript",
+    "promise",
+    "unicorn",
+    "oxc",
+    "node"
+  ],
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    ".vercel/",
+    "generated/",
+    "test-results/",
+    "lib/wa-sqlite/dist",
+    "lib/wa-sqlite/src"
+  ]
+}

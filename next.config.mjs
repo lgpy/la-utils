@@ -1,8 +1,17 @@
+import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    compiler: {
-        // The regexes defined here are processed in Rust so the syntax is different from
-        // JavaScript `RegExp`s. See https://docs.rs/regex.
-      },
-};
-export default nextConfig
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.plugins = [...config.plugins, new PrismaPlugin()]
+    }
+
+    return config
+  }
+}
+ 
+export default nextConfig;
