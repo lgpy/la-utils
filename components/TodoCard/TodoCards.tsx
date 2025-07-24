@@ -5,8 +5,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useMemo, useState } from "react";
 import TodoCard from "./TodoCard";
 import { TodoCardsNoCharactersCard } from "./TodoCardsNoCharactersCard";
-import { Toggle } from "@/components/ui/toggle"
-import { ClipboardListIcon } from "lucide-react";
+import TodoCardsSeparateTasksButton from "./TodoCardsSeparateTasksButton";
 
 export default function TodoCards() {
 	const mainStore = useMainStore();
@@ -27,12 +26,7 @@ export default function TodoCards() {
 	return (
 		<>
 			{experimentsStore.state.separateTasks && (
-				<div className="absolute top-20 right-4">
-					<Toggle aria-label="Toggle italic" pressed={showTasks} onPressedChange={setShowTasks}>
-						<ClipboardListIcon />
-						Show Tasks
-					</Toggle>
-				</div>
+				<TodoCardsSeparateTasksButton showTasks={showTasks} setShowTasks={setShowTasks} />
 			)}
 			<main
 				className="mt-6 grid xl:grid-cols-[auto_auto_auto_auto_auto_auto] md:grid-cols-[auto_auto_auto] sm:grid-cols-[auto_auto] gap-3 justify-center"
