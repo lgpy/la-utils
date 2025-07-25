@@ -11,7 +11,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
+import { raidData } from "@/lib/game-info";
+import { shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { EllipsisIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
@@ -29,7 +30,7 @@ export default function EditCardAssignedRaid({
 	const mainStore = useMainStore();
 
 	const assignedRaid = char.assignedRaids[raidId];
-	const raid = raids[raidId];
+	const raid = raidData.get(raidId);
 
 	if (!assignedRaid || !raid) return null;
 

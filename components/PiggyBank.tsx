@@ -5,10 +5,10 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { formatGold } from "@/lib/format";
-import { raids } from "@/lib/raids";
 import { cn } from "@/lib/utils";
 import type { Character } from "@/stores/main-store/provider";
 import PiggyBankProgressBar from "./PiggyBankProgressBar";
+import { raidData } from "@/lib/game-info";
 
 type Props = {
 	className?: string;
@@ -52,7 +52,7 @@ export default function PiggyBank(props: Props) {
 	const hasBiweekly = Object.entries(char.assignedRaids).some(
 		([raidId, gates]) =>
 			Object.keys(gates).some(
-				(gateId) => raids[raidId].gates[gateId].isBiWeekly,
+				(gateId) => raidData.get(raidId)?.getGate(gateId)?.isBiWeekly ?? false,
 			),
 	);
 

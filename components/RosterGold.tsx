@@ -1,7 +1,6 @@
 "use client";
 
 import { getHighest3, parseGoldInfo } from "@/lib/chars";
-import { raids } from "@/lib/raids";
 import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
 import { useMemo } from "react";
 import AnimatedNumber from "./AnimatedNumber";
@@ -20,6 +19,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover"
 import { Info } from "lucide-react";
+import { raidData } from "@/lib/game-info";
 
 export default function RosterGold() {
 	const mainStore = useMainStore();
@@ -79,7 +79,7 @@ export default function RosterGold() {
 	const hasBiweekly = mainStore.characters.some((char) =>
 		Object.entries(char.assignedRaids).some(([raidId, gates]) =>
 			Object.keys(gates).some(
-				(gateId) => raids[raidId].gates[gateId].isBiWeekly,
+				(gateId) => raidData.getOrThrow(raidId).getGateOrThrow(gateId).isBiWeekly,
 			),
 		),
 	);

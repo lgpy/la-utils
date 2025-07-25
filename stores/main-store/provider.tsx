@@ -7,7 +7,7 @@ import {
 	getLatestWeeklyReset,
 	getRestedReset,
 } from "@/lib/dates";
-import { isGateCompleted, raids } from "@/lib/raids";
+import { isGateCompleted } from "@/lib/raids";
 import { isTaskCompleted } from "@/lib/tasks";
 import { type MainStore, createMainStore } from "@/stores/main-store/main-store";
 import { type SettingsStore, createSettingsStore } from "@/stores/main-store/settings-store";
@@ -19,6 +19,7 @@ import {
 	useRef,
 } from "react";
 import { useStore } from "zustand";
+import { raidData } from "@/lib/game-info";
 
 export type MainStoreApi = ReturnType<typeof createMainStore>;
 export type SettingsStoreApi = ReturnType<typeof createSettingsStore>;
@@ -99,10 +100,11 @@ export const useMainStore = () => {
 							}
 
 							let resetDate: Date;
-							if (raids[raidId].gates[gateId].isBiWeekly === undefined) {
+							const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateId);
+							if (gateData.isBiWeekly === undefined) {
 								resetDate = weeklyReset;
 							} else if (
-								raids[raidId].gates[gateId].isBiWeekly === "odd"
+								gateData.isBiWeekly === "odd"
 							) {
 								resetDate = oddBiWeeklyReset;
 							} else {

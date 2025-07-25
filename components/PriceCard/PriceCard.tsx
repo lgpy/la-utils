@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Item, items } from "@/lib/game-info";
+import { Item, itemData } from "@/lib/game-info";
 import { getRarityClasses } from "@/lib/rarity";
 import { cn } from "@/lib/utils";
 import { usePriceStore } from "@/stores/prices-store.provider";
@@ -112,7 +112,7 @@ export const ExchangeSection = ({
 		id?: string;
 	}>(
 		(best, curr) => {
-			const exchangeItem = items.get(curr.id);
+			const exchangeItem = itemData.get(curr.id);
 			const storeItem = priceStore.store.prices.find((i) => i.id === curr.id);
 
 			if (!exchangeItem || !storeItem) return best;

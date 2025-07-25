@@ -7,13 +7,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { raids } from "@/lib/raids";
 import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
 import { useMemo } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area"
 import ClassIcon from "./class-icons/ClassIcon";
 import { Separator } from "./ui/separator";
+import { raidData } from "@/lib/game-info";
 
 interface Props {
   open: boolean;
@@ -32,7 +32,7 @@ export default function RaidUploadManagerDialog({ open, onOpenChange }: Props) {
 
       return {
         id: raidId,
-        name: raids[raidId]?.name || raidId,
+        name: raidData.get(raidId)?.name || raidId,
         ignore: ignoreRaid,
       }
     });

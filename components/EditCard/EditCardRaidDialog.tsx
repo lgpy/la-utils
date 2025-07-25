@@ -23,7 +23,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Difficulty } from "@/generated/prisma";
-import { raids } from "@/lib/raids";
+import { raidData, Raid } from "@/lib/game-info";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,10 +61,10 @@ export default function EditCardRaidDialog({
 	});
 
 	const filteredRaids = useMemo(() => {
-		return Object.entries(raids).reduce(
+		return raidData.raids.entries().reduce(
 			(acc, [raidkey, raid]) => {
-				const hasGatesbellowilvl = Object.values(raid.gates).some((gate) =>
-					Object.values(gate.difficulties).some(
+				const hasGatesbellowilvl = raid.gates.values().some((gate) =>
+					gate.difficulties.values().some(
 						(diff) => diff.itemlevel <= character.itemLevel,
 					),
 				);
@@ -76,18 +76,19 @@ export default function EditCardRaidDialog({
 					acc[raidkey] = raid;
 				return acc;
 			},
-			{} as typeof raids,
+			{} as Record<string, Raid>,
 		);
 	}, [raidId, character.assignedRaids, character.itemLevel]);
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		try {
-			const raid = raids[values.raidId];
+			const raid = raidData.get(values.raidId);
 			if (!raid) throw new Error("Raid not found!");
 
+			const gateKeys = Array.from(raid.gates.keys());
 			const gates = values.gates.reduce(
 				(acc, diff, index) => {
-					acc[Object.keys(raid.gates)[index]] =
+					acc[gateKeys[index]] =
 						diff === "none" ? undefined : diff;
 					return acc;
 				},
@@ -111,13 +112,13 @@ export default function EditCardRaidDialog({
 
 	const watchRaidId = form.watch("raidId");
 	const actualRaid = useMemo(() => {
-		return raids[watchRaidId];
+		return raidData.get(watchRaidId);
 	}, [watchRaidId]);
 
 	const checkBoxGroups = useMemo(() => {
 		if (!actualRaid) return [];
-		return Object.entries(actualRaid.gates).map(([gateId, gate], gateIndex) => {
-			const checkboxes = Object.entries(gate.difficulties).map(
+		return Array.from(actualRaid.gates.entries().map(([gateId, gate], gateIndex) => {
+			const checkboxes = Array.from(gate.difficulties.entries().map(
 				([difficulty, diffData]) => {
 					if (diffData.itemlevel === null) return null;
 					if (diffData.itemlevel > character.itemLevel) return null;
@@ -136,7 +137,7 @@ export default function EditCardRaidDialog({
 						</FormItem>
 					);
 				},
-			);
+			));
 			return (
 				<FormField
 					key={`rg${gateId}`}
@@ -169,24 +170,29 @@ export default function EditCardRaidDialog({
 					)}
 				/>
 			);
-		});
+		}));
 	}, [actualRaid, character.itemLevel, form.control]);
 
 	useEffect(() => {
 		if (!isOpen) return;
-		form.reset({
-			raidId: actualRaid ? watchRaidId : "",
-			gates: actualRaid
-				? Object.entries(actualRaid.gates).map(
-					([gateId, gateInfo]) =>
-						character.assignedRaids[watchRaidId]?.[gateId]?.difficulty ||
-						Object.entries(gateInfo.difficulties).findLast(
-							([, diffData]) => diffData.itemlevel <= character.itemLevel,
-						)?.[0] ||
-						"none",
-				)
-				: [],
-		});
+		if (!actualRaid) return;
+		if (raidId === undefined) {
+			form.reset({
+				raidId: actualRaid ? watchRaidId : "",
+				gates: Array.from(actualRaid.gates.values().map(
+					(gateInfo) => Array.from(gateInfo.difficulties.entries()).findLast(
+						([, diffData]) => diffData.itemlevel <= character.itemLevel,
+					)?.[0] ?? "none"
+				)),
+			});
+		} else {
+			form.reset({
+				raidId: watchRaidId,
+				gates: Array.from(actualRaid.gates.keys().map(
+					(gateId) => character.assignedRaids[watchRaidId]?.[gateId]?.difficulty || "none"
+				)),
+			});
+		}
 	}, [
 		actualRaid,
 		isOpen,
@@ -194,6 +200,7 @@ export default function EditCardRaidDialog({
 		form,
 		watchRaidId,
 		character.itemLevel,
+		raidId
 	]);
 
 	return (

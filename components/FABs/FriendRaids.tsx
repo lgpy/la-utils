@@ -1,7 +1,6 @@
 "use client";
 
 import { orpc, OrpcOutputs } from "@/lib/orpc";
-import { raids } from "@/lib/raids";
 import { useMainStore } from "@/stores/main-store/provider";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -20,6 +19,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
+import { raidData } from "@/lib/game-info";
 
 type FriendRaidsData = OrpcOutputs["friendRaids"]["getFriendsRaids"];
 type FriendRaidsUsableData = ReturnType<typeof translateToUsableData>;
@@ -77,7 +77,7 @@ function translateToUsableData(
 				return [
 					raidId,
 					{
-						name: raids[raidId]?.name || "Unknown Raid",
+						name: raidData.get(raidId)?.name || "Unknown Raid",
 						difficulties: Object.fromEntries(
 							Object.entries(diffs)
 								.sort(([a], [b]) =>

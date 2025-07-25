@@ -3,7 +3,7 @@
 import TruncatedTooltip from "@/components/TruncatedTooltip";
 import WarningTooltipIcon from "@/components/WarningTooltipIcon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { items, type CraftingItem } from "@/lib/game-info";
+import { itemData, type CraftingItem } from "@/lib/game-info";
 import { isBadPriceItem, is_item_price_expired } from "@/lib/items";
 import { getRarityClasses } from "@/lib/rarity";
 import { cn } from "@/lib/utils";
@@ -61,7 +61,7 @@ export default function CraftingItemCard({ id, item }: { id: string, item: Craft
 			const recipe_item_cost = Object.entries(recipe_items).reduce(
 				(acc, [key, amount]) => {
 					const price = recipe_items_price[key];
-					const storeItem = items.get(key);
+					const storeItem = itemData.get(key);
 					const singleMarketItemCost = price / (storeItem?.marketQty || 1);
 					return acc + singleMarketItemCost * amount;
 				},

@@ -1,4 +1,4 @@
-import { raids } from "@/lib/raids";
+import { raidData } from "@/lib/game-info";
 import { z } from "zod";
 
 // File System Access API utilities for LOA Logs
@@ -132,8 +132,8 @@ export const ignoreBosses = new Set([
 export function getGateInfoFromClearBossName(
   clearBossName: string,
 ) {
-  for (const [raidId, raidInfo] of Object.entries(raids)) {
-    for (const [gateId, gateInfo] of Object.entries(raidInfo.gates)) {
+  for (const [raidId, raidInfo] of raidData.raids.entries()) {
+    for (const [gateId, gateInfo] of raidInfo.gates.entries()) {
       if (gateInfo.bossName.includes(clearBossName)) {
         return {
           raidId,

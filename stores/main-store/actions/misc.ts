@@ -1,8 +1,9 @@
 import { Difficulty } from "@/generated/prisma";
 import { MainState, StateActions, zodChars } from "../main-store";
 import { getGateResetDate } from "@/lib/dates";
-import { isGateCompleted, raids } from "@/lib/raids";
+import { isGateCompleted } from "@/lib/raids";
 import { sortDifficulties } from "@/lib/chars";
+import { raidData } from "@/lib/game-info";
 
 export type MiscActions = {
   restoreData: (data: MainState) => void;
@@ -39,7 +40,7 @@ export const createMiscActions: StateActions<MiscActions> = (set, get) => ({
         }
       }
     }
-    const raidKeys = Object.keys(raids).reverse();
+    const raidKeys = Array.from(raidData.raids.keys()).reverse();
 
     return result.sort((a, b) => {
       const aIndex = raidKeys.indexOf(a.raidId);

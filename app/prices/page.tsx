@@ -1,6 +1,6 @@
 import LoaBuddyPricesFetcher from "@/components/LoaBuddyPricesFetcher";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Item, items } from "@/lib/game-info";
+import { Item, itemData } from "@/lib/game-info";
 import { getRarityClasses } from "@/lib/rarity";
 import { cn } from "@/lib/utils";
 import { PriceStoreProvider } from "@/stores/prices-store.provider";
@@ -127,7 +127,7 @@ function PricesType({
 		container: string;
 	};
 }) {
-	const filteredItems = Array.from(items.entries()).filter(([, item]) => item.type === type)
+	const filteredItems = Array.from(itemData.entries()).filter(([, item]) => item.type === type)
 		.filter(([, item]) => item.subtype === subtype);
 
 	return (
