@@ -1,5 +1,5 @@
 import { TaskType } from "@/generated/prisma";
-import { raids } from "./raids";
+import { raidData } from "./game-info";
 
 export function getLatestBiWeeklyReset(
 	BiWeekly: "odd" | "even",
@@ -67,9 +67,9 @@ export function getRestedReset(currentDateOverride?: Date): Date {
 }
 
 export function getGateResetDate(raidId: string, gateId: string) {
-	const isBiWeekly = raids[raidId].gates[gateId].isBiWeekly;
-	if (isBiWeekly === undefined) return getLatestWeeklyReset();
-	if (isBiWeekly === "odd") return getLatestBiWeeklyReset("odd");
+	const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateId);
+	if (gateData.isBiWeekly === undefined) return getLatestWeeklyReset();
+	if (gateData.isBiWeekly === "odd") return getLatestBiWeeklyReset("odd");
 	return getLatestBiWeeklyReset("even");
 }
 

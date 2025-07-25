@@ -1,8 +1,12 @@
 // scripts/raidRewardExtractor.ts
 // Fetches and parses raid reward data from a public Google Sheet
 // Usage: bun run scripts/raidRewardExtractor.ts
-import { raids } from "@/lib/raids";
+import { Difficulty } from "@/generated/prisma";
+import { raidData as raids, raidsSchema } from "@/lib/game-info";
+import raidsJson from "@/lib/game-info/raids.json";
 import { parse } from "csv-parse/sync";
+
+const raidsDataToUpdate = raidsSchema.parse(raidsJson);
 
 const SHEET_ID = "1YQpWt8iOK6yO5_7r3rvZZKkoRy8Z0aEAPHy11gYZZQ8";
 const SHEET_GID = "582062442"; // Updated to target the correct sheet
@@ -14,7 +18,7 @@ async function fetchSheetCSV(url: string): Promise<string> {
   return await res.text();
 }
 
-const raidMatch: Record<string, keyof typeof raids> = {
+const raidMatch: Record<string, string> = {
   "Act 1: Aegir": "aegir",
   "Act 2: Brelshaza": "brelshaza2",
   "Act 3: Mordum": "mordum",
@@ -86,37 +90,49 @@ async function main() {
       return 0;
     });
 
+    let didUpdate = false;
+
     raidDifficultyGate.forEach(({ raid, difficulty, itemLevel, gate, gold }) => {
       const raidKey = raidMatch[raid];
       if (!raidKey) {
         console.warn(`Raid "${raid}" not found in match map`);
         return;
       }
-      const raidData = raids[raidKey];
+      const raidData = raids.get(raidKey);
       if (!raidData) {
         console.warn(`Raid "${raidKey}" not found in local data`);
         return;
       }
       const gateId = `G${gate.replace("Gate ", "")}`;
-      const gateData = raidData.gates[gateId];
+      const gateData = raidData.getGate(gateId);
       if (!gateData) {
         console.warn(`Gate "${gateId}" not found for raid "${raidKey}"`);
         return;
       }
-      const diffData = gateData.difficulties[difficulty as keyof typeof gateData.difficulties];
+      const diffData = gateData.getDifficulty(difficulty as Difficulty);
       if (!diffData) {
-        console.warn(`Difficulty "${difficulty}" not found for raid "${raidKey}"`);
+        console.warn(`Difficulty "${difficulty}" not found for raid "${raidKey}" and gate "${gateId}"`);
         return;
       }
       if (diffData.itemlevel !== itemLevel) {
-        console.warn(`Item level mismatch for "${raidKey}" at "${gateId}" on "${difficulty}": expected ${itemLevel}, got ${diffData.itemlevel}`);
+        raidsDataToUpdate[raidKey].gates[gateId].difficulties[difficulty as Difficulty]!.itemlevel = itemLevel;
+        if (!didUpdate) didUpdate = true;
       }
       if (diffData.rewards.gold.bound !== gold.bound || diffData.rewards.gold.unbound !== gold.unbound) {
-        console.warn(`Gold rewards mismatch for "${raidKey}" at "${gateId}" on "${difficulty}": expected { bound: ${gold.bound}, unbound: ${gold.unbound} }, got { bound: ${diffData.rewards.gold.bound}, unbound: ${diffData.rewards.gold.unbound} }`);
+        raidsDataToUpdate[raidKey].gates[gateId].difficulties[difficulty as Difficulty]!.rewards.gold = {
+          bound: gold.bound,
+          unbound: gold.unbound,
+        };
+        if (!didUpdate) didUpdate = true;
       }
     });
 
-
+    if (didUpdate) {
+      // Write updated data back to JSON file
+      raidsSchema.parse(raidsDataToUpdate); // Validate the updated data
+      const fs = require('fs');
+      fs.writeFileSync("lib\\game-info\\raids.json", JSON.stringify(raidsDataToUpdate, null, 2));
+    }
   } catch (err) {
     console.error("Error extracting raid rewards:", err);
     process.exit(1);

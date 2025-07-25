@@ -1,4 +1,4 @@
-import { raids } from "@/lib/raids";
+import { raidData } from "@/lib/game-info";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { motion } from "motion/react";
 import type { MouseEventHandler } from "react";
@@ -54,7 +54,7 @@ export default function TodoCardCompleteButtonV2({
 
 	const buttons = Object.entries(assignedGates).map(
 		([gateId, gate], idx, arr) => {
-			const raid = raids[raidId];
+			const raid = raidData.get(raidId);
 			if (!raid) return null;
 
 			const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {

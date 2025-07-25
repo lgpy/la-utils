@@ -1,6 +1,6 @@
 import CraftingOptions from "@/components/Crafting/CraftingOptions";
 import CraftingItemCard from "@/components/Crafting/CraftingItemCard";
-import { craftingItems } from "@/lib/game-info";
+import { craftingData } from "@/lib/game-info";
 import { cn } from "@/lib/utils";
 import { CraftingStoreProvider } from "@/stores/crafting-store.provider";
 import { PriceStoreProvider } from "@/stores/prices-store.provider";
@@ -43,7 +43,7 @@ function CraftingType({
 	subtype?: string;
 	children: string;
 }) {
-	const items = Array.from(craftingItems.entries()).filter(([, item]) => item.type === type);
+	const items = Array.from(craftingData.entries()).filter(([, item]) => item.type === type);
 
 	return (
 		<div>

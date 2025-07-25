@@ -4,7 +4,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { raids, shortenDifficulty, shortestDifficulty } from "@/lib/raids";
+import { raidData } from "@/lib/game-info";
+import { shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { cn } from "@/lib/utils";
 import {
 	type Character,
@@ -30,7 +31,7 @@ export default function TodoCardRaidV2({
 	showBackground = true,
 }: Props) {
 	const compactRaidCardSetting = useSettingsStore((store) => store.experiments.compactRaidCard);
-	const actualraid = raids[raidId];
+	const actualraid = raidData.get(raidId);
 
 	if (!actualraid) {
 		console.error(`Raid ${raidId} not found`);

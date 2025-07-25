@@ -1,8 +1,9 @@
 import { getGateResetDate, getLatestWeeklyReset } from "@/lib/dates";
-import { isGateCompleted, raids } from "@/lib/raids";
+import { isGateCompleted } from "@/lib/raids";
 import { StateActions } from "../main-store";
 import { Difficulty } from "@/generated/prisma";
 import { getIndexOrThrow, getOrThrow } from "@/lib/array";
+import { raidData } from "@/lib/game-info";
 
 export type RaidActions = {
 	//assigned raids mutations
@@ -148,13 +149,15 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 					)
 					: false;
 
-			if (isCompleted && !raids[raidId].gates[gateId].isBiWeekly) {
+			const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateId);
+
+			if (isCompleted && !gateData.isBiWeekly) {
 				const gateIndex = Object.keys(assignedRaid).findIndex(
 					(g) => g === gateId,
 				);
 				Object.keys(assignedRaid).forEach((gateId, index) => {
 					if (index <= gateIndex) return;
-					const actualGate = raids[raidId].gates[gateId];
+					const actualGate = raidData.getOrThrow(raidId).getGateOrThrow(gateId);
 					if (actualGate.isBiWeekly) {
 						const lastreset = getLatestWeeklyReset();
 						const biweeklyGateIsCompleted =
@@ -178,7 +181,8 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 				const gateKeys = Object.keys(assignedRaid);
 				const gateIndex = gateKeys.findIndex((gate) => gate === gateId);
 				for (let i = 0; i <= gateIndex; i++) {
-					if (raids[raidId].gates[gateKeys[i]].isBiWeekly) {
+					const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateKeys[i]);
+					if (gateData.isBiWeekly) {
 						const completedDate = assignedRaid[gateKeys[i]].completedDate;
 						const biweeklyGateIsCompleted =
 							completedDate !== undefined
@@ -212,8 +216,9 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 			for (let i = gateIndex; i < gateKeys.length; i++) {
 				const gateKey = gateKeys[i];
 				const aGate = assignedRaid[gateKey];
+				const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateKey);
 				if (
-					raids[raidId].gates[gateKey].isBiWeekly &&
+					gateData.isBiWeekly &&
 					gateKey !== gateId
 				) {
 					const lastreset = getLatestWeeklyReset();
@@ -244,7 +249,8 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 			for (let i = 0; i < gateKeys.length; i++) {
 				const gateKey = gateKeys[i];
 				const aGate = assignedRaid[gateKey];
-				if (raids[raidId].gates[gateKey].isBiWeekly) {
+				const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateKey);
+				if (gateData.isBiWeekly) {
 					const lastreset = getLatestWeeklyReset();
 					if (aGate.completedDate !== undefined) {
 						const biWeeklyDate = new Date(aGate.completedDate);
@@ -272,7 +278,8 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 			for (let i = 0; i < gateKeys.length; i++) {
 				const gateKey = gateKeys[i];
 				const aGate = assignedRaid[gateKey];
-				if (raids[raidId].gates[gateKey].isBiWeekly) {
+				const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateKey);
+				if (gateData.isBiWeekly) {
 					const lastreset = getLatestWeeklyReset();
 					if (aGate.completedDate !== undefined) {
 						const biWeeklyDate = new Date(aGate.completedDate);

@@ -1,7 +1,8 @@
 import type { Character } from "@/stores/main-store/provider";
 import { getLatestBiWeeklyReset, getLatestWeeklyReset } from "./dates";
-import { isGateCompleted, raids } from "./raids";
+import { isGateCompleted } from "./raids";
 import { Class, Difficulty } from "@/generated/prisma";
+import { raidData } from "./game-info";
 
 type RaidGoldInfo = Record<string, GoldInfo>;
 
@@ -29,13 +30,13 @@ export function parseGoldInfo(charRaids: Character["assignedRaids"]) {
 
 	const lastWeeklyReset = getLatestWeeklyReset();
 	for (const [assignedRaidId, assignedRaid] of Object.entries(charRaids)) {
-		const raidInfo = raids[assignedRaidId];
+		const raidInfo = raidData.get(assignedRaidId);
 		if (!raidInfo) continue;
 
 		for (const [assignedGateId, assignedGate] of Object.entries(assignedRaid)) {
-			const actualGate = raidInfo.gates[assignedGateId];
+			const actualGate = raidInfo.getGateOrThrow(assignedGateId);
 			const gateGoldReward =
-				actualGate.difficulties[assignedGate.difficulty]?.rewards.gold || {
+				actualGate.getDifficulty(assignedGate.difficulty)?.rewards.gold || {
 					bound: 0,
 					unbound: 0,
 				}
@@ -113,6 +114,7 @@ export function getHighest3(
 	raidGoldInfo: RaidGoldInfo,
 	ignoreThaemineIfNoG4: boolean,
 ) {
+	const raidKeys = Array.from(raidData.raids.keys());
 	const sortedGoldThisWeek = Object.entries(raidGoldInfo).sort(
 		([aId, a], [bId, b]) => {
 			if (
@@ -129,8 +131,8 @@ export function getHighest3(
 			}
 
 			if (a.thisWeek.totalGold === b.thisWeek.totalGold) {
-				const aActualIndex = Object.keys(raids).indexOf(aId);
-				const bActualIndex = Object.keys(raids).indexOf(bId);
+				const aActualIndex = raidKeys.indexOf(aId);
+				const bActualIndex = raidKeys.indexOf(bId);
 				return bActualIndex - aActualIndex;
 			}
 			return b.thisWeek.totalGold.bound + b.thisWeek.totalGold.unbound - a.thisWeek.totalGold.bound - a.thisWeek.totalGold.unbound;
@@ -140,8 +142,8 @@ export function getHighest3(
 	const sortedGoldNextWeek = Object.entries(raidGoldInfo).sort(
 		([aId, a], [bId, b]) => {
 			if (a.nextWeek.earnableGold === b.nextWeek.earnableGold) {
-				const aActualIndex = Object.keys(raids).indexOf(aId);
-				const bActualIndex = Object.keys(raids).indexOf(bId);
+				const aActualIndex = raidKeys.indexOf(aId);
+				const bActualIndex = raidKeys.indexOf(bId);
 				return bActualIndex - aActualIndex;
 			}
 			return b.nextWeek.earnableGold.bound + b.nextWeek.earnableGold.unbound - a.nextWeek.earnableGold.bound - a.nextWeek.earnableGold.unbound;
@@ -179,7 +181,7 @@ export function getHighest3(
 }
 
 export function sortRaidKeys(a: string, b: string) {
-	const keys = Object.keys(raids);
+	const keys = Array.from(raidData.raids.keys());
 	return keys.indexOf(a) - keys.indexOf(b);
 }
 

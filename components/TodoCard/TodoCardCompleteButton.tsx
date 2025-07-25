@@ -1,10 +1,10 @@
 import { toast } from "sonner";
 
-import { raids } from "@/lib/raids";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { CheckIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { type MouseEventHandler, useState } from "react";
+import { raidData } from "@/lib/game-info";
 
 interface Props {
 	charId: string;
@@ -18,7 +18,7 @@ export default function TodoCardCompleteButton({
 	assignedGates,
 }: Props) {
 	const mainStore = useMainStore();
-	const raid = raids[raidId];
+	const raid = raidData.get(raidId);
 	const [increase, setIncrease] = useState(false);
 
 	const completedlen = Object.values(assignedGates).reduce(
