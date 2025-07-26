@@ -32,7 +32,10 @@ export type RaidActions = {
 	untoggleAllGates: (charId: string, raidId: string) => void;
 	toggleSingleGate: (charId: string, raidId: string, gateId: string) => void;
 	untoggleSingleGate: (charId: string, raidId: string, gateId: string) => void;
-	setGate: (charId: string, raidId: string, gateId: string, completedDate: Date) => boolean;
+	setGates: (data: Array<{ charId: string, raidId: string, gateId: string, completedDate: Date }>) => {
+		updatedSomething: boolean;
+		errors: string[];
+	};
 };
 
 export const createRaidActions: StateActions<RaidActions> = (set) => ({
@@ -322,33 +325,51 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 			gate.completedDate = undefined;
 		});
 	},
-
-	setGate: (charId, raidId, gateId, completedDate) => {
-		let completedDateChanged = false;
+	setGates(data) {
+		let updatedSomething = false;
+		const errors = new Set<string>();
 
 		set((state) => {
-			const charIndex = getIndexOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+			for (const { charId, raidId, gateId, completedDate } of data) {
+				const charIndex = state.characters.findIndex((c) => c.id === charId);
+				if (charIndex === -1) {
+					errors.add(`Character not found: ${charId}`);
+					continue;
+				}
 
-			const assignedRaid =
-				state.characters[charIndex].assignedRaids[raidId];
-			if (assignedRaid === undefined) throw new Error("Raid not assigned");
-			const gate = assignedRaid[gateId];
-			if (gate === undefined) throw new Error("Gate not assigned");
+				const assignedRaid =
+					state.characters[charIndex].assignedRaids[raidId];
+				if (assignedRaid === undefined) {
+					const charName = state.characters[charIndex].name;
+					errors.add(`Raid ${raidId} not assigned for character ${charName}`);
+					continue;
+				}
 
-			const isCompleted =
-				gate.completedDate !== undefined
-					? isGateCompleted(
-						new Date(gate.completedDate),
-						getGateResetDate(raidId, gateId),
-					)
-					: false;
+				const gate = assignedRaid[gateId];
+				if (gate === undefined) {
+					const charName = state.characters[charIndex].name;
+					errors.add(`Gate ${gateId} not found for raid ${raidId} on character ${charName}`);
+					continue;
+				}
 
-			if (!isCompleted) {
-				gate.completedDate = completedDate.toISOString();
-				completedDateChanged = true;
+				const isCompleted =
+					gate.completedDate !== undefined
+						? isGateCompleted(
+							new Date(gate.completedDate),
+							getGateResetDate(raidId, gateId),
+						)
+						: false;
+
+				if (!isCompleted) {
+					gate.completedDate = completedDate.toISOString();
+					updatedSomething = true;
+				}
 			}
 		});
 
-		return completedDateChanged;
+		return {
+			updatedSomething,
+			errors: Array.from(errors)
+		};
 	},
 })

@@ -163,6 +163,7 @@ export const useMainStore = () => {
 		...store,
 		characters,
 		hasHydrated,
+		rehydrate: mainStoreContext.persist?.rehydrate,
 	};
 };
 
