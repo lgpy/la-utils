@@ -253,6 +253,10 @@ export default function LoaLogsConfigPage() {
 								If you encounter any issues, please drag and drop the file again
 								and use <span className="font-semibold">Clear Access</span> to
 								reset permissions.
+								<br />
+								<span className="text-xs text-muted-foreground">
+									Brave browser can also work by enabling the <code className="bg-muted">file-system-access-api</code> flag in <code className="bg-muted">brave://flags</code>.
+								</span>
 							</p>
 						</AlertDescription>
 					</Alert>
