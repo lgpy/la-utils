@@ -1,64 +1,64 @@
 {
 	"1920x1080": {
 		"line1": {
-			"baseX": 746,
+			"baseX": 776,
 			"y": 384
 		},
 		"line2": {
-			"baseX": 745,
+			"baseX": 775,
 			"y": 477
 		},
 		"line3": {
-			"baseX": 745,
+			"baseX": 775,
 			"y": 605
 		},
 		"successRateRegion": {
-			"x": 1185,
-			"y": 310,
-			"width": 46,
-			"height": 27
+			"x": 1218,
+			"y": 313,
+			"width": 41,
+			"height": 21
 		},
 		"spacing": 38
 	},
 	"2560x1440": {
 		"line1": {
-			"baseX": 994,
+			"baseX": 1035,
 			"y": 512
 		},
 		"line2": {
-			"baseX": 992,
+			"baseX": 1034,
 			"y": 636
 		},
 		"line3": {
-			"baseX": 992,
-			"y": 806
+			"baseX": 1034,
+			"y": 807
 		},
 		"successRateRegion": {
-			"x": 1583,
+			"x": 1626,
 			"y": 418,
-			"width": 55,
-			"height": 27
+			"width": 52,
+			"height": 24
 		},
-		"spacing": 51
+		"spacing": 50.666
 	},
 	"3440x1440": {
 		"line1": {
-			"baseX": 1433,
+			"baseX": 1475,
 			"y": 512
 		},
 		"line2": {
-			"baseX": 1432,
+			"baseX": 1474,
 			"y": 636
 		},
 		"line3": {
-			"baseX": 1432,
+			"baseX": 1474,
 			"y": 806
 		},
 		"successRateRegion": {
-			"x": 2023,
+			"x": 2065,
 			"y": 418,
-			"width": 55,
-			"height": 27
+			"width": 52,
+			"height": 24
 		},
 		"spacing": 50.666
 	}

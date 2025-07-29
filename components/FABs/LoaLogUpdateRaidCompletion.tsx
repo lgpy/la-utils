@@ -55,13 +55,12 @@ function assignCharIdsToLocalPlayers(raidDataArr: DbRaidData[], characters: Retu
 
 export default function LoaLogUpdateRaidCompletion() {
 	const autoUpdateSetting = useSettingsStore((store) => store.experiments.autoUpdateRaids);
-	const { characters, hasHydrated, setGate } = useMainStore();
+	const { characters, hasHydrated, setGates, rehydrate } = useMainStore();
 
 	const lastUpdatedTime = useRef(0);
 
 	const onWorkerResponse = useCallback((unfilteredRaids: DbRaidData[]) => {
 		let hasError = false;
-		let updatedSomething = false;
 
 		let filteredRaids = unfilteredRaids.filter(filterRaidData);
 
@@ -76,6 +75,8 @@ export default function LoaLogUpdateRaidCompletion() {
 			hasError = true;
 		}
 
+		const updates: Array<{ charId: string, raidId: string, gateId: string, completedDate: Date }> = [];
+
 		for (const raid of filteredRaids) {
 			const charId = localplayer_to_char_id_map.get(raid.local_player);
 			if (charId === undefined) continue;
@@ -89,41 +90,53 @@ export default function LoaLogUpdateRaidCompletion() {
 				continue;
 			}
 
-			try {
-				const didUpdate = setGate(
-					charId,
-					raidInfo.raidId,
-					raidInfo.gateId,
-					new Date(raid.fight_start),
-				);
-				if (didUpdate && !updatedSomething) {
-					updatedSomething = true;
+			updates.push({
+				charId,
+				raidId: raidInfo.raidId,
+				gateId: raidInfo.gateId,
+				completedDate: new Date(raid.fight_start),
+			});
+		}
+
+		if (updates.length === 0) return;
+
+		try {
+			rehydrate();
+			const {
+				updatedSomething,
+				errors
+			} = setGates(updates);
+			if (errors.length > 0) {
+				for (const error of errors) {
+					console.warn(error);
 				}
-			} catch (error) {
-				console.warn(
-					`Failed to complete gate "${raidInfo.gateId}" of "${raidInfo.raidId}" for "${raid.local_player}":`,
-					error instanceof Error ? error.message : error,
-				);
 				hasError = true;
 			}
-		}
-		if (updatedSomething) {
-			toast.success("Weekly raids updated successfully", {
-				description: hasError
-					? "Some errors occurred while processing raids. Please check the console for details."
-					: undefined,
+			if (updatedSomething) {
+				toast.success("Weekly raids updated successfully", {
+					description: hasError
+						? "Some errors occurred while processing raids. Please check the console for details."
+						: undefined,
+					id: "loa-log-update-raids",
+					duration: hasError ? 3000 : 2000,
+				});
+			} else {
+				toast.info("No updates found for weekly raids", {
+					id: "loa-log-update-raids",
+					description: hasError
+						? "Some errors occurred while processing raids. Please check the console for details."
+						: undefined,
+					duration: hasError ? 3000 : 2000,
+				});
+			}
+		} catch (error) {
+			console.error("Failed to update gates:", error);
+			toast.error("Failed to update weekly raids", {
+				description: "Check console for details.",
 				id: "loa-log-update-raids",
-				duration: hasError ? 3000 : 1000,
-			});
-		} else {
-			toast.info("No new raid completions found", {
-				description: hasError
-					? "Some errors occurred while processing raids. Please check the console for details."
-					: undefined,
-				id: "loa-log-update-raids",
-				duration: hasError ? 3000 : 1000,
 			});
 		}
+
 		// oxlint-disable-next-line exhaustive-deps
 	}, [hasHydrated]);
 
