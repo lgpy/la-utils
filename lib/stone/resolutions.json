@@ -22,24 +22,24 @@
 	},
 	"2560x1440": {
 		"line1": {
-			"baseX": 994,
+			"baseX": 1035,
 			"y": 512
 		},
 		"line2": {
-			"baseX": 992,
+			"baseX": 1034,
 			"y": 636
 		},
 		"line3": {
-			"baseX": 992,
-			"y": 806
+			"baseX": 1034,
+			"y": 807
 		},
 		"successRateRegion": {
-			"x": 1583,
+			"x": 1626,
 			"y": 418,
-			"width": 55,
-			"height": 27
+			"width": 52,
+			"height": 24
 		},
-		"spacing": 51
+		"spacing": 50.666
 	},
 	"3440x1440": {
 		"line1": {
