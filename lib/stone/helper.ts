@@ -37,7 +37,7 @@ function classifyColor(
 	}
 	if (contains === "red") {
 		const isRed = H >= 0 && H <= 4 && S >= 26 && S <= 72 && L >= 21 && L <= 54;
-		const isRedMilestone = H >= 11 && H <= 18 && S >= 60 && S <= 77 && L >= 51 && L <= 82;
+		const isRedMilestone = H >= 11 && H <= 18 && S >= 60 && S <= 78 && L >= 51 && L <= 82;
 
 		if (isRed || isRedMilestone) {
 			return "success";
