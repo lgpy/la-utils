@@ -48,6 +48,13 @@ class ResolutionConfigs {
 		this.resolutionConfigs = resolutionConfigs;
 	}
 
+	getSupportedResolutions(): [number, number][] {
+		return Array.from(this.resolutionConfigs.keys()).map((key) => {
+			const [width, height] = key.split("x").map(Number);
+			return [width, height];
+		});
+	}
+
 	get(resolution: Resolution): ResolutionConfig | undefined {
 		return this.resolutionConfigs.get(
 			`${resolution.width}x${resolution.height}`,

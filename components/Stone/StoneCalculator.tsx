@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import CellOverviewCard from "./CellOverviewCard";
 import ControlsCard from "./ControlsCard";
 import LiveFeedCard from "./LiveFeedCard";
-import SessionInfoCard from "./SessionInfoCard";
+import SupportedResCard from "./SupportedResCard";
 import {
 	useScreenShare,
 	useStoneStatus,
@@ -186,11 +186,7 @@ export default function StoneCalculator() {
 					showDebugInfo={showDebugInfo}
 					setShowDebugInfo={setShowDebugInfo}
 				/>
-				<SessionInfoCard
-					mediaStreamActive={ss.isSharing}
-					cells={parsedState.cellsInfo}
-					resolution={stoneHelper.getResolution()}
-				/>
+				<SupportedResCard />
 			</div>
 			<StoneStatus stoneState={stoneInfo} className="w-fit" />
 			{showDebugInfo && (
