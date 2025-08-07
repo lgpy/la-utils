@@ -131,7 +131,7 @@ export default function CraftingItemCard({ id, item }: { id: string, item: Craft
 			>
 				<p className="font-bold">Recipe</p>
 				<p className="font-bold">Cost</p>
-				<p className="font-bold">Profit</p>
+				<p className="font-bold">Discount</p>
 				{recipes.map((recipe, idx) => (
 					<Fragment key={idx}>
 						<div className="relative size-fit mx-auto">
@@ -160,8 +160,8 @@ export default function CraftingItemCard({ id, item }: { id: string, item: Craft
 							{recipe.marketdiff > 0 && "+"}
 							{recipe.marketdiff.toFixed(2)}%
 							<span className="font-normal text-xs">
-								({recipe.profit > 0 && "+"}
-								{recipe.profit.toLocaleString()})
+								({recipe.profit < 0 && "+"}
+								{(-recipe.profit).toLocaleString()})
 							</span>
 						</p>
 					</Fragment>

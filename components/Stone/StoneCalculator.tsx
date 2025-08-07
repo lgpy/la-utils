@@ -174,9 +174,10 @@ export default function StoneCalculator() {
 			{/* MODIFIED: className for full width and responsive padding */}
 			<h1 className="text-3xl font-bold text-center">Stone Cutter</h1>
 			<p className="text-sm text-muted-foreground text-center max-w-prose">
-				This tool has only been tested at 1920x1080 (16:9) resolution. It will
+				This tool has been tested mostly with 1920x1080 (16:9) resolution. It might
 				not work correctly with other resolutions. Accuracy may be affected by
-				brightness and color settings.
+				brightness and color settings. Join the Discord server for support and
+				feedback.
 			</p>
 			<div className="grid sm:grid-cols-[max-content_max-content] gap-6 justify-center">
 				<ControlsCard
