@@ -25,7 +25,7 @@ export default function TodoCardCompleteButton({
 
 	const completedlen = Object.values(assignedGates).reduce(
 		(acc, ag) => (ag.completed ? acc + 1 : acc),
-		0,
+		0
 	);
 
 	const isChecked = Object.keys(assignedGates).length === completedlen;
@@ -51,7 +51,7 @@ export default function TodoCardCompleteButton({
 				toast.error(
 					event.shiftKey
 						? "Failed to complete all gates"
-						: "Failed to complete last gate",
+						: "Failed to complete last gate"
 				);
 			}
 		} else if (event.button === 2) {
@@ -68,7 +68,7 @@ export default function TodoCardCompleteButton({
 				toast.error(
 					event.shiftKey
 						? "Failed to uncomplete all gates"
-						: "Failed to uncomplete last gate",
+						: "Failed to uncomplete last gate"
 				);
 			}
 		}

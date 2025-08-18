@@ -86,7 +86,7 @@ export default function TodoCardCompleteButtonV2({
 					total={arr.length}
 				/>
 			);
-		},
+		}
 	);
 
 	return buttons;
