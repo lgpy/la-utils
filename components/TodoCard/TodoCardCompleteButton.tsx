@@ -10,12 +10,14 @@ interface Props {
 	charId: string;
 	raidId: string;
 	assignedGates: Character["assignedRaids"][string];
+	disableInput?: boolean;
 }
 
 export default function TodoCardCompleteButton({
 	charId,
 	raidId,
 	assignedGates,
+	disableInput = false,
 }: Props) {
 	const mainStore = useMainStore();
 	const raid = raidData.get(raidId);
@@ -32,6 +34,8 @@ export default function TodoCardCompleteButton({
 
 	const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
 		event.preventDefault();
+
+		if (disableInput) return;
 
 		if (event.button === 0) {
 			setIncrease(true);

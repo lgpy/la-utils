@@ -21,6 +21,7 @@ interface Props {
 	goldEarner: boolean;
 	children: ReactNode;
 	showBackground?: boolean;
+	forceCompact?: boolean;
 }
 
 export default function TodoCardRaidV2({
@@ -29,6 +30,7 @@ export default function TodoCardRaidV2({
 	goldEarner,
 	children,
 	showBackground = true,
+	forceCompact = false
 }: Props) {
 	const compactRaidCardSetting = useSettingsStore((store) => store.experiments.compactRaidCard);
 	const actualraid = raidData.get(raidId);
@@ -49,7 +51,7 @@ export default function TodoCardRaidV2({
 
 	const progress = completedRaids / Object.keys(raid).length;
 
-	const isCompactCardEnabled = compactRaidCardSetting.state;
+	const isCompactCardEnabled = forceCompact !== undefined ? forceCompact : compactRaidCardSetting.state;
 
 	return (
 		<div
