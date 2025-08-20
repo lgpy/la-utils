@@ -64,12 +64,16 @@ export default function SettingsButton() {
 		<>
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<button disabled={!settingsStore.hasHydrated} className={
-						cn("flex flex-row gap-2 items-center hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 rounded-base outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]", {
-							"pr-2": session.data,
-							"px-2": !session.data,
-						})
-					}>
+					<button
+						disabled={!settingsStore.hasHydrated}
+						className={cn(
+							"flex flex-row gap-2 items-center hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 rounded-base outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+							{
+								"pr-2": session.data,
+								"px-2": !session.data,
+							}
+						)}
+					>
 						{session.isPending ? (
 							<>
 								<LoaderCircleIcon className="animate-spin" />
@@ -77,11 +81,18 @@ export default function SettingsButton() {
 						) : session.data ? (
 							<>
 								<Avatar className="size-9 rounded-lg">
-									<AvatarImage src={session.data.user.image ?? undefined} alt={session.data.user.name} />
-									<AvatarFallback className="rounded-lg">{session.data.user.name.charAt(0)}</AvatarFallback>
+									<AvatarImage
+										src={session.data.user.image ?? undefined}
+										alt={session.data.user.name}
+									/>
+									<AvatarFallback className="rounded-lg">
+										{session.data.user.name.charAt(0)}
+									</AvatarFallback>
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-medium">{session.data.user.name}</span>
+									<span className="truncate font-medium">
+										{session.data.user.name}
+									</span>
 								</div>
 								<SettingsIcon className="size-4" />
 							</>
@@ -103,7 +114,7 @@ export default function SettingsButton() {
 					</DropdownMenuItem>
 					<DropdownMenuItem onClick={() => router.push("/loa-logs-config")}>
 						<Database />
-						<span>LOA Logs Configuration</span>
+						<span>LOA Logs Integration</span>
 					</DropdownMenuItem>
 					<DropdownMenuGroup>
 						<DropdownMenuSub>
@@ -139,6 +150,10 @@ export default function SettingsButton() {
 							</DropdownMenuPortal>
 						</DropdownMenuSub>
 					</DropdownMenuGroup>
+					<DropdownMenuItem onClick={() => router.push("/ui-settings")}>
+						<SettingsIcon />
+						<span>UI Settings</span>
+					</DropdownMenuItem>
 					<DropdownMenuGroup>
 						<DropdownMenuSub>
 							<DropdownMenuSubTrigger>
@@ -148,59 +163,28 @@ export default function SettingsButton() {
 							<DropdownMenuPortal>
 								<DropdownMenuSubContent>
 									<DropdownMenuCheckboxItem
-										checked={settingsStore.state.experiments.buttonV2}
-										onCheckedChange={() =>
-											settingsStore.state.toggleExperiments(
-												"buttonV2",
-												!settingsStore.state.experiments.buttonV2,
-											)
+										checked={
+											settingsStore.state.experiments.ignoreThaemineIfNoG4
 										}
-									>
-										<span>Raid Button V2</span>
-									</DropdownMenuCheckboxItem>
-									<DropdownMenuCheckboxItem
-										checked={settingsStore.state.experiments.ignoreThaemineIfNoG4}
 										onCheckedChange={() =>
 											settingsStore.state.toggleExperiments(
 												"ignoreThaemineIfNoG4",
-												!settingsStore.state.experiments.ignoreThaemineIfNoG4,
+												!settingsStore.state.experiments.ignoreThaemineIfNoG4
 											)
 										}
 									>
 										<span>Ignore Thaemine if no G4</span>
 									</DropdownMenuCheckboxItem>
 									<DropdownMenuCheckboxItem
-										checked={settingsStore.state.experiments.compactRaidCard}
-										onCheckedChange={() =>
-											settingsStore.state.toggleExperiments(
-												"compactRaidCard",
-												!settingsStore.state.experiments.compactRaidCard,
-											)
-										}
-									>
-										<span>Compact Raid Card</span>
-									</DropdownMenuCheckboxItem>
-									<DropdownMenuCheckboxItem
 										checked={settingsStore.state.experiments.autoUpdateRaids}
 										onCheckedChange={() =>
 											settingsStore.state.toggleExperiments(
 												"autoUpdateRaids",
-												!settingsStore.state.experiments.autoUpdateRaids,
+												!settingsStore.state.experiments.autoUpdateRaids
 											)
 										}
 									>
 										<span>Auto Update Raids</span>
-									</DropdownMenuCheckboxItem>
-									<DropdownMenuCheckboxItem
-										checked={settingsStore.state.experiments.separateTasks}
-										onCheckedChange={() =>
-											settingsStore.state.toggleExperiments(
-												"separateTasks",
-												!settingsStore.state.experiments.separateTasks,
-											)
-										}
-									>
-										<span>Separate Tasks</span>
 									</DropdownMenuCheckboxItem>
 								</DropdownMenuSubContent>
 							</DropdownMenuPortal>
@@ -231,7 +215,7 @@ export default function SettingsButton() {
 											cancelButton: {
 												text: "Cancel",
 											},
-										})
+										});
 										if (decision) {
 											authClient.signOut();
 											session.refetch();
@@ -267,7 +251,9 @@ export default function SettingsButton() {
 					)}
 
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={() => window.open("https://ko-fi.com/leo213", "_blank")}>
+					<DropdownMenuItem
+						onClick={() => window.open("https://ko-fi.com/leo213", "_blank")}
+					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="currentColor"

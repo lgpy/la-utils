@@ -8,11 +8,8 @@ const zodSettings = z.object({
 		.nativeEnum(ServerName)
 		.optional(),
 	experiments: z.object({
-		buttonV2: z.boolean(),
 		ignoreThaemineIfNoG4: z.boolean(),
-		compactRaidCard: z.boolean(),
 		autoUpdateRaids: z.boolean(),
-		separateTasks: z.boolean(),
 	}),
 	upload: z.object({
 		ignoreRaids: z.object({
@@ -22,7 +19,12 @@ const zodSettings = z.object({
 	}),
 	friendRaids: z.object({
 		filterByRaids: z.boolean(),
-	})
+	}),
+	uiSettings: z.object({
+		buttonV2: z.boolean(),
+		compactRaidCard: z.boolean(),
+		separateTasks: z.boolean(),
+	}),
 });
 
 export type SettingsState = z.infer<typeof zodSettings>;
@@ -31,6 +33,10 @@ export type SettingsActions = {
 	setServer: (server: ServerName) => void;
 	toggleExperiments: (
 		key: keyof SettingsState["experiments"],
+		value: boolean,
+	) => void;
+	toggleUiSettings: (
+		key: keyof SettingsState["uiSettings"],
 		value: boolean,
 	) => void;
 	addIgnoreRaid: (cId: string, rId: string) => void;
@@ -58,6 +64,11 @@ export const createSettingsStore = () =>
 				friendRaids: {
 					filterByRaids: true,
 				},
+				uiSettings: {
+					buttonV2: false,
+					compactRaidCard: false,
+					separateTasks: false,
+				},
 				setServer(server) {
 					set({ server });
 				},
@@ -65,6 +76,14 @@ export const createSettingsStore = () =>
 					set((state) => ({
 						experiments: {
 							...state.experiments,
+							[key]: value,
+						},
+					}));
+				},
+				toggleUiSettings(key, value) {
+					set((state) => ({
+						uiSettings: {
+							...state.uiSettings,
 							[key]: value,
 						},
 					}));
@@ -101,7 +120,7 @@ export const createSettingsStore = () =>
 			}),
 			{
 				name: "settings",
-				version: 9,
+				version: 10,
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 				migrate: (ps: any, version) => {
 					if (version <= 0) ps.rosterGoldTotal = "total";
@@ -125,6 +144,16 @@ export const createSettingsStore = () =>
 					}
 					if (version <= 8) {
 						ps.experiments.separateTasks = false;
+					}
+					if (version <= 9) {
+						ps.uiSettings = {
+							buttonV2: ps.experiments.buttonV2,
+							compactRaidCard: ps.experiments.compactRaidCard,
+							separateTasks: ps.experiments.separateTasks,
+						};
+						ps.experiments.buttonV2 = undefined;
+						ps.experiments.compactRaidCard = undefined;
+						ps.experiments.separateTasks = undefined;
 					}
 					return ps;
 				},
