@@ -32,6 +32,7 @@ const StrikerIcon = lazy(() => import("./Striker"));
 const SummonerIcon = lazy(() => import("./Summoner"));
 const WardancerIcon = lazy(() => import("./Wardancer"));
 const WildsoulIcon = lazy(() => import("./Wildsoul"));
+const ValkyrieIcon = lazy(() => import("./Valkyrie"));
 
 const icons: {
 	[key in Class]: React.LazyExoticComponent<
@@ -65,12 +66,13 @@ const icons: {
 	[Class.Summoner]: SummonerIcon,
 	[Class.Wardancer]: WardancerIcon,
 	[Class.Wildsoul]: WildsoulIcon,
+	[Class.Valkyrie]: ValkyrieIcon,
 };
 
 export default function ClassIcon(
 	props: {
 		c: Class;
-	} & React.SVGProps<SVGSVGElement>,
+	} & React.SVGProps<SVGSVGElement>
 ) {
 	const { c, ...svgProps } = props;
 	const IconComponent = icons[c];
