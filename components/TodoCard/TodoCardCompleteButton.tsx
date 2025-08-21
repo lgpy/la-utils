@@ -10,12 +10,14 @@ interface Props {
 	charId: string;
 	raidId: string;
 	assignedGates: Character["assignedRaids"][string];
+	disableInput?: boolean;
 }
 
 export default function TodoCardCompleteButton({
 	charId,
 	raidId,
 	assignedGates,
+	disableInput = false,
 }: Props) {
 	const mainStore = useMainStore();
 	const raid = raidData.get(raidId);
@@ -23,7 +25,7 @@ export default function TodoCardCompleteButton({
 
 	const completedlen = Object.values(assignedGates).reduce(
 		(acc, ag) => (ag.completed ? acc + 1 : acc),
-		0,
+		0
 	);
 
 	const isChecked = Object.keys(assignedGates).length === completedlen;
@@ -32,6 +34,8 @@ export default function TodoCardCompleteButton({
 
 	const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
 		event.preventDefault();
+
+		if (disableInput) return;
 
 		if (event.button === 0) {
 			setIncrease(true);
@@ -47,7 +51,7 @@ export default function TodoCardCompleteButton({
 				toast.error(
 					event.shiftKey
 						? "Failed to complete all gates"
-						: "Failed to complete last gate",
+						: "Failed to complete last gate"
 				);
 			}
 		} else if (event.button === 2) {
@@ -64,7 +68,7 @@ export default function TodoCardCompleteButton({
 				toast.error(
 					event.shiftKey
 						? "Failed to uncomplete all gates"
-						: "Failed to uncomplete last gate",
+						: "Failed to uncomplete last gate"
 				);
 			}
 		}

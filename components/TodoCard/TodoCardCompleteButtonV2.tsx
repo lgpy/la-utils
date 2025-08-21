@@ -7,6 +7,7 @@ interface Props {
 	charId: string;
 	raidId: string;
 	assignedGates: Character["assignedRaids"][string];
+	disableInput?: boolean;
 }
 
 function SingularButton({
@@ -49,6 +50,7 @@ export default function TodoCardCompleteButtonV2({
 	charId,
 	raidId,
 	assignedGates,
+	disableInput = false,
 }: Props) {
 	const mainStore = useMainStore();
 
@@ -59,6 +61,7 @@ export default function TodoCardCompleteButtonV2({
 
 			const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
 				event.preventDefault();
+				if (disableInput) return;
 				if (event.altKey && event.button === 0) {
 					mainStore.toggleSingleGate(charId, raidId, gateId);
 				} else if (event.altKey && event.button === 2) {
@@ -83,7 +86,7 @@ export default function TodoCardCompleteButtonV2({
 					total={arr.length}
 				/>
 			);
-		},
+		}
 	);
 
 	return buttons;

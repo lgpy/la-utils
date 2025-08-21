@@ -7,10 +7,7 @@ import {
 import { raidData } from "@/lib/game-info";
 import { shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { cn } from "@/lib/utils";
-import {
-	type Character,
-	useSettingsStore,
-} from "@/stores/main-store/provider";
+import { type Character, useSettingsStore } from "@/stores/main-store/provider";
 import { HandCoins } from "lucide-react";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
@@ -21,6 +18,7 @@ interface Props {
 	goldEarner: boolean;
 	children: ReactNode;
 	showBackground?: boolean;
+	forceCompact?: boolean;
 }
 
 export default function TodoCardRaidV2({
@@ -29,8 +27,11 @@ export default function TodoCardRaidV2({
 	goldEarner,
 	children,
 	showBackground = true,
+	forceCompact = false,
 }: Props) {
-	const compactRaidCardSetting = useSettingsStore((store) => store.experiments.compactRaidCard);
+	const compactRaidCardSetting = useSettingsStore(
+		(store) => store.uiSettings.compactRaidCard
+	);
 	const actualraid = raidData.get(raidId);
 
 	if (!actualraid) {
@@ -44,12 +45,13 @@ export default function TodoCardRaidV2({
 
 	const completedRaids = Object.values(raid).reduce(
 		(acc, ag) => (ag.completed ? acc + 1 : acc),
-		0,
+		0
 	);
 
 	const progress = completedRaids / Object.keys(raid).length;
 
-	const isCompactCardEnabled = compactRaidCardSetting.state;
+	const isCompactCardEnabled =
+		forceCompact !== undefined ? forceCompact : compactRaidCardSetting.state;
 
 	return (
 		<div
@@ -57,7 +59,7 @@ export default function TodoCardRaidV2({
 				"relative flex flex-row items-center justify-between gap-2 p-3 transition",
 				{
 					"p-1 px-3": isCompactCardEnabled,
-				},
+				}
 			)}
 		>
 			{showBackground && (
@@ -80,7 +82,7 @@ export default function TodoCardRaidV2({
 						{
 							"opacity-40": completedRaids === Object.keys(raid).length,
 							"right-px bottom-px": isCompactCardEnabled,
-						},
+						}
 					)}
 				/>
 			)}
@@ -108,7 +110,7 @@ export default function TodoCardRaidV2({
 										{Object.entries(raid)
 											.map(
 												([gid, g]) =>
-													`${gid} ${shortenDifficulty(g.difficulty)}`,
+													`${gid} ${shortenDifficulty(g.difficulty)}`
 											)
 											.join(", ")}
 									</p>

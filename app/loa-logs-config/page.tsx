@@ -107,14 +107,14 @@ export default function LoaLogsConfigPage() {
 				}
 			} else {
 				setError(
-					"Permission denied. Please try again and allow persistent access.",
+					"Permission denied. Please try again and allow persistent access."
 				);
 			}
 		} catch (error) {
 			setError(
 				error instanceof Error
 					? error.message
-					: "Failed to request persistent access",
+					: "Failed to request persistent access"
 			);
 		} finally {
 			setIsProcessing(false);
@@ -140,14 +140,14 @@ export default function LoaLogsConfigPage() {
 
 				if (!fileHandle.name.toLowerCase().includes("encounters.db")) {
 					throw new Error(
-						"Please select the encounters.db file from LOA Logs directory",
+						"Please select the encounters.db file from LOA Logs directory"
 					);
 				}
 
 				const permission = await fileHandle.requestPermission();
 				if (permission !== "granted") {
 					throw new Error(
-						"Permission denied. Please allow access to the file.",
+						"Permission denied. Please allow access to the file."
 					);
 				}
 
@@ -166,7 +166,7 @@ export default function LoaLogsConfigPage() {
 				setIsProcessing(false);
 			}
 		},
-		[],
+		[]
 	);
 
 	const handleDrop = useCallback(
@@ -194,7 +194,7 @@ export default function LoaLogsConfigPage() {
 				}
 			}
 		},
-		[handleFileAccess, supported],
+		[handleFileAccess, supported]
 	);
 
 	const clearAccess = useCallback(async () => {
@@ -210,7 +210,7 @@ export default function LoaLogsConfigPage() {
 
 	if (!isClient) {
 		return (
-			<div className="container mx-auto p-6 max-w-4xl">
+			<div className="container mx-auto py-6 max-w-4xl">
 				<Card>
 					<CardContent className="py-8 text-center">
 						<p className="text-muted-foreground">Loading...</p>
@@ -221,7 +221,7 @@ export default function LoaLogsConfigPage() {
 	}
 
 	return (
-		<div className="container mx-auto p-6 max-w-4xl">
+		<div className="container mx-auto py-6 max-w-4xl">
 			<div className="space-y-6">
 				<div>
 					<h1 className="text-3xl font-bold">LOA Logs Integration</h1>
@@ -255,7 +255,9 @@ export default function LoaLogsConfigPage() {
 								reset permissions.
 								<br />
 								<span className="text-xs text-muted-foreground">
-									Brave browser can also work by enabling the <code className="bg-muted">file-system-access-api</code> flag in <code className="bg-muted">brave://flags</code>.
+									Brave browser can also work by enabling the{" "}
+									<code className="bg-muted">file-system-access-api</code> flag
+									in <code className="bg-muted">brave://flags</code>.
 								</span>
 							</p>
 						</AlertDescription>
@@ -441,10 +443,11 @@ export default function LoaLogsConfigPage() {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							<div
-								className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isDragOver
-									? "border-primary bg-primary/5"
-									: "border-muted-foreground/25 hover:border-muted-foreground/50"
-									}`}
+								className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+									isDragOver
+										? "border-primary bg-primary/5"
+										: "border-muted-foreground/25 hover:border-muted-foreground/50"
+								}`}
 								onDragOver={(e) => {
 									e.preventDefault();
 									setIsDragOver(true);

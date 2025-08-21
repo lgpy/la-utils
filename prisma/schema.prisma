@@ -99,6 +99,7 @@ enum Class {
   Gunlancer
   Paladin
   Slayer
+  Valkyrie
 
   //Mages
   Arcanist

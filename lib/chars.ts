@@ -217,6 +217,7 @@ export function separateSupportAndDps<T extends { class: Class }>(objWithClass: 
 			case Class.Destroyer:
 			case Class.Gunlancer:
 			case Class.Slayer:
+			case Class.Valkyrie:
 			case Class.Arcanist:
 			case Class.Sorceress:
 			case Class.Summoner:
