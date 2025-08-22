@@ -27,7 +27,7 @@ export default function TodoCardRaidV2({
 	goldEarner,
 	children,
 	showBackground = true,
-	forceCompact = false,
+	forceCompact,
 }: Props) {
 	const compactRaidCardSetting = useSettingsStore(
 		(store) => store.uiSettings.compactRaidCard
