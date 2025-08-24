@@ -9,7 +9,7 @@ import TodoCardsSeparateTasksButton from "./TodoCardsSeparateTasksButton";
 
 export default function TodoCards() {
 	const mainStore = useMainStore();
-	const experimentsStore = useSettingsStore((store) => store.uiSettings);
+	const uiSettingsStore = useSettingsStore((store) => store);
 	const [parent] = useAutoAnimate();
 	const [showTasks, setShowTasks] = useState(false);
 
@@ -19,7 +19,7 @@ export default function TodoCards() {
 				char={char}
 				key={char.id}
 				mode={
-					experimentsStore.state.separateTasks
+					uiSettingsStore.state.uiSettings.separateTasks
 						? showTasks
 							? "tasks"
 							: "raids"
@@ -27,7 +27,11 @@ export default function TodoCards() {
 				}
 			/>
 		));
-	}, [mainStore.characters, showTasks, experimentsStore.state.separateTasks]);
+	}, [
+		mainStore.characters,
+		showTasks,
+		uiSettingsStore.state.uiSettings.separateTasks,
+	]);
 
 	if (!mainStore.hasHydrated) {
 		return null;
@@ -35,10 +39,12 @@ export default function TodoCards() {
 
 	return (
 		<>
-			{experimentsStore.state.separateTasks && (
+			{uiSettingsStore.state.uiSettings.separateTasks && (
 				<TodoCardsSeparateTasksButton
 					showTasks={showTasks}
 					setShowTasks={setShowTasks}
+					position={uiSettingsStore.state.uiSettings.separateTasksPos}
+					setPosition={uiSettingsStore.state.setSeparateTasksPos}
 				/>
 			)}
 			<main
