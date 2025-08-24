@@ -24,6 +24,10 @@ const zodSettings = z.object({
 		buttonV2: z.boolean(),
 		compactRaidCard: z.boolean(),
 		separateTasks: z.boolean(),
+		separateTasksPos: z.object({
+			x: z.number(),
+			y: z.number(),
+		}),
 	}),
 });
 
@@ -39,6 +43,7 @@ export type SettingsActions = {
 		key: keyof SettingsState["uiSettings"],
 		value: boolean,
 	) => void;
+	setSeparateTasksPos: (pos: { x: number; y: number }) => void;
 	addIgnoreRaid: (cId: string, rId: string) => void;
 	removeIgnoreRaid: (cId: string, rId: string) => void;
 	togglefilterByRaids: (value: boolean) => void;
@@ -65,9 +70,13 @@ export const createSettingsStore = () =>
 					filterByRaids: true,
 				},
 				uiSettings: {
-					buttonV2: false,
+					buttonV2: true,
 					compactRaidCard: false,
 					separateTasks: false,
+					separateTasksPos: {
+						x: 16,
+						y: 80,
+					},
 				},
 				setServer(server) {
 					set({ server });
@@ -85,6 +94,14 @@ export const createSettingsStore = () =>
 						uiSettings: {
 							...state.uiSettings,
 							[key]: value,
+						},
+					}));
+				},
+				setSeparateTasksPos(pos) {
+					set((state) => ({
+						uiSettings: {
+							...state.uiSettings,
+							separateTasksPos: pos,
 						},
 					}));
 				},
@@ -120,7 +137,7 @@ export const createSettingsStore = () =>
 			}),
 			{
 				name: "settings",
-				version: 10,
+				version: 11,
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 				migrate: (ps: any, version) => {
 					if (version <= 0) ps.rosterGoldTotal = "total";
@@ -154,6 +171,12 @@ export const createSettingsStore = () =>
 						ps.experiments.buttonV2 = undefined;
 						ps.experiments.compactRaidCard = undefined;
 						ps.experiments.separateTasks = undefined;
+					}
+					if (version <= 10) {
+						ps.uiSettings.separateTasksPos = {
+							x: 16,
+							y: 80,
+						};
 					}
 					return ps;
 				},
