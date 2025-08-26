@@ -13,9 +13,11 @@ export default function TodoCardTask({ task, complete, incomplete }: Props) {
 	return (
 		<div
 			className={cn(
-				"flex flex-row justify-between items-center gap-2 p-3 transition",
+				"flex flex-row justify-between items-center gap-2 transition",
 				{
 					"bg-primary/10": task.completed,
+					"p-3": task.completionState[1] === 1,
+					"px-3 py-2": task.completionState[1] !== 1,
 				}
 			)}
 		>

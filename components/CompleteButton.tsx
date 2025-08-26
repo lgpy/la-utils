@@ -34,106 +34,103 @@ export default function CompleteButton({
 	};
 
 	return (
-		<div className="py-1.5">
-			{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+		<div
+			className="shadow bg-primary/30 w-16 h-8 rounded-lg items-center relative overflow-hidden"
+			onClick={handleClick}
+			onContextMenu={handleClick}
+		>
 			<div
-				className="shadow bg-primary/30 w-16 h-8 rounded-lg items-center relative overflow-hidden"
-				onClick={handleClick}
-				onContextMenu={handleClick}
+				className="absolute left-0 right-0 text-center z-10 text-primary-foreground h-full"
+				style={{ fontFeatureSettings: "'tnum' 1" }}
 			>
-				<div
-					className="absolute left-0 right-0 text-center z-10 text-primary-foreground h-full"
-					style={{ fontFeatureSettings: "'tnum' 1" }}
-				>
-					<div className="flex flex-row justify-center h-full items-center">
-						<AnimatePresence initial={false}>
-							{isChecked ? (
+				<div className="flex flex-row justify-center h-full items-center">
+					<AnimatePresence initial={false}>
+						{isChecked ? (
+							<motion.div
+								key="checkmark-icon" // Changed key for clarity and stability
+								style={{ position: "absolute" }} // Added position: "absolute"
+								initial={{
+									opacity: 0,
+									scale: 0.5,
+									rotate: -90,
+								}}
+								animate={{
+									opacity: 1,
+									scale: 1,
+									rotate: 0,
+								}}
+								exit={{
+									opacity: 0,
+									scale: 0.5,
+									rotate: -90,
+								}}
+								transition={{ type: "spring", stiffness: 300, damping: 15 }}
+							>
+								<CheckIcon />
+							</motion.div>
+						) : (
+							<motion.div // New wrapper for numbers
+								key="numbers-container"
+								style={{ position: "absolute" }} // Added position: "absolute"
+								className="flex flex-row items-center" // Layout for inner numbers
+								initial={{ opacity: 0, scale: 0.9 }}
+								animate={{ opacity: 1, scale: 1 }}
+								exit={{ opacity: 0, scale: 0.9 }}
+								transition={{ type: "spring", stiffness: 300, damping: 20 }}
+							>
 								<motion.div
-									key="checkmark-icon" // Changed key for clarity and stability
-									style={{ position: "absolute" }} // Added position: "absolute"
+									key={`ap${completed}`} // Key depends on completed to trigger re-animation
+									className="text-nowrap"
 									initial={{
 										opacity: 0,
-										scale: 0.5,
-										rotate: -90,
+										y: increase ? 10 : -10,
+										scale: 0.9,
+									}}
+									animate={{
+										opacity: 1,
+										y: 0,
+										scale: 1,
+									}}
+									exit={{
+										opacity: 0,
+										y: increase ? -10 : 10,
+										scale: 0.9,
+									}}
+									transition={{ type: "spring", stiffness: 400, damping: 20 }}
+								>
+									{completed}
+								</motion.div>
+								<motion.div
+									key="ap-total" // Static key for the total display
+									className="text-nowrap"
+									initial={{
+										opacity: 0,
+										scale: 0.95,
 									}}
 									animate={{
 										opacity: 1,
 										scale: 1,
-										rotate: 0,
 									}}
 									exit={{
 										opacity: 0,
-										scale: 0.5,
-										rotate: -90,
+										scale: 0.9,
 									}}
-									transition={{ type: "spring", stiffness: 300, damping: 15 }}
+									transition={{ duration: 0.3, ease: "easeInOut" }}
 								>
-									<CheckIcon />
+									/{total}
 								</motion.div>
-							) : (
-								<motion.div // New wrapper for numbers
-									key="numbers-container"
-									style={{ position: "absolute" }} // Added position: "absolute"
-									className="flex flex-row items-center" // Layout for inner numbers
-									initial={{ opacity: 0, scale: 0.9 }}
-									animate={{ opacity: 1, scale: 1 }}
-									exit={{ opacity: 0, scale: 0.9 }}
-									transition={{ type: "spring", stiffness: 300, damping: 20 }}
-								>
-									<motion.div
-										key={`ap${completed}`} // Key depends on completed to trigger re-animation
-										className="text-nowrap"
-										initial={{
-											opacity: 0,
-											y: increase ? 10 : -10,
-											scale: 0.9,
-										}}
-										animate={{
-											opacity: 1,
-											y: 0,
-											scale: 1,
-										}}
-										exit={{
-											opacity: 0,
-											y: increase ? -10 : 10,
-											scale: 0.9,
-										}}
-										transition={{ type: "spring", stiffness: 400, damping: 20 }}
-									>
-										{completed}
-									</motion.div>
-									<motion.div
-										key="ap-total" // Static key for the total display
-										className="text-nowrap"
-										initial={{
-											opacity: 0,
-											scale: 0.95,
-										}}
-										animate={{
-											opacity: 1,
-											scale: 1,
-										}}
-										exit={{
-											opacity: 0,
-											scale: 0.9,
-										}}
-										transition={{ duration: 0.3, ease: "easeInOut" }}
-									>
-										/{total}
-									</motion.div>
-								</motion.div>
-							)}
-						</AnimatePresence>
-					</div>
+							</motion.div>
+						)}
+					</AnimatePresence>
 				</div>
-				<motion.div
-					animate={{
-						width: `${(completed / total) * 100}%`,
-					}}
-					initial={false}
-					className="bg-primary h-full"
-				/>
 			</div>
+			<motion.div
+				animate={{
+					width: `${(completed / total) * 100}%`,
+				}}
+				initial={false}
+				className="bg-primary h-full"
+			/>
 		</div>
 	);
 }
