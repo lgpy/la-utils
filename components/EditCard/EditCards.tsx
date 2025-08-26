@@ -16,20 +16,23 @@ import { type RefObject, useEffect, useRef, useState } from "react";
 import EditCard from "./EditCard";
 import EditCardCharacterDialog from "./EditCardCharacterDialog";
 import EditCardRaidDialog from "./EditCardRaidDialog";
-import EditCardTaskDialog from "./EditCardTaskDialog";
+import EditCardTaskManagementDialog from "./EditCardTaskManagementDialog";
 import EditCardsNoCharactersCard from "./EditCardsNoCharactersCard";
+import EditCardTaskDialog from "./EditCardTaskDialog";
 
 export default function EditCards() {
 	const mainStore = useMainStore();
-	const [isOpen, setIsOpen] = useState<false | "raid" | "char" | "task">(false);
+	const [isOpen, setIsOpen] = useState<
+		false | "raid" | "char" | "taskManagement" | "taskEditing"
+	>(false);
 	const [selectedCharacter, setSelectedCharacter] = useState<
 		Character | undefined
 	>(undefined);
 	const [selectedRaid, setSelectedRaid] = useState<string | undefined>(
-		undefined,
+		undefined
 	);
 	const [selectedTask, setSelectedTask] = useState<string | undefined>(
-		undefined,
+		undefined
 	);
 	const [isLocked, setIsLocked] = useState(true);
 
@@ -44,10 +47,14 @@ export default function EditCards() {
 		setIsOpen("raid");
 	};
 
-	const openTaskDialog = (char: Character, taskId: string | undefined) => {
+	const openTaskDialog = (char: Character) => {
 		setSelectedCharacter(char);
+		setIsOpen("taskManagement");
+	};
+
+	const openTaskEditingDialog = (taskId: string | undefined) => {
 		setSelectedTask(taskId);
-		setIsOpen("task");
+		setIsOpen("taskEditing");
 	};
 
 	const parent = useRef(null) as RefObject<HTMLUListElement | null>;
@@ -98,7 +105,7 @@ export default function EditCards() {
 							char={char}
 							editCharacter={() => openCharacterEditDialog(char)}
 							openRaidDialog={(raidId) => openRaidDialog(char, raidId)}
-							openTaskDialog={(taskId) => openTaskDialog(char, taskId)}
+							openTaskDialog={() => openTaskDialog(char)}
 							movable={!isLocked}
 							data-pw={`character-${index}`}
 						/>
@@ -121,12 +128,29 @@ export default function EditCards() {
 					close={() => setIsOpen(false)}
 				/>
 			)}
-			{selectedCharacter && isOpen === "task" && (
-				<EditCardTaskDialog
+			{selectedCharacter && isOpen === "taskManagement" && (
+				<EditCardTaskManagementDialog
 					character={selectedCharacter}
-					isOpen={isOpen === "task"}
-					close={() => setIsOpen(false)}
+					isOpen={isOpen === "taskManagement"}
+					close={() => setIsOpen((v) => (v === "taskManagement" ? false : v))}
+					openTaskDialog={(taskID: string | undefined) =>
+						openTaskEditingDialog(taskID)
+					}
+				/>
+			)}
+			{isOpen === "taskEditing" && (
+				<EditCardTaskDialog
 					taskId={selectedTask}
+					isOpen={isOpen === "taskEditing"}
+					close={() => {
+						const newCharData = mainStore.characters.find(
+							(c) => c.id === selectedCharacter?.id
+						);
+						if (newCharData) {
+							setSelectedCharacter(newCharData);
+						}
+						setIsOpen("taskManagement");
+					}}
 				/>
 			)}
 			<motion.div

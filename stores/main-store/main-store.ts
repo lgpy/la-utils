@@ -1,18 +1,19 @@
 import { z } from "zod";
 import { persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
-import { Difficulty } from "@/generated/prisma";
 import { CharacterActions, createCharActions } from "./actions/char";
 import { createRaidActions, RaidActions } from "./actions/raid";
 import { createTaskActions, TaskActions } from "./actions/task";
 import { createMiscActions, MiscActions } from "./actions/misc";
 import { immer } from 'zustand/middleware/immer';
 import { StateCreator } from "zustand";
-import { zodChar } from "./types";
+import { zodChar, zodTask } from "./types";
+import { CharV0, CharV1, CharV2, CharV3, CharV4, migrateCharV0ToV1, migrateCharV1ToV2, migrateCharV2ToV3, migrateCharV3ToV4, migrateCharV4ToV5 } from "./migrations";
 
 
 export const zodChars = z.object({
 	characters: z.array(zodChar),
+	tasks: z.array(zodTask),
 });
 
 export type MainState = z.infer<typeof zodChars>;
@@ -31,6 +32,7 @@ export const createMainStore = () =>
 		persist(
 			immer((...a) => ({
 				characters: [],
+				tasks: [],
 				...createRaidActions(...a),
 				...createCharActions(...a),
 				...createTaskActions(...a),
@@ -38,85 +40,26 @@ export const createMainStore = () =>
 			})),
 			{
 				name: "characters",
-				version: 4,
+				version: 5,
 				migrate: (persistedState, version) => {
-					// Define types for migration
-					interface LegacyCharacter {
-						itemLevel: string | number;
-						completedRaids?: unknown;
-						tasks?: unknown[];
-						raids?: {
-							[key: string]: {
-								gates: Array<{
-									id: string;
-									difficulty: Difficulty;
-									completedDate?: string;
-								}>;
-							};
-						};
-						assignedRaids?: Record<
-							string,
-							Record<string, { difficulty: Difficulty; completedDate?: string }>
-						>;
-						isGoldEarner?: boolean;
-					}
-
-					interface LegacyState {
-						characters: LegacyCharacter[];
-					}
-
-					const state = persistedState as LegacyState;
-
 					if (version <= 0) {
-						for (const char of state.characters) {
-							if (typeof char.itemLevel === "string") {
-								char.itemLevel = Number.parseInt(char.itemLevel);
-							}
-							char.completedRaids = undefined;
-						}
+						persistedState = migrateCharV0ToV1(persistedState as CharV0);
 					}
 					if (version <= 1) {
-						for (const char of state.characters) {
-							char.tasks = [];
-						}
+						persistedState = migrateCharV1ToV2(persistedState as CharV1);
 					}
 					if (version <= 2) {
-						for (const char of state.characters) {
-							if (char.raids) {
-								char.assignedRaids = Object.entries(char.raids).reduce(
-									(accraids, [raidId, raid]) => {
-										accraids[raidId] = raid.gates.reduce(
-											(accgates, gate) => {
-												accgates[gate.id] = {
-													difficulty: gate.difficulty,
-													completedDate: gate.completedDate,
-												};
-												return accgates;
-											},
-											{} as Record<
-												string,
-												{ difficulty: Difficulty; completedDate?: string }
-											>,
-										);
-										return accraids;
-									},
-									{} as Record<
-										string,
-										Record<
-											string,
-											{ difficulty: Difficulty; completedDate?: string }
-										>
-									>,
-								);
-								char.raids = undefined;
-							}
-						}
+						persistedState = migrateCharV2ToV3(persistedState as CharV2);
 					}
 					if (version <= 3) {
-						state.characters.forEach((char, idx) => {
-							char.isGoldEarner = idx < 6;
-						});
+						persistedState = migrateCharV3ToV4(persistedState as CharV3);
 					}
+					if (version <= 4) {
+						persistedState = migrateCharV4ToV5(persistedState as CharV4);
+					}
+
+					zodChars.parse(persistedState);
+
 					return persistedState;
 				},
 			},

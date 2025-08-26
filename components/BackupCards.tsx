@@ -34,8 +34,9 @@ export default function BackupCards() {
 	const mainStoreState: string = useMemo(() => {
 		const state: MainState = {
 			characters: mainStore.characters,
-		}
-		return JSON.stringify(state, null, 2)
+			tasks: mainStore.tasks,
+		};
+		return JSON.stringify(state, null, 2);
 	}, [mainStore]);
 
 	return (
@@ -70,7 +71,7 @@ export default function BackupCards() {
 				<CardContent>
 					<Textarea
 						value={mainStoreState}
-						onChange={() => { }}
+						onChange={() => {}}
 						className="h-80 break-all"
 					/>
 				</CardContent>

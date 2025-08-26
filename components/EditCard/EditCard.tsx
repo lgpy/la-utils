@@ -10,14 +10,13 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
 import { Fragment, useMemo } from "react";
 import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
-import EditCardTask from "./EditCardTask";
 import { TaskType } from "@/generated/prisma";
 
 type Props = {
 	char: Character;
 	editCharacter: () => void;
 	openRaidDialog: (raidId?: string) => void;
-	openTaskDialog: (taskId?: string) => void;
+	openTaskDialog: () => void;
 	movable?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
@@ -48,7 +47,16 @@ export default function EditCard(props: Props) {
 			</Fragment>
 		));
 
-	const tasksByType = useMemo(() => Object.fromEntries(Object.values(TaskType).map((type) => ([type, char.tasks.filter((t) => t.type === type)]))), [char.tasks]);
+	const tasksByType = useMemo(
+		() =>
+			Object.fromEntries(
+				Object.values(TaskType).map((type) => [
+					type,
+					char.tasks.filter((t) => t.type === type),
+				])
+			),
+		[char.tasks]
+	);
 
 	return (
 		<Card className="h-fit w-56 py-0 gap-0 overflow-hidden" {...divProps}>
@@ -66,7 +74,7 @@ export default function EditCard(props: Props) {
 					</h2>
 					<div
 						className={cn(
-							"flex items-center gap-1 text-sm font-semibold dark:text-[#eed49f] text-[#df8e1d]",
+							"flex items-center gap-1 text-sm font-semibold dark:text-[#eed49f] text-[#df8e1d]"
 						)}
 						data-pw="character-item-level"
 					>
@@ -136,30 +144,30 @@ export default function EditCard(props: Props) {
 				</TabsContent>
 				<TabsContent value="tasks" className="m-0">
 					<div ref={parent2}>
-						{Object.entries(tasksByType).map(([type, tasks], typeIdx, typeArr) => (
-							tasks.length > 0 && (
-								<Fragment key={type}>
-									<CardContent className="p-1 text-center text-sm bg-background/60">
-										{type.charAt(0).toUpperCase() + type.slice(1)}
-									</CardContent>
-									<Separator />
-									{tasks.map((task, taskIdx) => (
-										<Fragment key={task.id}>
-											<EditCardTask
-												task={task}
-												openTaskDialog={() => openTaskDialog(task.id)}
-											/>
-											{taskIdx < tasks.length - 1 && (
-												<Separator className="opacity-75" />
-											)}
-										</Fragment>
-									))}
-									{typeIdx < typeArr.length - 1 && (
+						{Object.entries(tasksByType).map(
+							([type, tasks], typeIdx, typeArr) =>
+								tasks.length > 0 && (
+									<Fragment key={type}>
+										<CardContent className="p-1 text-center text-sm bg-background/60">
+											{type.charAt(0).toUpperCase() + type.slice(1)}
+										</CardContent>
 										<Separator />
-									)}
-								</Fragment>
-							)
-						))}
+										{tasks.map((task, taskIdx) => (
+											<Fragment key={task.id}>
+												<div className="flex flex-row justify-between items-center h-full p-3">
+													<div className="flex flex-col grow min-w-0 items-start gap-1.5">
+														<p>{task.name}</p>
+													</div>
+												</div>
+												{taskIdx < tasks.length - 1 && (
+													<Separator className="opacity-75" />
+												)}
+											</Fragment>
+										))}
+										{typeIdx < typeArr.length - 1 && <Separator />}
+									</Fragment>
+								)
+						)}
 
 						{char.tasks.length === 0 && (
 							<CardContent className="p-3 text-center">
@@ -175,7 +183,7 @@ export default function EditCard(props: Props) {
 							variant="ghost"
 							data-pw={"character-add-task"}
 						>
-							<PlusIcon /> Add Task
+							<PencilIcon /> Manage Tasks
 						</Button>
 					</CardContent>
 				</TabsContent>

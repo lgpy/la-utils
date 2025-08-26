@@ -49,14 +49,6 @@ export async function POST(request: NextRequest) {
           isGoldEarner: char.isGoldEarner,
           tasks: {
             deleteMany: {},
-            createMany: {
-              data: char.tasks.map((task) => ({
-                id: task.id,
-                name: task.name,
-                type: task.type,
-                completedDate: task.completedDate ? new Date(task.completedDate) : null,
-              }))
-            }
           },
           assignedRaids: {
             deleteMany: {},
@@ -79,16 +71,6 @@ export async function POST(request: NextRequest) {
           itemLevel: char.itemLevel,
           isGoldEarner: char.isGoldEarner,
           userId: session.user.id,
-          tasks: {
-            createMany: {
-              data: char.tasks.map((task) => ({
-                id: task.id,
-                name: task.name,
-                type: task.type,
-                completedDate: task.completedDate ? new Date(task.completedDate) : null,
-              }))
-            }
-          },
           assignedRaids: {
             create: Object.entries(char.assignedRaids).map(([raidId, raidInfo]) => ({
               raidId,

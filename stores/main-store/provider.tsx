@@ -8,9 +8,15 @@ import {
 	getRestedReset,
 } from "@/lib/dates";
 import { isGateCompleted } from "@/lib/raids";
-import { isTaskCompleted } from "@/lib/tasks";
-import { type MainStore, createMainStore } from "@/stores/main-store/main-store";
-import { type SettingsStore, createSettingsStore } from "@/stores/main-store/settings-store";
+import { getTaskCompletionState } from "@/lib/tasks";
+import {
+	type MainStore,
+	createMainStore,
+} from "@/stores/main-store/main-store";
+import {
+	type SettingsStore,
+	createSettingsStore,
+} from "@/stores/main-store/settings-store";
 import {
 	type ReactNode,
 	createContext,
@@ -25,11 +31,11 @@ export type MainStoreApi = ReturnType<typeof createMainStore>;
 export type SettingsStoreApi = ReturnType<typeof createSettingsStore>;
 
 export const MainStoreContext = createContext<MainStoreApi | undefined>(
-	undefined,
+	undefined
 );
 
 export const SettingsStoreContext = createContext<SettingsStoreApi | undefined>(
-	undefined,
+	undefined
 );
 
 export interface MainStoreProviderProps {
@@ -73,7 +79,6 @@ export const useMainStore = () => {
 		throw new Error("useMainStore must be used within MainStoreProvider");
 	}
 
-
 	const hasHydrated = useHydration(mainStoreContext);
 
 	const store = useStore(mainStoreContext, (s) => s);
@@ -100,12 +105,10 @@ export const useMainStore = () => {
 							}
 
 							let resetDate: Date;
-							const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateId);
-							if (gateData.isBiWeekly === undefined) {
+							const gateData = raidData.get(raidId)?.getGate(gateId);
+							if (gateData === undefined || gateData.isBiWeekly === undefined) {
 								resetDate = weeklyReset;
-							} else if (
-								gateData.isBiWeekly === "odd"
-							) {
+							} else if (gateData.isBiWeekly === "odd") {
 								resetDate = oddBiWeeklyReset;
 							} else {
 								resetDate = evenBiWeeklyReset;
@@ -115,46 +118,64 @@ export const useMainStore = () => {
 								...gate,
 								completed: isGateCompleted(
 									new Date(gate.completedDate),
-									resetDate,
+									resetDate
 								),
 							};
 							return gateAcc;
 						},
-						{} as ExtendedAssignedRaids[string],
+						{} as ExtendedAssignedRaids[string]
 					);
 					acc[raidId] = gates;
 					return acc;
 				},
-				{} as ExtendedAssignedRaids,
+				{} as ExtendedAssignedRaids
 			),
-			tasks: character.tasks.map((task) => {
-				if (task.completedDate === undefined)
+			tasks: character.tasks
+				.map((charTask) => {
+					const task = store.tasks.find((t) => t.id === charTask.id);
+					if (!task) return null;
+
+					if (charTask.completionDate === undefined)
+						return {
+							...charTask,
+							name: task.name,
+							type: task.type,
+							completionState: [0, task.timesToComplete],
+							completed: false,
+						};
+
+					let resetDate: Date;
+					switch (task.type) {
+						case "daily":
+							resetDate = dailyReset;
+							break;
+						case "rested":
+							resetDate = restedReset;
+							break;
+						case "weekly":
+							resetDate = weeklyReset;
+							break;
+						default:
+							const _exhaustiveCheck: never = task.type;
+							resetDate = weeklyReset; // Fallback, should never happen
+					}
+
+					const [completions, timesToComplete] = getTaskCompletionState(
+						task,
+						charTask.completionDate,
+						charTask.completions,
+						resetDate
+					);
+
 					return {
-						...task,
-						completed: false,
+						...charTask,
+						name: task.name,
+						type: task.type,
+						completionState: [completions, timesToComplete],
+						completed: completions >= timesToComplete,
 					};
-
-				let resetDate: Date;
-				switch (task.type) {
-					case "daily":
-						resetDate = dailyReset;
-						break;
-					case "rested":
-						resetDate = restedReset;
-						break;
-					case "weekly":
-						resetDate = weeklyReset;
-						break;
-					default:
-						const _exhaustiveCheck: never = task.type;
-						resetDate = new Date(); // Fallback, should never happen
-				}
-
-				return {
-					...task,
-					completed: isTaskCompleted(task, resetDate),
-				};
-			}),
+				})
+				.filter((t) => t !== null),
 		}));
 		return ret;
 	}, [store]);
@@ -168,15 +189,17 @@ export const useMainStore = () => {
 };
 
 export const useSettingsStore = <T,>(
-	selector: (store: SettingsStore) => T,
+	selector: (store: SettingsStore) => T
 ): {
 	state: T;
 	hasHydrated: boolean;
 } => {
-	const settingsStoreContext = useContext(SettingsStoreContext)
+	const settingsStoreContext = useContext(SettingsStoreContext);
 
 	if (!settingsStoreContext) {
-		throw new Error(`useSettingsStore must be used within SettingsStoreProvider`)
+		throw new Error(
+			`useSettingsStore must be used within SettingsStoreProvider`
+		);
 	}
 
 	const hasHydrated = useHydration(settingsStoreContext);
@@ -184,7 +207,7 @@ export const useSettingsStore = <T,>(
 	return {
 		state: useStore(settingsStoreContext, selector),
 		hasHydrated,
-	}
-}
+	};
+};
 
 export type Character = ReturnType<typeof useMainStore>["characters"][number];
