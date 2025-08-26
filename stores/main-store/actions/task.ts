@@ -11,8 +11,7 @@ export type TaskActions = {
   addTask: (task: z.infer<typeof zodNewTask>) => void;
   editTask: (taskId: string, task: z.infer<typeof zodNewTask>) => void;
   delTask: (taskId: string) => void;
-  charAddTasks: (charId: string, taskIds: string[]) => void;
-  charDelTasks: (charId: string, taskIds: string[]) => void;
+  charAssignTasks: (charId: string, taskIds: string[]) => void;
   charCompleteTask: (charId: string, taskId: string, fully?: boolean) => void;
   charIncompleteTask: (charId: string, taskId: string, fully?: boolean) => void;
 }
@@ -49,32 +48,36 @@ export const createTaskActions: StateActions<TaskActions> = (set) => ({
       });
     });
   },
-  charAddTasks(charId, taskIDs) {
+  charAssignTasks(charId, taskIds) {
     set((state) => {
       const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
 
-      for (const taskId of taskIDs) {
-        const hasTaskAlready = char.tasks.some((t) => t.id === taskId);
-
-        if (hasTaskAlready) {
-          throw new Error("Character already has this task");
+      //remove tasks
+      const tasksToRemove = char.tasks.filter((t) => !taskIds.includes(t.id));
+      for (const task of tasksToRemove) {
+        const index = char.tasks.findIndex((t) => t.id === task.id);
+        if (index !== -1) {
+          char.tasks.splice(index, 1);
+        } else {
+          throw new Error("Failed to Assign Tasks");
         }
+      }
 
+      //add tasks
+      const tasksToAdd = taskIds.filter((id) => !char.tasks.some((t) => t.id === id));
+      for (const taskId of tasksToAdd) {
         char.tasks.push({
           id: taskId,
           completions: 0,
         });
       }
-    });
-  },
-  charDelTasks(charId, taskIds) {
-    set((state) => {
-      const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
-      for (const taskId of taskIds) {
-        const taskIndex = getIndexOrThrow(char.tasks, (t) => t.id === taskId, "Task not found");
 
-        char.tasks.splice(taskIndex, 1);
-      }
+      //sort based tasks based on taskIds array
+      char.tasks.sort((a, b) => {
+        const aIndex = taskIds.indexOf(a.id);
+        const bIndex = taskIds.indexOf(b.id);
+        return aIndex - bIndex;
+      });
     });
   },
   charCompleteTask(charId, taskId, fully = false) {

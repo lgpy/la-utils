@@ -60,19 +60,8 @@ export default function EditCardTaskManagementDialog({
 	}, [mainStore.tasks, assignedTaskIds]);
 
 	function onSubmit() {
-		const tasksToRemove = character.tasks.filter(
-			(task) => !assignedTaskIds.includes(task.id)
-		);
-		const tasksToAdd = assignedTaskIds.filter(
-			(taskId) => !character.tasks.some((t) => t.id === taskId)
-		);
-
 		try {
-			mainStore.charDelTasks(
-				character.id,
-				tasksToRemove.map((t) => t.id)
-			);
-			mainStore.charAddTasks(character.id, tasksToAdd);
+			mainStore.charAssignTasks(character.id, assignedTaskIds);
 			toast.success("Task changes saved successfully!");
 			close();
 		} catch {
