@@ -35,7 +35,7 @@ export default function CompleteButton({
 
 	return (
 		<div
-			className="shadow bg-primary/30 w-16 h-8 rounded-lg items-center relative overflow-hidden"
+			className="shadow bg-primary/30 w-8 h-6 text-xs font-light rounded-lg items-center relative overflow-hidden"
 			onClick={handleClick}
 			onContextMenu={handleClick}
 		>
@@ -66,7 +66,7 @@ export default function CompleteButton({
 								}}
 								transition={{ type: "spring", stiffness: 300, damping: 15 }}
 							>
-								<CheckIcon />
+								<CheckIcon className="size-5" />
 							</motion.div>
 						) : (
 							<motion.div // New wrapper for numbers
@@ -78,47 +78,55 @@ export default function CompleteButton({
 								exit={{ opacity: 0, scale: 0.9 }}
 								transition={{ type: "spring", stiffness: 300, damping: 20 }}
 							>
-								<motion.div
-									key={`ap${completed}`} // Key depends on completed to trigger re-animation
-									className="text-nowrap"
-									initial={{
-										opacity: 0,
-										y: increase ? 10 : -10,
-										scale: 0.9,
-									}}
-									animate={{
-										opacity: 1,
-										y: 0,
-										scale: 1,
-									}}
-									exit={{
-										opacity: 0,
-										y: increase ? -10 : 10,
-										scale: 0.9,
-									}}
-									transition={{ type: "spring", stiffness: 400, damping: 20 }}
-								>
-									{completed}
-								</motion.div>
-								<motion.div
-									key="ap-total" // Static key for the total display
-									className="text-nowrap"
-									initial={{
-										opacity: 0,
-										scale: 0.95,
-									}}
-									animate={{
-										opacity: 1,
-										scale: 1,
-									}}
-									exit={{
-										opacity: 0,
-										scale: 0.9,
-									}}
-									transition={{ duration: 0.3, ease: "easeInOut" }}
-								>
-									/{total}
-								</motion.div>
+								{total > 1 && (
+									<>
+										<motion.div
+											key={`ap${completed}`} // Key depends on completed to trigger re-animation
+											className="text-nowrap"
+											initial={{
+												opacity: 0,
+												y: increase ? 10 : -10,
+												scale: 0.9,
+											}}
+											animate={{
+												opacity: 1,
+												y: 0,
+												scale: 1,
+											}}
+											exit={{
+												opacity: 0,
+												y: increase ? -10 : 10,
+												scale: 0.9,
+											}}
+											transition={{
+												type: "spring",
+												stiffness: 400,
+												damping: 20,
+											}}
+										>
+											{completed}
+										</motion.div>
+										<motion.div
+											key="ap-total" // Static key for the total display
+											className="text-nowrap"
+											initial={{
+												opacity: 0,
+												scale: 0.95,
+											}}
+											animate={{
+												opacity: 1,
+												scale: 1,
+											}}
+											exit={{
+												opacity: 0,
+												scale: 0.9,
+											}}
+											transition={{ duration: 0.3, ease: "easeInOut" }}
+										>
+											/{total}
+										</motion.div>
+									</>
+								)}
 							</motion.div>
 						)}
 					</AnimatePresence>
