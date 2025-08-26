@@ -1,72 +1,103 @@
 import { v4 as uuidv4 } from "uuid";
 import { StateActions } from "../main-store";
 import z from "zod";
-import { isTaskCompleted } from "@/lib/tasks";
+import { getTaskCompletionState } from "@/lib/tasks";
 import { getIndexOrThrow, getOrThrow } from "@/lib/array";
 import { zodTask } from "../types";
 
-export const zodNewTask = zodTask.pick({ name: true, type: true });
+export const zodNewTask = zodTask.pick({ name: true, type: true, timesToComplete: true });
 
 export type TaskActions = {
-  charAddTask: (charId: string, task: z.infer<typeof zodNewTask>) => void;
-  charEditTask: (
-    charId: string,
-    taskId: string,
-    task: z.infer<typeof zodNewTask>,
-  ) => void;
-  charDelTask: (charId: string, taskId: string) => void;
-  charToggleTask: (charId: string, taskId: string) => void;
+  addTask: (task: z.infer<typeof zodNewTask>) => void;
+  editTask: (taskId: string, task: z.infer<typeof zodNewTask>) => void;
+  delTask: (taskId: string) => void;
+  charAddTasks: (charId: string, taskIds: string[]) => void;
+  charDelTasks: (charId: string, taskIds: string[]) => void;
+  charCompleteTask: (charId: string, taskId: string, fully?: boolean) => void;
+  charIncompleteTask: (charId: string, taskId: string, fully?: boolean) => void;
 }
 
 export const createTaskActions: StateActions<TaskActions> = (set) => ({
-  charAddTask(charId, task) {
+  addTask(task) {
     set((state) => {
-      const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
-
       const parsedTask = zodNewTask.parse(task);
-
-      char.tasks.push({
+      state.tasks.push({
         ...parsedTask,
         id: uuidv4(),
-        completedDate: undefined,
       });
     });
   },
-  charEditTask(charId, taskId, task) {
+  editTask(taskId, task) {
     set((state) => {
-      const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
-      const taskIndex = getIndexOrThrow(char.tasks, (t) => t.id === taskId, "Task not found");
-
+      const taskIndex = getIndexOrThrow(state.tasks, (t) => t.id === taskId, "Task not found");
       const parsedTask = zodNewTask.parse(task);
-
-      char.tasks[taskIndex] = {
+      state.tasks[taskIndex] = {
         ...parsedTask,
         id: taskId,
-        completedDate: char.tasks[taskIndex].completedDate,
       };
     });
   },
-  charDelTask(charId, taskId) {
+  delTask(taskId) {
     set((state) => {
-      const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
-      const taskIndex = getIndexOrThrow(char.tasks, (t) => t.id === taskId, "Task not found");
-
-      char.tasks.splice(taskIndex, 1);
+      const taskIndex = getIndexOrThrow(state.tasks, (t) => t.id === taskId, "Task not found");
+      state.tasks.splice(taskIndex, 1);
+      state.characters.forEach((char) => {
+        const charTaskIndex = char.tasks.findIndex((t) => t.id === taskId);
+        if (charTaskIndex !== -1) {
+          char.tasks.splice(charTaskIndex, 1);
+        }
+      });
     });
   },
-  charToggleTask(charId, taskId) {
+  charAddTasks(charId, taskIDs) {
     set((state) => {
       const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
-      const taskIndex = getIndexOrThrow(char.tasks, (t) => t.id === taskId, "Task not found");
 
-      const task = char.tasks[taskIndex];
+      for (const taskId of taskIDs) {
+        const hasTaskAlready = char.tasks.some((t) => t.id === taskId);
 
-      const isCompleted = isTaskCompleted(task);
+        if (hasTaskAlready) {
+          throw new Error("Character already has this task");
+        }
 
-      if (isCompleted) {
-        task.completedDate = undefined;
-      } else {
-        task.completedDate = new Date().toISOString();
+        char.tasks.push({
+          id: taskId,
+          completions: 0,
+        });
+      }
+    });
+  },
+  charDelTasks(charId, taskIds) {
+    set((state) => {
+      const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+      for (const taskId of taskIds) {
+        const taskIndex = getIndexOrThrow(char.tasks, (t) => t.id === taskId, "Task not found");
+
+        char.tasks.splice(taskIndex, 1);
+      }
+    });
+  },
+  charCompleteTask(charId, taskId, fully = false) {
+    set((state) => {
+      const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+      const task = getOrThrow(state.tasks, (t) => t.id === taskId, "Task not found");
+      const charTask = getOrThrow(char.tasks, (t) => t.id === taskId, "Task not assigned");
+
+      const [completions, timesToComplete] = getTaskCompletionState(task, charTask.completionDate, charTask.completions);
+      if (completions < timesToComplete) {
+        charTask.completionDate = new Date().toISOString();
+        charTask.completions = fully ? timesToComplete : completions + 1;
+      }
+    });
+  },
+  charIncompleteTask(charId, taskId, fully = false) {
+    set((state) => {
+      const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+      const charTask = getOrThrow(char.tasks, (t) => t.id === taskId, "Task not assigned");
+
+      if (charTask.completions > 0) {
+        charTask.completionDate = new Date().toISOString();
+        charTask.completions = fully ? 0 : charTask.completions - 1;
       }
     });
   },

@@ -5,7 +5,7 @@ export const zodTask = z.object({
   id: z.string(),
   name: z.string(),
   type: z.nativeEnum(TaskType),
-  completedDate: z.string().optional(),
+  timesToComplete: z.number().min(1),
 });
 
 export const zodChar = z.object({
@@ -22,5 +22,9 @@ export const zodChar = z.object({
       }),
     ),
   ),
-  tasks: z.array(zodTask),
+  tasks: z.object({
+    id: z.string(),
+    completions: z.number(),
+    completionDate: z.string().optional()
+  }).array()
 });

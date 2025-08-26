@@ -7,12 +7,6 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
 	Form,
 	FormControl,
 	FormField,
@@ -29,7 +23,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { TaskType } from "@/generated/prisma";
-import { type Character, useMainStore } from "@/stores/main-store/provider";
+import { useMainStore } from "@/stores/main-store/provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash2Icon } from "lucide-react";
 import { useEffect } from "react";
@@ -38,83 +32,46 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
-	name: z.string().min(2).max(50),
-	type: z.nativeEnum(TaskType)
+	name: z.string().min(2).max(100),
+	type: z.nativeEnum(TaskType),
+	timesToComplete: z.string(),
 });
 
-const presets: {
-	id: string;
-	name: string;
-	type: TaskType;
-}[] = [
-		{
-			id: "chaos-dungeon",
-			name: "Chaos Dungeon",
-			type: TaskType.daily,
-		},
-		{
-			id: "abyss-dungeon",
-			name: "Guardian Raid",
-			type: TaskType.daily,
-		},
-		{
-			id: "cube",
-			name: "Cube",
-			type: TaskType.weekly,
-		},
-		{
-			id: "guild-shop",
-			name: "Guild Shop",
-			type: TaskType.weekly,
-		},
-		{
-			id: "solo-mode-shop",
-			name: "Solo Mode Shop",
-			type: TaskType.weekly,
-		}
-	];
-
 interface Props {
-	character: Character;
 	close: () => void;
 	isOpen: boolean;
 	taskId?: string;
 }
 
-export default function EditCardTaskDialog({
-	character,
-	isOpen,
-	close,
-	taskId,
-}: Props) {
+export default function EditCardTaskDialog({ isOpen, close, taskId }: Props) {
 	const mainStore = useMainStore();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: "",
 			type: "daily",
+			timesToComplete: "1",
 		},
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		try {
-			/*if (taskId !== undefined)
-				state.charEditRaid(character.id, taskId, fgates);
-			else state.charAddRaid(character.id, values.raidId, fgates);*/
 			if (taskId !== undefined)
-				mainStore.charEditTask(character.id, taskId, {
+				mainStore.editTask(taskId, {
 					name: values.name,
+					timesToComplete: Number.parseInt(values.timesToComplete, 10),
 					type: values.type,
 				});
 			else
-				mainStore.charAddTask(character.id, {
+				mainStore.addTask({
 					name: values.name,
+					timesToComplete: Number.parseInt(values.timesToComplete, 10),
 					type: values.type,
 				});
 
 			close();
 			toast.success(
-				`Task has been ${taskId ? "updated" : "added"} successfully!`,
+				`Task has been ${taskId ? "updated" : "added"} successfully!`
 			);
 		} catch {
 			toast.error(`Failed to ${taskId ? "update" : "add"} task!`);
@@ -123,19 +80,34 @@ export default function EditCardTaskDialog({
 
 	useEffect(() => {
 		if (!isOpen) return;
-		const task = character.tasks.find((t) => t.id === taskId);
-		form.reset({
+		const task = mainStore.tasks.find((t) => t.id === taskId);
+		const newValues = {
 			name: task?.name || "",
 			type: task?.type || "daily",
-		});
-	}, [isOpen, taskId, character.tasks, form]);
+			timesToComplete: task?.timesToComplete || 1,
+		};
+		// Only reset if values actually changed
+		const currentValues = form.getValues();
+		if (
+			currentValues.name !== newValues.name ||
+			currentValues.type !== newValues.type ||
+			Number.parseInt(currentValues.timesToComplete, 10) !==
+				newValues.timesToComplete
+		) {
+			form.reset({
+				name: newValues.name,
+				type: newValues.type,
+				timesToComplete: String(newValues.timesToComplete),
+			});
+		}
+	}, [isOpen, taskId, form, mainStore]);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle className="text-primary">
-						{taskId ? "Update Task" : "Add Task"} - {character.name}
+						{taskId ? "Update Task" : "Add Task"}
 					</DialogTitle>
 				</DialogHeader>
 
@@ -182,33 +154,28 @@ export default function EditCardTaskDialog({
 								</FormItem>
 							)}
 						/>
+						<FormField
+							control={form.control}
+							name="timesToComplete"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Times to Complete</FormLabel>
+									<FormControl>
+										<Input {...field} type="number" />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 					</form>
 				</Form>
 				<DialogFooter>
 					<div className="mr-auto flex flex-row justify-center gap-2">
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button variant="outline">Presets</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent className="w-56">
-								{presets.map((preset) => (
-									<DropdownMenuItem
-										key={preset.id}
-										onClick={() => {
-											form.setValue("name", preset.name);
-											form.setValue("type", preset.type);
-										}}
-									>
-										{preset.name}
-									</DropdownMenuItem>
-								))}
-							</DropdownMenuContent>
-						</DropdownMenu>
 						{taskId !== undefined && (
 							<Button
 								variant="destructive"
 								onClick={() => {
-									mainStore.charDelTask(character.id, taskId);
+									mainStore.delTask(taskId);
 									close();
 								}}
 								size="icon"

@@ -1,28 +1,41 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import type { Character } from "@/stores/main-store/provider";
+import CompleteButton from "../CompleteButton";
 
 type Props = {
 	task: Character["tasks"][number];
-	toggleTask: () => void;
+	complete: (fully: boolean) => void;
+	incomplete: (fully: boolean) => void;
 };
 
-export default function TodoCardTask({ task, toggleTask }: Props) {
+export default function TodoCardTask({ task, complete, incomplete }: Props) {
 	return (
 		<div
 			className={cn(
 				"flex flex-row justify-between items-center gap-2 p-3 transition",
 				{
 					"bg-primary/10": task.completed,
-				},
+				}
 			)}
 		>
 			<p>{task.name}</p>
-			<Checkbox
-				className="size-5 border-primary"
-				checked={task.completed}
-				onMouseDown={toggleTask}
-			/>
+			{task.completionState[1] === 1 ? (
+				<Checkbox
+					className="size-5 border-primary"
+					checked={task.completed}
+					onMouseDown={
+						task.completed ? () => incomplete(true) : () => complete(true)
+					}
+				/>
+			) : (
+				<CompleteButton
+					completed={task.completionState[0]}
+					total={task.completionState[1]}
+					onDecrease={(shiftKey) => incomplete(shiftKey)}
+					onIncrease={(shiftKey) => complete(shiftKey)}
+				/>
+			)}
 		</div>
 	);
 }

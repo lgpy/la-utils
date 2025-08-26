@@ -4,11 +4,13 @@ import { zodTask } from "@/stores/main-store/types";
 
 export type Task = z.infer<typeof zodTask>;
 
-export function isTaskCompleted(task: Task, latestReset?: Date): boolean {
-	if (task.completedDate === undefined) return false;
+export function getTaskCompletionState(task: Task, completionDate: string | undefined, completions: number, latestReset?: Date): [number, number] {
+	if (completionDate === undefined) return [0, task.timesToComplete];
 	if (!latestReset) {
 		latestReset = getTaskResetDate(task.type);
 	}
-	const taskDate = new Date(task.completedDate);
-	return latestReset < taskDate;
+	const taskDate = new Date(completionDate);
+	if (latestReset < taskDate) return [completions, task.timesToComplete];
+	else return [0, task.timesToComplete]; // expired
 }
+

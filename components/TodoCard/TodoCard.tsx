@@ -57,7 +57,12 @@ export default function TodoCard({ char, mode }: Props) {
 							<Fragment key={task.id}>
 								<TodoCardTask
 									task={task}
-									toggleTask={() => mainStore.charToggleTask(char.id, task.id)}
+									complete={(fully) =>
+										mainStore.charCompleteTask(char.id, task.id, fully)
+									}
+									incomplete={(fully) =>
+										mainStore.charIncompleteTask(char.id, task.id, fully)
+									}
 								/>
 								{i < tasks.length - 1 && <Separator className="opacity-75" />}
 							</Fragment>
