@@ -42,7 +42,6 @@ export const createMainStore = () =>
 				name: "characters",
 				version: 6,
 				migrate: (persistedState, version) => {
-					console.log("Migrating state from version", version);
 					if (version <= 0) {
 						persistedState = migrateCharV0ToV1(persistedState as CharV0);
 					}

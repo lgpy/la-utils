@@ -196,6 +196,8 @@ export function migrateCharV4ToV5(state: CharV4): CharV5 {
   }> = [];
 
   for (const task of tasks) {
+    if (typeof task.name !== "string")
+      continue;
     const dupeIdx = uniqueTasks.findIndex((t) => similarity(t.name.toLowerCase(), task.name.toLowerCase()) > 0.8 && t.type === task.type);
     if (dupeIdx === -1) {
       uniqueTasks.push({
