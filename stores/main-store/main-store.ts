@@ -58,8 +58,6 @@ export const createMainStore = () =>
 						persistedState = migrateCharV4ToV5(persistedState as CharV4);
 					}
 
-					zodChars.parse(persistedState);
-
 					return persistedState;
 				},
 			},
