@@ -129,6 +129,8 @@ export type CharV5 = {
   }[]
 }
 
+export type CharV6 = CharV5;
+
 export function migrateCharV0ToV1(state: CharV0): CharV1 {
   return {
     ...state,
@@ -194,6 +196,8 @@ export function migrateCharV4ToV5(state: CharV4): CharV5 {
   }> = [];
 
   for (const task of tasks) {
+    if (typeof task.name !== "string")
+      continue;
     const dupeIdx = uniqueTasks.findIndex((t) => similarity(t.name.toLowerCase(), task.name.toLowerCase()) > 0.8 && t.type === task.type);
     if (dupeIdx === -1) {
       uniqueTasks.push({
@@ -227,5 +231,27 @@ export function migrateCharV4ToV5(state: CharV4): CharV5 {
         };
       }).filter((t) => t !== null),
     })),
+  };
+}
+
+
+export function migrateCharV5ToV6(state: CharV5): CharV6 {
+
+  return {
+    ...state,
+    characters: state.characters.map(c => {
+      const uniqueTaskIds = Array.from(new Set(c.tasks.map(t => t.id)));
+      return ({
+        ...c,
+        tasks: uniqueTaskIds.map(id => {
+          const originalTask = c.tasks.find(t => t.id === id);
+          return {
+            id,
+            completions: originalTask ? originalTask.completions : 0,
+            completionDate: originalTask ? originalTask.completionDate : undefined,
+          };
+        }),
+      })
+    }),
   };
 }

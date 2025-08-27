@@ -8,7 +8,7 @@ import { createMiscActions, MiscActions } from "./actions/misc";
 import { immer } from 'zustand/middleware/immer';
 import { StateCreator } from "zustand";
 import { zodChar, zodTask } from "./types";
-import { CharV0, CharV1, CharV2, CharV3, CharV4, migrateCharV0ToV1, migrateCharV1ToV2, migrateCharV2ToV3, migrateCharV3ToV4, migrateCharV4ToV5 } from "./migrations";
+import { CharV0, CharV1, CharV2, CharV3, CharV4, CharV5, migrateCharV0ToV1, migrateCharV1ToV2, migrateCharV2ToV3, migrateCharV3ToV4, migrateCharV4ToV5, migrateCharV5ToV6 } from "./migrations";
 
 
 export const zodChars = z.object({
@@ -40,7 +40,7 @@ export const createMainStore = () =>
 			})),
 			{
 				name: "characters",
-				version: 5,
+				version: 6,
 				migrate: (persistedState, version) => {
 					if (version <= 0) {
 						persistedState = migrateCharV0ToV1(persistedState as CharV0);
@@ -54,8 +54,11 @@ export const createMainStore = () =>
 					if (version <= 3) {
 						persistedState = migrateCharV3ToV4(persistedState as CharV3);
 					}
-					if (version <= 4) {
+					if (version <= 4 && (persistedState as any).tasks === undefined) {
 						persistedState = migrateCharV4ToV5(persistedState as CharV4);
+					}
+					if (version <= 5) {
+						persistedState = migrateCharV5ToV6(persistedState as CharV5);
 					}
 
 					const parse = zodChars.safeParse(persistedState);
@@ -65,7 +68,7 @@ export const createMainStore = () =>
 						throw new Error("Failed to migrate state: Zod validation failed");
 					}
 
-					return persistedState;
+					return parse.data;
 				},
 			},
 		),
