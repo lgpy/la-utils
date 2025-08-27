@@ -58,6 +58,13 @@ export const createMainStore = () =>
 						persistedState = migrateCharV4ToV5(persistedState as CharV4);
 					}
 
+					const parse = zodChars.safeParse(persistedState);
+
+					if (!parse.success) {
+						console.error("Zod validation failed:", parse.error);
+						throw new Error("Failed to migrate state: Zod validation failed");
+					}
+
 					return persistedState;
 				},
 			},
