@@ -35,7 +35,7 @@ export default function CompleteButton({
 
 	return (
 		<div
-			className="shadow bg-primary/30 w-8 h-6 text-xs font-light rounded-lg items-center relative overflow-hidden"
+			className="shadow bg-primary/30 w-8 h-6 text-xs font-light rounded-lg items-center relative overflow-hidden shrink-0"
 			onClick={handleClick}
 			onContextMenu={handleClick}
 		>
