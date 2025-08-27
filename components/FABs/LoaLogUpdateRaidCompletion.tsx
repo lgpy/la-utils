@@ -2,7 +2,10 @@
 
 import { useLoaLogsDb } from "./LoaLogUpdateRaidCompletion.hooks";
 import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
-import { getGateInfoFromClearBossName, ignoreBosses } from "./LoaLogUpdateRaidCompletion.utils";
+import {
+	getGateInfoFromClearBossName,
+	ignoreBosses,
+} from "./LoaLogUpdateRaidCompletion.utils";
 import { DatabaseBackup } from "lucide-react";
 import { Difficulty } from "@/generated/prisma";
 import { ExpandableButton } from "../ExpandableButton";
@@ -15,12 +18,11 @@ type DbRaidData = {
 	current_boss: string;
 	local_player: string;
 	fight_start: number;
-}
+};
 
 function filterRaidData(raidData: DbRaidData) {
-	if (
-		!Object.values(Difficulty).includes(raidData.difficulty as Difficulty)
-	) // Check if the difficulty is supported
+	if (!Object.values(Difficulty).includes(raidData.difficulty as Difficulty))
+		// Check if the difficulty is supported
 		return false;
 
 	if (ignoreBosses.has(raidData.current_boss)) return false; // Ignore guardian raids
@@ -28,16 +30,19 @@ function filterRaidData(raidData: DbRaidData) {
 	return true;
 }
 
-function assignCharIdsToLocalPlayers(raidDataArr: DbRaidData[], characters: ReturnType<typeof useMainStore>["characters"]) {
+function assignCharIdsToLocalPlayers(
+	raidDataArr: DbRaidData[],
+	characters: ReturnType<typeof useMainStore>["characters"]
+) {
 	const uniqueCharacters = new Set<string>(
 		raidDataArr
 			.filter((c) => c.local_player.length > 0)
-			.map((raid) => raid.local_player),
+			.map((raid) => raid.local_player)
 	);
 	const uniqueCharactersToIdMap = new Map<string, string>();
 	for (const character of uniqueCharacters) {
 		const char = characters.find(
-			(c) => c.name.toLowerCase() === character.toLowerCase(),
+			(c) => c.name.toLowerCase() === character.toLowerCase()
 		);
 		if (!char) {
 			continue;
@@ -48,97 +53,112 @@ function assignCharIdsToLocalPlayers(raidDataArr: DbRaidData[], characters: Retu
 	return {
 		localPlayerCharacterIds: uniqueCharactersToIdMap,
 		notFound: Array.from(uniqueCharacters).filter(
-			(character) => !uniqueCharactersToIdMap.has(character),
+			(character) => !uniqueCharactersToIdMap.has(character)
 		),
-	}
+	};
 }
 
 export default function LoaLogUpdateRaidCompletion() {
-	const autoUpdateSetting = useSettingsStore((store) => store.experiments.autoUpdateRaids);
+	const autoUpdateSetting = useSettingsStore(
+		(store) => store.experiments.autoUpdateRaids
+	);
 	const { characters, hasHydrated, setGates, rehydrate } = useMainStore();
 
 	const lastUpdatedTime = useRef(0);
 
-	const onWorkerResponse = useCallback((unfilteredRaids: DbRaidData[]) => {
-		let hasError = false;
+	const onWorkerResponse = useCallback(
+		(unfilteredRaids: DbRaidData[]) => {
+			let hasError = false;
 
-		let filteredRaids = unfilteredRaids.filter(filterRaidData);
+			let filteredRaids = unfilteredRaids.filter(filterRaidData);
 
-		const { localPlayerCharacterIds: localplayer_to_char_id_map, notFound: localplayer_not_found } = assignCharIdsToLocalPlayers(filteredRaids, characters);
+			const {
+				localPlayerCharacterIds: localplayer_to_char_id_map,
+				notFound: localplayer_not_found,
+			} = assignCharIdsToLocalPlayers(filteredRaids, characters);
 
-		filteredRaids = filteredRaids.filter((raid) => !localplayer_not_found.includes(raid.local_player)); // Exclude raids with local players not found
+			filteredRaids = filteredRaids.filter(
+				(raid) => !localplayer_not_found.includes(raid.local_player)
+			); // Exclude raids with local players not found
 
-		if (localplayer_not_found.length > 0) {
-			console.warn(
-				`Characters not found for local players: ${localplayer_not_found.join(", ")}`,
-			);
-			hasError = true;
-		}
-
-		const updates: Array<{ charId: string, raidId: string, gateId: string, completedDate: Date }> = [];
-
-		for (const raid of filteredRaids) {
-			const charId = localplayer_to_char_id_map.get(raid.local_player);
-			if (charId === undefined) continue;
-
-			const raidInfo = getGateInfoFromClearBossName(raid.current_boss);
-			if (!raidInfo) {
+			if (localplayer_not_found.length > 0) {
 				console.warn(
-					`No raid info found for boss: ${raid.current_boss}`,
+					`Characters not found for local players: ${localplayer_not_found.join(", ")}`
 				);
 				hasError = true;
-				continue;
 			}
 
-			updates.push({
-				charId,
-				raidId: raidInfo.raidId,
-				gateId: raidInfo.gateId,
-				completedDate: new Date(raid.fight_start),
-			});
-		}
+			const updates: Array<{
+				charId: string;
+				raidId: string;
+				gateId: string;
+				completedDate: Date;
+			}> = [];
 
-		if (updates.length === 0) return;
+			for (const raid of filteredRaids) {
+				const charId = localplayer_to_char_id_map.get(raid.local_player);
+				if (charId === undefined) continue;
 
-		try {
-			rehydrate();
-			const {
-				updatedSomething,
-				errors
-			} = setGates(updates);
-			if (errors.length > 0) {
-				for (const error of errors) {
-					console.warn(error);
+				const raidInfo = getGateInfoFromClearBossName(raid.current_boss);
+				if (!raidInfo) {
+					console.warn(`No raid info found for boss: ${raid.current_boss}`);
+					hasError = true;
+					continue;
 				}
-				hasError = true;
-			}
-			if (updatedSomething) {
-				toast.success("Weekly raids updated successfully", {
-					description: hasError
-						? "Some errors occurred while processing raids. Please check the console for details."
-						: undefined,
-					id: "loa-log-update-raids",
-					duration: hasError ? 3000 : 2000,
+
+				updates.push({
+					charId,
+					raidId: raidInfo.raidId,
+					gateId: raidInfo.gateId,
+					completedDate: new Date(raid.fight_start),
 				});
-			} else {
+			}
+
+			if (updates.length === 0) {
 				toast.info("No updates found for weekly raids", {
 					id: "loa-log-update-raids",
-					description: hasError
-						? "Some errors occurred while processing raids. Please check the console for details."
-						: undefined,
-					duration: hasError ? 3000 : 2000,
+				});
+				return;
+			}
+
+			try {
+				rehydrate();
+				const { updatedSomething, errors } = setGates(updates);
+				if (errors.length > 0) {
+					for (const error of errors) {
+						console.warn(error);
+					}
+					hasError = true;
+				}
+				if (updatedSomething) {
+					toast.success("Weekly raids updated successfully", {
+						description: hasError
+							? "Some errors occurred while processing raids. Please check the console for details."
+							: undefined,
+						id: "loa-log-update-raids",
+						duration: hasError ? 3000 : 2000,
+					});
+				} else {
+					toast.info("No updates found for weekly raids", {
+						id: "loa-log-update-raids",
+						description: hasError
+							? "Some errors occurred while processing raids. Please check the console for details."
+							: undefined,
+						duration: hasError ? 3000 : 2000,
+					});
+				}
+			} catch (error) {
+				console.error("Failed to update gates:", error);
+				toast.error("Failed to update weekly raids", {
+					description: "Check console for details.",
+					id: "loa-log-update-raids",
 				});
 			}
-		} catch (error) {
-			console.error("Failed to update gates:", error);
-			toast.error("Failed to update weekly raids", {
-				description: "Check console for details.",
-				id: "loa-log-update-raids",
-			});
-		}
 
-		// oxlint-disable-next-line exhaustive-deps
-	}, [hasHydrated]);
+			// oxlint-disable-next-line exhaustive-deps
+		},
+		[hasHydrated]
+	);
 
 	const loa_logs_db = useLoaLogsDb(hasHydrated ? onWorkerResponse : undefined);
 
@@ -157,7 +177,11 @@ export default function LoaLogUpdateRaidCompletion() {
 	}, [loa_logs_db]);
 
 	useEffect(() => {
-		if (!autoUpdateSetting.hasHydrated || !autoUpdateSetting.state || !loa_logs_db.isReady) {
+		if (
+			!autoUpdateSetting.hasHydrated ||
+			!autoUpdateSetting.state ||
+			!loa_logs_db.isReady
+		) {
 			return;
 		}
 
@@ -180,7 +204,12 @@ export default function LoaLogUpdateRaidCompletion() {
 		return () => {
 			window.removeEventListener("focus", updateRaidsOnFocus);
 		};
-	}, [autoUpdateSetting.hasHydrated, autoUpdateSetting.state, updateRaids, loa_logs_db.isReady]);
+	}, [
+		autoUpdateSetting.hasHydrated,
+		autoUpdateSetting.state,
+		updateRaids,
+		loa_logs_db.isReady,
+	]);
 
 	return (
 		<FabButtonWrapper>
