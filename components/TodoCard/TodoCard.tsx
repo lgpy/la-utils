@@ -45,9 +45,9 @@ export default function TodoCard({ char, mode }: Props) {
 			])
 		);
 
-		const assignedTasks = Object.entries(tasksGroupedByType).map(
-			([type, tasks], typeIdx, typeArr) =>
-				tasks.length > 0 && (
+		const assignedTasks = Object.entries(tasksGroupedByType)
+			.map(([type, tasks], typeIdx, typeArr) =>
+				tasks.length > 0 ? (
 					<Fragment key={type}>
 						<CardContent className="p-1 text-center text-sm bg-background/60">
 							{type.charAt(0).toUpperCase() + type.slice(1)}
@@ -69,8 +69,9 @@ export default function TodoCard({ char, mode }: Props) {
 						))}
 						{typeIdx < typeArr.length - 1 && <Separator />}
 					</Fragment>
-				)
-		);
+				) : null
+			)
+			.filter((el) => el !== null);
 
 		const assignedRaids = Object.keys(char.assignedRaids)
 			.sort(sortRaidKeys)
