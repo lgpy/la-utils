@@ -3,6 +3,7 @@ import FriendRaidsFAB from "@/components/FABs/FriendRaidsFAB";
 import LoaLogUpdateRaidCompletion from "@/components/FABs/LoaLogUpdateRaidCompletion";
 import RosterGold from "@/components/RosterGold";
 import TodoCards from "@/components/TodoCard/TodoCards";
+import VersionMismatchAlert from "@/components/VersionMismatchAlert";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function Home() {
 				<LoaLogUpdateRaidCompletion />
 				<AuctionCalculatorFAB />
 			</div>
+			<VersionMismatchAlert />
 		</>
 	);
 }

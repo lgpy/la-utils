@@ -26,6 +26,7 @@ import {
 } from "react";
 import { useStore } from "zustand";
 import { raidData } from "@/lib/game-info";
+import { useVersionMismatch } from "@/lib/hooks/use-version-mismatch";
 
 export type MainStoreApi = ReturnType<typeof createMainStore>;
 export type SettingsStoreApi = ReturnType<typeof createSettingsStore>;
@@ -80,6 +81,7 @@ export const useMainStore = () => {
 	}
 
 	const hasHydrated = useHydration(mainStoreContext);
+	const isOldVersion = useVersionMismatch(mainStoreContext);
 
 	const store = useStore(mainStoreContext, (s) => s);
 
@@ -185,6 +187,7 @@ export const useMainStore = () => {
 		characters,
 		hasHydrated,
 		rehydrate: mainStoreContext.persist?.rehydrate,
+		isOldVersion,
 	};
 };
 

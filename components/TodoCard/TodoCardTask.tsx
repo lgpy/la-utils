@@ -1,4 +1,3 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import type { Character } from "@/stores/main-store/provider";
 import CompleteButton from "../CompleteButton";

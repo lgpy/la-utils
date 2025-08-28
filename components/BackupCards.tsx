@@ -12,16 +12,18 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainStore } from "@/stores/main-store/provider";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function BackupCards() {
 	const mainStore = useMainStore();
 	const [jsonImport, setJsonImport] = useState("");
+	const [backupData, setBackupData] = useState("");
 
 	const importData = () => {
 		try {
 			const data = JSON.parse(jsonImport);
+			if (window === undefined) return;
 			localStorage.setItem("characters", JSON.stringify(data));
 			mainStore.rehydrate();
 			toast.success("Data imported successfully.");
@@ -31,10 +33,11 @@ export default function BackupCards() {
 		setJsonImport("");
 	};
 
-	const mainStoreState: string = useMemo(() => {
+	useEffect(() => {
+		if (window === undefined) return;
 		const state = localStorage.getItem("characters");
-		if (state) return JSON.stringify(JSON.parse(state), null, 2);
-		else return "Failed to retrieve data.";
+		if (state) setBackupData(JSON.stringify(JSON.parse(state), null, 2));
+		else setBackupData("Failed to retrieve data.");
 	}, []);
 
 	return (
@@ -68,13 +71,13 @@ export default function BackupCards() {
 				</CardHeader>
 				<CardContent>
 					<Textarea
-						value={mainStoreState}
+						value={backupData}
 						onChange={() => {}}
 						className="h-80 break-all"
 					/>
 				</CardContent>
 				<CardFooter className="flex justify-end">
-					<CopyButton textToCopy={mainStoreState}>Copy</CopyButton>
+					<CopyButton textToCopy={backupData}>Copy</CopyButton>
 				</CardFooter>
 			</Card>
 		</>
