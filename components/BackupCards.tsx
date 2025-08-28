@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainStore } from "@/stores/main-store/provider";
-import { MainState } from "@/stores/main-store/main-store";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -23,7 +22,8 @@ export default function BackupCards() {
 	const importData = () => {
 		try {
 			const data = JSON.parse(jsonImport);
-			mainStore.restoreData(data);
+			localStorage.setItem("characters", JSON.stringify(data));
+			mainStore.rehydrate();
 			toast.success("Data imported successfully.");
 		} catch {
 			toast.error("Failed to import data. Make sure the data is correct.");
@@ -32,12 +32,10 @@ export default function BackupCards() {
 	};
 
 	const mainStoreState: string = useMemo(() => {
-		const state: MainState = {
-			characters: mainStore.characters,
-			tasks: mainStore.tasks,
-		};
-		return JSON.stringify(state, null, 2);
-	}, [mainStore]);
+		const state = localStorage.getItem("characters");
+		if (state) return JSON.stringify(JSON.parse(state), null, 2);
+		else return "Failed to retrieve data.";
+	}, []);
 
 	return (
 		<>
