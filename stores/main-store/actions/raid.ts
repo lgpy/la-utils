@@ -88,10 +88,10 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 		set((state) => {
 			const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
 
-			let newCompletedDate: string | undefined;
+			let newCompletedDate: number | undefined;
 			switch (type) {
 				case "complete":
-					newCompletedDate = new Date().toISOString();
+					newCompletedDate = new Date().getTime();
 					break;
 				case "uncomplete":
 					newCompletedDate = undefined;
@@ -199,7 +199,7 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 						}
 					}
 					assignedRaid[gateKeys[i]].completedDate =
-						new Date().toISOString();
+						new Date().getTime();
 				}
 			}
 		});
@@ -266,7 +266,7 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 						}
 					}
 				}
-				aGate.completedDate = new Date().toISOString();
+				aGate.completedDate = new Date().getTime();
 			}
 		});
 	},
@@ -309,7 +309,7 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 			const gate = assignedRaid[gateId];
 			if (gate === undefined) throw new Error("Gate not found");
 
-			gate.completedDate = new Date().toISOString();
+			gate.completedDate = new Date().getTime();
 		});
 	},
 	untoggleSingleGate: (charId, raidId, gateId) => {
@@ -361,7 +361,7 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 						: false;
 
 				if (!isCompleted) {
-					gate.completedDate = completedDate.toISOString();
+					gate.completedDate = completedDate.getTime();
 					updatedSomething = true;
 				}
 			}

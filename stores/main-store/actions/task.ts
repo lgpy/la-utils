@@ -88,7 +88,7 @@ export const createTaskActions: StateActions<TaskActions> = (set) => ({
 
       const [completions, timesToComplete] = getTaskCompletionState(task, charTask.completionDate, charTask.completions);
       if (completions < timesToComplete) {
-        charTask.completionDate = new Date().toISOString();
+        charTask.completionDate = new Date().getTime();
         charTask.completions = fully ? timesToComplete : completions + 1;
       }
     });
@@ -99,7 +99,7 @@ export const createTaskActions: StateActions<TaskActions> = (set) => ({
       const charTask = getOrThrow(char.tasks, (t) => t.id === taskId, "Task not assigned");
 
       if (charTask.completions > 0) {
-        charTask.completionDate = new Date().toISOString();
+        charTask.completionDate = new Date().getTime();
         charTask.completions = fully ? 0 : charTask.completions - 1;
       }
     });

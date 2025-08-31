@@ -4,7 +4,7 @@ import { zodTask } from "@/stores/main-store/types";
 
 export type Task = z.infer<typeof zodTask>;
 
-export function getTaskCompletionState(task: Task, completionDate: string | undefined, completions: number, latestReset?: Date): [number, number] {
+export function getTaskCompletionState(task: Task, completionDate: number | undefined, completions: number, latestReset?: Date): [number, number] {
 	if (completionDate === undefined) return [0, task.timesToComplete];
 	if (!latestReset) {
 		latestReset = getTaskResetDate(task.type);
