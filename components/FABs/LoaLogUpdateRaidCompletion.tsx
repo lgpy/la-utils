@@ -154,10 +154,8 @@ export default function LoaLogUpdateRaidCompletion() {
 					id: "loa-log-update-raids",
 				});
 			}
-
-			// oxlint-disable-next-line exhaustive-deps
 		},
-		[hasHydrated]
+		[characters, rehydrate]
 	);
 
 	const loa_logs_db = useLoaLogsDb(hasHydrated ? onWorkerResponse : undefined);
