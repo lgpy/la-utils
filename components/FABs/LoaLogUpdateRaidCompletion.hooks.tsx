@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import {
+	DbEntry,
 	getStoredLoaLogsFileHandle,
 	zEntries,
 } from "@/components/FABs/LoaLogUpdateRaidCompletion.utils";
@@ -14,12 +15,7 @@ interface FileAccessState {
 	fileSize: number | null;
 }
 
-export function useLoaLogsDb(onResponse?: (data: {
-	difficulty: string;
-	current_boss: string;
-	local_player: string;
-	fight_start: number;
-}[]) => void) {
+export function useLoaLogsDb(onResponse?: (data: DbEntry[]) => void) {
 	const [fileAccess, setFileAccess] = useState<FileAccessState>({
 		fileHandle: null,
 		hasPermission: false,
@@ -57,15 +53,12 @@ export function useLoaLogsDb(onResponse?: (data: {
 			}
 			const resToObjArray = query[0].rows.map((row) =>
 				Object.fromEntries(
-					query[0].columns.map((col, index) => [col, row[index]]),
-				),
+					query[0].columns.map((col, index) => [col, row[index]])
+				)
 			);
 			const parsed = zEntries.safeParse(resToObjArray);
 			if (!parsed.success) {
-				console.error(
-					"Failed to parse weekly raids data:",
-					parsed.error,
-				);
+				console.error("Failed to parse weekly raids data:", parsed.error);
 				throw new Error("Invalid data format in encounter_preview table");
 			}
 			onResponseRef.current?.(parsed.data);
@@ -114,7 +107,7 @@ export function useLoaLogsDb(onResponse?: (data: {
 								Setup here
 							</Link>
 						</>,
-						{ duration: 8000 },
+						{ duration: 8000 }
 					);
 					return;
 				}
@@ -126,7 +119,7 @@ export function useLoaLogsDb(onResponse?: (data: {
 				});
 				// Launch worker and send init message
 				workerRef.current = new Worker(
-					new URL("../../workers/dbWorker.ts", import.meta.url),
+					new URL("../../workers/dbWorker.ts", import.meta.url)
 				);
 
 				workerRef.current.addEventListener("message", handleWorkerMessage);
