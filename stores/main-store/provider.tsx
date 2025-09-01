@@ -9,10 +9,7 @@ import {
 } from "@/lib/dates";
 import { isGateCompleted } from "@/lib/raids";
 import { getTaskCompletionState } from "@/lib/tasks";
-import {
-	type MainStore,
-	createMainStore,
-} from "@/stores/main-store/main-store";
+import { createMainStore } from "@/stores/main-store/main-store";
 import {
 	type SettingsStore,
 	createSettingsStore,
@@ -63,16 +60,6 @@ export const MainStoreProvider = ({ children }: MainStoreProviderProps) => {
 	);
 };
 
-type AssignedRaids = MainStore["characters"][number]["assignedRaids"];
-
-type ExtendedAssignedRaids = {
-	[raidId in keyof AssignedRaids]: {
-		[gateId in keyof AssignedRaids[raidId]]: AssignedRaids[raidId][gateId] & {
-			completed: boolean;
-		};
-	};
-};
-
 export const useMainStore = () => {
 	const mainStoreContext = useContext(MainStoreContext);
 
@@ -86,51 +73,61 @@ export const useMainStore = () => {
 	const store = useStore(mainStoreContext, (s) => s);
 
 	const characters = useMemo(() => {
+		if (!hasHydrated) return [];
+
 		const weeklyReset = getLatestWeeklyReset();
 		const dailyReset = getLatestDailyReset();
 		const restedReset = getRestedReset();
 		const oddBiWeeklyReset = getLatestBiWeeklyReset("odd");
 		const evenBiWeeklyReset = getLatestBiWeeklyReset("even");
 
-		const ret = store.characters.map((character) => ({
+		return store.characters.map((character) => ({
 			...character,
-			assignedRaids: Object.entries(character.assignedRaids).reduce(
-				(acc, [raidId, raid]) => {
-					const gates = Object.entries(raid).reduce(
-						(gateAcc, [gateId, gate]) => {
-							if (gate.completedDate === undefined) {
-								gateAcc[gateId] = {
-									...gate,
-									completed: false,
-								};
-								return gateAcc;
-							}
+			assignedRaids: Object.fromEntries(
+				Object.entries(character.assignedRaids).map(([raidId, raid]) => {
+					return [
+						raidId,
+						Object.fromEntries(
+							Object.entries(raid).map(([gateId, gate]) => {
+								if (gate.completedDate === undefined) {
+									return [
+										gateId,
+										{
+											...gate,
+											completed: false,
+										},
+									];
+								}
 
-							let resetDate: Date;
-							const gateData = raidData.get(raidId)?.getGate(gateId);
-							if (gateData === undefined || gateData.isBiWeekly === undefined) {
-								resetDate = weeklyReset;
-							} else if (gateData.isBiWeekly === "odd") {
-								resetDate = oddBiWeeklyReset;
-							} else {
-								resetDate = evenBiWeeklyReset;
-							}
+								let resetDate: Date;
+								const gateData = raidData.get(raidId)?.getGate(gateId);
+								if (
+									gateData === undefined || // default to weekly if not present
+									gateData.isBiWeekly === undefined // weekly
+								) {
+									resetDate = weeklyReset;
+								} else if (gateData.isBiWeekly === "odd") {
+									// odd bi-weekly
+									resetDate = oddBiWeeklyReset;
+								} else {
+									// even bi-weekly
+									resetDate = evenBiWeeklyReset;
+								}
 
-							gateAcc[gateId] = {
-								...gate,
-								completed: isGateCompleted(
-									new Date(gate.completedDate),
-									resetDate
-								),
-							};
-							return gateAcc;
-						},
-						{} as ExtendedAssignedRaids[string]
-					);
-					acc[raidId] = gates;
-					return acc;
-				},
-				{} as ExtendedAssignedRaids
+								return [
+									gateId,
+									{
+										...gate,
+										completed: isGateCompleted(
+											new Date(gate.completedDate),
+											resetDate
+										),
+									},
+								];
+							})
+						),
+					];
+				})
 			),
 			tasks: character.tasks
 				.map((charTask) => {
@@ -179,8 +176,7 @@ export const useMainStore = () => {
 				})
 				.filter((t) => t !== null),
 		}));
-		return ret;
-	}, [store]);
+	}, [store.characters, store.tasks, hasHydrated]);
 
 	return {
 		...store,
