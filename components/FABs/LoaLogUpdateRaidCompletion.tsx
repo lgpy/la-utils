@@ -155,7 +155,7 @@ export default function LoaLogUpdateRaidCompletion() {
 				});
 			}
 		},
-		[characters, rehydrate]
+		[characters, rehydrate, setGates]
 	);
 
 	const loa_logs_db = useLoaLogsDb(hasHydrated ? onWorkerResponse : undefined);
