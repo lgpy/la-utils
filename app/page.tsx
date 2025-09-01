@@ -4,12 +4,6 @@ import LoaLogUpdateRaidCompletion from "@/components/FABs/LoaLogUpdateRaidComple
 import RosterGold from "@/components/RosterGold";
 import TodoCards from "@/components/TodoCard/TodoCards";
 import VersionMismatchAlert from "@/components/VersionMismatchAlert";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-	title: "Home | Lost Ark Utils",
-	description: "",
-};
 
 export default function Home() {
 	return (

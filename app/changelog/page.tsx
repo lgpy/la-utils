@@ -2,11 +2,20 @@ import ChangelogContent from "@/components/Changelog/ChangelogContent";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth.server";
 import { client } from "@/lib/orpc";
+import { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 
+export const metadata: Metadata = {
+	title: "Changelog",
+	description: "",
+};
+
 export default async function ChangelogPage() {
-	const changelogs = await client.changelog.paginatedChangelog({ cursor: 0, limit: 10 });
+	const changelogs = await client.changelog.paginatedChangelog({
+		cursor: 0,
+		limit: 10,
+	});
 
 	const session = await auth.api.getSession({
 		headers: await headers(),
@@ -21,8 +30,8 @@ export default async function ChangelogPage() {
 				permissions: {
 					changelog: ["manage"],
 				},
-			}
-		})
+			},
+		});
 		hasPermission = ManagementPermission.success;
 	}
 
@@ -38,7 +47,10 @@ export default async function ChangelogPage() {
 					)}
 				</div>
 
-				<ChangelogContent changelogs={changelogs} showEditButton={hasPermission} />
+				<ChangelogContent
+					changelogs={changelogs}
+					showEditButton={hasPermission}
+				/>
 			</div>
 		</div>
 	);

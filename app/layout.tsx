@@ -15,8 +15,11 @@ import { GlobalAlertDialog } from "@/components/AlertDialog";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "Lost Ark Utils",
-	description: "",
+	title: {
+		template: "%s | Lost Ark Utils",
+		default: "Lost Ark Utils",
+	},
+	description: "A set of utilities for Lost Ark",
 };
 
 export default async function RootLayout({
@@ -29,7 +32,7 @@ export default async function RootLayout({
 			<body
 				className={cn(
 					inter.className,
-					"min-h-screen bg-background antialiased flex flex-col",
+					"min-h-screen bg-background antialiased flex flex-col"
 				)}
 			>
 				<OrpcProvider>
@@ -46,7 +49,16 @@ export default async function RootLayout({
 									{children}
 								</main>
 								<footer className="mb-2 text-center text-xs text-muted-foreground/50">
-									For feedback, bug reports, or feature requests, join the <a href="https://discord.gg/zHzU8HZfWp" target="_blank" rel="noopener noreferrer" className="underline">Discord server</a>.
+									For feedback, bug reports, or feature requests, join the{" "}
+									<a
+										href="https://discord.gg/zHzU8HZfWp"
+										target="_blank"
+										rel="noopener noreferrer"
+										className="underline"
+									>
+										Discord server
+									</a>
+									.
 								</footer>
 								<Toaster position="bottom-center" />
 								<GlobalAlertDialog />
