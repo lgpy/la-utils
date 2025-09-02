@@ -2,10 +2,7 @@
 
 import { useLoaLogsDb } from "./LoaLogUpdateRaidCompletion.hooks";
 import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
-import {
-	getGateInfoFromClearBossName,
-	ignoreBosses,
-} from "./LoaLogUpdateRaidCompletion.utils";
+import { DbEntry, ignoreBosses } from "./LoaLogUpdateRaidCompletion.utils";
 import { DatabaseBackup } from "lucide-react";
 import { Difficulty } from "@/generated/prisma";
 import { ExpandableButton } from "../ExpandableButton";
@@ -13,14 +10,7 @@ import { FabButtonWrapper } from "./FabButtonWrapper";
 import { useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 
-type DbRaidData = {
-	difficulty: string;
-	current_boss: string;
-	local_player: string;
-	fight_start: number;
-};
-
-function filterRaidData(raidData: DbRaidData) {
+function filterRaidData(raidData: DbEntry) {
 	if (!Object.values(Difficulty).includes(raidData.difficulty as Difficulty))
 		// Check if the difficulty is supported
 		return false;
@@ -30,100 +20,23 @@ function filterRaidData(raidData: DbRaidData) {
 	return true;
 }
 
-function assignCharIdsToLocalPlayers(
-	raidDataArr: DbRaidData[],
-	characters: ReturnType<typeof useMainStore>["characters"]
-) {
-	const uniqueCharacters = new Set<string>(
-		raidDataArr
-			.filter((c) => c.local_player.length > 0)
-			.map((raid) => raid.local_player)
-	);
-	const uniqueCharactersToIdMap = new Map<string, string>();
-	for (const character of uniqueCharacters) {
-		const char = characters.find(
-			(c) => c.name.toLowerCase() === character.toLowerCase()
-		);
-		if (!char) {
-			continue;
-		}
-		uniqueCharactersToIdMap.set(character, char.id);
-	}
-
-	return {
-		localPlayerCharacterIds: uniqueCharactersToIdMap,
-		notFound: Array.from(uniqueCharacters).filter(
-			(character) => !uniqueCharactersToIdMap.has(character)
-		),
-	};
-}
-
 export default function LoaLogUpdateRaidCompletion() {
 	const autoUpdateSetting = useSettingsStore(
 		(store) => store.experiments.autoUpdateRaids
 	);
-	const { characters, hasHydrated, setGates, rehydrate } = useMainStore();
+	const { hasHydrated, setGates, rehydrate } = useMainStore();
 
 	const lastUpdatedTime = useRef(0);
 
 	const onWorkerResponse = useCallback(
-		(unfilteredRaids: DbRaidData[]) => {
+		(unfilteredRaids: DbEntry[]) => {
 			let hasError = false;
 
 			let filteredRaids = unfilteredRaids.filter(filterRaidData);
 
-			const {
-				localPlayerCharacterIds: localplayer_to_char_id_map,
-				notFound: localplayer_not_found,
-			} = assignCharIdsToLocalPlayers(filteredRaids, characters);
-
-			filteredRaids = filteredRaids.filter(
-				(raid) => !localplayer_not_found.includes(raid.local_player)
-			); // Exclude raids with local players not found
-
-			if (localplayer_not_found.length > 0) {
-				console.warn(
-					`Characters not found for local players: ${localplayer_not_found.join(", ")}`
-				);
-				hasError = true;
-			}
-
-			const updates: Array<{
-				charId: string;
-				raidId: string;
-				gateId: string;
-				completedDate: Date;
-			}> = [];
-
-			for (const raid of filteredRaids) {
-				const charId = localplayer_to_char_id_map.get(raid.local_player);
-				if (charId === undefined) continue;
-
-				const raidInfo = getGateInfoFromClearBossName(raid.current_boss);
-				if (!raidInfo) {
-					console.warn(`No raid info found for boss: ${raid.current_boss}`);
-					hasError = true;
-					continue;
-				}
-
-				updates.push({
-					charId,
-					raidId: raidInfo.raidId,
-					gateId: raidInfo.gateId,
-					completedDate: new Date(raid.fight_start),
-				});
-			}
-
-			if (updates.length === 0) {
-				toast.info("No updates found for weekly raids", {
-					id: "loa-log-update-raids",
-				});
-				return;
-			}
-
 			try {
 				rehydrate();
-				const { updatedSomething, errors } = setGates(updates);
+				const { updatedSomething, errors } = setGates(filteredRaids);
 				if (errors.length > 0) {
 					for (const error of errors) {
 						console.warn(error);
@@ -154,10 +67,8 @@ export default function LoaLogUpdateRaidCompletion() {
 					id: "loa-log-update-raids",
 				});
 			}
-
-			// oxlint-disable-next-line exhaustive-deps
 		},
-		[hasHydrated]
+		[rehydrate, setGates]
 	);
 
 	const loa_logs_db = useLoaLogsDb(hasHydrated ? onWorkerResponse : undefined);

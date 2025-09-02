@@ -58,7 +58,7 @@ export type CharV2 = {
       id: string,
       name: string,
       type: TaskType,
-      completedDate: string | undefined,
+      completedDate?: string,
     }[]
   }[]
 }
@@ -73,7 +73,7 @@ export type CharV3 = {
       id: string,
       name: string,
       type: TaskType,
-      completedDate: string | undefined,
+      completedDate?: string,
     }[]
     assignedRaids: Record< //moved raids to assignedRaids
       string,
@@ -93,7 +93,7 @@ export type CharV4 = {
       id: string,
       name: string,
       type: TaskType,
-      completedDate: string | undefined,
+      completedDate?: string,
     }[]
     assignedRaids: Record<
       string,
@@ -113,7 +113,7 @@ export type CharV5 = {
     tasks: {
       id: string,
       completions: number,
-      completionDate: string | undefined,
+      completionDate?: string,
     }[]
     assignedRaids: Record<
       string,
@@ -130,6 +130,31 @@ export type CharV5 = {
 }
 
 export type CharV6 = CharV5;
+
+export type CharV7 = {
+  characters: {
+    id: string;
+    name: string;
+    class: Class;
+    itemLevel: number;
+    tasks: {
+      id: string,
+      completions: number,
+      completionDate?: number,
+    }[]
+    assignedRaids: Record<
+      string,
+      Record<string, { difficulty: Difficulty; completedDate?: number }>
+    >;
+    isGoldEarner: boolean; //added isGoldEarner flag
+  }[];
+  tasks: {
+    id: string;
+    name: string;
+    type: TaskType;
+    timesToComplete: number;
+  }[]
+}
 
 export function migrateCharV0ToV1(state: CharV0): CharV1 {
   return {
@@ -253,5 +278,32 @@ export function migrateCharV5ToV6(state: CharV5): CharV6 {
         }),
       })
     }),
+  };
+}
+
+export function migrateCharV6ToV7(state: CharV6): CharV7 {
+  return {
+    ...state,
+    characters: state.characters.map(c => ({
+      ...c,
+      assignedRaids: Object.fromEntries(
+        Object.entries(c.assignedRaids || {}).map(([raidId, gates]) => [
+          raidId,
+          Object.fromEntries(
+            Object.entries(gates).map(([gateId, gInfo]) => [
+              gateId,
+              {
+                ...gInfo,
+                completedDate: gInfo.completedDate ? new Date(gInfo.completedDate).getTime() : undefined
+              },
+            ])
+          ),
+        ])
+      ),
+      tasks: c.tasks.map(t => ({
+        ...t,
+        completionDate: t.completionDate ? new Date(t.completionDate).getTime() : undefined
+      })),
+    })),
   };
 }

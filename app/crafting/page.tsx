@@ -9,10 +9,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-	title: "Crafting | Lost Ark Utils",
+	title: "Crafting",
 	description: "",
 };
-
 
 function NavigationAnchor({
 	children,
@@ -26,7 +25,7 @@ function NavigationAnchor({
 			href={`#${""}`}
 			className={cn(
 				"text-lg text-muted-foreground hover:text-foreground",
-				className,
+				className
 			)}
 		>
 			<span>{children}</span>
@@ -43,7 +42,9 @@ function CraftingType({
 	subtype?: string;
 	children: string;
 }) {
-	const items = Array.from(craftingData.entries()).filter(([, item]) => item.type === type);
+	const items = Array.from(craftingData.entries()).filter(
+		([, item]) => item.type === type
+	);
 
 	return (
 		<div>
@@ -60,7 +61,7 @@ function CraftingType({
 			</h1>
 			<div
 				className={cn(
-					"mt-6 flex flex-row flex-wrap gap-3 justify-center md:justify-start",
+					"mt-6 flex flex-row flex-wrap gap-3 justify-center md:justify-start"
 				)}
 			>
 				{items.map(([id, item]) => (

@@ -4,6 +4,38 @@ import { StateActions } from "../main-store";
 import { Difficulty } from "@/generated/prisma";
 import { getIndexOrThrow, getOrThrow } from "@/lib/array";
 import { raidData } from "@/lib/game-info";
+import { DbEntry, getGateInfoFromClearBossName } from "@/components/FABs/LoaLogUpdateRaidCompletion.utils";
+import { zodChar } from "../types";
+import z from "zod";
+
+
+function assignCharIdsToLocalPlayers(
+	raidDataArr: DbEntry[],
+	characters: readonly z.infer<typeof zodChar>[]
+) {
+	const uniqueCharacters = new Set<string>(
+		raidDataArr
+			.filter((c) => c.local_player.length > 0)
+			.map((raid) => raid.local_player)
+	);
+	const uniqueCharactersToIdMap = new Map<string, string>();
+	for (const character of uniqueCharacters) {
+		const char = characters.find(
+			(c) => c.name.toLowerCase() === character.toLowerCase()
+		);
+		if (!char) {
+			continue;
+		}
+		uniqueCharactersToIdMap.set(character, char.id);
+	}
+
+	return {
+		localPlayerIdMapping: uniqueCharactersToIdMap,
+		localPlayersWithoutIds: Array.from(uniqueCharacters).filter(
+			(character) => !uniqueCharactersToIdMap.has(character)
+		),
+	};
+}
 
 export type RaidActions = {
 	//assigned raids mutations
@@ -32,13 +64,13 @@ export type RaidActions = {
 	untoggleAllGates: (charId: string, raidId: string) => void;
 	toggleSingleGate: (charId: string, raidId: string, gateId: string) => void;
 	untoggleSingleGate: (charId: string, raidId: string, gateId: string) => void;
-	setGates: (data: Array<{ charId: string, raidId: string, gateId: string, completedDate: Date }>) => {
+	setGates: (data: Array<DbEntry>) => {
 		updatedSomething: boolean;
 		errors: string[];
 	};
 };
 
-export const createRaidActions: StateActions<RaidActions> = (set) => ({
+export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 	charAddRaid(charId, raidId, gates) {
 		set((state) => {
 			const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
@@ -88,10 +120,10 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 		set((state) => {
 			const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
 
-			let newCompletedDate: string | undefined;
+			let newCompletedDate: number | undefined;
 			switch (type) {
 				case "complete":
-					newCompletedDate = new Date().toISOString();
+					newCompletedDate = new Date().getTime();
 					break;
 				case "uncomplete":
 					newCompletedDate = undefined;
@@ -199,7 +231,7 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 						}
 					}
 					assignedRaid[gateKeys[i]].completedDate =
-						new Date().toISOString();
+						new Date().getTime();
 				}
 			}
 		});
@@ -266,7 +298,7 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 						}
 					}
 				}
-				aGate.completedDate = new Date().toISOString();
+				aGate.completedDate = new Date().getTime();
 			}
 		});
 	},
@@ -309,7 +341,7 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 			const gate = assignedRaid[gateId];
 			if (gate === undefined) throw new Error("Gate not found");
 
-			gate.completedDate = new Date().toISOString();
+			gate.completedDate = new Date().getTime();
 		});
 	},
 	untoggleSingleGate: (charId, raidId, gateId) => {
@@ -325,12 +357,51 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 			gate.completedDate = undefined;
 		});
 	},
-	setGates(data) {
+	setGates(encounters) {
 		let updatedSomething = false;
 		const errors = new Set<string>();
 
 		set((state) => {
-			for (const { charId, raidId, gateId, completedDate } of data) {
+
+			const {
+				localPlayerIdMapping,
+				localPlayersWithoutIds,
+			} = assignCharIdsToLocalPlayers(encounters, state.characters);
+
+			const filteredEncounters = encounters.filter(
+				(raid) => !localPlayersWithoutIds.includes(raid.local_player)
+			);
+
+			if (localPlayersWithoutIds.length > 0) {
+				errors.add(`Characters not found for local players: ${localPlayersWithoutIds.join(", ")}`);
+			}
+
+			const updates: Array<{
+				charId: string;
+				raidId: string;
+				gateId: string;
+				completedDate: Date;
+			}> = [];
+
+			for (const raid of filteredEncounters) {
+				const charId = localPlayerIdMapping.get(raid.local_player);
+				if (charId === undefined) continue;
+
+				const raidInfo = getGateInfoFromClearBossName(raid.current_boss);
+				if (!raidInfo) {
+					errors.add(`No raid info found for boss: ${raid.current_boss}`);
+					continue;
+				}
+
+				updates.push({
+					charId,
+					raidId: raidInfo.raidId,
+					gateId: raidInfo.gateId,
+					completedDate: new Date(raid.fight_start),
+				});
+			}
+
+			for (const { charId, raidId, gateId, completedDate } of updates) {
 				const charIndex = state.characters.findIndex((c) => c.id === charId);
 				if (charIndex === -1) {
 					errors.add(`Character not found: ${charId}`);
@@ -361,7 +432,7 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 						: false;
 
 				if (!isCompleted) {
-					gate.completedDate = completedDate.toISOString();
+					gate.completedDate = completedDate.getTime();
 					updatedSomething = true;
 				}
 			}

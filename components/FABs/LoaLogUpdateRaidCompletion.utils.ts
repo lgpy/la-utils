@@ -116,6 +116,8 @@ export const zEntries = z.object({
   fight_start: z.number(),
 }).array();
 
+export type DbEntry = z.infer<typeof zEntries.element>;
+
 // guardian raids: https://github.com/snoww/loa-logs/blob/master/src/lib/constants/encounters.ts
 export const ignoreBosses = new Set([
   "Drextalas",

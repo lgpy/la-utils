@@ -10,23 +10,23 @@ import { Fragment } from "react";
 import Image from "next/image";
 import TruncatedTooltip from "@/components/TruncatedTooltip";
 import { Label } from "@/components/ui/label";
-import { ExchangeSection, MariShopSection, PriceCardPriceInput } from "@/components/PriceCard/PriceCard";
+import {
+	ExchangeSection,
+	MariShopSection,
+	PriceCardPriceInput,
+} from "@/components/PriceCard/PriceCard";
 
 export const metadata: Metadata = {
-	title: "Prices | Lost Ark Utils",
+	title: "Prices",
 	description: "",
 };
-
 
 type PriceCardProps = {
 	item: Item;
 	itemId: string;
 };
 
-function PriceCard({
-	item,
-	itemId
-}: PriceCardProps) {
+function PriceCard({ item, itemId }: PriceCardProps) {
 	const rarityClasses = getRarityClasses(item.rarity);
 
 	return (
@@ -35,7 +35,7 @@ function PriceCard({
 				<div
 					className={cn(
 						"flex flex-row items-center gap-3 p-3 w-full",
-						rarityClasses.header,
+						rarityClasses.header
 					)}
 				>
 					<Image
@@ -50,7 +50,7 @@ function PriceCard({
 						className={{
 							text: cn(
 								"text-xl font-semibold tracking-tight truncate",
-								rarityClasses.text,
+								rarityClasses.text
 							),
 							tooltip: "text-center",
 						}}
@@ -81,7 +81,11 @@ function PriceCard({
 					/>
 				)}
 				{item.exchange && (
-					<ExchangeSection item={item} itemId={itemId} exchange={item.exchange} />
+					<ExchangeSection
+						item={item}
+						itemId={itemId}
+						exchange={item.exchange}
+					/>
 				)}
 			</CardContent>
 		</Card>
@@ -105,7 +109,7 @@ function NavigationAnchor({
 			className={cn(
 				"text-lg text-muted-foreground hover:text-foreground",
 				{ "text-md": subtype !== undefined },
-				className,
+				className
 			)}
 		>
 			<span>{children}</span>
@@ -127,7 +131,8 @@ function PricesType({
 		container: string;
 	};
 }) {
-	const filteredItems = Array.from(itemData.entries()).filter(([, item]) => item.type === type)
+	const filteredItems = Array.from(itemData.entries())
+		.filter(([, item]) => item.type === type)
 		.filter(([, item]) => item.subtype === subtype);
 
 	return (
@@ -142,7 +147,7 @@ function PricesType({
 					{
 						"text-xl": subtype !== undefined,
 					},
-					className?.title,
+					className?.title
 				)}
 			>
 				{children}
@@ -150,15 +155,12 @@ function PricesType({
 			<div
 				className={cn(
 					"mt-6 flex flex-row flex-wrap gap-3 justify-center md:justify-start",
-					className?.container,
+					className?.container
 				)}
 			>
-				{filteredItems
-					.map(([itemId, item]) => <PriceCard
-						key={itemId}
-						item={item}
-						itemId={itemId}
-					/>)}
+				{filteredItems.map(([itemId, item]) => (
+					<PriceCard key={itemId} item={item} itemId={itemId} />
+				))}
 			</div>
 		</div>
 	);
@@ -172,22 +174,22 @@ const types: {
 		name: string;
 	}[];
 }[] = [
-		{ type: "store", name: "Store" },
-		{ type: "honing-t4", name: "Honing T4" },
-		{ type: "honing", name: "Honing T3" },
-		{
-			type: "tradeskills",
-			name: "Trade Skills",
-			subtypes: [
-				{ type: "foraging", name: "Foraging" },
-				{ type: "logging", name: "Logging" },
-				{ type: "mining", name: "Mining" },
-				{ type: "hunting", name: "Hunting" },
-				{ type: "fishing", name: "Fishing" },
-				{ type: "excavating", name: "Excavating" },
-			],
-		},
-	];
+	{ type: "store", name: "Store" },
+	{ type: "honing-t4", name: "Honing T4" },
+	{ type: "honing", name: "Honing T3" },
+	{
+		type: "tradeskills",
+		name: "Trade Skills",
+		subtypes: [
+			{ type: "foraging", name: "Foraging" },
+			{ type: "logging", name: "Logging" },
+			{ type: "mining", name: "Mining" },
+			{ type: "hunting", name: "Hunting" },
+			{ type: "fishing", name: "Fishing" },
+			{ type: "excavating", name: "Excavating" },
+		],
+	},
+];
 
 export default function PricesPage() {
 	return (
@@ -198,7 +200,9 @@ export default function PricesPage() {
 						<h1 className="text-2xl font-bold mb-3">Navigation</h1>
 						{types.map((type) => (
 							<Fragment key={`na${type.type}`}>
-								<NavigationAnchor type={type.type}>{type.name}</NavigationAnchor>
+								<NavigationAnchor type={type.type}>
+									{type.name}
+								</NavigationAnchor>
 								{type.subtypes?.map((subtype) => (
 									<NavigationAnchor
 										key={`na${type.type}${subtype.type}`}
@@ -242,10 +246,7 @@ export default function PricesPage() {
 							);
 
 						return (
-							<PricesType
-								key={type.type}
-								type={type.type}
-							>
+							<PricesType key={type.type} type={type.type}>
 								{type.name}
 							</PricesType>
 						);

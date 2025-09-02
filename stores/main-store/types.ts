@@ -18,13 +18,13 @@ export const zodChar = z.object({
     z.record( //gateId
       z.object({
         difficulty: z.nativeEnum(Difficulty),
-        completedDate: z.string().optional(),
+        completedDate: z.number().optional(),
       }),
     ),
   ),
   tasks: z.object({
     id: z.string(),
     completions: z.number(),
-    completionDate: z.string().optional()
+    completionDate: z.number().optional()
   }).array()
 });

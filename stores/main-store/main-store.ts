@@ -8,7 +8,7 @@ import { createMiscActions, MiscActions } from "./actions/misc";
 import { immer } from 'zustand/middleware/immer';
 import { StateCreator } from "zustand";
 import { zodChar, zodTask } from "./types";
-import { CharV0, CharV1, CharV2, CharV3, CharV4, CharV5, migrateCharV0ToV1, migrateCharV1ToV2, migrateCharV2ToV3, migrateCharV3ToV4, migrateCharV4ToV5, migrateCharV5ToV6 } from "./migrations";
+import { CharV0, CharV1, CharV2, CharV3, CharV4, CharV5, CharV6, migrateCharV0ToV1, migrateCharV1ToV2, migrateCharV2ToV3, migrateCharV3ToV4, migrateCharV4ToV5, migrateCharV5ToV6, migrateCharV6ToV7 } from "./migrations";
 
 
 export const zodChars = z.object({
@@ -40,7 +40,7 @@ export const createMainStore = () =>
 			})),
 			{
 				name: "characters",
-				version: 6,
+				version: 7,
 				migrate: (persistedState, version) => {
 					if (version <= 0) {
 						persistedState = migrateCharV0ToV1(persistedState as CharV0);
@@ -59,6 +59,9 @@ export const createMainStore = () =>
 					}
 					if (version <= 5) {
 						persistedState = migrateCharV5ToV6(persistedState as CharV5);
+					}
+					if (version <= 6) {
+						persistedState = migrateCharV6ToV7(persistedState as CharV6);
 					}
 
 					const parse = zodChars.safeParse(persistedState);
