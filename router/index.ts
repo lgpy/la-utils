@@ -1,6 +1,6 @@
 import { getChangelogEntry, last5Changelog, paginatedChangelog, upsertChangelogEntry } from "./changelog";
 import { getFriendsRaids } from "./friendRaids";
-import { getFriends, getFriendRequests, respondToFriendRequest, revokeRequest, sendFriendRequest, revokeFriendship } from "./friends";
+import { getFriends, getFriendRequests, respondToFriendRequest, revokeRequest, sendFriendRequest, revokeFriendship, getRecommendedFriends } from "./friends";
 import { getMarketPrices } from "./market";
 import { getServerStatus } from "./serverStatus";
 import { listUsersInfinite, count, graphData } from "./users";
@@ -13,6 +13,7 @@ export const router = {
     revokeRequest,
     revokeFriendship,
     sendFriendRequest,
+    getRecommendedFriends,
   },
   friendRaids: {
     getFriendsRaids

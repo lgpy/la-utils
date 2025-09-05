@@ -22,17 +22,37 @@ export default function FriendsPage() {
 	const session = authClient.useSession();
 	const userId = session.data?.user.id;
 
-	const friendQuery = useQuery(orpc.friends.getFriends.queryOptions({
-		enabled: session.data !== null,
-	}));
+	const friendQuery = useQuery(
+		orpc.friends.getFriends.queryOptions({
+			enabled: session.data !== null,
+			refetchOnMount: false,
+			refetchOnReconnect: false,
+			refetchOnWindowFocus: false,
+		})
+	);
 	const requestsQuery = useQuery(
 		orpc.friends.getFriendRequests.queryOptions({
 			enabled: session.data !== null,
-		}),
+			refetchOnMount: false,
+			refetchOnReconnect: false,
+			refetchOnWindowFocus: false,
+		})
+	);
+	const recommendedQuery = useQuery(
+		orpc.friends.getRecommendedFriends.queryOptions({
+			enabled: session.data !== null,
+			refetchOnMount: false,
+			refetchOnReconnect: false,
+			refetchOnWindowFocus: false,
+			input: { count: 5 },
+		})
 	);
 
 	const isLoading =
-		requestsQuery.isLoading || friendQuery.isLoading || session.isPending;
+		requestsQuery.isLoading ||
+		friendQuery.isLoading ||
+		recommendedQuery.isLoading ||
+		session.isPending;
 
 	return (
 		<main className="py-8 px-4 flex flex-col lg:flex-row gap-6 justify-center">
@@ -42,7 +62,10 @@ export default function FriendsPage() {
 						<CardTitle>Add Friend</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<AddFriendForm disabled={session.isPending || !userId} userId={userId} />
+						<AddFriendForm
+							disabled={session.isPending || !userId}
+							userId={userId}
+						/>
 					</CardContent>
 				</Card>
 				<Card>
@@ -50,7 +73,7 @@ export default function FriendsPage() {
 						<CardTitle>Friend Requests</CardTitle>
 					</CardHeader>
 					<CardContent className="flex flex-col gap-1">
-						{isLoading ? (
+						{requestsQuery.isLoading ? (
 							<div>Loading...</div>
 						) : requestsQuery.isError ? (
 							<div className="text-destructive">
@@ -70,7 +93,7 @@ export default function FriendsPage() {
 						<CardTitle>Sent Friend Requests</CardTitle>
 					</CardHeader>
 					<CardContent className="flex flex-col gap-1">
-						{isLoading ? (
+						{requestsQuery.isLoading ? (
 							<div>Loading...</div>
 						) : requestsQuery.isError ? (
 							<div className="text-destructive">
@@ -81,6 +104,28 @@ export default function FriendsPage() {
 						) : (
 							requestsQuery.data?.sent.map((req) => (
 								<SentFriendRequestItem key={req.id} req={req} />
+							))
+						)}
+					</CardContent>
+				</Card>
+				<Card>
+					<CardHeader>
+						<CardTitle>Recommended Friends</CardTitle>
+					</CardHeader>
+					<CardContent className="flex flex-col gap-1">
+						{recommendedQuery.isLoading ? (
+							<div>Loading...</div>
+						) : recommendedQuery.isError ? (
+							<div className="text-destructive">
+								Failed to load recommendations.
+							</div>
+						) : recommendedQuery.data?.length === 0 ? (
+							<div className="text-muted-foreground">
+								No recommendations found.
+							</div>
+						) : (
+							recommendedQuery.data?.map((user) => (
+								<RecommendedFriendItem key={user.id} user={user} />
 							))
 						)}
 					</CardContent>
@@ -110,12 +155,56 @@ export default function FriendsPage() {
 			</div>
 		</main>
 	);
+
+	function RecommendedFriendItem({ user }: { user: User }) {
+		const queryClient = useQueryClient();
+		const sendFriendRequestMutation = useMutation(
+			orpc.friends.sendFriendRequest.mutationOptions({
+				onSuccess: (_, context) => {
+					toast.success("Friend request sent successfully");
+					queryClient.setQueryData(
+						orpc.friends.getRecommendedFriends.queryKey({
+							input: { count: 5 },
+						}),
+						(oldData) => {
+							return oldData?.filter((u) => u.id !== context.userId) || [];
+						}
+					);
+				},
+				onError: (error) => {
+					toast.error("Failed to send friend request", {
+						description: error.message,
+					});
+				},
+				onSettled: () => {
+					queryClient.invalidateQueries({
+						queryKey: orpc.friends.getFriendRequests.queryKey({}),
+					});
+				},
+			})
+		);
+		return (
+			<UserCard user={user}>
+				<Button
+					size="sm"
+					variant="default"
+					onClick={() => sendFriendRequestMutation.mutate({ userId: user.id })}
+					disabled={sendFriendRequestMutation.isPending}
+				>
+					Add Friend
+				</Button>
+			</UserCard>
+		);
+	}
 }
 
 function AddFriendForm({
 	disabled = false,
 	userId,
-}: { disabled?: boolean; userId: string | undefined }) {
+}: {
+	disabled?: boolean;
+	userId: string | undefined;
+}) {
 	const [userIdToFriend, setUserIdToFriend] = useState("");
 
 	const queryClient = useQueryClient();
@@ -135,7 +224,7 @@ function AddFriendForm({
 					queryKey: orpc.friends.getFriendRequests.queryKey({}),
 				});
 			},
-		}),
+		})
 	);
 
 	return (
@@ -156,14 +245,14 @@ function AddFriendForm({
 					onClick={() => {
 						sendFriendRequestMutation.mutate({
 							userId: userIdToFriend,
-						})
+						});
 					}}
 					disabled={disabled || sendFriendRequestMutation.isPending}
 				>
 					Send Friend Request
 				</Button>
 			</div>
-		</div >
+		</div>
 	);
 }
 
@@ -194,7 +283,7 @@ function FriendRequestItem({ req }: { req: User }) {
 					});
 				}
 			},
-		}),
+		})
 	);
 
 	return (
@@ -234,7 +323,7 @@ function SentFriendRequestItem({ req }: { req: User }) {
 
 	const sendFriendRequestMutation = useMutation(
 		orpc.friends.sendFriendRequest.mutationOptions({
-			onSuccess: () => { },
+			onSuccess: () => {},
 			onError: (error) => {
 				toast.error("Failed to send friend request", {
 					description: error.message,
@@ -245,7 +334,7 @@ function SentFriendRequestItem({ req }: { req: User }) {
 					queryKey: orpc.friends.getFriendRequests.queryKey({}),
 				});
 			},
-		}),
+		})
 	);
 
 	const revokeMutation = useMutation(
@@ -259,7 +348,7 @@ function SentFriendRequestItem({ req }: { req: User }) {
 								userId: req.id,
 							});
 						},
-					}
+					},
 				});
 			},
 			onError: (error) => {
@@ -272,7 +361,7 @@ function SentFriendRequestItem({ req }: { req: User }) {
 					queryKey: orpc.friends.getFriendRequests.queryKey({}),
 				});
 			},
-		}),
+		})
 	);
 
 	return (
@@ -311,7 +400,7 @@ function FriendItem({ friend }: { friend: User }) {
 					queryKey: orpc.friends.getFriends.queryKey({}),
 				});
 			},
-		}),
+		})
 	);
 
 	return (
@@ -332,7 +421,10 @@ function FriendItem({ friend }: { friend: User }) {
 							deleteMutation.mutate({ friendId: friend.id });
 						}
 					} catch (error) {
-						console.error("Alert error:", error instanceof Error ? error.message : error);
+						console.error(
+							"Alert error:",
+							error instanceof Error ? error.message : error
+						);
 					}
 				}}
 				disabled={deleteMutation.isPending}
@@ -354,9 +446,7 @@ function UserCard({ user, children }: UserCardProps) {
 			<div className="flex items-center gap-3 min-w-0">
 				<Avatar>
 					<AvatarImage src={user.image ?? undefined} alt={user.name} />
-					<AvatarFallback>
-						{user.name.charAt(0).toUpperCase()}
-					</AvatarFallback>
+					<AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
 				</Avatar>
 				<div className="min-w-0">
 					<div className="font-medium truncate">{user.name || user.id}</div>

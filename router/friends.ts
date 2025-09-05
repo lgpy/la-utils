@@ -1,4 +1,5 @@
 import { ORPCError, os } from "@orpc/server";
+import { z } from "zod";
 import { dbProviderMiddleware } from "./middleware/db";
 import { requiredAuthMiddleware } from "./middleware/auth";
 import { respondSchema, revokeFriendshipSchema, revokeRequestSchema, sendRequestSchema } from "./friends.schema";
@@ -54,6 +55,74 @@ export const getFriendRequests = os
     };
   });
 
+
+export const getRecommendedFriends = os
+  .use(dbProviderMiddleware)
+  .use(requiredAuthMiddleware)
+  .input(z.object({ count: z.number().min(1).max(20).default(5) }))
+  .handler(async ({ context: { db, session: { user } }, input }) => {
+    const allFriendships = await db.friendship.findMany({
+      where: {
+        OR: [
+          { requesterId: user.id },
+          { addresseeId: user.id },
+        ],
+        status: { in: ["accepted", "pending"] },
+      },
+      select: {
+        requesterId: true,
+        addresseeId: true,
+        status: true,
+      },
+    });
+
+    const friendIds = new Set<string>();
+    const pendingIds = new Set<string>();
+
+    for (const f of allFriendships) {
+      const otherId = f.requesterId === user.id ? f.addresseeId : f.requesterId;
+      if (f.status === "accepted") friendIds.add(otherId);
+      else if (f.status === "pending") pendingIds.add(otherId);
+    }
+
+    if (friendIds.size === 0) return [];
+
+    const friendsOfFriends = await db.friendship.findMany({
+      where: {
+        status: "accepted",
+        OR: [
+          { requesterId: { in: Array.from(friendIds) } },
+          { addresseeId: { in: Array.from(friendIds) } },
+        ],
+      },
+      select: {
+        requesterId: true,
+        addresseeId: true,
+      }
+    });
+
+    const recommendedIds = new Set();
+    for (const f of friendsOfFriends) {
+      if (friendIds.has(f.requesterId) && f.addresseeId !== user.id && !friendIds.has(f.addresseeId) && !pendingIds.has(f.addresseeId)) {
+        recommendedIds.add(f.addresseeId);
+      }
+      if (friendIds.has(f.addresseeId) && f.requesterId !== user.id && !friendIds.has(f.requesterId) && !pendingIds.has(f.requesterId)) {
+        recommendedIds.add(f.requesterId);
+      }
+    }
+
+    if (recommendedIds.size === 0) return [];
+
+    const restrictedRecommendedIds = Array.from(recommendedIds).sort(() => 0.5 - Math.random()).splice(0, input.count);
+
+    let users = await db.user.findMany({
+      where: {
+        id: { in: restrictedRecommendedIds as string[] },
+      },
+    });
+
+    return users;
+  });
 
 export const revokeRequest = os
   .use(dbProviderMiddleware)
