@@ -11,7 +11,20 @@ const nextConfig = {
     }
 
     return config
-  }
+  },
+  async headers() {
+    return [
+      {
+        source: "/manifest.webmanifest",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=604800, immutable", // 1 week
+          },
+        ],
+      },
+    ];
+  },
 }
  
 export default nextConfig;
