@@ -35,7 +35,7 @@ export const changelogEntrySchema = z.object({
   description: z.string(),
   details: z.object({
     type: z.nativeEnum(ChangelogDetailType),
-    description: z.string(),
+    description: z.string().min(1).max(255),
   }).array(),
   isVisible: z.boolean(),
 });

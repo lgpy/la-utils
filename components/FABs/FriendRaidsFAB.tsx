@@ -1,8 +1,7 @@
 "use client";
 
 import { Loader2Icon, Users } from "lucide-react";
-import { useState } from "react";
-import FriendRaids from "./FriendRaids";
+import { useMemo, useState } from "react";
 import { ExpandableButton } from "../ExpandableButton";
 import { FabButtonWrapper } from "./FabButtonWrapper";
 import { authClient } from "@/lib/auth";
@@ -13,10 +12,19 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSettingsStore } from "@/stores/main-store/provider";
+import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
+
+import { orpc } from "@/lib/orpc";
+import { useQuery } from "@tanstack/react-query";
+import {
+	filterFriendDataByAvailableRaids,
+	translateToUsableData,
+} from "./FriendRaids.utils";
+import FriendRaids from "./FriendRaids";
+import FancyMultiSelect, { SelectItem } from "../FancyMultiSelect";
 
 export default function FriendRaidsFAB() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -24,6 +32,66 @@ export default function FriendRaidsFAB() {
 	const session = authClient.useSession();
 
 	const settingsStore = useSettingsStore((store) => store);
+	const mainStore = useMainStore();
+	const availableRaids = useMemo(() => mainStore.availableRaids(), [mainStore]);
+
+	const [selected, setSelected] = useState<SelectItem[]>([]);
+
+	const friendRaidsQuery = useQuery(
+		orpc.friendRaids.getFriendsRaids.queryOptions({
+			input: {
+				filterByRaids: settingsStore.state.friendRaids.filterByRaids,
+				raids: settingsStore.state.friendRaids.filterByRaids
+					? availableRaids
+					: [],
+			},
+			enabled: isOpen,
+			staleTime: 5 * 60 * 1000,
+			select: (data) => {
+				if (settingsStore.state.friendRaids.filterByRaids)
+					data = filterFriendDataByAvailableRaids(data, availableRaids);
+				return {
+					...data,
+					displayData: translateToUsableData(data),
+				};
+			},
+			refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+		})
+	);
+
+	const filteredDisplayData = useMemo(() => {
+		if (selected.length === 0) return friendRaidsQuery.data?.displayData;
+		return Object.fromEntries(
+			Object.entries(friendRaidsQuery.data?.displayData || {})
+				.map(([raidId, raidData]) => {
+					const newRaidData = {
+						...raidData,
+						difficulties: Object.fromEntries(
+							Object.entries(raidData.difficulties)
+								.map(([difficultyId, users]) => {
+									const newUsers = users.filter((user) =>
+										selected.some(
+											(selectedUser) => selectedUser.value === user.id
+										)
+									);
+
+									if (newUsers.length === 0) return null;
+
+									return [difficultyId, newUsers];
+								})
+								.filter((entry) => entry !== null)
+						),
+					};
+
+					const difficultyCount = Object.keys(newRaidData.difficulties).length;
+					if (difficultyCount === 0) return null;
+
+					return [raidId, newRaidData];
+				})
+				.filter((entry) => entry !== null)
+		);
+	}, [friendRaidsQuery.data, selected]);
+
 
 	if (!session.isPending && session.data === null) {
 		return null;
@@ -46,21 +114,58 @@ export default function FriendRaidsFAB() {
 				</ExpandableButton>
 			</FabButtonWrapper>
 			<Dialog open={isOpen} onOpenChange={setIsOpen}>
-				<DialogContent className="lg:min-w-5xl">
+				<DialogContent className="lg:min-w-5xl" showCloseButton={false}>
 					<DialogHeader>
-						<DialogTitle>Friend Raids</DialogTitle>
 						<div className="flex flex-row justify-between">
-							<DialogDescription>
-								See which friends have raids available for you to join.
-							</DialogDescription>
-							<div className="flex items-center gap-3">
-								<Label htmlFor="filterRaids">Ignore raids I don't have available</Label>
-								<Checkbox id="filterRaids" checked={settingsStore.state.friendRaids.filterByRaids} onCheckedChange={settingsStore.state.togglefilterByRaids} />
+							<div className="flex flex-col gap-2">
+								<DialogTitle>Friend Raids</DialogTitle>
+								<DialogDescription>
+									See which friends have raids available for you to join.
+								</DialogDescription>
+							</div>
+							<div className="flex flex-col gap-2 items-end">
+								<FancyMultiSelect
+									className="max-w-full min-w-sm"
+									data={
+										Object.entries(friendRaidsQuery.data?.userInfo || {}).map(
+											([id, user]) => ({
+												label: user.name,
+												value: id,
+											})
+										) || []
+									}
+									selected={selected}
+									setSelected={setSelected}
+									placeholder="Filter by friends..."
+								/>
+								<div className="flex items-center gap-3">
+									<Label htmlFor="filterRaids">
+										Ignore raids I don't have available
+									</Label>
+									<Checkbox
+										id="filterRaids"
+										checked={settingsStore.state.friendRaids.filterByRaids}
+										onCheckedChange={settingsStore.state.togglefilterByRaids}
+									/>
+								</div>
 							</div>
 						</div>
 					</DialogHeader>
 					<ScrollArea className="max-h-[70vh] p-4">
-						<FriendRaids filterByRaids={settingsStore.state.friendRaids.filterByRaids} isVisible={isOpen} />
+						{friendRaidsQuery.isLoading ? (
+							<div className="text-center py-8">Loading...</div>
+						) : friendRaidsQuery.error ? (
+							<div className="text-center py-8 text-destructive">
+								Error loading friend raids.
+							</div>
+						) : friendRaidsQuery.data === undefined ||
+						  Object.keys(friendRaidsQuery.data).length === 0 ? (
+							<div className="text-center py-8 text-muted-foreground">
+								You have no available raids.
+							</div>
+						) : (
+							<FriendRaids data={filteredDisplayData ?? {}} />
+						)}
 					</ScrollArea>
 				</DialogContent>
 			</Dialog>

@@ -154,3 +154,36 @@ export const upsertChangelogEntry = os
       });
     }
   });
+
+export const deleteChangelogEntry = os
+  .use(dbProviderMiddleware)
+  .use(requiredAuthMiddleware)
+  .use(requiredPermission)
+  .input(getChangelogEntrySchema)
+  .errors({
+    NOT_FOUND: {
+      message: "Changelog entry not found",
+    },
+    ENTRY_DELETE_FORBIDDEN: {
+      message: "Cannot delete a visible changelog entry",
+    }
+  })
+  .handler(async ({ context: { db }, input, errors }) => {
+    const { id } = input;
+
+    const changelogEntry = await db.changelog.findUnique({
+      where: { id },
+    });
+
+    if (!changelogEntry) {
+      throw errors.NOT_FOUND();
+    }
+
+    if (changelogEntry.isVisible) {
+      throw errors.ENTRY_DELETE_FORBIDDEN();
+    }
+
+    await db.changelog.delete({
+      where: { id },
+    });
+  });
