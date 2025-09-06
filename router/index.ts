@@ -1,4 +1,4 @@
-import { getChangelogEntry, last5Changelog, paginatedChangelog, upsertChangelogEntry } from "./changelog";
+import { deleteChangelogEntry, getChangelogEntry, last5Changelog, paginatedChangelog, upsertChangelogEntry } from "./changelog";
 import { getFriendsRaids } from "./friendRaids";
 import { getFriends, getFriendRequests, respondToFriendRequest, revokeRequest, sendFriendRequest, revokeFriendship, getRecommendedFriends } from "./friends";
 import { getMarketPrices } from "./market";
@@ -25,7 +25,8 @@ export const router = {
     paginatedChangelog,
     last5Changelog,
     getChangelogEntry,
-    upsertChangelogEntry
+    upsertChangelogEntry,
+    deleteChangelogEntry
   },
   market: {
     getMarketPrices

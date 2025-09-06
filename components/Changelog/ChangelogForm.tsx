@@ -1,6 +1,6 @@
 "use client";
 
-import { client, OrpcOutputs } from "@/lib/orpc";
+import { client, orpc, OrpcOutputs } from "@/lib/orpc";
 import { changelogEntrySchema } from "@/router/changelog.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -17,7 +17,7 @@ import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Trash2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Textarea } from "../ui/textarea";
@@ -32,6 +32,8 @@ import {
 import { ChangelogDetailType } from "@/generated/prisma";
 import { showAlert } from "../AlertDialog.hooks";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 interface Props {
 	data?: OrpcOutputs["changelog"]["getChangelogEntry"];
@@ -66,6 +68,9 @@ export default function ChangelogForm({ data }: Props) {
 		},
 	});
 
+	const router = useRouter();
+	const queryClient = useQueryClient();
+
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		const uuid = crypto.randomUUID();
 		toast.loading("Saving changelog entry...", { id: uuid });
@@ -83,6 +88,10 @@ export default function ChangelogForm({ data }: Props) {
 			})
 			.then(() => {
 				toast.success("Changelog entry saved successfully!", { id: uuid });
+				queryClient.invalidateQueries({
+					queryKey: orpc.changelog.paginatedChangelog.queryKey({ input: {} }),
+				});
+				router.push("/changelog");
 			})
 			.catch((error) => {
 				toast.error("Failed to save changelog entry", {
@@ -91,6 +100,31 @@ export default function ChangelogForm({ data }: Props) {
 				});
 			});
 	}
+
+	const delMutation = useMutation(
+		orpc.changelog.deleteChangelogEntry.mutationOptions({
+			onSuccess: () => {
+				toast.success("Changelog entry deleted successfully!", {
+					id: "delete-changelog-entry",
+				});
+				queryClient.invalidateQueries({
+					queryKey: orpc.changelog.paginatedChangelog.queryKey({ input: {} }),
+				});
+				router.push("/changelog");
+			},
+			onError: (error) => {
+				toast.error("Failed to delete changelog entry", {
+					id: "delete-changelog-entry",
+					description: error.message,
+				});
+			},
+			onMutate: () => {
+				toast.loading("Deleting changelog entry...", {
+					id: "delete-changelog-entry",
+				});
+			},
+		})
+	);
 
 	return (
 		<Form {...form}>
@@ -277,7 +311,40 @@ export default function ChangelogForm({ data }: Props) {
 					)}
 				/>
 
-				<div className="flex flex-row gap-4 justify-end">
+				<div
+					className={cn("flex flex-row gap-4", {
+						"justify-between": data !== undefined,
+						"justify-end": data === undefined,
+					})}
+				>
+					{data !== undefined && (
+						<Button
+							variant="destructive"
+							type="button"
+							disabled={data.isVisible}
+							onClick={async () => {
+								try {
+									const dec = await showAlert({
+										title: "Delete Changelog Entry",
+										description: "Are you sure you want to delete this entry?",
+										confirmButton: {
+											text: "Delete",
+										},
+										cancelButton: {
+											text: "Cancel",
+										},
+									});
+									if (!dec) return;
+									delMutation.mutate({ id: data.id });
+								} catch (error) {
+									console.error(error);
+								}
+							}}
+						>
+							<Trash2Icon />
+							Delete Entry
+						</Button>
+					)}
 					<Button type="submit">Submit</Button>
 				</div>
 			</form>
