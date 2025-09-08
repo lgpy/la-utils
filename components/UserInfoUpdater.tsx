@@ -11,11 +11,14 @@ const API_URL = "/api/user/uploadData";
 
 type CharData = ReturnType<typeof useMainStore>["characters"][number];
 
-function removeIgnoredRaids(characters: CharData[], ignoredRaids: { cId: string; rId: string }[]): CharData[] {
+function removeIgnoredRaids(
+	characters: CharData[],
+	ignoredRaids: { cId: string; rId: string }[]
+): CharData[] {
 	const characters_copy: CharData[] = JSON.parse(JSON.stringify(characters));
 
 	for (const ignoredRaid of ignoredRaids) {
-		const character = characters_copy.find(c => c.id === ignoredRaid.cId);
+		const character = characters_copy.find((c) => c.id === ignoredRaid.cId);
 		if (character) {
 			delete character.assignedRaids[ignoredRaid.rId];
 		}
@@ -27,14 +30,17 @@ function removeIgnoredRaids(characters: CharData[], ignoredRaids: { cId: string;
 export function UserInfoUpdater() {
 	const auth = authClient.useSession();
 	const mainStore = useMainStore();
-	const ignoreRaidsSetting = useSettingsStore((store) => store.upload.ignoreRaids);
+	const ignoreRaidsSetting = useSettingsStore(
+		(store) => store.upload.ignoreRaids
+	);
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const latestCharactersRef = useRef(mainStore.characters);
 	const isFirstRun = useRef(true);
 
 	const lastUploadedDataRef = useRef<typeof mainStore.characters | null>(null);
 
-	const areStoresHydrated = mainStore.hasHydrated && ignoreRaidsSetting.hasHydrated;
+	const areStoresHydrated =
+		mainStore.hasHydrated && ignoreRaidsSetting.hasHydrated;
 
 	//initial upload of characters
 	useEffect(() => {
@@ -45,7 +51,8 @@ export function UserInfoUpdater() {
 		);
 	}, [areStoresHydrated, mainStore.characters, ignoreRaidsSetting.state]);
 
-	const isUploadedSameAsCurrent = () => isEqual(latestCharactersRef.current, lastUploadedDataRef.current);
+	const isUploadedSameAsCurrent = () =>
+		isEqual(latestCharactersRef.current, lastUploadedDataRef.current);
 
 	// Keep latest characters in a ref for beforeunload
 	useEffect(() => {
@@ -93,7 +100,6 @@ export function UserInfoUpdater() {
 					});
 				}
 			};
-
 
 			lastUploadedDataRef.current = latestCharactersRef.current;
 			uploadData();

@@ -55,14 +55,14 @@ export class StoneState implements StoneStateInterface {
 	}
 
 	predictPercentageChange(
-		newState: Omit<StoneStateInterface, "percentage">,
+		newState: Omit<StoneStateInterface, "percentage">
 	): number | null {
 		const oldCount = { failures: 0, successes: 0 };
 		const newCount = { failures: 0, successes: 0 };
 
 		const statusChecker = (
 			status: string,
-			obj: { failures: number; successes: number },
+			obj: { failures: number; successes: number }
 		) => {
 			switch (status) {
 				case "success":
@@ -101,7 +101,7 @@ export class StoneState implements StoneStateInterface {
 		}
 
 		console.debug(
-			`PredictPercentage: Unexpected totaldiff: ${totaldiff}, oldCount: ${JSON.stringify(oldCount)}, newCount: ${JSON.stringify(newCount)}`,
+			`PredictPercentage: Unexpected totaldiff: ${totaldiff}, oldCount: ${JSON.stringify(oldCount)}, newCount: ${JSON.stringify(newCount)}`
 		);
 		return null;
 	}
@@ -112,13 +112,13 @@ export class StoneState implements StoneStateInterface {
 
 	isStateValid(): boolean {
 		const hasUnknown = this.lines.some((line) =>
-			line.some((cell) => cell.detectedStatus === "unknown"),
+			line.some((cell) => cell.detectedStatus === "unknown")
 		);
 		if (hasUnknown) return false;
 
 		for (const line of this.lines) {
 			const pendingIndex = line.findIndex(
-				(cell) => cell.detectedStatus === "pending",
+				(cell) => cell.detectedStatus === "pending"
 			);
 			if (pendingIndex !== -1) {
 				const hasStatusAfterPending = line
@@ -126,7 +126,7 @@ export class StoneState implements StoneStateInterface {
 					.some(
 						(cell) =>
 							cell.detectedStatus === "success" ||
-							cell.detectedStatus === "failure",
+							cell.detectedStatus === "failure"
 					);
 				if (hasStatusAfterPending) return false;
 			}

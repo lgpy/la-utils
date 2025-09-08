@@ -92,7 +92,6 @@ export default function FriendRaidsFAB() {
 		);
 	}, [friendRaidsQuery.data, selected]);
 
-
 	if (!session.isPending && session.data === null) {
 		return null;
 	}

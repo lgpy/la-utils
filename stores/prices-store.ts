@@ -8,7 +8,7 @@ const zodPrices = z.object({
 			id: z.string(),
 			price: z.number().nonnegative(),
 			updatedOn: z.string(),
-		}),
+		})
 	),
 	lastFetch: z.string().optional(),
 });
@@ -38,7 +38,8 @@ export const createPriceStore = () =>
 									{
 										id: itemId,
 										price,
-										updatedOn: updatedOn?.toISOString() || new Date().toISOString(),
+										updatedOn:
+											updatedOn?.toISOString() || new Date().toISOString(),
 									},
 								],
 							};
@@ -47,7 +48,8 @@ export const createPriceStore = () =>
 							return state;
 						}
 						item.price = price;
-						item.updatedOn = updatedOn?.toISOString() || new Date().toISOString();
+						item.updatedOn =
+							updatedOn?.toISOString() || new Date().toISOString();
 						return {
 							...state,
 							prices: state.prices,
@@ -63,8 +65,8 @@ export const createPriceStore = () =>
 			}),
 			{
 				name: "prices",
-			},
-		),
+			}
+		)
 	);
 
 export type SetType = (
@@ -72,5 +74,5 @@ export type SetType = (
 		| PricesStore
 		| Partial<PricesStore>
 		| ((state: PricesStore) => PricesStore | Partial<PricesStore>),
-	replace?: boolean | undefined,
+	replace?: boolean | undefined
 ) => void;

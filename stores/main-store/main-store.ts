@@ -5,11 +5,25 @@ import { CharacterActions, createCharActions } from "./actions/char";
 import { createRaidActions, RaidActions } from "./actions/raid";
 import { createTaskActions, TaskActions } from "./actions/task";
 import { createMiscActions, MiscActions } from "./actions/misc";
-import { immer } from 'zustand/middleware/immer';
+import { immer } from "zustand/middleware/immer";
 import { StateCreator } from "zustand";
 import { zodChar, zodTask } from "./types";
-import { CharV0, CharV1, CharV2, CharV3, CharV4, CharV5, CharV6, migrateCharV0ToV1, migrateCharV1ToV2, migrateCharV2ToV3, migrateCharV3ToV4, migrateCharV4ToV5, migrateCharV5ToV6, migrateCharV6ToV7 } from "./migrations";
-
+import {
+	CharV0,
+	CharV1,
+	CharV2,
+	CharV3,
+	CharV4,
+	CharV5,
+	CharV6,
+	migrateCharV0ToV1,
+	migrateCharV1ToV2,
+	migrateCharV2ToV3,
+	migrateCharV3ToV4,
+	migrateCharV4ToV5,
+	migrateCharV5ToV6,
+	migrateCharV6ToV7,
+} from "./migrations";
 
 export const zodChars = z.object({
 	characters: z.array(zodChar),
@@ -18,14 +32,18 @@ export const zodChars = z.object({
 
 export type MainState = z.infer<typeof zodChars>;
 
-export type MainStore = MainState & CharacterActions & RaidActions & TaskActions & MiscActions;
+export type MainStore = MainState &
+	CharacterActions &
+	RaidActions &
+	TaskActions &
+	MiscActions;
 
 export type StateActions<T> = StateCreator<
 	MainState,
 	[["zustand/immer", never]],
 	[],
 	T
->
+>;
 
 export const createMainStore = () =>
 	createStore<MainStore>()(
@@ -73,6 +91,6 @@ export const createMainStore = () =>
 
 					return parse.data;
 				},
-			},
-		),
+			}
+		)
 	);

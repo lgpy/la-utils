@@ -1,10 +1,6 @@
 "use client";
 
-import {
-	createContext,
-	useContext,
-	type ReactNode,
-} from "react";
+import { createContext, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
 import { createChangelogStore } from "@/stores/changelog-store";
 import { useHydration } from "@/lib/hooks/use-hydration";
@@ -34,10 +30,9 @@ export const useChangelogStore = () => {
 
 	if (!context) {
 		throw new Error(
-			"useChangelogStore must be used within a ChangelogStoreProvider",
+			"useChangelogStore must be used within a ChangelogStoreProvider"
 		);
 	}
-
 
 	const hasHydrated = useHydration(context);
 

@@ -30,7 +30,7 @@ export type CraftingActions = {
 	changeKey: (
 		parent: CraftingParents,
 		key: CraftingKeys,
-		value: number,
+		value: number
 	) => void;
 };
 
@@ -69,8 +69,8 @@ export const createCraftingStore = () =>
 			}),
 			{
 				name: "crafting",
-			},
-		),
+			}
+		)
 	);
 
 export type SetType = (
@@ -78,5 +78,5 @@ export type SetType = (
 		| CraftingStore
 		| Partial<CraftingStore>
 		| ((state: CraftingStore) => CraftingStore | Partial<CraftingStore>),
-	replace?: boolean | undefined,
+	replace?: boolean | undefined
 ) => void;

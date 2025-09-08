@@ -26,10 +26,13 @@ type Props = {
 			};
 		}
 	>;
-	highest3NextWeek: Record<string, {
-		bound: number;
-		unbound: number;
-	}>;
+	highest3NextWeek: Record<
+		string,
+		{
+			bound: number;
+			unbound: number;
+		}
+	>;
 };
 
 export default function PiggyBank(props: Props) {
@@ -41,19 +44,19 @@ export default function PiggyBank(props: Props) {
 			acc.total += thisWeek.totalGold.bound + thisWeek.totalGold.unbound;
 			return acc;
 		},
-		{ earned: 0, total: 0 },
+		{ earned: 0, total: 0 }
 	);
 
 	const nextWeek = Object.values(highest3NextWeek).reduce(
 		(acc, earnable) => acc + earnable.bound + earnable.unbound,
-		0,
+		0
 	);
 
 	const hasBiweekly = Object.entries(char.assignedRaids).some(
 		([raidId, gates]) =>
 			Object.keys(gates).some(
-				(gateId) => raidData.get(raidId)?.getGate(gateId)?.isBiWeekly ?? false,
-			),
+				(gateId) => raidData.get(raidId)?.getGate(gateId)?.isBiWeekly ?? false
+			)
 	);
 
 	// Calculate progress, handling division by zero

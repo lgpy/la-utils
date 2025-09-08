@@ -48,12 +48,6 @@ export default function FriendsPage() {
 		})
 	);
 
-	const isLoading =
-		requestsQuery.isLoading ||
-		friendQuery.isLoading ||
-		recommendedQuery.isLoading ||
-		session.isPending;
-
 	return (
 		<main className="py-8 px-4 flex flex-col lg:flex-row gap-6 justify-center">
 			<div className="flex flex-col gap-6 w-full max-w-md">

@@ -12,10 +12,17 @@ import { usePriceStore } from "@/stores/prices-store.provider";
 import Image from "next/image";
 import { Fragment } from "react";
 
-export default function CraftingItemCard({ id, item }: { id: string, item: CraftingItem }) {
-	const { store: pricesStore, hasHydrated: pricesHasHydrated } = usePriceStore();
+export default function CraftingItemCard({
+	id,
+	item,
+}: {
+	id: string;
+	item: CraftingItem;
+}) {
+	const { store: pricesStore, hasHydrated: pricesHasHydrated } =
+		usePriceStore();
 	const { store, hasHydrated: craftHasHydrated } = useCraftingStore(
-		(store) => store,
+		(store) => store
 	);
 
 	if (!pricesHasHydrated || !craftHasHydrated) {
@@ -33,7 +40,7 @@ export default function CraftingItemCard({ id, item }: { id: string, item: Craft
 			}
 			return acc;
 		},
-		{} as Record<string, number>,
+		{} as Record<string, number>
 	);
 
 	const itemMarketPrice = item_price?.price || 0;
@@ -51,7 +58,7 @@ export default function CraftingItemCard({ id, item }: { id: string, item: Craft
 			(type?.greatSuccessChance || 0) / 100 +
 			1) *
 			5) /
-		100;
+			100;
 
 	const sellPrice =
 		Math.floor(itemMarketPrice * 0.95) * item.returns * gsChance;
@@ -65,10 +72,10 @@ export default function CraftingItemCard({ id, item }: { id: string, item: Craft
 					const singleMarketItemCost = price / (storeItem?.marketQty || 1);
 					return acc + singleMarketItemCost * amount;
 				},
-				0,
+				0
 			);
 			const isPricesBad = Object.keys(recipe_items).some((key) =>
-				is_item_price_expired(pricesStore?.prices.find((i) => i.id === key)),
+				is_item_price_expired(pricesStore?.prices.find((i) => i.id === key))
 			);
 			const craft_cost = recipe_item_cost + gold_craft_cost;
 			const profit = sellPrice - craft_cost;
@@ -94,7 +101,7 @@ export default function CraftingItemCard({ id, item }: { id: string, item: Craft
 				<div
 					className={cn(
 						"w-full grid grid-cols-[48px_auto_32px] items-center gap-3 p-3",
-						rarityClasses.header,
+						rarityClasses.header
 					)}
 				>
 					<div className="relative">
@@ -117,7 +124,7 @@ export default function CraftingItemCard({ id, item }: { id: string, item: Craft
 						className={{
 							text: cn(
 								"text-xl font-semibold tracking-tight truncate",
-								rarityClasses.text,
+								rarityClasses.text
 							),
 							tooltip: "text-center",
 						}}
@@ -126,7 +133,7 @@ export default function CraftingItemCard({ id, item }: { id: string, item: Craft
 			</CardHeader>
 			<CardContent
 				className={cn(
-					"p-3 grid grid-cols-[auto_auto_auto] gap-y-3 gap-x-3 text-center",
+					"p-3 grid grid-cols-[auto_auto_auto] gap-y-3 gap-x-3 text-center"
 				)}
 			>
 				<p className="font-bold">Recipe</p>
@@ -137,7 +144,7 @@ export default function CraftingItemCard({ id, item }: { id: string, item: Craft
 						<div className="relative size-fit mx-auto">
 							<Image
 								src={`/assets/${Object.keys(item.recipes[recipe.idx]).at(
-									0,
+									0
 								)}.webp`}
 								height={48}
 								width={48}
@@ -170,5 +177,3 @@ export default function CraftingItemCard({ id, item }: { id: string, item: Craft
 		</Card>
 	);
 }
-
-

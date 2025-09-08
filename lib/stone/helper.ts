@@ -21,7 +21,7 @@ function classifyColor(
 	_H: number,
 	S: number,
 	L: number,
-	contains: "blue" | "red",
+	contains: "blue" | "red"
 ): ColorCategory {
 	// Normalize hue to 0-360 range
 	const H = ((_H % 360) + 360) % 360;
@@ -37,14 +37,17 @@ function classifyColor(
 	}
 	if (contains === "red") {
 		const isRed = H >= 0 && H <= 4 && S >= 26 && S <= 72 && L >= 21 && L <= 54;
-		const isRedMilestone = H >= 11 && H <= 18 && S >= 60 && S <= 78 && L >= 51 && L <= 82;
+		const isRedMilestone =
+			H >= 11 && H <= 18 && S >= 60 && S <= 78 && L >= 51 && L <= 82;
 
 		if (isRed || isRedMilestone) {
 			return "success";
 		}
 	} else if (contains === "blue") {
-		const isBlue = H >= 185 && H <= 195 && S >= 41 && S <= 67 && L >= 35 && L <= 48;
-		const isBlueMilestone = H >= 187 && H <= 200 && S >= 70 && S <= 91 && L >= 59 && L <= 74;
+		const isBlue =
+			H >= 185 && H <= 195 && S >= 41 && S <= 67 && L >= 35 && L <= 48;
+		const isBlueMilestone =
+			H >= 187 && H <= 200 && S >= 70 && S <= 91 && L >= 59 && L <= 74;
 
 		if (isBlue || isBlueMilestone) {
 			return "success";
@@ -73,7 +76,7 @@ export class StoneHelper {
 		const config = resolutionConfigs.get(resolution);
 		if (config === undefined) {
 			throw new Error(
-				`No resolution config found for ${resolution.width}x${resolution.height}.`,
+				`No resolution config found for ${resolution.width}x${resolution.height}.`
 			);
 		}
 		this.resolution = resolution;

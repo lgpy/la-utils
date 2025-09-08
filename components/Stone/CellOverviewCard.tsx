@@ -47,8 +47,8 @@ export default function CellOverviewCard({
 														"w-6 h-6 transform rotate-45 m-1.5 border-2 border-neutral-700 shadow-md",
 														getColorClasses(
 															cell.detectedStatus,
-															cell.line !== 3,
-														).background,
+															cell.line !== 3
+														).background
 													)}
 													aria-label={`Cell line ${cell.line}, pos ${cell.pos}`}
 												/>
@@ -74,11 +74,14 @@ export default function CellOverviewCard({
 													<span
 														className={cn(
 															"font-medium",
-															cell.detectedStatus === "success" && "text-ctp-green",
-															cell.detectedStatus === "failure" && "text-ctp-red",
+															cell.detectedStatus === "success" &&
+																"text-ctp-green",
+															cell.detectedStatus === "failure" &&
+																"text-ctp-red",
 															cell.detectedStatus === "pending" &&
-															"text-ctp-yellow",
-															cell.detectedStatus === "unknown" && "text-gray-500",
+																"text-ctp-yellow",
+															cell.detectedStatus === "unknown" &&
+																"text-gray-500"
 														)}
 													>
 														{cell.detectedStatus?.toUpperCase() || "N/A"}

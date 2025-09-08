@@ -38,9 +38,12 @@ export default function FancyMultiSelect({
 	const [open, setOpen] = React.useState(false);
 	const [inputValue, setInputValue] = React.useState("");
 
-	const handleUnselect = React.useCallback((item: SelectItem) => {
-		setSelected((prev) => prev.filter((i) => i.value !== item.value));
-	}, []);
+	const handleUnselect = React.useCallback(
+		(item: SelectItem) => {
+			setSelected((prev) => prev.filter((i) => i.value !== item.value));
+		},
+		[setSelected]
+	);
 
 	const handleKeyDown = React.useCallback(
 		(e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -61,7 +64,7 @@ export default function FancyMultiSelect({
 				}
 			}
 		},
-		[]
+		[setSelected]
 	);
 
 	const selectables = data.filter(
@@ -122,7 +125,7 @@ export default function FancyMultiSelect({
 												e.preventDefault();
 												e.stopPropagation();
 											}}
-											onSelect={(value) => {
+											onSelect={() => {
 												setInputValue("");
 												setSelected((prev) => [...prev, item]);
 											}}

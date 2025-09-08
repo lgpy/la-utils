@@ -69,7 +69,7 @@ export class StoneGameOptimizer {
 		s2: number,
 		c3: number,
 		s3: number,
-		prob: number,
+		prob: number
 	): number {
 		// Encode state as a single number for faster lookup
 		// Each component fits in specific bit ranges:
@@ -108,7 +108,7 @@ export class StoneGameOptimizer {
 		c1: number,
 		c2: number,
 		// oxlint-disable-next-line no-unused-vars
-		c3: number,
+		c3: number
 	): boolean {
 		// Early termination: check if it's impossible to win
 		const remainingCellsR1 = this.maxCellsPerRow - c1;
@@ -136,7 +136,7 @@ export class StoneGameOptimizer {
 		s2: number, // Cells filled and successes for row 2
 		c3: number,
 		s3: number, // Cells filled and successes for row 3
-		currentProb: number,
+		currentProb: number
 	): number {
 		// Base Case: Game End (all 30 cells filled)
 		if (c1 + c2 + c3 === this.totalTurns) {
@@ -174,11 +174,11 @@ export class StoneGameOptimizer {
 		const probOfFailure = 1.0 - probOfSuccess;
 		const nextProbAfterSuccess = Math.max(
 			this.probMin,
-			currentProb - this.probStep,
+			currentProb - this.probStep
 		);
 		const nextProbAfterFailure = Math.min(
 			this.probMax,
-			currentProb + this.probStep,
+			currentProb + this.probStep
 		);
 
 		// Try each row using a loop to reduce code duplication
@@ -206,7 +206,7 @@ export class StoneGameOptimizer {
 					successState[3],
 					successState[4],
 					successState[5],
-					nextProbAfterSuccess,
+					nextProbAfterSuccess
 				);
 
 				const winProbIfFailure = this._calculateWinProbRecursive(
@@ -216,7 +216,7 @@ export class StoneGameOptimizer {
 					failureState[3],
 					failureState[4],
 					failureState[5],
-					nextProbAfterFailure,
+					nextProbAfterFailure
 				);
 
 				const expectedWinProbForChoosingRow =
@@ -291,11 +291,11 @@ export class StoneGameOptimizer {
 		const probOfFailure = 1.0 - probOfSuccess;
 		const nextProbAfterSuccess = Math.max(
 			this.probMin,
-			currentProb - this.probStep,
+			currentProb - this.probStep
 		);
 		const nextProbAfterFailure = Math.min(
 			this.probMax,
-			currentProb + this.probStep,
+			currentProb + this.probStep
 		);
 
 		const currentCells = [current_c1, current_c2, current_c3];
@@ -316,7 +316,7 @@ export class StoneGameOptimizer {
 					successSuccesses[1],
 					successState[2],
 					successSuccesses[2],
-					nextProbAfterSuccess,
+					nextProbAfterSuccess
 				);
 
 				// Ensure the recursive calculation was run for this next state's probability during _populateMemo
@@ -328,7 +328,7 @@ export class StoneGameOptimizer {
 						successSuccesses[1],
 						successState[2],
 						successSuccesses[2],
-						nextProbAfterSuccess,
+						nextProbAfterSuccess
 					);
 				}
 				const winProbIfSuccess = this.memo.get(successKey) ?? 0.0;
@@ -345,7 +345,7 @@ export class StoneGameOptimizer {
 					failureSuccesses[1],
 					failureState[2],
 					failureSuccesses[2],
-					nextProbAfterFailure,
+					nextProbAfterFailure
 				);
 
 				if (!this.memo.has(failureKey)) {
@@ -356,7 +356,7 @@ export class StoneGameOptimizer {
 						failureSuccesses[1],
 						failureState[2],
 						failureSuccesses[2],
-						nextProbAfterFailure,
+						nextProbAfterFailure
 					);
 				}
 				const winProbIfFailure = this.memo.get(failureKey) ?? 0.0;
@@ -379,7 +379,7 @@ export class StoneGameOptimizer {
 	 * @returns The best row (1, 2, or 3) or null if no move is possible
 	 */
 	public getBestRow(
-		rowDecisionProbabilities: [number, number, number] | undefined,
+		rowDecisionProbabilities: [number, number, number] | undefined
 	): number | null {
 		if (!rowDecisionProbabilities) return null;
 

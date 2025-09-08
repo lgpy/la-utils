@@ -24,7 +24,7 @@ export const shortestDifficulty = (difficulty: Difficulty) => {
 
 export const isGateCompleted = (
 	dateRaidWasComplete: Date,
-	latestReset: Date,
+	latestReset: Date
 ) => {
 	return latestReset < dateRaidWasComplete;
 };

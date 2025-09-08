@@ -42,7 +42,7 @@ export function rgbToHsl(r: number, g: number, b: number) {
 
 export const getColorClasses = (
 	status: string | undefined,
-	isBlueLine: boolean,
+	isBlueLine: boolean
 ) => {
 	return {
 		background: cn("", {
@@ -57,12 +57,12 @@ export const getColorClasses = (
 export class ImageProcessor {
 	constructor(
 		private ctx: CanvasRenderingContext2D,
-		private region: Region | undefined,
-	) { }
+		private region: Region | undefined
+	) {}
 
 	static async fromImageBitmap(
 		imageBitmap: ImageBitmap,
-		cropRegion?: Region,
+		cropRegion?: Region
 	): Promise<ImageProcessor> {
 		const canvas = document.createElement("canvas");
 		canvas.width = cropRegion?.width ?? imageBitmap.width;
@@ -80,7 +80,7 @@ export class ImageProcessor {
 			0,
 			0,
 			canvas.width,
-			canvas.height,
+			canvas.height
 		);
 		return new ImageProcessor(ctx, cropRegion);
 	}
@@ -108,7 +108,7 @@ export class ImageProcessor {
 	_verifyCoords(x: number, y: number): void {
 		if (x < 0 || y < 0 || x >= this.getWidth() || y >= this.getHeight()) {
 			throw new Error(
-				`Coordinates (${x}, ${y}) are out of bounds for canvas size ${this.getWidth()}x${this.getHeight()}.`,
+				`Coordinates (${x}, ${y}) are out of bounds for canvas size ${this.getWidth()}x${this.getHeight()}.`
 			);
 		}
 	}
@@ -125,7 +125,7 @@ export class ImageProcessor {
 	getColorAverage(
 		x: number,
 		y: number,
-		gridSize: number,
+		gridSize: number
 	): [number, number, number] {
 		// If there's a crop region, adjust coordinates
 		const [adjustedX, adjustedY] = this._translateCoords(x, y);
@@ -172,7 +172,7 @@ export class ImageProcessor {
 	getColorAverageDiamond(
 		x: number,
 		y: number,
-		radius: number,
+		radius: number
 	): [number, number, number] {
 		// If there's a crop region, adjust coordinates
 		const [adjustedX, adjustedY] = this._translateCoords(x, y);
@@ -203,7 +203,8 @@ export class ImageProcessor {
 		for (let py = startY; py < endY; py++) {
 			for (let px = startX; px < endX; px++) {
 				// Calculate Manhattan distance from center
-				const manhattanDistance = Math.abs(px - adjustedX) + Math.abs(py - adjustedY);
+				const manhattanDistance =
+					Math.abs(px - adjustedX) + Math.abs(py - adjustedY);
 
 				// Only include pixels within the diamond (Manhattan distance <= radius)
 				if (manhattanDistance <= radius) {

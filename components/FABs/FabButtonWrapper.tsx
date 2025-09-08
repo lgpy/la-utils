@@ -2,11 +2,7 @@
 
 import { motion } from "motion/react";
 
-export function FabButtonWrapper({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export function FabButtonWrapper({ children }: { children: React.ReactNode }) {
 	return (
 		<motion.div
 			initial={{ scale: 0.8, opacity: 0 }}

@@ -3,7 +3,7 @@ import { raidData } from "./game-info";
 
 export function getLatestBiWeeklyReset(
 	BiWeekly: "odd" | "even",
-	currentDateOverride?: Date,
+	currentDateOverride?: Date
 ): Date {
 	return _getLatestWeeklyReset(BiWeekly, currentDateOverride);
 }
@@ -16,7 +16,7 @@ const UTC_RESET_HOUR = 10;
 
 function _getLatestWeeklyReset(
 	BiWeekly?: "odd" | "even",
-	currentDateOverride?: Date,
+	currentDateOverride?: Date
 ): Date {
 	const currentDate = currentDateOverride ?? new Date();
 	const currentDay = currentDate.getUTCDay();
@@ -37,7 +37,7 @@ function _getLatestWeeklyReset(
 		const weekNumber = Math.floor(
 			(latestWednesday.getTime() -
 				new Date(latestWednesday.getUTCFullYear(), 0, 1).getTime()) /
-			(7 * 24 * 60 * 60 * 1000),
+				(7 * 24 * 60 * 60 * 1000)
 		);
 		if (BiWeekly === "odd" && weekNumber % 2 === 0) {
 			latestWednesday.setUTCDate(latestWednesday.getUTCDate() - 7);

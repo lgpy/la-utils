@@ -19,7 +19,7 @@ const PiggyBankProgressBar = forwardRef<HTMLDivElement, Props>(
 
 		const clipPathId = useRef(
 			Math.random().toString(36).substring(2, 15) +
-			Math.random().toString(36).substring(2, 15),
+				Math.random().toString(36).substring(2, 15)
 		);
 
 		return (
@@ -67,7 +67,7 @@ const PiggyBankProgressBar = forwardRef<HTMLDivElement, Props>(
 				</div>
 			</div>
 		);
-	},
+	}
 );
 PiggyBankProgressBar.displayName = "PiggyBankProgressBar";
 

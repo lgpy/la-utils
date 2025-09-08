@@ -42,7 +42,7 @@ export default function CopyButton(props: Props) {
 						{
 							"ml-2": props.size !== "icon",
 						},
-						iconClassName,
+						iconClassName
 					)}
 				/>
 			) : (
@@ -51,7 +51,7 @@ export default function CopyButton(props: Props) {
 						{
 							"ml-2": props.size !== "icon",
 						},
-						iconClassName,
+						iconClassName
 					)}
 				/>
 			)}
