@@ -15,6 +15,7 @@ import { raidData } from "@/lib/game-info";
 import { shortenDifficulty, shortestDifficulty } from "@/lib/raids";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { EllipsisIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { useState } from "react";
 
 interface Props {
 	char: Character;
@@ -28,6 +29,8 @@ export default function EditCardAssignedRaid({
 	openRaidDialog,
 }: Props) {
 	const mainStore = useMainStore();
+
+	const [shouldOpenDialog, setShouldOpenDialog] = useState(false);
 
 	const assignedRaid = char.assignedRaids[raidId];
 	const raid = raidData.get(raidId);
@@ -52,7 +55,7 @@ export default function EditCardAssignedRaid({
 								<p>
 									{Object.entries(assignedRaid)
 										.map(
-											([gId, g]) => `${gId} ${shortenDifficulty(g.difficulty)}`,
+											([gId, g]) => `${gId} ${shortenDifficulty(g.difficulty)}`
 										)
 										.join(", ")}
 								</p>
@@ -61,7 +64,14 @@ export default function EditCardAssignedRaid({
 					</TooltipProvider>
 				</div>
 			</div>
-			<DropdownMenu>
+			<DropdownMenu
+				onOpenChange={(open) => {
+					if (!open && shouldOpenDialog) {
+						openRaidDialog();
+						setShouldOpenDialog(false);
+					}
+				}}
+			>
 				<DropdownMenuTrigger asChild>
 					<Button
 						variant="ghost"
@@ -73,7 +83,9 @@ export default function EditCardAssignedRaid({
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>
 					<DropdownMenuItem
-						onClick={() => openRaidDialog()}
+						onClick={() => {
+							setShouldOpenDialog(true);
+						}}
 						data-pw={"assigned-raid-edit"}
 					>
 						<PencilIcon />

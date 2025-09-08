@@ -63,11 +63,13 @@ export default function EditCardRaidDialog({
 	const filteredRaids = useMemo(() => {
 		return raidData.raids.entries().reduce(
 			(acc, [raidkey, raid]) => {
-				const hasGatesbellowilvl = raid.gates.values().some((gate) =>
-					gate.difficulties.values().some(
-						(diff) => diff.itemlevel <= character.itemLevel,
-					),
-				);
+				const hasGatesbellowilvl = raid.gates
+					.values()
+					.some((gate) =>
+						gate.difficulties
+							.values()
+							.some((diff) => diff.itemlevel <= character.itemLevel)
+					);
 				if (
 					(character.assignedRaids[raidkey] === undefined &&
 						hasGatesbellowilvl) ||
@@ -76,7 +78,7 @@ export default function EditCardRaidDialog({
 					acc[raidkey] = raid;
 				return acc;
 			},
-			{} as Record<string, Raid>,
+			{} as Record<string, Raid>
 		);
 	}, [raidId, character.assignedRaids, character.itemLevel]);
 
@@ -88,15 +90,14 @@ export default function EditCardRaidDialog({
 			const gateKeys = Array.from(raid.gates.keys());
 			const gates = values.gates.reduce(
 				(acc, diff, index) => {
-					acc[gateKeys[index]] =
-						diff === "none" ? undefined : diff;
+					acc[gateKeys[index]] = diff === "none" ? undefined : diff;
 					return acc;
 				},
-				{} as Record<string, Difficulty | undefined>,
+				{} as Record<string, Difficulty | undefined>
 			);
 
 			const fgates = Object.fromEntries(
-				Object.entries(gates).filter(([, value]) => value !== undefined),
+				Object.entries(gates).filter(([, value]) => value !== undefined)
 			) as Record<string, Difficulty>;
 
 			if (raidId !== undefined)
@@ -111,97 +112,118 @@ export default function EditCardRaidDialog({
 	}
 
 	const watchRaidId = form.watch("raidId");
-	const actualRaid = useMemo(() => {
-		return raidData.get(watchRaidId);
-	}, [watchRaidId]);
 
 	const checkBoxGroups = useMemo(() => {
-		if (!actualRaid) return [];
-		return Array.from(actualRaid.gates.entries().map(([gateId, gate], gateIndex) => {
-			const checkboxes = Array.from(gate.difficulties.entries().map(
-				([difficulty, diffData]) => {
-					if (diffData.itemlevel === null) return null;
-					if (diffData.itemlevel > character.itemLevel) return null;
-					return (
-						<FormItem
-							className="flex items-center space-x-3 space-y-0"
-							key={`rgi${gateId}${difficulty}`}
-						>
-							<FormControl>
-								<RadioGroupItem
-									value={difficulty}
-									className="text-secondary border-secondary"
-								/>
-							</FormControl>
-							<FormLabel className="font-normal">{difficulty}</FormLabel>
-						</FormItem>
-					);
-				},
-			));
-			return (
-				<FormField
-					key={`rg${gateId}`}
-					control={form.control}
-					name={`gates.${gateIndex}`}
-					render={({ field }) => (
-						<FormItem className="flex flex-row">
-							<FormLabel className="w-6">{gateId}</FormLabel>
-							<FormControl>
-								<RadioGroup
-									onValueChange={field.onChange}
-									value={field.value}
-									className="flex flex-row justify-around w-full mt-0! gap-2"
-									data-pw={`difficulties-${gateId}`}
-								>
-									<FormItem className="flex items-center space-x-3 space-y-0">
-										<FormControl>
-											<RadioGroupItem
-												value="none"
-												className="text-secondary border-secondary"
-											/>
-										</FormControl>
-										<FormLabel className="font-normal">None</FormLabel>
-									</FormItem>
-									{checkboxes}
-								</RadioGroup>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-			);
-		}));
-	}, [actualRaid, character.itemLevel, form.control]);
+		if (!watchRaidId) return [];
+		const raid = raidData.get(watchRaidId);
+		if (!raid) return [];
+		return Array.from(
+			raid.gates.entries().map(([gateId, gate], gateIndex) => {
+				const checkboxes = Array.from(
+					gate.difficulties.entries().map(([difficulty, diffData]) => {
+						if (diffData.itemlevel === null) return null;
+						if (diffData.itemlevel > character.itemLevel) return null;
+						return (
+							<FormItem
+								className="flex items-center space-x-3 space-y-0"
+								key={`rgi${gateId}${difficulty}`}
+							>
+								<FormControl>
+									<RadioGroupItem
+										value={difficulty}
+										className="text-secondary border-secondary"
+									/>
+								</FormControl>
+								<FormLabel className="font-normal">{difficulty}</FormLabel>
+							</FormItem>
+						);
+					})
+				);
+				return (
+					<FormField
+						key={`rg${gateId}`}
+						control={form.control}
+						name={`gates.${gateIndex}`}
+						render={({ field }) => (
+							<FormItem className="flex flex-row">
+								<FormLabel className="w-6">{gateId}</FormLabel>
+								<FormControl>
+									<RadioGroup
+										onValueChange={field.onChange}
+										value={field.value}
+										className="flex flex-row justify-around w-full mt-0! gap-2"
+										data-pw={`difficulties-${gateId}`}
+									>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem
+													value="none"
+													className="text-secondary border-secondary"
+												/>
+											</FormControl>
+											<FormLabel className="font-normal">None</FormLabel>
+										</FormItem>
+										{checkboxes}
+									</RadioGroup>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				);
+			})
+		);
+	}, [character.itemLevel, form.control, watchRaidId]);
 
 	useEffect(() => {
-		if (!isOpen) return;
-		if (!actualRaid) return;
-		if (raidId === undefined) {
+		if (raidId !== undefined && watchRaidId !== raidId) return;
+		const actualRaid = raidData.get(watchRaidId);
+		if (actualRaid) {
 			form.reset({
 				raidId: actualRaid ? watchRaidId : "",
-				gates: Array.from(actualRaid.gates.values().map(
-					(gateInfo) => Array.from(gateInfo.difficulties.entries()).findLast(
-						([, diffData]) => diffData.itemlevel <= character.itemLevel,
-					)?.[0] ?? "none"
-				)),
+				gates: Array.from(
+					actualRaid.gates
+						.values()
+						.map(
+							(gateInfo) =>
+								Array.from(gateInfo.difficulties.entries()).findLast(
+									([, diffData]) => diffData.itemlevel <= character.itemLevel
+								)?.[0] ?? "none"
+						)
+				),
+			});
+		}
+	}, [form, watchRaidId, character.itemLevel]);
+
+	useEffect(() => {
+		if (!isOpen) {
+			form.reset({
+				raidId: raidId || "",
+				gates: [],
+			});
+			return;
+		}
+
+		if (raidId === undefined) {
+			form.reset({
+				raidId: "",
+				gates: [],
 			});
 		} else {
 			form.reset({
-				raidId: watchRaidId,
-				gates: Array.from(actualRaid.gates.keys().map(
-					(gateId) => character.assignedRaids[watchRaidId]?.[gateId]?.difficulty || "none"
-				)),
+				raidId: raidId,
+				gates: Array.from(
+					raidData
+						.get(raidId)
+						?.gates.keys()
+						.map(
+							(gateId) =>
+								character.assignedRaids[raidId]?.[gateId]?.difficulty || "none"
+						) || ([] as ("none" | "Solo" | "Normal" | "Hard" | undefined)[])
+				),
 			});
 		}
-	}, [
-		actualRaid,
-		isOpen,
-		character.assignedRaids,
-		form,
-		watchRaidId,
-		character.itemLevel,
-		raidId
-	]);
+	}, [isOpen, raidId, form]);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
