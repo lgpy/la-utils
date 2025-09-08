@@ -30,7 +30,7 @@ export const createCharActions: StateActions<CharacterActions> = (set) => ({
 		const newc = zodNewChar.parse(char);
 		set((state) => {
 			state.characters.push({
-				name: newc.name,
+				name: newc.name.trim(),
 				class: newc.class,
 				itemLevel: newc.itemLevel,
 				isGoldEarner: newc.isGoldEarner,
@@ -48,6 +48,7 @@ export const createCharActions: StateActions<CharacterActions> = (set) => ({
 				(c) => c.id === charId,
 				"Character not found"
 			);
+			updatedChar.name = updatedChar.name.trim();
 			state.characters[charIndex] = {
 				...state.characters[charIndex], // Preserve other properties
 				...updatedChar,
