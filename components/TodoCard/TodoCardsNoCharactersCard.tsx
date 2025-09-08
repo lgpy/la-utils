@@ -28,6 +28,7 @@ export function TodoCardsNoCharactersCard() {
 						<CardDescription className="text-muted-foreground pb-3">
 							You can add characters using the{" "}
 							<Link
+								prefetch={false}
 								className="text-primary underline hover:text-primary/80"
 								href="/characters"
 							>

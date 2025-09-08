@@ -99,6 +99,7 @@ export function useLoaLogsDb(onResponse?: (data: DbEntry[]) => void) {
 						<>
 							{"Persistent file permission required. "}
 							<Link
+								prefetch={false}
 								href="/loa-logs-config"
 								className="underline text-primary"
 								target="_blank"

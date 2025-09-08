@@ -33,7 +33,7 @@ export default function NotificationDropdown() {
 			enabled: session.data !== null,
 			refetchOnWindowFocus: false,
 			refetchOnMount: false,
-		}),
+		})
 	);
 
 	const changelogEntries = useQuery(
@@ -45,7 +45,7 @@ export default function NotificationDropdown() {
 			refetchOnWindowFocus: false,
 			refetchOnMount: false,
 			refetchOnReconnect: false,
-		}),
+		})
 	);
 
 	const friendRequestNotifications = useMemo(() => {
@@ -58,14 +58,13 @@ export default function NotificationDropdown() {
 	}, [friendRequestQuery.data]);
 
 	const entries: NotificationEntry[] = useMemo(() => {
-
 		return [
-			...changelogEntries.data?.map((entry) => ({
+			...(changelogEntries.data?.map((entry) => ({
 				type: "changelog" as const,
 				id: `cl-${entry.id}`,
 				title: entry.title,
 				date: entry.date,
-			})) ?? [],
+			})) ?? []),
 			...friendRequestNotifications.map((request) => ({
 				type: "friendRequest" as const,
 				id: `fr-${request.id}`,
@@ -102,9 +101,7 @@ export default function NotificationDropdown() {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end" className="w-80">
 				<div className="flex items-center justify-between p-2">
-					<h4 className="font-semibold">
-						Notifications
-					</h4>
+					<h4 className="font-semibold">Notifications</h4>
 				</div>
 				<DropdownMenuSeparator />
 
@@ -125,7 +122,11 @@ export default function NotificationDropdown() {
 										asChild
 										className="cursor-pointer"
 									>
-										<Link href={href} className="block p-3 space-y-1">
+										<Link
+											href={href}
+											className="block p-3 space-y-1"
+											prefetch={false}
+										>
 											<div className="flex items-center gap-2 min-w-0">
 												<p className="text-sm font-medium truncate flex-1 min-w-0">
 													{entry.title}

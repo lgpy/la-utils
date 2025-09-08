@@ -35,6 +35,7 @@ export default function NavBar() {
 			<nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 h-full">
 				<Link
 					href="/"
+					prefetch={false}
 					className="flex flex-row gap-2 justify-center items-center h-full"
 				>
 					<Logo className="self-end" />
@@ -51,8 +52,9 @@ export default function NavBar() {
 					>
 						<Link
 							href={href}
+							prefetch={false}
 							className={cn(
-								"text-muted-foreground transition-colors hover:text-foreground",
+								"text-muted-foreground transition-colors hover:text-foreground"
 							)}
 						>
 							{label}
@@ -85,6 +87,7 @@ export default function NavBar() {
 						{links.map(({ id, label, href }) => (
 							<SheetClose asChild key={id}>
 								<Link
+									prefetch={false}
 									href={href}
 									className={cn("text-muted-foreground hover:text-foreground", {
 										"underline underline-offset-2": href === currentPath,
