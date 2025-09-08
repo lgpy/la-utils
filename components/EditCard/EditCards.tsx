@@ -37,45 +37,42 @@ export default function EditCards() {
 	});
 	const [isLocked, setIsLocked] = useState(true);
 
-	const openCharacterEditDialog = (char?: Character) => {
+	const openCharacterEditDialog = (char?: Character) =>
 		setDialogState((prev) => ({
 			...prev,
 			type: "char",
 			character: char ? char : undefined,
 		}));
-	};
 
-	const openRaidDialog = (char: Character, raidId?: string) => {
+	const openRaidDialog = (char: Character, raidId?: string) =>
 		setDialogState((prev) => ({
 			...prev,
 			type: "raid",
 			character: char,
 			raidId: raidId ? raidId : undefined,
 		}));
-	};
 
-	const openTaskDialog = (char: Character) => {
+	const openTaskDialog = (char: Character) =>
 		setDialogState((prev) => ({
 			...prev,
 			type: "taskManagement",
 			character: char,
 		}));
-	};
 
-	const openTaskEditingDialog = (character: Character, taskId?: string) => {
+	const openTaskEditingDialog = (character: Character, taskId?: string) =>
 		setDialogState((prev) => ({
 			...prev,
 			type: "taskEditing",
 			character,
 			taskId: taskId ? taskId : undefined,
 		}));
-	};
 
 	const parent = useRef(null) as RefObject<HTMLUListElement | null>;
 	const [chars, setChars] = useState(mainStore.characters);
 	const prevCharactersRef = useRef<Character[] | undefined>(undefined);
 
 	dragAndDrop({
+		disabled: isLocked,
 		parent: parent,
 		state: [chars, setChars],
 		dragHandle: ".mover",
@@ -90,6 +87,17 @@ export default function EditCards() {
 			newCharacters.splice(newindex, 0, mainStore.characters[oldIndex]);
 			prevCharactersRef.current = structuredClone(newCharacters);
 			mainStore.reorderChars(newCharacters.map((c) => c.id));
+			// remove z-index from all li elements in parent
+			if (parent.current) {
+				const lis = parent.current.querySelectorAll("li");
+				lis.forEach((li) => {
+					li.style.zIndex = "";
+					//also remove style if empty
+					if (li.style.length === 0) {
+						li.removeAttribute("style");
+					}
+				});
+			}
 		},
 	});
 
