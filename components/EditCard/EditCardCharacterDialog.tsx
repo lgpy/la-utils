@@ -57,8 +57,8 @@ export default function EditCardCharacterDialog({
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			class: undefined,
-			itemLevel: undefined,
+			class: classes[0],
+			itemLevel: 0,
 			name: "",
 			isGoldEarner: false,
 		},
@@ -72,11 +72,11 @@ export default function EditCardCharacterDialog({
 			else mainStore.createCharacter(values);
 			close();
 			toast.success(
-				`Character ${existingCharacter ? "updated" : "created"} successfully!`,
+				`Character ${existingCharacter ? "updated" : "created"} successfully!`
 			);
 		} catch {
 			toast.error(
-				`Failed to ${existingCharacter ? "update" : "create"} character!`,
+				`Failed to ${existingCharacter ? "update" : "create"} character!`
 			);
 		}
 	}
@@ -86,7 +86,7 @@ export default function EditCardCharacterDialog({
 		if (!window.confirm("Are you sure you want to delete this character?"))
 			return;
 		const index = mainStore.characters.findIndex(
-			(c) => c.id === existingCharacter.id,
+			(c) => c.id === existingCharacter.id
 		);
 		mainStore.deleteCharacter(existingCharacter.id);
 		close();
@@ -108,8 +108,8 @@ export default function EditCardCharacterDialog({
 		if (!isOpen) return;
 		form.reset({
 			name: existingCharacter?.name ?? "",
-			itemLevel: existingCharacter?.itemLevel,
-			class: existingCharacter?.class,
+			itemLevel: existingCharacter?.itemLevel ?? 0,
+			class: existingCharacter?.class ?? classes[0],
 			isGoldEarner: existingCharacter?.isGoldEarner ?? false,
 		});
 	}, [existingCharacter, isOpen, form]);

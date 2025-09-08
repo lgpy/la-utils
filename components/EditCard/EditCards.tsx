@@ -20,41 +20,55 @@ import EditCardTaskManagementDialog from "./EditCardTaskManagementDialog";
 import EditCardsNoCharactersCard from "./EditCardsNoCharactersCard";
 import EditCardTaskDialog from "./EditCardTaskDialog";
 
+type DialogState = {
+	type: "none" | "char" | "raid" | "taskManagement" | "taskEditing";
+	character: Character | undefined;
+	raidId: string | undefined;
+	taskId: string | undefined;
+};
+
 export default function EditCards() {
 	const mainStore = useMainStore();
-	const [isOpen, setIsOpen] = useState<
-		false | "raid" | "char" | "taskManagement" | "taskEditing"
-	>(false);
-	const [selectedCharacter, setSelectedCharacter] = useState<
-		Character | undefined
-	>(undefined);
-	const [selectedRaid, setSelectedRaid] = useState<string | undefined>(
-		undefined
-	);
-	const [selectedTask, setSelectedTask] = useState<string | undefined>(
-		undefined
-	);
+	const [dialogState, setDialogState] = useState<DialogState>({
+		type: "none",
+		character: undefined,
+		raidId: undefined,
+		taskId: undefined,
+	});
 	const [isLocked, setIsLocked] = useState(true);
 
-	const openCharacterEditDialog = (char: Character | undefined) => {
-		setSelectedCharacter(char);
-		setIsOpen("char");
+	const openCharacterEditDialog = (char?: Character) => {
+		setDialogState((prev) => ({
+			...prev,
+			type: "char",
+			character: char ? char : undefined,
+		}));
 	};
 
-	const openRaidDialog = (char: Character, raidId: string | undefined) => {
-		setSelectedCharacter(char);
-		setSelectedRaid(raidId);
-		setIsOpen("raid");
+	const openRaidDialog = (char: Character, raidId?: string) => {
+		setDialogState((prev) => ({
+			...prev,
+			type: "raid",
+			character: char,
+			raidId: raidId ? raidId : undefined,
+		}));
 	};
 
 	const openTaskDialog = (char: Character) => {
-		setSelectedCharacter(char);
-		setIsOpen("taskManagement");
+		setDialogState((prev) => ({
+			...prev,
+			type: "taskManagement",
+			character: char,
+		}));
 	};
 
-	const openTaskEditingDialog = (taskId: string | undefined) => {
-		setSelectedTask(taskId);
-		setIsOpen("taskEditing");
+	const openTaskEditingDialog = (character: Character, taskId?: string) => {
+		setDialogState((prev) => ({
+			...prev,
+			type: "taskEditing",
+			character,
+			taskId: taskId ? taskId : undefined,
+		}));
 	};
 
 	const parent = useRef(null) as RefObject<HTMLUListElement | null>;
@@ -113,46 +127,48 @@ export default function EditCards() {
 				))}
 				{chars.length === 0 && <EditCardsNoCharactersCard />}
 			</ul>
-			{isOpen === "char" && (
-				<EditCardCharacterDialog
-					isOpen={isOpen === "char"}
-					close={() => setIsOpen(false)}
-					existingCharacter={selectedCharacter}
-				/>
-			)}
-			{selectedCharacter && isOpen === "raid" && (
+			<EditCardCharacterDialog
+				isOpen={dialogState.type === "char"}
+				close={() => setDialogState((prev) => ({ ...prev, type: "none" }))}
+				existingCharacter={dialogState.character}
+			/>
+			{dialogState.character !== undefined && (
 				<EditCardRaidDialog
-					character={selectedCharacter}
-					isOpen={isOpen === "raid"}
-					raidId={selectedRaid}
-					close={() => setIsOpen(false)}
+					character={dialogState.character}
+					isOpen={dialogState.type === "raid"}
+					raidId={dialogState.raidId}
+					close={() => setDialogState((prev) => ({ ...prev, type: "none" }))}
 				/>
 			)}
-			{selectedCharacter && isOpen === "taskManagement" && (
+			{dialogState.character !== undefined && (
 				<EditCardTaskManagementDialog
-					character={selectedCharacter}
-					isOpen={isOpen === "taskManagement"}
-					close={() => setIsOpen((v) => (v === "taskManagement" ? false : v))}
+					character={dialogState.character}
+					isOpen={dialogState.type === "taskManagement"}
+					close={() => setDialogState((prev) => ({ ...prev, type: "none" }))}
 					openTaskDialog={(taskID: string | undefined) =>
-						openTaskEditingDialog(taskID)
+						dialogState.character &&
+						openTaskEditingDialog(dialogState.character, taskID)
 					}
 				/>
 			)}
-			{isOpen === "taskEditing" && (
-				<EditCardTaskDialog
-					taskId={selectedTask}
-					isOpen={isOpen === "taskEditing"}
-					close={() => {
-						const newCharData = mainStore.characters.find(
-							(c) => c.id === selectedCharacter?.id
-						);
-						if (newCharData) {
-							setSelectedCharacter(newCharData);
-						}
-						setIsOpen("taskManagement");
-					}}
-				/>
-			)}
+			<EditCardTaskDialog
+				taskId={dialogState.taskId}
+				isOpen={dialogState.type === "taskEditing"}
+				close={() => {
+					const newCharData = mainStore.characters.find(
+						(c) => c.id === dialogState.character?.id
+					);
+					if (newCharData) {
+						setDialogState((prev) => ({
+							...prev,
+							type: "taskManagement",
+							character: newCharData,
+						}));
+					} else {
+						setDialogState((prev) => ({ ...prev, type: "none" }));
+					}
+				}}
+			/>
 			<motion.div
 				className="fixed right-4 bottom-4"
 				initial={{ scale: 0.8, opacity: 0 }}

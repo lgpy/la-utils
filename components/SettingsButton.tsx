@@ -46,6 +46,8 @@ export default function SettingsButton() {
 	const session = authClient.useSession();
 
 	const [isRaidUploadManagerOpen, setRaidUploadManagerOpen] = useState(false);
+	const [shouldOpenRaidUploadManager, setShouldOpenRaidUploadManager] =
+		useState(false);
 
 	const ThemeIcon = (() => {
 		switch (theme) {
@@ -62,7 +64,14 @@ export default function SettingsButton() {
 
 	return (
 		<>
-			<DropdownMenu>
+			<DropdownMenu
+				onOpenChange={(open) => {
+					if (open && shouldOpenRaidUploadManager) {
+						setRaidUploadManagerOpen(true);
+						setShouldOpenRaidUploadManager(false);
+					}
+				}}
+			>
 				<DropdownMenuTrigger asChild>
 					<button
 						disabled={!settingsStore.hasHydrated}
@@ -199,7 +208,9 @@ export default function SettingsButton() {
 								<Users />
 								<span>Friends</span>
 							</DropdownMenuItem>
-							<DropdownMenuItem onClick={() => setRaidUploadManagerOpen(true)}>
+							<DropdownMenuItem
+								onClick={() => setShouldOpenRaidUploadManager(true)}
+							>
 								<ListTodoIcon />
 								<span>Manage shared raids</span>
 							</DropdownMenuItem>
