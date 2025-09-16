@@ -14,11 +14,7 @@
 		"type": "honing",
 		"name": "Superior Oreha Fusion Material",
 		"rarity": "epic",
-		"marketQty": 1,
-		"mari": {
-			"qty": 100,
-			"bc": 40
-		}
+		"marketQty": 1
 	},
 	"prime-oreha-fusion-material": {
 		"type": "honing",
@@ -27,7 +23,7 @@
 		"marketQty": 1,
 		"mari": {
 			"qty": 100,
-			"bc": 80
+			"bc": 50
 		}
 	},
 	"abidos-fusion-material": {
@@ -53,7 +49,7 @@
 		"marketQty": 1,
 		"mari": {
 			"qty": 100,
-			"bc": 150
+			"bc": 30
 		}
 	},
 	"honor-shard-pouch-s": {
@@ -72,11 +68,7 @@
 		"type": "honing",
 		"name": "Honor Shard Pouch (L)",
 		"rarity": "epic",
-		"marketQty": 1,
-		"mari": {
-			"qty": 20,
-			"bc": 154
-		}
+		"marketQty": 1
 	},
 	"destiny-shard-pouch-s": {
 		"type": "honing-t4",
@@ -97,7 +89,7 @@
 		"marketQty": 1,
 		"mari": {
 			"qty": 120,
-			"bc": 40
+			"bc": 24
 		}
 	},
 	"solar-blessing": {
@@ -107,18 +99,14 @@
 		"marketQty": 1,
 		"mari": {
 			"qty": 80,
-			"bc": 60
+			"bc": 56
 		}
 	},
 	"solar-protection": {
 		"type": "honing",
 		"name": "Solar Protection",
 		"rarity": "epic",
-		"marketQty": 1,
-		"mari": {
-			"qty": 100,
-			"bc": 90
-		}
+		"marketQty": 1
 	},
 	"glaciers-breath": {
 		"type": "honing-t4",
@@ -127,7 +115,7 @@
 		"marketQty": 1,
 		"mari": {
 			"qty": 20,
-			"bc": 96
+			"bc": 40
 		}
 	},
 	"lavas-breath": {
@@ -137,7 +125,7 @@
 		"marketQty": 1,
 		"mari": {
 			"qty": 10,
-			"bc": 150
+			"bc": 45
 		}
 	},
 	"fish": {
