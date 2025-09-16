@@ -1,19 +1,17 @@
 "use client";
 
 import { useHydration } from "@/lib/hooks/use-hydration";
-import { type CraftingStore, createCraftingStore } from "@/stores/crafting-store";
 import {
-	type ReactNode,
-	createContext,
-	useContext,
-	useRef,
-} from "react";
+	type CraftingStore,
+	createCraftingStore,
+} from "@/stores/crafting-store";
+import { type ReactNode, createContext, useContext, useRef } from "react";
 import { useStore } from "zustand";
 
 export type CraftingStoreApi = ReturnType<typeof createCraftingStore>;
 
 export const CraftingStoreContext = createContext<CraftingStoreApi | undefined>(
-	undefined,
+	undefined
 );
 
 export interface CraftingStoreProviderProps {
@@ -36,13 +34,13 @@ export const CraftingStoreProvider = ({
 };
 
 export const useCraftingStore = <T,>(
-	selector: (store: CraftingStore) => T,
+	selector: (store: CraftingStore) => T
 ): { store: T; hasHydrated: boolean } => {
 	const craftingStoreContext = useContext(CraftingStoreContext);
 
 	if (!craftingStoreContext) {
 		throw new Error(
-			"useCraftingStore must be used within CraftingStoreProvider",
+			"useCraftingStore must be used within CraftingStoreProvider"
 		);
 	}
 

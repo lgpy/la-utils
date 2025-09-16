@@ -22,6 +22,7 @@ function NavigationAnchor({
 }) {
 	return (
 		<Link
+			prefetch={false}
 			href={`#${""}`}
 			className={cn(
 				"text-lg text-muted-foreground hover:text-foreground",

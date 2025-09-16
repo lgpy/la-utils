@@ -1,11 +1,16 @@
 declare namespace Asyncify {
-  function handleAsync(f: () => Promise<any>);
+	function handleAsync(f: () => Promise<any>);
 }
 
 declare function UTF8ToString(ptr: number): string;
 declare function lengthBytesUTF8(s: string): number;
 declare function stringToUTF8(s: string, p: number, n: number);
-declare function ccall(name: string, returns: string, args: Array<any>, options?: object): any;
+declare function ccall(
+	name: string,
+	returns: string,
+	args: Array<any>,
+	options?: object
+): any;
 declare function getValue(ptr: number, type: string): number;
 declare function setValue(ptr: number, value: number, type: string): number;
 declare function mergeInto(library: object, methods: object): void;

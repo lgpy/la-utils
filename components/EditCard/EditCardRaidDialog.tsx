@@ -193,7 +193,7 @@ export default function EditCardRaidDialog({
 				),
 			});
 		}
-	}, [form, watchRaidId, character.itemLevel]);
+	}, [form, watchRaidId, character.itemLevel, raidId]);
 
 	useEffect(() => {
 		if (!isOpen) {
@@ -223,7 +223,7 @@ export default function EditCardRaidDialog({
 				),
 			});
 		}
-	}, [isOpen, raidId, form]);
+	}, [isOpen, raidId, form, character.assignedRaids]);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && close()}>

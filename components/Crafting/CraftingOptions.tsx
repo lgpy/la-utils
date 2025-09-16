@@ -39,7 +39,11 @@ export default function CraftingOptions({
 					className="text-center no-spinner"
 					value={options.costReduction}
 					onChange={(e) =>
-						craftingStore.store.changeKey(parent, "costReduction", Number(e.target.value))
+						craftingStore.store.changeKey(
+							parent,
+							"costReduction",
+							Number(e.target.value)
+						)
 					}
 					disabled={!craftingStore.hasHydrated}
 				/>
@@ -53,7 +57,7 @@ export default function CraftingOptions({
 						craftingStore.store.changeKey(
 							parent,
 							"greatSuccessChance",
-							Number(e.target.value),
+							Number(e.target.value)
 						)
 					}
 					disabled={!craftingStore.hasHydrated}

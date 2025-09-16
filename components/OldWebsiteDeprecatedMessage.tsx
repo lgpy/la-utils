@@ -71,13 +71,15 @@ export default function OldWebsiteDeprecatedMessage() {
 					<AlertDialogTitle>Notice</AlertDialogTitle>
 					<AlertDialogDescription className="flex flex-col gap-2">
 						<span className="text-ctp-red font-semibold">
-							This website (<b>la-utilsv2.vercel.app</b>) will be <b>permanently shut down on July 2nd</b>.
+							This website (<b>la-utilsv2.vercel.app</b>) will be{" "}
+							<b>permanently shut down on July 2nd</b>.
 						</span>
 						<span>
-							You have <b>{remaining}</b> to migrate your data. After this date, you will <b>lose access</b> to your data and all features here.
+							You have <b>{remaining}</b> to migrate your data. After this date,
+							you will <b>lose access</b> to your data and all features here.
 						</span>
 						<span>
-							Please switch to the main domain at {" "}
+							Please switch to the main domain at{" "}
 							<Link
 								href="https://la-utils.vercel.app/"
 								className="underline text-primary hover:primary/80"
@@ -88,7 +90,8 @@ export default function OldWebsiteDeprecatedMessage() {
 							to access all new features and updates.
 						</span>
 						<span>
-							To transfer your data, use the &quot;Import/Export Data&quot; option by clicking the cogwheel in the top right corner.
+							To transfer your data, use the &quot;Import/Export Data&quot;
+							option by clicking the cogwheel in the top right corner.
 						</span>
 						<span className="text-right">
 							Thank you for using Lost Ark Utils!

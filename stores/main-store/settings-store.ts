@@ -4,18 +4,18 @@ import { createStore } from "zustand";
 import { persist } from "zustand/middleware";
 
 const zodSettings = z.object({
-	server: z
-		.nativeEnum(ServerName)
-		.optional(),
+	server: z.nativeEnum(ServerName).optional(),
 	experiments: z.object({
 		ignoreThaemineIfNoG4: z.boolean(),
 		autoUpdateRaids: z.boolean(),
 	}),
 	upload: z.object({
-		ignoreRaids: z.object({
-			cId: z.string(),
-			rId: z.string(),
-		}).array()
+		ignoreRaids: z
+			.object({
+				cId: z.string(),
+				rId: z.string(),
+			})
+			.array(),
 	}),
 	friendRaids: z.object({
 		filterByRaids: z.boolean(),
@@ -37,11 +37,11 @@ export type SettingsActions = {
 	setServer: (server: ServerName) => void;
 	toggleExperiments: (
 		key: keyof SettingsState["experiments"],
-		value: boolean,
+		value: boolean
 	) => void;
 	toggleUiSettings: (
 		key: keyof SettingsState["uiSettings"],
-		value: boolean,
+		value: boolean
 	) => void;
 	setSeparateTasksPos: (pos: { x: number; y: number }) => void;
 	addIgnoreRaid: (cId: string, rId: string) => void;
@@ -109,10 +109,7 @@ export const createSettingsStore = () =>
 					set((state) => ({
 						upload: {
 							...state.upload,
-							ignoreRaids: [
-								...state.upload.ignoreRaids,
-								{ cId, rId },
-							],
+							ignoreRaids: [...state.upload.ignoreRaids, { cId, rId }],
 						},
 					}));
 				},
@@ -121,7 +118,7 @@ export const createSettingsStore = () =>
 						upload: {
 							...state.upload,
 							ignoreRaids: state.upload.ignoreRaids.filter(
-								(r) => r.cId !== cId || r.rId !== rId,
+								(r) => r.cId !== cId || r.rId !== rId
 							),
 						},
 					}));
@@ -180,8 +177,8 @@ export const createSettingsStore = () =>
 					}
 					return ps;
 				},
-			},
-		),
+			}
+		)
 	);
 
 export type SetType = (
@@ -189,5 +186,5 @@ export type SetType = (
 		| SettingsStore
 		| Partial<SettingsStore>
 		| ((state: SettingsStore) => SettingsStore | Partial<SettingsStore>),
-	replace?: boolean | undefined,
+	replace?: boolean | undefined
 ) => void;

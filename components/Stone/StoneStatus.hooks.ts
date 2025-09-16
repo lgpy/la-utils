@@ -28,7 +28,7 @@ export function useStoneOptimizer(stoneState: StoneState | undefined) {
 	const [isWorkerReady, setIsWorkerReady] = useState(false);
 	const [isCalculating, setIsCalculating] = useState(false);
 	const [optimalMove, setOptimalMove] = useState<OptimalMoveResult | null>(
-		null,
+		null
 	);
 	const [selectedGoal, setSelectedGoal] = useState<string>("");
 	const [lastCalculatedState, setLastCalculatedState] = useState<{
@@ -39,7 +39,7 @@ export function useStoneOptimizer(stoneState: StoneState | undefined) {
 	// Initialize the worker
 	useEffect(() => {
 		workerRef.current = new Worker(
-			new URL("../../workers/stoneOptimizer.ts", import.meta.url),
+			new URL("../../workers/stoneOptimizer.ts", import.meta.url)
 		);
 		console.log("Worker created");
 
@@ -97,7 +97,7 @@ export function useStoneOptimizer(stoneState: StoneState | undefined) {
 
 		console.log(
 			"Main: Selected goal changed, initializing optimizer in worker",
-			selectedGoal,
+			selectedGoal
 		);
 		workerRef.current.postMessage({
 			type: "init",

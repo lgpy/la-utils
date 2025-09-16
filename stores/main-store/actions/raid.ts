@@ -4,10 +4,12 @@ import { StateActions } from "../main-store";
 import { Difficulty } from "@/generated/prisma";
 import { getIndexOrThrow, getOrThrow } from "@/lib/array";
 import { raidData } from "@/lib/game-info";
-import { DbEntry, getGateInfoFromClearBossName } from "@/components/FABs/LoaLogUpdateRaidCompletion.utils";
+import {
+	DbEntry,
+	getGateInfoFromClearBossName,
+} from "@/components/FABs/LoaLogUpdateRaidCompletion.utils";
 import { zodChar } from "../types";
 import z from "zod";
-
 
 function assignCharIdsToLocalPlayers(
 	raidDataArr: DbEntry[],
@@ -42,12 +44,12 @@ export type RaidActions = {
 	charAddRaid: (
 		charId: string,
 		raidId: string,
-		gates: Record<string, Difficulty>,
+		gates: Record<string, Difficulty>
 	) => void;
 	charEditRaid: (
 		charId: string,
 		raidId: string,
-		gates: Record<string, Difficulty>,
+		gates: Record<string, Difficulty>
 	) => void;
 	charDelRaid: (charId: string, raidId: string) => void;
 
@@ -70,12 +72,16 @@ export type RaidActions = {
 	};
 };
 
-export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
+export const createRaidActions: StateActions<RaidActions> = (set) => ({
 	charAddRaid(charId, raidId, gates) {
 		set((state) => {
-			const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+			const char = getOrThrow(
+				state.characters,
+				(c) => c.id === charId,
+				"Character not found"
+			);
 
-			const newAssignedRaid: typeof char.assignedRaids[typeof raidId] = {};
+			const newAssignedRaid: (typeof char.assignedRaids)[typeof raidId] = {};
 
 			for (const [gateId, Diff] of Object.entries(gates)) {
 				newAssignedRaid[gateId] = {
@@ -89,9 +95,14 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 	},
 	charEditRaid(charId, raidId, gates) {
 		set((state) => {
-			const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+			const char = getOrThrow(
+				state.characters,
+				(c) => c.id === charId,
+				"Character not found"
+			);
 
-			const updatedAssignedRaid: typeof char.assignedRaids[typeof raidId] = {};
+			const updatedAssignedRaid: (typeof char.assignedRaids)[typeof raidId] =
+				{};
 
 			for (const [gateId, Diff] of Object.entries(gates)) {
 				updatedAssignedRaid[gateId] = {
@@ -105,20 +116,23 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 	},
 	charDelRaid(charId, raidId) {
 		set((state) => {
-			const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+			const char = getOrThrow(
+				state.characters,
+				(c) => c.id === charId,
+				"Character not found"
+			);
 
 			delete char.assignedRaids[raidId];
 		});
 	},
 
-	raidAction({
-		type,
-		charId,
-		raidId,
-		mode,
-	}) {
+	raidAction({ type, charId, raidId, mode }) {
 		set((state) => {
-			const char = getOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+			const char = getOrThrow(
+				state.characters,
+				(c) => c.id === charId,
+				"Character not found"
+			);
 
 			let newCompletedDate: number | undefined;
 			switch (type) {
@@ -138,12 +152,12 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 				}
 			} else if (mode === "last" && type === "uncomplete") {
 				const lastCompletedGate = Object.entries(
-					char.assignedRaids[raidId],
+					char.assignedRaids[raidId]
 				).findLast(([gId, g]) => {
 					if (g.completedDate === undefined) return false;
 					return isGateCompleted(
 						new Date(g.completedDate),
-						getGateResetDate(raidId, gId),
+						getGateResetDate(raidId, gId)
 					);
 				});
 				if (!lastCompletedGate) throw new Error("No gates to uncomplete");
@@ -151,12 +165,12 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 					newCompletedDate;
 			} else if (mode === "last" && type === "complete") {
 				const firstIncompleteGate = Object.entries(
-					char.assignedRaids[raidId],
+					char.assignedRaids[raidId]
 				).find(([gId, g]) => {
 					if (g.completedDate === undefined) return true;
 					return !isGateCompleted(
 						new Date(g.completedDate),
-						getGateResetDate(raidId, gId),
+						getGateResetDate(raidId, gId)
 					);
 				});
 				if (!firstIncompleteGate) throw new Error("No gates to complete");
@@ -167,10 +181,13 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 	},
 	toggleGate: (charId, raidId, gateId) => {
 		set((state) => {
-			const charIndex = getIndexOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+			const charIndex = getIndexOrThrow(
+				state.characters,
+				(c) => c.id === charId,
+				"Character not found"
+			);
 
-			const assignedRaid =
-				state.characters[charIndex].assignedRaids[raidId];
+			const assignedRaid = state.characters[charIndex].assignedRaids[raidId];
 			if (assignedRaid === undefined) throw new Error("Raid not found");
 
 			const gate = assignedRaid[gateId];
@@ -179,16 +196,16 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 			const isCompleted =
 				gate.completedDate !== undefined
 					? isGateCompleted(
-						new Date(gate.completedDate),
-						getGateResetDate(raidId, gateId),
-					)
+							new Date(gate.completedDate),
+							getGateResetDate(raidId, gateId)
+						)
 					: false;
 
 			const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateId);
 
 			if (isCompleted && !gateData.isBiWeekly) {
 				const gateIndex = Object.keys(assignedRaid).findIndex(
-					(g) => g === gateId,
+					(g) => g === gateId
 				);
 				Object.keys(assignedRaid).forEach((gateId, index) => {
 					if (index <= gateIndex) return;
@@ -198,9 +215,9 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 						const biweeklyGateIsCompleted =
 							assignedRaid[gateId].completedDate !== undefined
 								? isGateCompleted(
-									new Date(assignedRaid[gateId].completedDate),
-									getGateResetDate(raidId, gateId),
-								)
+										new Date(assignedRaid[gateId].completedDate),
+										getGateResetDate(raidId, gateId)
+									)
 								: false;
 						if (
 							biweeklyGateIsCompleted &&
@@ -216,32 +233,36 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 				const gateKeys = Object.keys(assignedRaid);
 				const gateIndex = gateKeys.findIndex((gate) => gate === gateId);
 				for (let i = 0; i <= gateIndex; i++) {
-					const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateKeys[i]);
+					const gateData = raidData
+						.getOrThrow(raidId)
+						.getGateOrThrow(gateKeys[i]);
 					if (gateData.isBiWeekly) {
 						const completedDate = assignedRaid[gateKeys[i]].completedDate;
 						const biweeklyGateIsCompleted =
 							completedDate !== undefined
 								? isGateCompleted(
-									new Date(completedDate),
-									getGateResetDate(raidId, gateId),
-								)
+										new Date(completedDate),
+										getGateResetDate(raidId, gateId)
+									)
 								: false;
 						if (biweeklyGateIsCompleted) {
 							continue;
 						}
 					}
-					assignedRaid[gateKeys[i]].completedDate =
-						new Date().getTime();
+					assignedRaid[gateKeys[i]].completedDate = new Date().getTime();
 				}
 			}
 		});
 	},
 	untoggleGate: (charId, raidId, gateId) => {
 		set((state) => {
-			const charIndex = getIndexOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+			const charIndex = getIndexOrThrow(
+				state.characters,
+				(c) => c.id === charId,
+				"Character not found"
+			);
 
-			const assignedRaid =
-				state.characters[charIndex].assignedRaids[raidId];
+			const assignedRaid = state.characters[charIndex].assignedRaids[raidId];
 			if (assignedRaid === undefined) throw new Error("Raid not found");
 			const gate = assignedRaid[gateId];
 			if (gate === undefined) throw new Error("Gate not found");
@@ -252,16 +273,13 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 				const gateKey = gateKeys[i];
 				const aGate = assignedRaid[gateKey];
 				const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateKey);
-				if (
-					gateData.isBiWeekly &&
-					gateKey !== gateId
-				) {
+				if (gateData.isBiWeekly && gateKey !== gateId) {
 					const lastreset = getLatestWeeklyReset();
 					if (aGate.completedDate !== undefined) {
 						const biWeeklyDate = new Date(aGate.completedDate);
 						const biweeklyGateIsCompleted = isGateCompleted(
 							biWeeklyDate,
-							getGateResetDate(raidId, gateKey),
+							getGateResetDate(raidId, gateKey)
 						);
 						if (biweeklyGateIsCompleted && biWeeklyDate < lastreset) {
 							continue;
@@ -274,10 +292,13 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 	},
 	toggleAllGates: (charId, raidId) => {
 		set((state) => {
-			const charIndex = getIndexOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+			const charIndex = getIndexOrThrow(
+				state.characters,
+				(c) => c.id === charId,
+				"Character not found"
+			);
 
-			const assignedRaid =
-				state.characters[charIndex].assignedRaids[raidId];
+			const assignedRaid = state.characters[charIndex].assignedRaids[raidId];
 			if (assignedRaid === undefined) throw new Error("Raid not found");
 
 			const gateKeys = Object.keys(assignedRaid);
@@ -291,7 +312,7 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 						const biWeeklyDate = new Date(aGate.completedDate);
 						const biweeklyGateIsCompleted = isGateCompleted(
 							biWeeklyDate,
-							getGateResetDate(raidId, gateKey),
+							getGateResetDate(raidId, gateKey)
 						);
 						if (biweeklyGateIsCompleted && biWeeklyDate < lastreset) {
 							continue;
@@ -304,9 +325,12 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 	},
 	untoggleAllGates: (charId, raidId) => {
 		set((state) => {
-			const charIndex = getIndexOrThrow(state.characters, (c) => c.id === charId, "Character not found");
-			const assignedRaid =
-				state.characters[charIndex].assignedRaids[raidId];
+			const charIndex = getIndexOrThrow(
+				state.characters,
+				(c) => c.id === charId,
+				"Character not found"
+			);
+			const assignedRaid = state.characters[charIndex].assignedRaids[raidId];
 			if (assignedRaid === undefined) throw new Error("Raid not found");
 
 			const gateKeys = Object.keys(assignedRaid);
@@ -320,7 +344,7 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 						const biWeeklyDate = new Date(aGate.completedDate);
 						const biweeklyGateIsCompleted = isGateCompleted(
 							biWeeklyDate,
-							getGateResetDate(raidId, gateKey),
+							getGateResetDate(raidId, gateKey)
 						);
 						if (biweeklyGateIsCompleted && biWeeklyDate < lastreset) {
 							continue;
@@ -333,10 +357,13 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 	},
 	toggleSingleGate: (charId, raidId, gateId) => {
 		set((state) => {
-			const charIndex = getIndexOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+			const charIndex = getIndexOrThrow(
+				state.characters,
+				(c) => c.id === charId,
+				"Character not found"
+			);
 
-			const assignedRaid =
-				state.characters[charIndex].assignedRaids[raidId];
+			const assignedRaid = state.characters[charIndex].assignedRaids[raidId];
 			if (assignedRaid === undefined) throw new Error("Raid not found");
 			const gate = assignedRaid[gateId];
 			if (gate === undefined) throw new Error("Gate not found");
@@ -346,10 +373,13 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 	},
 	untoggleSingleGate: (charId, raidId, gateId) => {
 		set((state) => {
-			const charIndex = getIndexOrThrow(state.characters, (c) => c.id === charId, "Character not found");
+			const charIndex = getIndexOrThrow(
+				state.characters,
+				(c) => c.id === charId,
+				"Character not found"
+			);
 
-			const assignedRaid =
-				state.characters[charIndex].assignedRaids[raidId];
+			const assignedRaid = state.characters[charIndex].assignedRaids[raidId];
 			if (assignedRaid === undefined) throw new Error("Raid not found");
 			const gate = assignedRaid[gateId];
 			if (gate === undefined) throw new Error("Gate not found");
@@ -362,18 +392,17 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 		const errors = new Set<string>();
 
 		set((state) => {
-
-			const {
-				localPlayerIdMapping,
-				localPlayersWithoutIds,
-			} = assignCharIdsToLocalPlayers(encounters, state.characters);
+			const { localPlayerIdMapping, localPlayersWithoutIds } =
+				assignCharIdsToLocalPlayers(encounters, state.characters);
 
 			const filteredEncounters = encounters.filter(
 				(raid) => !localPlayersWithoutIds.includes(raid.local_player)
 			);
 
 			if (localPlayersWithoutIds.length > 0) {
-				errors.add(`Characters not found for local players: ${localPlayersWithoutIds.join(", ")}`);
+				errors.add(
+					`Characters not found for local players: ${localPlayersWithoutIds.join(", ")}`
+				);
 			}
 
 			const updates: Array<{
@@ -408,8 +437,7 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 					continue;
 				}
 
-				const assignedRaid =
-					state.characters[charIndex].assignedRaids[raidId];
+				const assignedRaid = state.characters[charIndex].assignedRaids[raidId];
 				if (assignedRaid === undefined) {
 					const charName = state.characters[charIndex].name;
 					errors.add(`Raid ${raidId} not assigned for character ${charName}`);
@@ -419,16 +447,18 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 				const gate = assignedRaid[gateId];
 				if (gate === undefined) {
 					const charName = state.characters[charIndex].name;
-					errors.add(`Gate ${gateId} not found for raid ${raidId} on character ${charName}`);
+					errors.add(
+						`Gate ${gateId} not found for raid ${raidId} on character ${charName}`
+					);
 					continue;
 				}
 
 				const isCompleted =
 					gate.completedDate !== undefined
 						? isGateCompleted(
-							new Date(gate.completedDate),
-							getGateResetDate(raidId, gateId),
-						)
+								new Date(gate.completedDate),
+								getGateResetDate(raidId, gateId)
+							)
 						: false;
 
 				if (!isCompleted) {
@@ -440,7 +470,7 @@ export const createRaidActions: StateActions<RaidActions> = (set, get) => ({
 
 		return {
 			updatedSomething,
-			errors: Array.from(errors)
+			errors: Array.from(errors),
 		};
 	},
-})
+});

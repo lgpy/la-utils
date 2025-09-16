@@ -7,7 +7,7 @@
 	--radius: 0.35rem;
 
 	--primary: oklch(0.53 0.17 6.01);
-	--primary-foreground: oklch(1.0 0.0 0);
+	--primary-foreground: oklch(1 0 0);
 
 	--shadow-2xs: oklch(0.32 0.07 281.84 / 0.06);
 	--shadow-xs: oklch(0.32 0.07 281.84 / 0.06);
@@ -45,11 +45,11 @@
 	--ctp-mantle: oklch(0.93 0.01 264.52);
 	--ctp-crust: oklch(0.91 0.01 264.51);
 
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+	--chart-1: oklch(0.646 0.222 41.116);
+	--chart-2: oklch(0.6 0.118 184.704);
+	--chart-3: oklch(0.398 0.07 227.392);
+	--chart-4: oklch(0.828 0.189 84.429);
+	--chart-5: oklch(0.769 0.188 70.08);
 }
 
 .dark {
@@ -69,7 +69,7 @@
 	--ctp-flamingo: oklch(0.86 0.05 18.1);
 	--ctp-pink: oklch(0.86 0.08 336.15);
 	--ctp-mauve: oklch(0.78 0.12 304.33);
-	--ctp-red: oklch(0.74 0.13 11.0);
+	--ctp-red: oklch(0.74 0.13 11);
 	--ctp-maroon: oklch(0.77 0.1 14.22);
 	--ctp-peach: oklch(0.8 0.11 49.01);
 	--ctp-yellow: oklch(0.88 0.07 84.35);
@@ -85,18 +85,18 @@
 	--ctp-overlay2: oklch(0.69 0.04 274.19);
 	--ctp-overlay1: oklch(0.63 0.04 274.15);
 	--ctp-overlay0: oklch(0.56 0.04 276.19);
-	--ctp-surface2: oklch(0.49 0.04 276.0);
+	--ctp-surface2: oklch(0.49 0.04 276);
 	--ctp-surface1: oklch(0.43 0.04 276.8);
 	--ctp-surface0: oklch(0.35 0.04 275.58);
 	--ctp-base: oklch(0.28 0.03 277.16);
 	--ctp-mantle: oklch(0.25 0.03 278.17);
 	--ctp-crust: oklch(0.22 0.03 280.85);
 
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+	--chart-1: oklch(0.488 0.243 264.376);
+	--chart-2: oklch(0.696 0.17 162.48);
+	--chart-3: oklch(0.769 0.188 70.08);
+	--chart-4: oklch(0.627 0.265 303.9);
+	--chart-5: oklch(0.645 0.246 16.439);
 }
 
 @theme inline {
@@ -178,7 +178,9 @@
 @layer base {
 	:root {
 		font-family: Inter, sans-serif;
-		font-feature-settings: "liga" 1, "calt" 1;
+		font-feature-settings:
+			"liga" 1,
+			"calt" 1;
 		/* fix for Chrome */
 	}
 

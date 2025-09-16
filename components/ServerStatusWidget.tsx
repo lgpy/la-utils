@@ -47,17 +47,23 @@ export default function ServerStatusWidget() {
 	const serverQuery = useQuery(
 		orpc.serverStatus.getServerStatus.queryOptions({
 			input: selectedServerSetting.state!,
-			enabled: selectedServerSetting.state !== undefined && selectedServerSetting.hasHydrated,
+			enabled:
+				selectedServerSetting.state !== undefined &&
+				selectedServerSetting.hasHydrated,
 			staleTime(query) {
-				if (query.state.data?.status === ServerStatus.OFFLINE ||
-					query.state.data?.status === ServerStatus.MAINTENANCE) {
+				if (
+					query.state.data?.status === ServerStatus.OFFLINE ||
+					query.state.data?.status === ServerStatus.MAINTENANCE
+				) {
 					return POLLING_INTERVALS.FAST;
 				}
 				return POLLING_INTERVALS.SLOW;
 			},
 			refetchInterval(query) {
-				if (query.state.data?.status === ServerStatus.OFFLINE ||
-					query.state.data?.status === ServerStatus.MAINTENANCE) {
+				if (
+					query.state.data?.status === ServerStatus.OFFLINE ||
+					query.state.data?.status === ServerStatus.MAINTENANCE
+				) {
 					return POLLING_INTERVALS.FAST;
 				}
 				return POLLING_INTERVALS.SLOW;
@@ -66,7 +72,7 @@ export default function ServerStatusWidget() {
 	);
 
 	const [tooltipLastUpdated, setTooltipLastUpdated] = useState<string | null>(
-		null,
+		null
 	);
 
 	// Update relative time display
@@ -77,7 +83,7 @@ export default function ServerStatusWidget() {
 			setTooltipLastUpdated(
 				formatDistanceToNow(serverQuery.data.updatedAt, {
 					addSuffix: true,
-				}),
+				})
 			);
 		};
 
@@ -87,7 +93,8 @@ export default function ServerStatusWidget() {
 		return () => clearInterval(interval);
 	}, [serverQuery.data]);
 
-	if (!selectedServerSetting.hasHydrated || !selectedServerSetting.state) return null;
+	if (!selectedServerSetting.hasHydrated || !selectedServerSetting.state)
+		return null;
 
 	// Determine which icon to show based on server status
 	const icon = (() => {

@@ -21,6 +21,6 @@ export const useAutionStore = create<AuctionStore>()(
 			setMarketValue: (value) => set({ marketValue: value }),
 			setIsProfit: (value) => set({ isProfit: value }),
 		}),
-		{ name: "auction" },
-	),
+		{ name: "auction" }
+	)
 );

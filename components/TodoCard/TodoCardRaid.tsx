@@ -33,7 +33,7 @@ export default function TodoCardRaid({
 
 	const completedlen = Object.values(raid).reduce(
 		(acc, ag) => (ag.completed ? acc + 1 : acc),
-		0,
+		0
 	);
 
 	return (
@@ -42,7 +42,7 @@ export default function TodoCardRaid({
 				"flex flex-row justify-between items-center gap-2 p-3 transition",
 				{
 					"bg-primary/10": completedlen === Object.keys(raid).length,
-				},
+				}
 			)}
 		>
 			<div className="flex flex-col grow min-w-0 items-start gap-1.5">
@@ -62,7 +62,7 @@ export default function TodoCardRaid({
 								<p>
 									{Object.entries(raid)
 										.map(
-											([gid, g]) => `${gid} ${shortenDifficulty(g.difficulty)}`,
+											([gid, g]) => `${gid} ${shortenDifficulty(g.difficulty)}`
 										)
 										.join(", ")}
 								</p>

@@ -14,7 +14,7 @@ import { useStore } from "zustand";
 export type PriceStoreApi = ReturnType<typeof createPriceStore>;
 
 export const PriceStoreContext = createContext<PriceStoreApi | undefined>(
-	undefined,
+	undefined
 );
 
 export interface PriceStoreProviderProps {
@@ -35,7 +35,7 @@ export const PriceStoreProvider = ({ children }: PriceStoreProviderProps) => {
 };
 
 const _usePriceStore = <T,>(
-	selector: (store: PricesStore) => T,
+	selector: (store: PricesStore) => T
 ): { store: T; hasHydrated: boolean } => {
 	const priceStoreContext = useContext(PriceStoreContext);
 
@@ -44,7 +44,6 @@ const _usePriceStore = <T,>(
 	}
 
 	const hasHydrated = useHydration(priceStoreContext);
-
 
 	const store = useStore(priceStoreContext, selector);
 
@@ -58,10 +57,11 @@ export const usePriceStore = () => {
 	const priceStore = _usePriceStore((store) => store);
 
 	const single_bc_price = useMemo(() => {
-		if (!priceStore.hasHydrated)
-			return 0;
+		if (!priceStore.hasHydrated) return 0;
 
-		const bcItem = priceStore.store.prices.find((item) => item.id === "blue-crystal");
+		const bcItem = priceStore.store.prices.find(
+			(item) => item.id === "blue-crystal"
+		);
 		return (bcItem?.price || 0) / 95;
 	}, [priceStore]);
 
@@ -69,5 +69,5 @@ export const usePriceStore = () => {
 		store: priceStore.store,
 		single_bc_price,
 		hasHydrated: priceStore.hasHydrated,
-	}
-}
+	};
+};

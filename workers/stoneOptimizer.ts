@@ -31,7 +31,7 @@ addEventListener("message", (event: MessageEvent<MessageType>) => {
 		if (type === "init") {
 			optimizer = new StoneGameOptimizer(
 				payload.goalConditions,
-				payload.maxRedundantRedFails,
+				payload.maxRedundantRedFails
 			);
 			postMessage({ type: "initDone" });
 		} else if (type === "calculate") {

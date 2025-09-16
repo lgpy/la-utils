@@ -44,11 +44,9 @@ function AuctionAmt({
 }) {
 	const bidAmt = isProfit
 		? Math.floor(
-			0.92 *
-			Math.floor(
-				((0.95 * marketValue) / playerNumber) * (playerNumber - 1),
-			),
-		)
+				0.92 *
+					Math.floor(((0.95 * marketValue) / playerNumber) * (playerNumber - 1))
+			)
 		: Math.floor(((0.95 * marketValue) / playerNumber) * (playerNumber - 1));
 
 	//const profit = Math.floor(0.95 * marketValue - bidAmt);

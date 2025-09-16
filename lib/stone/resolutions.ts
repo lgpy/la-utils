@@ -7,7 +7,7 @@ function generateLineCellPositions(
 	baseX: number,
 	y: number,
 	count: number,
-	spacing: number,
+	spacing: number
 ): PixelCoordinate[] {
 	return Array.from({ length: count }, (_, i) => ({
 		x: baseX + Math.round(i * spacing),
@@ -57,7 +57,7 @@ class ResolutionConfigs {
 
 	get(resolution: Resolution): ResolutionConfig | undefined {
 		return this.resolutionConfigs.get(
-			`${resolution.width}x${resolution.height}`,
+			`${resolution.width}x${resolution.height}`
 		);
 	}
 }
@@ -84,19 +84,19 @@ class ResolutionConfig implements ResolutionConfigData {
 			this.line1.baseX,
 			this.line1.y,
 			CELL_COUNT_PER_LINE,
-			this.spacing,
+			this.spacing
 		);
 		const line2CellPositions = generateLineCellPositions(
 			this.line2.baseX,
 			this.line2.y,
 			CELL_COUNT_PER_LINE,
-			this.spacing,
+			this.spacing
 		);
 		const line3CellPositions = generateLineCellPositions(
 			this.line3.baseX,
 			this.line3.y,
 			CELL_COUNT_PER_LINE,
-			this.spacing,
+			this.spacing
 		);
 
 		return [
@@ -127,8 +127,8 @@ const resolutionConfigs = new ResolutionConfigs(
 		Object.entries(parsedConfig).map(([key, value]) => [
 			key,
 			new ResolutionConfig(value),
-		]),
-	),
+		])
+	)
 );
 
 export { resolutionConfigs, type ResolutionConfig };

@@ -132,7 +132,7 @@ export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
 			setResult(data);
 		} catch (err) {
 			setError(
-				err instanceof Error ? err.message : "An unknown error occurred",
+				err instanceof Error ? err.message : "An unknown error occurred"
 			);
 		} finally {
 			setIsProcessing(false);

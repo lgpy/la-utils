@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 	description: "",
 };
 
+export const revalidate = 60;
+
 export default async function ChangelogPage() {
 	const changelogs = await client.changelog.paginatedChangelog({
 		cursor: 0,

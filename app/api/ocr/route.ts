@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 			const errorData = await response.text();
 			return NextResponse.json(
 				{ error: `OCR API error: ${errorData}` },
-				{ status: response.status },
+				{ status: response.status }
 			);
 		}
 
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
 		console.error("OCR processing error:", error);
 		return NextResponse.json(
 			{ error: "Failed to process OCR request" },
-			{ status: 500 },
+			{ status: 500 }
 		);
 	}
 }

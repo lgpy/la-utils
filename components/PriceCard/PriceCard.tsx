@@ -39,8 +39,7 @@ export const MariShopSection = ({
 	const priceStore = usePriceStore();
 
 	const marketPrice = useMemo(() => {
-		if (!priceStore.hasHydrated)
-			return 0;
+		if (!priceStore.hasHydrated) return 0;
 		const item = priceStore.store.prices.find((i) => i.id === itemId);
 		return item?.price || 0;
 	}, [priceStore, itemId]);
@@ -55,10 +54,7 @@ export const MariShopSection = ({
 		<div className="flex flex-col items-end justify-between">
 			<Label>
 				Mari Value
-				<span className="text-muted-foreground text-xs">
-					{" "}
-					(x{mari.qty})
-				</span>
+				<span className="text-muted-foreground text-xs"> (x{mari.qty})</span>
 			</Label>
 			{priceStore.hasHydrated && (
 				<div className="flex flex-col items-end">
@@ -66,7 +62,7 @@ export const MariShopSection = ({
 					<PercentChange value={diff} />
 				</div>
 			)}
-			< div className="flex items-center gap-1 text-muted-foreground">
+			<div className="flex items-center gap-1 text-muted-foreground">
 				<p className="text-xs">{mari.bc}</p>
 				<Image
 					src="/assets/blue-crystal.webp"
@@ -76,12 +72,12 @@ export const MariShopSection = ({
 					className="size-[16px]"
 				/>
 			</div>
-		</div >
+		</div>
 	);
 };
 
 interface ExchangeSectionProps {
-	item: Item
+	item: Item;
 	itemId: string;
 	exchange: NonNullable<Item["exchange"]>;
 }
@@ -90,13 +86,12 @@ interface ExchangeSectionProps {
 export const ExchangeSection = ({
 	item,
 	itemId,
-	exchange
+	exchange,
 }: ExchangeSectionProps) => {
 	const priceStore = usePriceStore();
 
 	const marketPrice = useMemo(() => {
-		if (!priceStore.hasHydrated)
-			return 0;
+		if (!priceStore.hasHydrated) return 0;
 		const item = priceStore.store.prices.find((i) => i.id === itemId);
 		return item?.price || 0;
 	}, [priceStore, itemId]);
@@ -125,12 +120,21 @@ export const ExchangeSection = ({
 				? { item: exchangeItem, value, rate: curr.rate, diff, id: curr.id }
 				: best;
 		},
-		{ item: undefined, value: Number.POSITIVE_INFINITY, rate: 0, diff: 0, id: undefined },
+		{
+			item: undefined,
+			value: Number.POSITIVE_INFINITY,
+			rate: 0,
+			diff: 0,
+			id: undefined,
+		}
 	);
 
-	if (!priceStore.hasHydrated) return <div className="flex items-end h-full">
-		<Loader2Icon className="animate-spin" />
-	</div>;
+	if (!priceStore.hasHydrated)
+		return (
+			<div className="flex items-end h-full">
+				<Loader2Icon className="animate-spin" />
+			</div>
+		);
 
 	if (!bestExchange.item) return null;
 
@@ -148,7 +152,7 @@ export const ExchangeSection = ({
 			<p
 				className={cn(
 					"text-xs text-muted-foreground mt-1.5",
-					rarityClasses.text,
+					rarityClasses.text
 				)}
 			>
 				{bestExchange.item.name}
@@ -173,10 +177,7 @@ export const ExchangeSection = ({
 export function PriceCardPriceInput({ itemId }: { itemId: string }) {
 	const priceStore = usePriceStore();
 
-	const {
-		marketPrice,
-		timeSinceUpdate,
-	} = useMemo(() => {
+	const { marketPrice, timeSinceUpdate } = useMemo(() => {
 		if (!priceStore.hasHydrated) {
 			return { marketPrice: 0, timeSinceUpdate: "Never" };
 		}
@@ -187,25 +188,27 @@ export function PriceCardPriceInput({ itemId }: { itemId: string }) {
 			: "Never";
 		return {
 			marketPrice: item?.price || 0,
-			timeSinceUpdate
-		}
+			timeSinceUpdate,
+		};
 	}, [priceStore, itemId]);
 
-	return (<>
-		<Input
-			id={`p-${itemId}`}
-			type="number"
-			disabled={!priceStore.hasHydrated}
-			value={priceStore.hasHydrated ? marketPrice : ""}
-			onChange={(event) => {
-				const num = Number(event.target.value);
-				if (!Number.isNaN(num)) {
-					priceStore.store.changePrice(itemId, num);
-				}
-			}}
-		/>
-		<p className="text-xs text-muted-foreground">
-			Updated: {priceStore.hasHydrated ? timeSinceUpdate : ""}
-		</p>
-	</>)
+	return (
+		<>
+			<Input
+				id={`p-${itemId}`}
+				type="number"
+				disabled={!priceStore.hasHydrated}
+				value={priceStore.hasHydrated ? marketPrice : ""}
+				onChange={(event) => {
+					const num = Number(event.target.value);
+					if (!Number.isNaN(num)) {
+						priceStore.store.changePrice(itemId, num);
+					}
+				}}
+			/>
+			<p className="text-xs text-muted-foreground">
+				Updated: {priceStore.hasHydrated ? timeSinceUpdate : ""}
+			</p>
+		</>
+	);
 }

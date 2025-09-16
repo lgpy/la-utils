@@ -4,118 +4,117 @@ import { dbProviderMiddleware } from "./middleware/db";
 import { requiredAuthMiddleware } from "./middleware/auth";
 import { paginatedUserSchema } from "./users.schema";
 import {
-  startOfWeek,
-  endOfWeek,
-  subWeeks,
-  format,
-  isWithinInterval,
+	startOfWeek,
+	endOfWeek,
+	subWeeks,
+	format,
+	isWithinInterval,
 } from "date-fns";
 
 export const listUsersInfinite = os
-  .use(dbProviderMiddleware)
-  .use(requiredAuthMiddleware)
-  .use(async ({ context, next }) => {
-    const permission = await hasPermission({ user: ["list"] }, context.session);
-    if (!permission) throw new ORPCError("Unauthorized");
-    return next();
-  })
-  .input(paginatedUserSchema)
-  .handler(async ({ context: { db }, input }) => {
-    const { limit, cursor } = input;
+	.use(dbProviderMiddleware)
+	.use(requiredAuthMiddleware)
+	.use(async ({ context, next }) => {
+		const permission = await hasPermission({ user: ["list"] }, context.session);
+		if (!permission) throw new ORPCError("Unauthorized");
+		return next();
+	})
+	.input(paginatedUserSchema)
+	.handler(async ({ context: { db }, input }) => {
+		const { limit, cursor } = input;
 
-    const users = await db.user.findMany({
-      take: limit,
-      skip: cursor,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+		const users = await db.user.findMany({
+			take: limit,
+			skip: cursor,
+			orderBy: {
+				createdAt: "desc",
+			},
+		});
 
-    return {
-      entries: users,
-      nextCursor: users.length < limit ? undefined : cursor + limit,
-    };
-  });
+		return {
+			entries: users,
+			nextCursor: users.length < limit ? undefined : cursor + limit,
+		};
+	});
 
 export const count = os
-  .use(dbProviderMiddleware)
-  .use(requiredAuthMiddleware)
-  .use(async ({ context, next }) => {
-    const permission = await hasPermission({ user: ["list"] }, context.session);
-    if (!permission) throw new ORPCError("Unauthorized");
-    return next();
-  })
-  .handler(async ({ context: { db } }) => await db.user.count());
-
+	.use(dbProviderMiddleware)
+	.use(requiredAuthMiddleware)
+	.use(async ({ context, next }) => {
+		const permission = await hasPermission({ user: ["list"] }, context.session);
+		if (!permission) throw new ORPCError("Unauthorized");
+		return next();
+	})
+	.handler(async ({ context: { db } }) => await db.user.count());
 
 export const graphData = os
-  .use(dbProviderMiddleware)
-  .use(requiredAuthMiddleware)
-  .use(async ({ context, next }) => {
-    const permission = await hasPermission({ user: ["list"] }, context.session);
-    if (!permission) throw new ORPCError("Unauthorized");
-    return next();
-  })
-  .handler(async ({ context: { db } }) => {
-    const users = await db.user.findMany({
-      select: {
-        createdAt: true,
-      },
-    });
+	.use(dbProviderMiddleware)
+	.use(requiredAuthMiddleware)
+	.use(async ({ context, next }) => {
+		const permission = await hasPermission({ user: ["list"] }, context.session);
+		if (!permission) throw new ORPCError("Unauthorized");
+		return next();
+	})
+	.handler(async ({ context: { db } }) => {
+		const users = await db.user.findMany({
+			select: {
+				createdAt: true,
+			},
+		});
 
-    const now = new Date();
+		const now = new Date();
 
-    // Weekly growth for the last 7 weeks
-    const weeklyGrowth = [];
-    for (let i = 6; i >= 0; i--) {
-      const weekDate = subWeeks(now, i);
-      const weekStart = startOfWeek(weekDate, { weekStartsOn: 3 }); // Wednesday
-      const weekEnd = endOfWeek(weekDate, { weekStartsOn: 3 }); // Tuesday
+		// Weekly growth for the last 7 weeks
+		const weeklyGrowth = [];
+		for (let i = 6; i >= 0; i--) {
+			const weekDate = subWeeks(now, i);
+			const weekStart = startOfWeek(weekDate, { weekStartsOn: 3 }); // Wednesday
+			const weekEnd = endOfWeek(weekDate, { weekStartsOn: 3 }); // Tuesday
 
-      const weekUsers = users.filter(user => {
-        const createdAt = new Date(user.createdAt);
-        return isWithinInterval(createdAt, { start: weekStart, end: weekEnd });
-      });
+			const weekUsers = users.filter((user) => {
+				const createdAt = new Date(user.createdAt);
+				return isWithinInterval(createdAt, { start: weekStart, end: weekEnd });
+			});
 
-      weeklyGrowth.push({
-        week: format(weekStart, 'd/M'),
-        users: weekUsers.length,
-        startDate: weekStart,
-        endDate: weekEnd
-      });
-    }
+			weeklyGrowth.push({
+				week: format(weekStart, "d/M"),
+				users: weekUsers.length,
+				startDate: weekStart,
+				endDate: weekEnd,
+			});
+		}
 
-    // Monthly growth - group all users by month
-    const monthlyGrowthMap = new Map<string, number>();
+		// Monthly growth - group all users by month
+		const monthlyGrowthMap = new Map<string, number>();
 
-    users.forEach(user => {
-      const createdAt = new Date(user.createdAt);
-      const monthKey = format(createdAt, 'yyyy-MM');
+		users.forEach((user) => {
+			const createdAt = new Date(user.createdAt);
+			const monthKey = format(createdAt, "yyyy-MM");
 
-      monthlyGrowthMap.set(monthKey, (monthlyGrowthMap.get(monthKey) || 0) + 1);
-    });
+			monthlyGrowthMap.set(monthKey, (monthlyGrowthMap.get(monthKey) || 0) + 1);
+		});
 
-    // Convert to array and sort chronologically
-    const monthlyGrowth = Array.from(monthlyGrowthMap.entries())
-      .map(([month, users]) => ({ month, users }))
-      .sort((a, b) => a.month.localeCompare(b.month));
+		// Convert to array and sort chronologically
+		const monthlyGrowth = Array.from(monthlyGrowthMap.entries())
+			.map(([month, users]) => ({ month, users }))
+			.sort((a, b) => a.month.localeCompare(b.month));
 
-    const activeUsersCount = await db.user.count({
-      where: {
-        sessions: {
-          some: {
-            expiresAt: {
-              gt: new Date(),
-            },
-          },
-        },
-      },
-    })
+		const activeUsersCount = await db.user.count({
+			where: {
+				sessions: {
+					some: {
+						expiresAt: {
+							gt: new Date(),
+						},
+					},
+				},
+			},
+		});
 
-    return {
-      weeklyGrowth,
-      monthlyGrowth,
-      totalUsers: users.length,
-      activeUsers: activeUsersCount,
-    };
-  });
+		return {
+			weeklyGrowth,
+			monthlyGrowth,
+			totalUsers: users.length,
+			activeUsers: activeUsersCount,
+		};
+	});

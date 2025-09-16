@@ -1,39 +1,53 @@
-import { deleteChangelogEntry, getChangelogEntry, last5Changelog, paginatedChangelog, upsertChangelogEntry } from "./changelog";
+import {
+	deleteChangelogEntry,
+	getChangelogEntry,
+	last5Changelog,
+	paginatedChangelog,
+	upsertChangelogEntry,
+} from "./changelog";
 import { getFriendsRaids } from "./friendRaids";
-import { getFriends, getFriendRequests, respondToFriendRequest, revokeRequest, sendFriendRequest, revokeFriendship, getRecommendedFriends } from "./friends";
+import {
+	getFriends,
+	getFriendRequests,
+	respondToFriendRequest,
+	revokeRequest,
+	sendFriendRequest,
+	revokeFriendship,
+	getRecommendedFriends,
+} from "./friends";
 import { getMarketPrices } from "./market";
 import { getServerStatus } from "./serverStatus";
 import { listUsersInfinite, count, graphData } from "./users";
 
 export const router = {
-  friends: {
-    getFriends,
-    getFriendRequests,
-    respondToFriendRequest,
-    revokeRequest,
-    revokeFriendship,
-    sendFriendRequest,
-    getRecommendedFriends,
-  },
-  friendRaids: {
-    getFriendsRaids
-  },
-  serverStatus: {
-    getServerStatus
-  },
-  changelog: {
-    paginatedChangelog,
-    last5Changelog,
-    getChangelogEntry,
-    upsertChangelogEntry,
-    deleteChangelogEntry
-  },
-  market: {
-    getMarketPrices
-  },
-  users: {
-    listUsersInfinite,
-    count,
-    graphData
-  }
-}
+	friends: {
+		getFriends,
+		getFriendRequests,
+		respondToFriendRequest,
+		revokeRequest,
+		revokeFriendship,
+		sendFriendRequest,
+		getRecommendedFriends,
+	},
+	friendRaids: {
+		getFriendsRaids,
+	},
+	serverStatus: {
+		getServerStatus,
+	},
+	changelog: {
+		paginatedChangelog,
+		last5Changelog,
+		getChangelogEntry,
+		upsertChangelogEntry,
+		deleteChangelogEntry,
+	},
+	market: {
+		getMarketPrices,
+	},
+	users: {
+		listUsersInfinite,
+		count,
+		graphData,
+	},
+};

@@ -32,7 +32,7 @@ if (typeof window !== "undefined" && typeof MediaStream !== "undefined") {
 				.grabFrame()
 				.then((frame) => resolve(frame))
 				.catch((error) =>
-					reject(new Error(`Failed to capture frame: ${error}`)),
+					reject(new Error(`Failed to capture frame: ${error}`))
 				);
 		});
 	};
@@ -72,7 +72,7 @@ export function useTesseractWorker() {
 					.terminate()
 					.then(() => console.log("Tesseract worker terminated successfully."))
 					.catch((err) =>
-						console.error("Error terminating Tesseract worker:", err),
+						console.error("Error terminating Tesseract worker:", err)
 					);
 				workerRef.current = null;
 				setIsReady(false);
@@ -85,7 +85,7 @@ export function useTesseractWorker() {
 
 export function useScreenShare(
 	delay: number,
-	onFrameCaptured: (frame: ImageBitmap) => void,
+	onFrameCaptured: (frame: ImageBitmap) => void
 ) {
 	const [isSharing, setIsSharing] = useState(false);
 	const [stream, setStream] = useState<MediaStream | null>(null);
@@ -150,7 +150,7 @@ export function useScreenShare(
 				}
 			} else {
 				console.log(
-					"Stream became inactive during automation interval. Stopping.",
+					"Stream became inactive during automation interval. Stopping."
 				);
 				setIsSharing(false);
 			}
@@ -174,13 +174,13 @@ export function useStoneStatus(parsedState: {
 }) {
 	const [stoneInfo, setStoneInfo] = useState<StoneState>();
 	const [stoneHelper, setStoneHelper] = useState<StoneHelper>(
-		new StoneHelper({ width: 1920, height: 1080 }),
+		new StoneHelper({ width: 1920, height: 1080 })
 	);
 
 	useEffect(() => {
 		if (parsedState.cellsInfo.length !== stoneHelper.getCells().length) {
 			console.debug(
-				`Parsed cells length (${parsedState.cellsInfo.length}) does not match expected length (${stoneHelper.getCells().length}).`,
+				`Parsed cells length (${parsedState.cellsInfo.length}) does not match expected length (${stoneHelper.getCells().length}).`
 			);
 			return;
 		}
@@ -218,7 +218,7 @@ export function useStoneStatus(parsedState: {
 				if (predict !== null) {
 					finalSuccessRate = predict;
 					console.debug(
-						`Predicting percentage based on current state: ${finalSuccessRate}%`,
+						`Predicting percentage based on current state: ${finalSuccessRate}%`
 					);
 				}
 			}
@@ -237,7 +237,7 @@ export function useStoneStatus(parsedState: {
 
 			if (!newState.isStateValid()) {
 				console.debug(
-					"New stone state is invalid, returning current state without update.",
+					"New stone state is invalid, returning current state without update."
 				);
 				return currentStoneInfo;
 			}
@@ -251,7 +251,7 @@ export function useStoneStatus(parsedState: {
 
 			if (isStoneStateUnchanged) {
 				console.debug(
-					"Stone state has not changed, returning current state without update.",
+					"Stone state has not changed, returning current state without update."
 				);
 				return currentStoneInfo;
 			}

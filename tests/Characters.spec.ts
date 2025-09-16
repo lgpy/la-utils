@@ -19,7 +19,7 @@ const setCharacterState = async (
 					})),
 				},
 				version: 3,
-			}),
+			})
 		);
 	}, characters);
 	await page.reload();
@@ -33,7 +33,7 @@ test("navigate to Characters", async ({ page }) => {
 
 test("no characters message", async ({ page }) => {
 	await page.goto("/characters");
-	await expect(page.getByText('You have no characters')).toBeVisible();
+	await expect(page.getByText("You have no characters")).toBeVisible();
 });
 
 test("create character", async ({ page }) => {
@@ -46,13 +46,13 @@ test("create character", async ({ page }) => {
 	await page.getByTestId("confirm-button").click();
 	const characterCard = await page.getByTestId("character-0");
 	await expect(characterCard.getByTestId("character-class")).toContainText(
-		"Berserker",
+		"Berserker"
 	);
 	await expect(characterCard.getByTestId("character-name")).toContainText(
-		"Test Character",
+		"Test Character"
 	);
 	await expect(characterCard.getByTestId("character-item-level")).toContainText(
-		"1600",
+		"1600"
 	);
 	await expect(page.getByText("You have no characters")).not.toBeVisible();
 });
@@ -73,13 +73,13 @@ test("edit character", async ({ page }) => {
 	await page.getByTestId("confirm-button").click();
 	characterCard = await page.getByTestId("character-0");
 	await expect(characterCard.getByTestId("character-class")).toContainText(
-		"Breaker",
+		"Breaker"
 	);
 	await expect(characterCard.getByTestId("character-name")).toContainText(
-		"testtest",
+		"testtest"
 	);
 	await expect(characterCard.getByTestId("character-item-level")).toContainText(
-		"1640",
+		"1640"
 	);
 });
 
@@ -101,10 +101,10 @@ test("add raid", async ({ page }) => {
 	await page.reload();
 	characterCard = await page.getByTestId("character-0");
 	await expect(
-		characterCard.getByTestId("character-assigned-raid-0"),
+		characterCard.getByTestId("character-assigned-raid-0")
 	).toContainText("Brelshaza");
 	await expect(
-		characterCard.getByTestId("character-assigned-raid-0"),
+		characterCard.getByTestId("character-assigned-raid-0")
 	).toContainText("NHN");
 });
 
@@ -135,10 +135,10 @@ test("edit raid", async ({ page }) => {
 	await page.reload();
 	characterCard = await page.getByTestId("character-0");
 	await expect(
-		characterCard.getByTestId("character-assigned-raid-0"),
+		characterCard.getByTestId("character-assigned-raid-0")
 	).toContainText("HHHN");
 	await expect(
-		characterCard.getByTestId("character-assigned-raid-0"),
+		characterCard.getByTestId("character-assigned-raid-0")
 	).toContainText("Brelshaza");
 });
 
@@ -165,7 +165,7 @@ test("delete raid", async ({ page }) => {
 	await page.reload();
 	characterCard = await page.getByTestId("character-0");
 	await expect(
-		characterCard.getByTestId("character-assigned-raid-0"),
+		characterCard.getByTestId("character-assigned-raid-0")
 	).toHaveCount(0);
 });
 
@@ -179,7 +179,7 @@ test("delete character and undo", async ({ page }) => {
 	let characterCard = await page.getByTestId("character-0");
 	await characterCard.getByTestId("edit-character").click();
 	page.once("dialog", (dialog) => {
-		dialog.accept().catch(() => { });
+		dialog.accept().catch(() => {});
 	});
 	await page.getByTestId("char-delete-button").click();
 	characterCard = await page.getByTestId("character-0");
@@ -188,12 +188,12 @@ test("delete character and undo", async ({ page }) => {
 	await page.reload();
 	characterCard = await page.getByTestId("character-0");
 	await expect(characterCard.getByTestId("character-class")).toContainText(
-		"Berserker",
+		"Berserker"
 	);
 	await expect(characterCard.getByTestId("character-name")).toContainText(
-		"Test Character",
+		"Test Character"
 	);
 	await expect(characterCard.getByTestId("character-item-level")).toContainText(
-		"1600",
+		"1600"
 	);
 });
