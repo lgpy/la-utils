@@ -79,7 +79,9 @@
 		"name": "Vykas",
 		"gates": {
 			"G1": {
-				"bossName": ["Covetous Devourer Vykas"],
+				"bossName": [
+					"Covetous Devourer Vykas"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1430,
@@ -111,7 +113,9 @@
 				}
 			},
 			"G2": {
-				"bossName": ["Covetous Legion Commander Vykas"],
+				"bossName": [
+					"Covetous Legion Commander Vykas"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1430,
@@ -148,7 +152,9 @@
 		"name": "Kakul-Saydon",
 		"gates": {
 			"G1": {
-				"bossName": ["Saydon"],
+				"bossName": [
+					"Saydon"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1475,
@@ -171,7 +177,9 @@
 				}
 			},
 			"G2": {
-				"bossName": ["Kakul"],
+				"bossName": [
+					"Kakul"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1475,
@@ -194,7 +202,10 @@
 				}
 			},
 			"G3": {
-				"bossName": ["Kakul-Saydon", "Encore-Desiring Kakul-Saydon"],
+				"bossName": [
+					"Kakul-Saydon",
+					"Encore-Desiring Kakul-Saydon"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1475,
@@ -222,7 +233,9 @@
 		"name": "Brelshaza",
 		"gates": {
 			"G1": {
-				"bossName": ["Gehenna Helkasirs"],
+				"bossName": [
+					"Gehenna Helkasirs"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1490,
@@ -254,7 +267,11 @@
 				}
 			},
 			"G2": {
-				"bossName": ["Prokel", "Prokel's Spiritual Echo", "Ashtarot"],
+				"bossName": [
+					"Prokel",
+					"Prokel's Spiritual Echo",
+					"Ashtarot"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1490,
@@ -286,7 +303,9 @@
 				}
 			},
 			"G3": {
-				"bossName": ["Primordial Nightmare"],
+				"bossName": [
+					"Primordial Nightmare"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1500,
@@ -318,7 +337,9 @@
 				}
 			},
 			"G4": {
-				"bossName": ["Phantom Legion Commander Brelshaza"],
+				"bossName": [
+					"Phantom Legion Commander Brelshaza"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1520,
@@ -356,7 +377,9 @@
 		"name": "Kayangel",
 		"gates": {
 			"G1": {
-				"bossName": ["Tienis"],
+				"bossName": [
+					"Tienis"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1540,
@@ -388,7 +411,9 @@
 				}
 			},
 			"G2": {
-				"bossName": ["Prunya"],
+				"bossName": [
+					"Prunya"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1540,
@@ -420,7 +445,9 @@
 				}
 			},
 			"G3": {
-				"bossName": ["Lauriel"],
+				"bossName": [
+					"Lauriel"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1540,
@@ -457,7 +484,10 @@
 		"name": "Akkan",
 		"gates": {
 			"G1": {
-				"bossName": ["Griefbringer Maurug", "Evolved Maurug"],
+				"bossName": [
+					"Griefbringer Maurug",
+					"Evolved Maurug"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1580,
@@ -489,7 +519,9 @@
 				}
 			},
 			"G2": {
-				"bossName": ["Lord of Degradation Akkan"],
+				"bossName": [
+					"Lord of Degradation Akkan"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1580,
@@ -521,7 +553,10 @@
 				}
 			},
 			"G3": {
-				"bossName": ["Plague Legion Commander Akkan", "Lord of Kartheon Akkan"],
+				"bossName": [
+					"Plague Legion Commander Akkan",
+					"Lord of Kartheon Akkan"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1580,
@@ -558,7 +593,9 @@
 		"name": "Ivory  Tower",
 		"gates": {
 			"G1": {
-				"bossName": ["Kaltaya, the Blooming Chaos"],
+				"bossName": [
+					"Kaltaya, the Blooming Chaos"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1600,
@@ -590,7 +627,9 @@
 				}
 			},
 			"G2": {
-				"bossName": ["Rakathus, the Lurking Arrogance"],
+				"bossName": [
+					"Rakathus, the Lurking Arrogance"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1600,
@@ -665,7 +704,9 @@
 		"name": "Thaemine",
 		"gates": {
 			"G1": {
-				"bossName": ["Killineza the Dark Worshipper"],
+				"bossName": [
+					"Killineza the Dark Worshipper"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1610,
@@ -733,7 +774,10 @@
 				}
 			},
 			"G3": {
-				"bossName": ["Thaemine the Lightqueller", "Dark Greatsword"],
+				"bossName": [
+					"Thaemine the Lightqueller",
+					"Dark Greatsword"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1610,
@@ -789,7 +833,10 @@
 		"name": "Overture: Echidna",
 		"gates": {
 			"G1": {
-				"bossName": ["Red Doom Narkiel", "Agris"],
+				"bossName": [
+					"Red Doom Narkiel",
+					"Agris"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1620,
@@ -884,7 +931,9 @@
 				}
 			},
 			"G2": {
-				"bossName": ["Behemoth, Cruel Storm Slayer"],
+				"bossName": [
+					"Behemoth, Cruel Storm Slayer"
+				],
 				"difficulties": {
 					"Normal": {
 						"itemlevel": 1620,
@@ -903,7 +952,10 @@
 		"name": "Act 1: Aegir",
 		"gates": {
 			"G1": {
-				"bossName": ["Akkan, Lord of Death", "Abyss Monarch Aegir"],
+				"bossName": [
+					"Akkan, Lord of Death",
+					"Abyss Monarch Aegir"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1660,
@@ -935,7 +987,10 @@
 				}
 			},
 			"G2": {
-				"bossName": ["Aegir, the Oppressor", "Pulsating Giant's Heart"],
+				"bossName": [
+					"Aegir, the Oppressor",
+					"Pulsating Giant's Heart"
+				],
 				"difficulties": {
 					"Solo": {
 						"itemlevel": 1660,
@@ -972,7 +1027,9 @@
 		"name": "Act 2: Brelshaza",
 		"gates": {
 			"G1": {
-				"bossName": ["Narok the Butcher"],
+				"bossName": [
+					"Narok the Butcher"
+				],
 				"difficulties": {
 					"Normal": {
 						"itemlevel": 1670,
@@ -1026,7 +1083,10 @@
 		"name": "Act 3: Mordum",
 		"gates": {
 			"G1": {
-				"bossName": ["Thaemine, Master of Darkness", "Infernas"],
+				"bossName": [
+					"Thaemine, Master of Darkness",
+					"Infernas"
+				],
 				"difficulties": {
 					"Normal": {
 						"itemlevel": 1680,
@@ -1049,7 +1109,9 @@
 				}
 			},
 			"G2": {
-				"bossName": ["Blossoming Fear, Naitreya"],
+				"bossName": [
+					"Blossoming Fear, Naitreya"
+				],
 				"difficulties": {
 					"Normal": {
 						"itemlevel": 1680,
@@ -1093,6 +1155,62 @@
 							"gold": {
 								"bound": 0,
 								"unbound": 20000
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"strike-raid-8p": {
+		"name": "Strike Raid - 8P",
+		"gates": {
+			"G1": {
+				"bossName": [],
+				"difficulties": {
+					"Normal": {
+						"itemlevel": 1680,
+						"rewards": {
+							"gold": {
+								"bound": 0,
+								"unbound": 20000
+							}
+						}
+					},
+					"Hard": {
+						"itemlevel": 1720,
+						"rewards": {
+							"gold": {
+								"bound": 0,
+								"unbound": 38000
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"strike-raid-4p": {
+		"name": "Strike Raid - 4P",
+		"gates": {
+			"G1": {
+				"bossName": [],
+				"difficulties": {
+					"Normal": {
+						"itemlevel": 1660,
+						"rewards": {
+							"gold": {
+								"bound": 0,
+								"unbound": 0
+							}
+						}
+					},
+					"Hard": {
+						"itemlevel": 1700,
+						"rewards": {
+							"gold": {
+								"bound": 0,
+								"unbound": 0
 							}
 						}
 					}
