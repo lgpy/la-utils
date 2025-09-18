@@ -1166,7 +1166,9 @@
 		"name": "Strike Raid - 8P",
 		"gates": {
 			"G1": {
-				"bossName": [],
+				"bossName": [
+					"Flame of Darkness, Tarkal"
+				],
 				"difficulties": {
 					"Normal": {
 						"itemlevel": 1680,
@@ -1194,7 +1196,9 @@
 		"name": "Strike Raid - 4P",
 		"gates": {
 			"G1": {
-				"bossName": [],
+				"bossName": [
+					"Abyssal Beast, Narhash"
+				],
 				"difficulties": {
 					"Normal": {
 						"itemlevel": 1660,

@@ -250,6 +250,7 @@ export default function EditCardRaidDialog({
 										onValueChange={field.onChange}
 										defaultValue={field.value}
 										disabled={raidId !== undefined}
+										open={isOpen ? undefined : false}
 									>
 										<FormControl>
 											<SelectTrigger>

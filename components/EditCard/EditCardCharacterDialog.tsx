@@ -159,6 +159,7 @@ export default function EditCardCharacterDialog({
 									<Select
 										onValueChange={field.onChange}
 										defaultValue={field.value}
+										open={isOpen ? undefined : false}
 									>
 										<FormControl>
 											<SelectTrigger>
