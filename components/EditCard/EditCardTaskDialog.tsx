@@ -136,7 +136,11 @@ export default function EditCardTaskDialog({ isOpen, close, taskId }: Props) {
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Type</FormLabel>
-									<Select onValueChange={field.onChange} value={field.value}>
+									<Select
+										onValueChange={field.onChange}
+										value={field.value}
+										open={isOpen ? undefined : false}
+									>
 										<FormControl>
 											<SelectTrigger>
 												<SelectValue placeholder="Select the task type" />
