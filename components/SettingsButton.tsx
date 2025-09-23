@@ -66,7 +66,7 @@ export default function SettingsButton() {
 		<>
 			<DropdownMenu
 				onOpenChange={(open) => {
-					if (open && shouldOpenRaidUploadManager) {
+					if (!open && shouldOpenRaidUploadManager) {
 						setRaidUploadManagerOpen(true);
 						setShouldOpenRaidUploadManager(false);
 					}
