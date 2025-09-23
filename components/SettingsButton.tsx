@@ -66,7 +66,7 @@ export default function SettingsButton() {
 		<>
 			<DropdownMenu
 				onOpenChange={(open) => {
-					if (open && shouldOpenRaidUploadManager) {
+					if (!open && shouldOpenRaidUploadManager) {
 						setRaidUploadManagerOpen(true);
 						setShouldOpenRaidUploadManager(false);
 					}
@@ -215,25 +215,27 @@ export default function SettingsButton() {
 								<span>Manage shared raids</span>
 							</DropdownMenuItem>
 							<DropdownMenuItem
-								onClick={async () => {
-									try {
-										const decision = await showAlert({
-											title: "Logout",
-											description: "Are you sure you want to logout?",
-											confirmButton: {
-												text: "Logout",
-											},
-											cancelButton: {
-												text: "Cancel",
-											},
-										});
-										if (decision) {
-											authClient.signOut();
-											session.refetch();
+								onClick={() => {
+									setTimeout(async () => {
+										try {
+											const decision = await showAlert({
+												title: "Logout",
+												description: "Are you sure you want to logout?",
+												confirmButton: {
+													text: "Logout",
+												},
+												cancelButton: {
+													text: "Cancel",
+												},
+											});
+											if (decision) {
+												authClient.signOut();
+												session.refetch();
+											}
+										} catch (error) {
+											console.error("Error showing alert:", error);
 										}
-									} catch (error) {
-										console.error("Error showing alert:", error);
-									}
+									}, 100);
 								}}
 							>
 								<LogOut />
