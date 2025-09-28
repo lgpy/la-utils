@@ -32,8 +32,8 @@
 		"rarity": "rare",
 		"marketQty": 1,
 		"mari": {
-			"qty": 50,
-			"bc": 65
+			"qty": 100,
+			"bc": 110
 		}
 	},
 	"marvelous-honor-leapstone": {
@@ -106,7 +106,11 @@
 		"type": "honing",
 		"name": "Solar Protection",
 		"rarity": "epic",
-		"marketQty": 1
+		"marketQty": 1,
+		"mari": {
+			"qty": 100,
+			"bc": 90
+		}
 	},
 	"glaciers-breath": {
 		"type": "honing-t4",
