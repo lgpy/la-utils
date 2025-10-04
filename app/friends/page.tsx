@@ -16,6 +16,7 @@ type User = {
 	id: string;
 	name: string;
 	image: string | null;
+	topCharacter: string | null;
 };
 
 export default function FriendsPage() {
@@ -445,7 +446,7 @@ function UserCard({ user, children }: UserCardProps) {
 				<div className="min-w-0">
 					<div className="font-medium truncate">{user.name || user.id}</div>
 					<div className="text-xs text-muted-foreground break-all truncate">
-						{user.id}
+						{user.topCharacter ? user.topCharacter : "No characters"}
 					</div>
 				</div>
 			</div>

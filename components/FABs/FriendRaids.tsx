@@ -150,7 +150,7 @@ export default function FriendRaids({ data }: Props) {
 																key={`${raidId}-${difficulty}-${user.id}`}
 																className="flex justify-between items-center p-2 gap-4 w-full bg-ctp-base rounded-md"
 															>
-																<div className="flex items-center gap-2">
+																<div className="flex items-center gap-2 min-w-0">
 																	<Avatar className="shrink-0 size-10">
 																		<AvatarImage
 																			src={user.image ?? undefined}
@@ -160,9 +160,12 @@ export default function FriendRaids({ data }: Props) {
 																			{user.name.charAt(0).toUpperCase()}
 																		</AvatarFallback>
 																	</Avatar>
-																	<div className="flex flex-col">
-																		<span className="font-medium">
-																			{user.name}
+																	<div className="flex flex-col min-w-0">
+																		<span className="font-medium truncate">
+																			{user.name}{" "}
+																			<span className="text-xs text-muted-foreground">
+																				({user.topCharacter})
+																			</span>
 																		</span>
 																		<span className="text-xs text-muted-foreground flex items-center gap-1">
 																			{uniqueClasses.map((c, i) => (
@@ -184,7 +187,7 @@ export default function FriendRaids({ data }: Props) {
 																	</div>
 																</div>
 
-																<div className="flex flex-col justify-around gap-0.5 text-end">
+																<div className="flex flex-col justify-around gap-0.5 text-end shrink-0">
 																	{dpsCount > 0 && (
 																		<span className="text-xs text-muted-foreground">
 																			{dpsCount} DPS

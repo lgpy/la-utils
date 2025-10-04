@@ -24,9 +24,28 @@ export const getFriends = os
 					status: "accepted",
 					OR: [{ requesterId: user.id }, { addresseeId: user.id }],
 				},
-				include: {
-					requester: true,
-					addressee: true,
+				select: {
+					requester: {
+						select: {
+							characters: {
+								orderBy: { itemLevel: "desc" },
+								take: 1,
+								select: { name: true },
+							},
+							id: true, name: true, image: true
+						}
+					},
+					addressee: {
+						select: {
+							characters: {
+								orderBy: { itemLevel: "desc" },
+								take: 1,
+								select: { name: true },
+							},
+							id: true, name: true, image: true
+						}
+					},
+					requesterId: true,
 				},
 			});
 
@@ -39,7 +58,12 @@ export const getFriends = os
 				);
 			}
 
-			return friends;
+			return friends.map(u => ({
+				id: u.id,
+				name: u.name,
+				image: u.image,
+				topCharacter: u.characters[0]?.name || null
+			}));
 		}
 	);
 
@@ -58,19 +82,52 @@ export const getFriendRequests = os
 					OR: [{ requesterId: user.id }, { addresseeId: user.id }],
 					status: "pending",
 				},
-				include: {
-					requester: true,
-					addressee: true,
+				select: {
+					requester: {
+						select: {
+							characters: {
+								orderBy: { itemLevel: "desc" },
+								take: 1,
+								select: { name: true },
+							},
+							id: true, name: true, image: true
+						}
+					},
+					addressee: {
+						select: {
+							characters: {
+								orderBy: { itemLevel: "desc" },
+								take: 1,
+								select: { name: true },
+							},
+							id: true, name: true, image: true
+						}
+					},
+					requesterId: true,
+					addresseeId: true,
+					createdAt: true
 				},
 			});
 
 			return {
 				received: receivedRequests
 					.filter((req) => req.addresseeId === user.id)
-					.map((req) => req.requester),
+					.map((req) => ({
+						id: req.requester.id,
+						name: req.requester.name,
+						image: req.requester.image,
+						topCharacter: req.requester.characters[0]?.name || null,
+						createdAt: req.createdAt
+					})),
 				sent: receivedRequests
 					.filter((req) => req.requesterId === user.id)
-					.map((req) => req.addressee),
+					.map((req) => ({
+						id: req.addressee.id,
+						name: req.addressee.name,
+						image: req.addressee.image,
+						topCharacter: req.addressee.characters[0]?.name || null,
+						createdAt: req.createdAt
+					})),
 			};
 		}
 	);
@@ -155,9 +212,22 @@ export const getRecommendedFriends = os
 				where: {
 					id: { in: restrictedRecommendedIds as string[] },
 				},
+				select: {
+					characters: {
+						orderBy: { itemLevel: "desc" },
+						take: 1,
+						select: { name: true },
+					},
+					id: true, name: true, image: true
+				},
 			});
 
-			return users;
+			return users.map(u => ({
+				id: u.id,
+				name: u.name,
+				image: u.image,
+				topCharacter: u.characters[0]?.name || null
+			}));
 		}
 	);
 

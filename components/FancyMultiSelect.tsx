@@ -21,8 +21,8 @@ export type SelectItem = {
 
 interface FancyMultiSelectProps {
 	data: SelectItem[];
-	selected: SelectItem[];
-	setSelected: Dispatch<SetStateAction<SelectItem[]>>;
+	selected: string[];
+	setSelected: Dispatch<SetStateAction<string[]>>;
 	placeholder?: string;
 	className?: string;
 }
@@ -40,7 +40,7 @@ export default function FancyMultiSelect({
 
 	const handleUnselect = React.useCallback(
 		(item: SelectItem) => {
-			setSelected((prev) => prev.filter((i) => i.value !== item.value));
+			setSelected((prev) => prev.filter((i) => i !== item.value));
 		},
 		[setSelected]
 	);
@@ -68,7 +68,11 @@ export default function FancyMultiSelect({
 	);
 
 	const selectables = data.filter(
-		(item) => !selected.find((i) => i.value === item.value)
+		(item) => !selected.find((i) => i === item.value)
+	);
+
+	const selectedItems = data.filter((item) =>
+		selected.find((i) => i === item.value)
 	);
 
 	return (
@@ -78,7 +82,7 @@ export default function FancyMultiSelect({
 		>
 			<div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
 				<div className="flex flex-wrap gap-1">
-					{selected.map((item) => {
+					{selectedItems.map((item) => {
 						return (
 							<Badge key={item.value} variant="secondary">
 								{item.label}
@@ -127,7 +131,7 @@ export default function FancyMultiSelect({
 											}}
 											onSelect={() => {
 												setInputValue("");
-												setSelected((prev) => [...prev, item]);
+												setSelected((prev) => [...prev, item.value]);
 											}}
 											className={"cursor-pointer"}
 										>

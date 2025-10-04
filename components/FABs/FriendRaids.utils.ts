@@ -94,6 +94,9 @@ export function translateToUsableData(data: FriendRaidsData) {
 														data.userInfo[run.userId]?.characters?.[charId]
 															?.isGoldEarner || false,
 												})),
+												topCharacter: Object.values(data.userInfo[run.userId]?.characters)
+													.sort((a, b) => (b?.itemLevel || 0) - (a?.itemLevel || 0))
+													.map((c) => c?.characterName || "Unknown")[0] || null,
 											})),
 									];
 								})
