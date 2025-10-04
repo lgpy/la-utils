@@ -105,6 +105,7 @@ export const getFriendRequests = os
 					},
 					requesterId: true,
 					addresseeId: true,
+					createdAt: true
 				},
 			});
 
@@ -115,7 +116,8 @@ export const getFriendRequests = os
 						id: req.requester.id,
 						name: req.requester.name,
 						image: req.requester.image,
-						topCharacter: req.requester.characters[0]?.name || null
+						topCharacter: req.requester.characters[0]?.name || null,
+						createdAt: req.createdAt
 					})),
 				sent: receivedRequests
 					.filter((req) => req.requesterId === user.id)
@@ -123,7 +125,8 @@ export const getFriendRequests = os
 						id: req.addressee.id,
 						name: req.addressee.name,
 						image: req.addressee.image,
-						topCharacter: req.addressee.characters[0]?.name || null
+						topCharacter: req.addressee.characters[0]?.name || null,
+						createdAt: req.createdAt
 					})),
 			};
 		}
