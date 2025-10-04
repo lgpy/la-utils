@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2Icon, Users } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ExpandableButton } from "../ExpandableButton";
 import { FabButtonWrapper } from "./FabButtonWrapper";
 import { authClient } from "@/lib/auth";
@@ -24,7 +24,8 @@ import {
 	translateToUsableData,
 } from "./FriendRaids.utils";
 import FriendRaids from "./FriendRaids";
-import FancyMultiSelect, { SelectItem } from "../FancyMultiSelect";
+import FancyMultiSelect from "../FancyMultiSelect";
+import _ from "lodash";
 
 export default function FriendRaidsFAB() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +36,7 @@ export default function FriendRaidsFAB() {
 	const mainStore = useMainStore();
 	const availableRaids = useMemo(() => mainStore.availableRaids(), [mainStore]);
 
-	const [selected, setSelected] = useState<SelectItem[]>([]);
+	const [selected, setSelected] = useState<string[]>([]);
 
 	const friendRaidsQuery = useQuery(
 		orpc.friendRaids.getFriendsRaids.queryOptions({
@@ -70,9 +71,7 @@ export default function FriendRaidsFAB() {
 							Object.entries(raidData.difficulties)
 								.map(([difficultyId, users]) => {
 									const newUsers = users.filter((user) =>
-										selected.some(
-											(selectedUser) => selectedUser.value === user.id
-										)
+										selected.some((selectedId) => selectedId === user.id)
 									);
 
 									if (newUsers.length === 0) return null;
@@ -91,6 +90,36 @@ export default function FriendRaidsFAB() {
 				.filter((entry) => entry !== null)
 		);
 	}, [friendRaidsQuery.data, selected]);
+
+	const hasImportedFriendFilter = useRef(false);
+
+	useEffect(() => {
+		if (hasImportedFriendFilter.current) return;
+		if (!settingsStore.hasHydrated) return;
+		if (friendRaidsQuery.data === undefined) return;
+		if (!isOpen) {
+			hasImportedFriendFilter.current = false;
+			return;
+		}
+		const existingFriendIds =
+			settingsStore.state.friendRaids.friendFilter.filter(
+				(id) => id in friendRaidsQuery.data.userInfo
+			);
+		setSelected(existingFriendIds);
+		hasImportedFriendFilter.current = true;
+	}, [settingsStore, isOpen, friendRaidsQuery.data]);
+
+	useEffect(() => {
+		if (!isOpen) return;
+		if (!hasImportedFriendFilter.current) return;
+		if (!settingsStore.hasHydrated) return;
+		const isEqual = _.isEqual(
+			selected.sort(),
+			settingsStore.state.friendRaids.friendFilter.sort()
+		);
+		if (isEqual) return;
+		settingsStore.state.setFriendFilter(selected);
+	}, [selected, settingsStore, isOpen]);
 
 	if (!session.isPending && session.data === null) {
 		return null;
@@ -113,7 +142,11 @@ export default function FriendRaidsFAB() {
 				</ExpandableButton>
 			</FabButtonWrapper>
 			<Dialog open={isOpen} onOpenChange={setIsOpen}>
-				<DialogContent className="lg:min-w-5xl" showCloseButton={false}>
+				<DialogContent
+					className="lg:min-w-5xl"
+					showCloseButton={false}
+					onOpenAutoFocus={(e) => e.preventDefault()}
+				>
 					<DialogHeader>
 						<div className="flex flex-row justify-between">
 							<div className="flex flex-col gap-2">
