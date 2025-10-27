@@ -6,12 +6,12 @@ import { MainStore } from "@/stores/main-store";
 
 type FriendRaidsData = OrpcOutputs["friendRaids"]["getFriendsRaids"];
 
-export function filterFriendDataByAvailableRaids(
-	data: FriendRaidsData,
+export function filterFriendRaidsDataByAvailableRaids(
+	raids: FriendRaidsData["raids"],
 	availableRaids: ReturnType<MainStore["availableRaids"]>
-): FriendRaidsData {
-	const raids = Object.fromEntries(
-		Object.entries(data.raids)
+): FriendRaidsData["raids"] {
+	const newRaidsObj = Object.fromEntries(
+		Object.entries(raids)
 			.filter(([raidId]) =>
 				availableRaids.some((raid) => raid.raidId === raidId)
 			)
@@ -36,20 +36,7 @@ export function filterFriendDataByAvailableRaids(
 			})
 	);
 
-	const userInfo = Object.fromEntries(
-		Object.entries(data.userInfo).filter(([userId]) =>
-			Object.values(raids).some((raid) =>
-				Object.values(raid).some((diff) =>
-					diff.some((run) => run.userId === userId)
-				)
-			)
-		)
-	);
-
-	return {
-		raids: raids,
-		userInfo: userInfo,
-	};
+	return newRaidsObj;
 }
 
 export function translateToUsableData(data: FriendRaidsData) {

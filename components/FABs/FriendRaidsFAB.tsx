@@ -20,7 +20,7 @@ import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
 import { orpc } from "@/lib/orpc";
 import { useQuery } from "@tanstack/react-query";
 import {
-	filterFriendDataByAvailableRaids,
+	filterFriendRaidsDataByAvailableRaids,
 	translateToUsableData,
 } from "./FriendRaids.utils";
 import FriendRaids from "./FriendRaids";
@@ -40,30 +40,34 @@ export default function FriendRaidsFAB() {
 
 	const friendRaidsQuery = useQuery(
 		orpc.friendRaids.getFriendsRaids.queryOptions({
-			input: {
-				filterByRaids: settingsStore.state.friendRaids.filterByRaids,
-				raids: settingsStore.state.friendRaids.filterByRaids
-					? availableRaids
-					: [],
-			},
 			enabled: isOpen,
 			staleTime: 5 * 60 * 1000,
-			select: (data) => {
-				if (settingsStore.state.friendRaids.filterByRaids)
-					data = filterFriendDataByAvailableRaids(data, availableRaids);
-				return {
-					...data,
-					displayData: translateToUsableData(data),
-				};
-			},
 			refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
 		})
 	);
 
+	const friendRaids = useMemo(() => {
+		const data = _.cloneDeep(friendRaidsQuery.data);
+		if (!data) return undefined;
+		if (settingsStore.state.friendRaids.filterByRaids)
+			data.raids = filterFriendRaidsDataByAvailableRaids(
+				data.raids,
+				availableRaids
+			);
+		return {
+			...data,
+			displayData: translateToUsableData(data),
+		};
+	}, [
+		friendRaidsQuery.data,
+		settingsStore.state.friendRaids.filterByRaids,
+		availableRaids,
+	]);
+
 	const filteredDisplayData = useMemo(() => {
-		if (selected.length === 0) return friendRaidsQuery.data?.displayData;
+		if (selected.length === 0) return friendRaids?.displayData;
 		return Object.fromEntries(
-			Object.entries(friendRaidsQuery.data?.displayData || {})
+			Object.entries(friendRaids?.displayData || {})
 				.map(([raidId, raidData]) => {
 					const newRaidData = {
 						...raidData,
@@ -89,25 +93,25 @@ export default function FriendRaidsFAB() {
 				})
 				.filter((entry) => entry !== null)
 		);
-	}, [friendRaidsQuery.data, selected]);
+	}, [friendRaids, selected]);
 
 	const hasImportedFriendFilter = useRef(false);
 
 	useEffect(() => {
 		if (hasImportedFriendFilter.current) return;
 		if (!settingsStore.hasHydrated) return;
-		if (friendRaidsQuery.data === undefined) return;
+		if (friendRaids === undefined) return;
 		if (!isOpen) {
 			hasImportedFriendFilter.current = false;
 			return;
 		}
 		const existingFriendIds =
 			settingsStore.state.friendRaids.friendFilter.filter(
-				(id) => id in friendRaidsQuery.data.userInfo
+				(id) => id in friendRaids.userInfo
 			);
 		setSelected(existingFriendIds);
 		hasImportedFriendFilter.current = true;
-	}, [settingsStore, isOpen, friendRaidsQuery.data]);
+	}, [settingsStore, isOpen, friendRaids]);
 
 	useEffect(() => {
 		if (!isOpen) return;
@@ -159,7 +163,7 @@ export default function FriendRaidsFAB() {
 								<FancyMultiSelect
 									className="max-w-full min-w-sm"
 									data={
-										Object.entries(friendRaidsQuery.data?.userInfo || {}).map(
+										Object.entries(friendRaids?.userInfo || {}).map(
 											([id, user]) => ({
 												label: user.name,
 												value: id,
@@ -191,9 +195,9 @@ export default function FriendRaidsFAB() {
 								Error loading friend raids.
 							</div>
 						) : friendRaidsQuery.data === undefined ||
-						  Object.keys(friendRaidsQuery.data).length === 0 ? (
+						  Object.keys(filteredDisplayData ?? {}).length === 0 ? (
 							<div className="text-center py-8 text-muted-foreground">
-								You have no available raids.
+								No available raids.
 							</div>
 						) : (
 							<FriendRaids data={filteredDisplayData ?? {}} />
