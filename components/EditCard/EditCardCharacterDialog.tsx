@@ -28,11 +28,17 @@ import {
 import { Class } from "@/generated/prisma";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash2Icon } from "lucide-react";
+import { InfoIcon, Trash2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 const formSchema = z.object({
 	name: z.string().min(2).max(50),
@@ -102,6 +108,12 @@ export default function EditCardCharacterDialog({
 				},
 			},
 		});
+	};
+
+	const createSpacerChar = () => {
+		mainStore.createSpacerChar();
+		close();
+		toast.success("Spacer character created successfully!");
 	};
 
 	useEffect(() => {
@@ -236,7 +248,7 @@ export default function EditCardCharacterDialog({
 					</form>
 				</Form>
 				<DialogFooter>
-					{existingCharacter && (
+					{existingCharacter ? (
 						<Button
 							variant="destructive"
 							onClick={deleteCharacter}
@@ -247,6 +259,22 @@ export default function EditCardCharacterDialog({
 						>
 							<Trash2Icon />
 						</Button>
+					) : (
+						<div className="mr-auto">
+							<Button variant="secondary" onClick={createSpacerChar}>
+								Create Spacer Character
+							</Button>
+							<HoverCard openDelay={0} closeDelay={0}>
+								<HoverCardTrigger>
+									<InfoIcon className="inline size-5 ml-2 text-muted-foreground" />
+								</HoverCardTrigger>
+								<HoverCardContent>
+									A spacer character is a placeholder that helps you organize
+									your characters visually without representing an actual
+									character.
+								</HoverCardContent>
+							</HoverCard>
+						</div>
 					)}
 					<Button variant="ghost" onClick={close} data-pw="cancel-button">
 						Cancel

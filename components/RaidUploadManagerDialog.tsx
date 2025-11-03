@@ -28,27 +28,29 @@ export default function RaidUploadManagerDialog({ open, onOpenChange }: Props) {
 
 	const data = useMemo(
 		() =>
-			mainStore.characters.map((character) => {
-				const assignedRaids = Object.keys(character.assignedRaids).map(
-					(raidId) => {
-						const ignoreRaid = settingsStore.state.upload.ignoreRaids.some(
-							(ignore) => ignore.cId === character.id && ignore.rId === raidId
-						);
+			mainStore.characters
+				.filter((c) => !c.isSpacer)
+				.map((character) => {
+					const assignedRaids = Object.keys(character.assignedRaids).map(
+						(raidId) => {
+							const ignoreRaid = settingsStore.state.upload.ignoreRaids.some(
+								(ignore) => ignore.cId === character.id && ignore.rId === raidId
+							);
 
-						return {
-							id: raidId,
-							name: raidData.get(raidId)?.name || raidId,
-							ignore: ignoreRaid,
-						};
-					}
-				);
-				return {
-					id: character.id,
-					name: character.name,
-					class: character.class,
-					assignedRaids: assignedRaids,
-				};
-			}),
+							return {
+								id: raidId,
+								name: raidData.get(raidId)?.name || raidId,
+								ignore: ignoreRaid,
+							};
+						}
+					);
+					return {
+						id: character.id,
+						name: character.name,
+						class: character.class,
+						assignedRaids: assignedRaids,
+					};
+				}),
 		[settingsStore.state.upload.ignoreRaids, mainStore]
 	);
 
