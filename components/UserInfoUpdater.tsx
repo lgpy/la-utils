@@ -11,12 +11,16 @@ const API_URL = "/api/user/uploadData";
 
 type CharData = ReturnType<typeof useMainStore>["characters"][number];
 
-function removeIgnoredRaids(
+function clearUnwantedCharData(
 	characters: CharData[],
 	ignoredRaids: { cId: string; rId: string }[]
 ): CharData[] {
-	const characters_copy: CharData[] = JSON.parse(JSON.stringify(characters));
+	//make a copy of characters to avoid mutating the original store data and remove spacers
+	const characters_copy: CharData[] = JSON.parse(
+		JSON.stringify(characters.filter((c) => !c.isSpacer))
+	);
 
+	//remove ignored raids from characters
 	for (const ignoredRaid of ignoredRaids) {
 		const character = characters_copy.find((c) => c.id === ignoredRaid.cId);
 		if (character) {
@@ -45,7 +49,7 @@ export function UserInfoUpdater() {
 	//initial upload of characters
 	useEffect(() => {
 		if (!areStoresHydrated || lastUploadedDataRef.current !== null) return;
-		lastUploadedDataRef.current = removeIgnoredRaids(
+		lastUploadedDataRef.current = clearUnwantedCharData(
 			mainStore.characters,
 			ignoreRaidsSetting.state
 		);
@@ -56,7 +60,7 @@ export function UserInfoUpdater() {
 
 	// Keep latest characters in a ref for beforeunload
 	useEffect(() => {
-		latestCharactersRef.current = removeIgnoredRaids(
+		latestCharactersRef.current = clearUnwantedCharData(
 			mainStore.characters,
 			ignoreRaidsSetting.state
 		);

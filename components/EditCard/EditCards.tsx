@@ -19,6 +19,9 @@ import EditCardRaidDialog from "./EditCardRaidDialog";
 import EditCardTaskManagementDialog from "./EditCardTaskManagementDialog";
 import EditCardsNoCharactersCard from "./EditCardsNoCharactersCard";
 import EditCardTaskDialog from "./EditCardTaskDialog";
+import EditCardSpacer from "./EditCardSpacer";
+import { showAlert } from "../AlertDialog.hooks";
+import { toast } from "sonner";
 
 type DialogState = {
 	type: "none" | "char" | "raid" | "taskManagement" | "taskEditing";
@@ -114,6 +117,23 @@ export default function EditCards() {
 		return null;
 	}
 
+	async function deleteCharacter(charId: string) {
+		const decision = await showAlert({
+			title: "Delete Character",
+			description:
+				"Are you sure you want to delete this character? This action cannot be undone.",
+			cancelButton: {
+				text: "Cancel",
+			},
+			confirmButton: {
+				text: "Delete",
+			},
+		});
+		if (!decision) return;
+		mainStore.deleteCharacter(charId);
+		toast.success("Character deleted successfully!");
+	}
+
 	return (
 		<>
 			<ul
@@ -123,14 +143,22 @@ export default function EditCards() {
 			>
 				{chars.map((char, index) => (
 					<li data-label={char.id} key={char.id}>
-						<EditCard
-							char={char}
-							editCharacter={() => openCharacterEditDialog(char)}
-							openRaidDialog={(raidId) => openRaidDialog(char, raidId)}
-							openTaskDialog={() => openTaskDialog(char)}
-							movable={!isLocked}
-							data-pw={`character-${index}`}
-						/>
+						{char.isSpacer ? (
+							<EditCardSpacer
+								char={char}
+								deleteCharacter={() => deleteCharacter(char.id)}
+								movable={!isLocked}
+							/>
+						) : (
+							<EditCard
+								char={char}
+								editCharacter={() => openCharacterEditDialog(char)}
+								openRaidDialog={(raidId) => openRaidDialog(char, raidId)}
+								openTaskDialog={() => openTaskDialog(char)}
+								movable={!isLocked}
+								data-pw={`character-${index}`}
+							/>
+						)}
 					</li>
 				))}
 				{chars.length === 0 && <EditCardsNoCharactersCard />}

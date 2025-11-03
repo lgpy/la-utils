@@ -14,19 +14,23 @@ export default function TodoCards() {
 	const [showTasks, setShowTasks] = useState(false);
 
 	const charCards = useMemo(() => {
-		return mainStore.characters.map((char) => (
-			<TodoCard
-				char={char}
-				key={char.id}
-				mode={
-					uiSettingsStore.state.uiSettings.separateTasks
-						? showTasks
-							? "tasks"
-							: "raids"
-						: "default"
-				}
-			/>
-		));
+		return mainStore.characters.map((char) =>
+			char.isSpacer ? (
+				<div className="w-56" key={char.id}></div>
+			) : (
+				<TodoCard
+					char={char}
+					key={char.id}
+					mode={
+						uiSettingsStore.state.uiSettings.separateTasks
+							? showTasks
+								? "tasks"
+								: "raids"
+							: "default"
+					}
+				/>
+			)
+		);
 	}, [
 		mainStore.characters,
 		showTasks,

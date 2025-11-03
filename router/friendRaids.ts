@@ -1,22 +1,19 @@
 import { os } from "@orpc/server";
 import { dbProviderMiddleware } from "./middleware/db";
 import { requiredAuthMiddleware } from "./middleware/auth";
-import { Class, Difficulty } from "@/generated/prisma";
-import { FriendRaidsSchema } from "./friendRaids.schema";
+import { Difficulty } from "@/generated/prisma";
 import { getGateResetDate } from "@/lib/dates";
 import { isGateCompleted } from "@/lib/raids";
 
 export const getFriendsRaids = os
 	.use(dbProviderMiddleware)
 	.use(requiredAuthMiddleware)
-	.input(FriendRaidsSchema)
 	.handler(
 		async ({
 			context: {
 				db,
 				session: { user },
 			},
-			input,
 		}) => {
 			const friends = await db.friendship.findMany({
 				where: {
@@ -24,8 +21,12 @@ export const getFriendsRaids = os
 					OR: [{ requesterId: user.id }, { addresseeId: user.id }],
 				},
 				include: {
-					requester: true,
-					addressee: true,
+					requester: {
+						select: { id: true, name: true, image: true, characters: true },
+					},
+					addressee: {
+						select: { id: true, name: true, image: true, characters: true },
+					},
 				},
 			});
 
@@ -35,26 +36,27 @@ export const getFriendsRaids = os
 			const friendRaids = await db.assignedRaid.findMany({
 				where: {
 					userId: { in: friendIds },
-					raidId: input.filterByRaids
-						? { in: input.raids.map((r) => r.raidId) }
-						: undefined,
 					gates: {
 						some: {
 							difficulty: { not: Difficulty.Solo },
 						},
 					},
 				},
-				include: {
-					character: {
-						include: {
-							user: true,
-						},
+				select: {
+					raidId: true,
+					characterId: true,
+					userId: true,
+					gates: {
+						select: {
+							gateId: true,
+							difficulty: true,
+							completedDate: true,
+						}
 					},
-					gates: true,
-				},
+				}
 			});
 
-			const filteredFriendRaids = friendRaids.filter((raid) => {
+			const incompleteFriendRaids = friendRaids.filter((raid) => {
 				return raid.gates.some((gate) => {
 					const resetDate = getGateResetDate(raid.raidId, gate.gateId);
 					const completed = gate.completedDate
@@ -64,41 +66,6 @@ export const getFriendsRaids = os
 				});
 			});
 
-			const userInfo: Record<
-				string,
-				{
-					name: string;
-					image: string | null;
-					characters: Record<
-						string,
-						{
-							characterName: string;
-							class: Class;
-							itemLevel: number;
-							isGoldEarner: boolean;
-						}
-					>;
-				}
-			> = {};
-
-			for (const raid of filteredFriendRaids) {
-				const u = raid.character.user;
-				if (!userInfo[u.id]) {
-					userInfo[u.id] = {
-						name: u.name,
-						image: u.image ?? null,
-						characters: {},
-					};
-				}
-				userInfo[u.id].characters[raid.character.id] = {
-					characterName: raid.character.name,
-					class: raid.character.class,
-					itemLevel: raid.character.itemLevel,
-					isGoldEarner: raid.character.isGoldEarner,
-				};
-			}
-
-			// Change: structuredFriendRaids is now a nested Record structure
 			const structuredFriendRaids = {} as Record<
 				string, // RaidID
 				Record<
@@ -110,7 +77,7 @@ export const getFriendsRaids = os
 				>
 			>;
 
-			for (const raid of filteredFriendRaids) {
+			for (const raid of incompleteFriendRaids) {
 				for (const gate of raid.gates) {
 					if (!structuredFriendRaids[raid.raidId]) {
 						structuredFriendRaids[raid.raidId] = {} as Record<
@@ -127,20 +94,47 @@ export const getFriendsRaids = os
 					const usersArr =
 						structuredFriendRaids[raid.raidId][gate.difficulty as Difficulty];
 					let userEntry = usersArr.find(
-						(u) => u.userId === raid.character.user.id
+						(u) => u.userId === raid.userId
 					);
 					if (!userEntry) {
 						userEntry = {
-							userId: raid.character.user.id,
+							userId: raid.userId,
 							charactersIds: [],
 						};
 						usersArr.push(userEntry);
 					}
-					if (!userEntry.charactersIds.includes(raid.character.id)) {
-						userEntry.charactersIds.push(raid.character.id);
+					if (!userEntry.charactersIds.includes(raid.characterId)) {
+						userEntry.charactersIds.push(raid.characterId);
 					}
 				}
 			}
-			return { raids: structuredFriendRaids, userInfo };
+
+			const userInfo = Object.fromEntries(friends.map((friend) => {
+				const friendUser =
+					friend.requesterId === user.id ? friend.addressee : friend.requester;
+				return [
+					friendUser.id,
+					{
+						name: friendUser.name,
+						image: friendUser.image,
+						characters: Object.fromEntries(
+							friendUser.characters.map((char) => [
+								char.id,
+								{
+									characterName: char.name,
+									class: char.class,
+									itemLevel: char.itemLevel,
+									isGoldEarner: char.isGoldEarner,
+								},
+							])
+						),
+					},
+				];
+			}));
+
+
+			return {
+				raids: structuredFriendRaids, userInfo
+			};
 		}
 	);

@@ -14,6 +14,7 @@ export const zodChar = z.object({
 	class: z.nativeEnum(Class),
 	itemLevel: z.number(),
 	isGoldEarner: z.boolean(),
+	isSpacer: z.boolean().optional(),
 	assignedRaids: z.record(
 		//raidId
 		z.record(

@@ -3,6 +3,7 @@ import { StateActions } from "../main-store";
 import z from "zod";
 import { getIndexOrThrow } from "@/lib/array";
 import { zodChar } from "../types";
+import { Class } from "@/generated/prisma";
 
 export const zodNewChar = zodChar.pick({
 	name: true,
@@ -19,6 +20,7 @@ export const zodEditChar = zodChar.pick({
 
 export type CharacterActions = {
 	createCharacter: (char: z.infer<typeof zodNewChar>) => void;
+	createSpacerChar: () => void;
 	updateCharacter: (charId: string, char: z.infer<typeof zodEditChar>) => void;
 	deleteCharacter: (charId: string) => void;
 	restoreCharacter: (char: z.infer<typeof zodChar>, index: number) => void;
@@ -37,6 +39,22 @@ export const createCharActions: StateActions<CharacterActions> = (set) => ({
 				id: uuidv4(),
 				assignedRaids: {},
 				tasks: [],
+			});
+		});
+	},
+	createSpacerChar() {
+		const id = uuidv4();
+		const name = `Spacer ${id.slice(0, 4)}`;
+		set((state) => {
+			state.characters.push({
+				name,
+				class: Class.Berserker,
+				itemLevel: 0,
+				isGoldEarner: false,
+				id: id,
+				assignedRaids: {},
+				tasks: [],
+				isSpacer: true,
 			});
 		});
 	},
