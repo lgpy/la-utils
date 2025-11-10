@@ -233,6 +233,36 @@ export default function UiSettingsPage() {
 						),
 					}}
 				/>
+
+				<UiChoices
+					title="Hide Completed Tasks/Raids"
+					option1={{
+						selected: !settingsStore.state.uiSettings.hideCompleted,
+						onSelect: () =>
+							settingsStore.state.toggleUiSettings("hideCompleted", false),
+						children: (
+							<div className="grid gap-1.5 font-normal">
+								<p className="text-sm leading-none font-medium">Show</p>
+								<p className="text-muted-foreground text-sm">
+									Show completed tasks/raids
+								</p>
+							</div>
+						),
+					}}
+					option2={{
+						selected: settingsStore.state.uiSettings.hideCompleted,
+						onSelect: () =>
+							settingsStore.state.toggleUiSettings("hideCompleted", true),
+						children: (
+							<div className="grid gap-1.5 font-normal">
+								<p className="text-sm leading-none font-medium">Hide</p>
+								<p className="text-muted-foreground text-sm">
+									Hide completed tasks/raids
+								</p>
+							</div>
+						),
+					}}
+				/>
 			</div>
 		</div>
 	);

@@ -29,6 +29,7 @@ const zodSettings = z.object({
 			x: z.number(),
 			y: z.number(),
 		}),
+		hideCompleted: z.boolean(),
 	}),
 });
 
@@ -59,11 +60,8 @@ export const createSettingsStore = () =>
 			(set) => ({
 				server: undefined,
 				experiments: {
-					buttonV2: false,
 					ignoreThaemineIfNoG4: false,
-					compactRaidCard: false,
 					autoUpdateRaids: false,
-					separateTasks: false,
 				},
 				upload: {
 					ignoreRaids: [],
@@ -75,11 +73,12 @@ export const createSettingsStore = () =>
 				uiSettings: {
 					buttonV2: true,
 					compactRaidCard: false,
-					separateTasks: false,
+					separateTasks: true,
 					separateTasksPos: {
 						x: 16,
 						y: 80,
 					},
+					hideCompleted: false,
 				},
 				setServer(server) {
 					set({ server });
@@ -145,7 +144,7 @@ export const createSettingsStore = () =>
 			}),
 			{
 				name: "settings",
-				version: 12,
+				version: 13,
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 				migrate: (ps: any, version) => {
 					if (version <= 0) ps.rosterGoldTotal = "total";
@@ -189,8 +188,11 @@ export const createSettingsStore = () =>
 					if (version <= 11) {
 						ps.friendRaids.friendFilter = [];
 					}
+					if (version <= 12) {
+						ps.uiSettings.hideCompleted = false;
+					}
 					return ps;
-				},
+				}
 			}
 		)
 	);
