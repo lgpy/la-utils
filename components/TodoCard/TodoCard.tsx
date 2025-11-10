@@ -22,9 +22,10 @@ import { TaskType } from "@/generated/prisma";
 interface Props {
 	char: Character;
 	mode: "default" | "raids" | "tasks";
+	hideCompleted?: boolean;
 }
 
-export default function TodoCard({ char, mode }: Props) {
+export default function TodoCard({ char, mode, hideCompleted }: Props) {
 	const mainStore = useMainStore();
 	const experimentsStore = useSettingsStore((store) => store);
 	const highest3 = useMemo(() => {
@@ -41,7 +42,9 @@ export default function TodoCard({ char, mode }: Props) {
 		const tasksGroupedByType = Object.fromEntries(
 			Object.values(TaskType).map((type) => [
 				type,
-				char.tasks.filter((t) => t.type === type),
+				char.tasks
+					.filter((t) => t.type === type)
+					.filter((t) => (hideCompleted ? !t.completed : true)),
 			])
 		);
 
@@ -75,6 +78,11 @@ export default function TodoCard({ char, mode }: Props) {
 
 		const assignedRaids = Object.keys(char.assignedRaids)
 			.sort(sortRaidKeys)
+			.filter((raidId) => {
+				if (!hideCompleted) return true;
+				const raidGates = char.assignedRaids[raidId];
+				return Object.values(raidGates).some((gate) => !gate.completed);
+			})
 			.map((raidId, i, keys) => (
 				<Fragment key={char.id + raidId}>
 					<CardContent
@@ -111,6 +119,9 @@ export default function TodoCard({ char, mode }: Props) {
 				</Fragment>
 			));
 
+		const hasRaidsAssigned = Object.keys(char.assignedRaids).length > 0;
+		const hasTasksAssigned = char.tasks.length > 0;
+
 		if (mode === "default" && char.tasks.length > 0) {
 			const completedTasks = char.tasks.reduce(
 				(acc, t) => (t.completed ? acc + 1 : acc),
@@ -139,6 +150,7 @@ export default function TodoCard({ char, mode }: Props) {
 				},
 				0
 			);
+
 			return (
 				<Tabs defaultValue="raids" className="gap-0">
 					<TabsList className="w-full bg-primary/20 p-0 h-auto rounded-none">
@@ -204,8 +216,12 @@ export default function TodoCard({ char, mode }: Props) {
 					<TabsContent value="raids" className="m-0">
 						{assignedRaids.length > 0 ? (
 							assignedRaids
+						) : hasRaidsAssigned ? (
+							<CardContent className="p-3 text-center text-muted-foreground">
+								Raids completed
+							</CardContent>
 						) : (
-							<CardContent className="p-3 text-center">
+							<CardContent className="p-3 text-center text-muted-foreground">
 								No raids assigned
 							</CardContent>
 						)}
@@ -213,8 +229,12 @@ export default function TodoCard({ char, mode }: Props) {
 					<TabsContent value="tasks" className="m-0">
 						{assignedTasks.length > 0 ? (
 							assignedTasks
+						) : hasTasksAssigned ? (
+							<CardContent className="p-3 text-center text-muted-foreground">
+								Tasks completed
+							</CardContent>
 						) : (
-							<CardContent className="p-3 text-center">
+							<CardContent className="p-3 text-center text-muted-foreground">
 								No tasks assigned
 							</CardContent>
 						)}
@@ -229,11 +249,20 @@ export default function TodoCard({ char, mode }: Props) {
 						{assignedRaids}
 					</>
 				);
+			else if (hasRaidsAssigned)
+				return (
+					<>
+						<Separator />
+						<CardContent className="p-3 text-center text-muted-foreground">
+							Raids completed
+						</CardContent>
+					</>
+				);
 			else
 				return (
 					<>
 						<Separator />
-						<CardContent className="p-3 text-center">
+						<CardContent className="p-3 text-center text-muted-foreground">
 							No raids assigned
 						</CardContent>
 					</>
@@ -248,11 +277,20 @@ export default function TodoCard({ char, mode }: Props) {
 						{assignedRaids}
 					</>
 				);
+			else if (hasRaidsAssigned)
+				return (
+					<>
+						<Separator />
+						<CardContent className="p-3 text-center text-muted-foreground">
+							Raids completed
+						</CardContent>
+					</>
+				);
 			else
 				return (
 					<>
 						<Separator />
-						<CardContent className="p-3 text-center">
+						<CardContent className="p-3 text-center text-muted-foreground">
 							No raids assigned
 						</CardContent>
 					</>
@@ -267,11 +305,20 @@ export default function TodoCard({ char, mode }: Props) {
 						{assignedTasks}
 					</>
 				);
+			else if (hasTasksAssigned)
+				return (
+					<>
+						<Separator />
+						<CardContent className="p-3 text-center text-muted-foreground">
+							Tasks completed
+						</CardContent>
+					</>
+				);
 			else
 				return (
 					<>
 						<Separator />
-						<CardContent className="p-3 text-center">
+						<CardContent className="p-3 text-center text-muted-foreground">
 							No tasks assigned
 						</CardContent>
 					</>
@@ -286,6 +333,7 @@ export default function TodoCard({ char, mode }: Props) {
 		mainStore,
 		experimentsStore.state.uiSettings.buttonV2,
 		char.isGoldEarner,
+		hideCompleted,
 	]);
 
 	return (
