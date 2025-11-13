@@ -11,6 +11,7 @@ import Tesseract from "tesseract.js";
 declare global {
 	interface MediaStream {
 		captureFrame: () => Promise<ImageBitmap>;
+		captureFrameWithCanvas: () => Promise<ImageBitmap>;
 	}
 }
 
@@ -26,14 +27,59 @@ if (typeof window !== "undefined" && typeof MediaStream !== "undefined") {
 				reject(new Error("No video tracks available in the stream."));
 				return;
 			}
-			const videoTrack = videoTracks[0];
-			const imageCapture = new ImageCapture(videoTrack);
-			imageCapture
-				.grabFrame()
-				.then((frame) => resolve(frame))
-				.catch((error) =>
-					reject(new Error(`Failed to capture frame: ${error}`))
-				);
+
+			// Try ImageCapture API first (Chrome, Edge)
+			if (typeof ImageCapture !== 'undefined') {
+				const videoTrack = videoTracks[0];
+				const imageCapture = new ImageCapture(videoTrack);
+				imageCapture
+					.grabFrame()
+					.then((frame) => resolve(frame))
+					.catch((error) => {
+						console.debug('ImageCapture failed, falling back to canvas method:', error);
+						this.captureFrameWithCanvas().then(resolve).catch(reject);
+					});
+				return;
+			}
+
+			// Fallback for Firefox and other browsers without ImageCapture
+			this.captureFrameWithCanvas().then(resolve).catch(reject);
+		});
+	};
+
+	// Add canvas-based capture method
+	MediaStream.prototype.captureFrameWithCanvas = function () {
+		return new Promise<ImageBitmap>((resolve, reject) => {
+			const video = document.createElement('video');
+			video.srcObject = this;
+			video.muted = true;
+
+			// We need to play the video to get the current frame
+			video.play().then(() => {
+				const canvas = document.createElement('canvas');
+				canvas.width = video.videoWidth;
+				canvas.height = video.videoHeight;
+				const ctx = canvas.getContext('2d');
+
+				if (!ctx) {
+					video.remove();
+					reject(new Error('Failed to get canvas context'));
+					return;
+				}
+
+				// Draw the current frame
+				ctx.drawImage(video, 0, 0);
+				video.pause();
+				video.remove();
+
+				// Convert to ImageBitmap
+				createImageBitmap(canvas)
+					.then(resolve)
+					.catch(reject);
+			}).catch(error => {
+				video.remove();
+				reject(new Error(`Failed to play video for frame capture: ${error}`));
+			});
 		});
 	};
 }
