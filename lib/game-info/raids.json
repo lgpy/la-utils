@@ -1,1225 +1,1327 @@
 {
-	"valtan": {
-		"name": "Valtan",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Dark Mountain Predator",
-					"Destroyer Lucas",
-					"Leader Lugaru"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1415,
-						"rewards": {
-							"gold": {
-								"bound": 240,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1415,
-						"rewards": {
-							"gold": {
-								"bound": 250,
-								"unbound": 40
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1445,
-						"rewards": {
-							"gold": {
-								"bound": 330,
-								"unbound": 70
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Demon Beast Commander Valtan",
-					"Ravaged Tyrant of Beasts"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1415,
-						"rewards": {
-							"gold": {
-								"bound": 360,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1415,
-						"rewards": {
-							"gold": {
-								"bound": 400,
-								"unbound": 60
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1445,
-						"rewards": {
-							"gold": {
-								"bound": 570,
-								"unbound": 130
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"vykas": {
-		"name": "Vykas",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Covetous Devourer Vykas"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1430,
-						"rewards": {
-							"gold": {
-								"bound": 280,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1430,
-						"rewards": {
-							"gold": {
-								"bound": 300,
-								"unbound": 50
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1460,
-						"rewards": {
-							"gold": {
-								"bound": 420,
-								"unbound": 80
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Covetous Legion Commander Vykas"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1430,
-						"rewards": {
-							"gold": {
-								"bound": 520,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1430,
-						"rewards": {
-							"gold": {
-								"bound": 550,
-								"unbound": 100
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1460,
-						"rewards": {
-							"gold": {
-								"bound": 830,
-								"unbound": 170
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"kakul": {
-		"name": "Kakul-Saydon",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Saydon"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1475,
-						"rewards": {
-							"gold": {
-								"bound": 320,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1475,
-						"rewards": {
-							"gold": {
-								"bound": 330,
-								"unbound": 70
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Kakul"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1475,
-						"rewards": {
-							"gold": {
-								"bound": 480,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1475,
-						"rewards": {
-							"gold": {
-								"bound": 500,
-								"unbound": 100
-							}
-						}
-					}
-				}
-			},
-			"G3": {
-				"bossName": [
-					"Kakul-Saydon",
-					"Encore-Desiring Kakul-Saydon"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1475,
-						"rewards": {
-							"gold": {
-								"bound": 800,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1475,
-						"rewards": {
-							"gold": {
-								"bound": 820,
-								"unbound": 180
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"brel": {
-		"name": "Brelshaza",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Gehenna Helkasirs"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1490,
-						"rewards": {
-							"gold": {
-								"bound": 800,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1490,
-						"rewards": {
-							"gold": {
-								"bound": 810,
-								"unbound": 170
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1540,
-						"rewards": {
-							"gold": {
-								"bound": 970,
-								"unbound": 210
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Prokel",
-					"Prokel's Spiritual Echo",
-					"Ashtarot"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1490,
-						"rewards": {
-							"gold": {
-								"bound": 800,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1490,
-						"rewards": {
-							"gold": {
-								"bound": 820,
-								"unbound": 180
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1540,
-						"rewards": {
-							"gold": {
-								"bound": 980,
-								"unbound": 220
-							}
-						}
-					}
-				}
-			},
-			"G3": {
-				"bossName": [
-					"Primordial Nightmare"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1500,
-						"rewards": {
-							"gold": {
-								"bound": 800,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1500,
-						"rewards": {
-							"gold": {
-								"bound": 820,
-								"unbound": 200
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1550,
-						"rewards": {
-							"gold": {
-								"bound": 1000,
-								"unbound": 220
-							}
-						}
-					}
-				}
-			},
-			"G4": {
-				"bossName": [
-					"Phantom Legion Commander Brelshaza"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1520,
-						"rewards": {
-							"gold": {
-								"bound": 1280,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1520,
-						"rewards": {
-							"gold": {
-								"bound": 1300,
-								"unbound": 300
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1560,
-						"rewards": {
-							"gold": {
-								"bound": 1650,
-								"unbound": 350
-							}
-						}
-					}
-				},
-				"isBiWeekly": "even"
-			}
-		}
-	},
-	"kayangel": {
-		"name": "Kayangel",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Tienis"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1540,
-						"rewards": {
-							"gold": {
-								"bound": 1000,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1540,
-						"rewards": {
-							"gold": {
-								"bound": 900,
-								"unbound": 100
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1580,
-						"rewards": {
-							"gold": {
-								"bound": 1000,
-								"unbound": 150
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Prunya"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1540,
-						"rewards": {
-							"gold": {
-								"bound": 1100,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1540,
-						"rewards": {
-							"gold": {
-								"bound": 900,
-								"unbound": 200
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1580,
-						"rewards": {
-							"gold": {
-								"bound": 1200,
-								"unbound": 250
-							}
-						}
-					}
-				}
-			},
-			"G3": {
-				"bossName": [
-					"Lauriel"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1540,
-						"rewards": {
-							"gold": {
-								"bound": 1200,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1540,
-						"rewards": {
-							"gold": {
-								"bound": 900,
-								"unbound": 300
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1580,
-						"rewards": {
-							"gold": {
-								"bound": 1300,
-								"unbound": 400
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"akkan": {
-		"name": "Akkan",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Griefbringer Maurug",
-					"Evolved Maurug"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1580,
-						"rewards": {
-							"gold": {
-								"bound": 1300,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1580,
-						"rewards": {
-							"gold": {
-								"bound": 1000,
-								"unbound": 270
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1600,
-						"rewards": {
-							"gold": {
-								"bound": 1300,
-								"unbound": 200
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Lord of Degradation Akkan"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1580,
-						"rewards": {
-							"gold": {
-								"bound": 1600,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1580,
-						"rewards": {
-							"gold": {
-								"bound": 1300,
-								"unbound": 300
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1600,
-						"rewards": {
-							"gold": {
-								"bound": 1600,
-								"unbound": 450
-							}
-						}
-					}
-				}
-			},
-			"G3": {
-				"bossName": [
-					"Plague Legion Commander Akkan",
-					"Lord of Kartheon Akkan"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1580,
-						"rewards": {
-							"gold": {
-								"bound": 1800,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1580,
-						"rewards": {
-							"gold": {
-								"bound": 1500,
-								"unbound": 330
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1600,
-						"rewards": {
-							"gold": {
-								"bound": 1800,
-								"unbound": 650
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"voldis": {
-		"name": "Ivory  Tower",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Kaltaya, the Blooming Chaos"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1600,
-						"rewards": {
-							"gold": {
-								"bound": 1200,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1600,
-						"rewards": {
-							"gold": {
-								"bound": 1100,
-								"unbound": 250
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1610,
-						"rewards": {
-							"gold": {
-								"bound": 1600,
-								"unbound": 500
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Rakathus, the Lurking Arrogance"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1600,
-						"rewards": {
-							"gold": {
-								"bound": 1600,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1600,
-						"rewards": {
-							"gold": {
-								"bound": 1400,
-								"unbound": 350
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1610,
-						"rewards": {
-							"gold": {
-								"bound": 1800,
-								"unbound": 600
-							}
-						}
-					}
-				}
-			},
-			"G3": {
-				"bossName": [
-					"Lazaram, the Trailblazer",
-					"Subordinated Vertus",
-					"Subordinated Calventus",
-					"Subordinated Legoros",
-					"Brand of Subordination"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1600,
-						"rewards": {
-							"gold": {
-								"bound": 2400,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1600,
-						"rewards": {
-							"gold": {
-								"bound": 1600,
-								"unbound": 500
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1610,
-						"rewards": {
-							"gold": {
-								"bound": 2000,
-								"unbound": 700
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"thaemine": {
-		"name": "Thaemine",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Killineza the Dark Worshipper"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1610,
-						"rewards": {
-							"gold": {
-								"bound": 2200,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1610,
-						"rewards": {
-							"gold": {
-								"bound": 1300,
-								"unbound": 1100
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1620,
-						"rewards": {
-							"gold": {
-								"bound": 2000,
-								"unbound": 1800
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Valinak, Knight of Darkness",
-					"Valinak, Taboo Usurper",
-					"Valinak, Herald of the End"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1610,
-						"rewards": {
-							"gold": {
-								"bound": 2600,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1610,
-						"rewards": {
-							"gold": {
-								"bound": 1500,
-								"unbound": 1300
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1620,
-						"rewards": {
-							"gold": {
-								"bound": 2100,
-								"unbound": 2000
-							}
-						}
-					}
-				}
-			},
-			"G3": {
-				"bossName": [
-					"Thaemine the Lightqueller",
-					"Dark Greatsword"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1610,
-						"rewards": {
-							"gold": {
-								"bound": 3700,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1610,
-						"rewards": {
-							"gold": {
-								"bound": 1700,
-								"unbound": 1600
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1620,
-						"rewards": {
-							"gold": {
-								"bound": 2400,
-								"unbound": 2200
-							}
-						}
-					}
-				}
-			},
-			"G4": {
-				"bossName": [
-					"Darkness Legion Commander Thaemine",
-					"Thaemine Prokel",
-					"Thaemine, Conqueror of Stars"
-				],
-				"difficulties": {
-					"Hard": {
-						"itemlevel": 1620,
-						"rewards": {
-							"gold": {
-								"bound": 250,
-								"unbound": 2500
-							}
-						}
-					}
-				},
-				"isBiWeekly": "odd"
-			}
-		}
-	},
-	"echidna": {
-		"name": "Overture: Echidna",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Red Doom Narkiel",
-					"Agris"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1620,
-						"rewards": {
-							"gold": {
-								"bound": 5000,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1620,
-						"rewards": {
-							"gold": {
-								"bound": 3000,
-								"unbound": 2000
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1630,
-						"rewards": {
-							"gold": {
-								"bound": 4000,
-								"unbound": 3000
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Echidna",
-					"Covetous Master Echidna",
-					"Desire in Full Bloom, Echidna",
-					"Alcaone, the Twisted Venom",
-					"Agris, the Devouring Bog"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1620,
-						"rewards": {
-							"gold": {
-								"bound": 8000,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1620,
-						"rewards": {
-							"gold": {
-								"bound": 4000,
-								"unbound": 3000
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1630,
-						"rewards": {
-							"gold": {
-								"bound": 5000,
-								"unbound": 4000
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"behemoth": {
-		"name": "Behemoth",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Behemoth, the Storm Commander",
-					"Despicable Skolakia",
-					"Untrue Crimson Yoho",
-					"Ruthless Lakadroff",
-					"Vicious Argeos"
-				],
-				"difficulties": {
-					"Normal": {
-						"itemlevel": 1620,
-						"rewards": {
-							"gold": {
-								"bound": 3000,
-								"unbound": 2000
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Behemoth, Cruel Storm Slayer"
-				],
-				"difficulties": {
-					"Normal": {
-						"itemlevel": 1620,
-						"rewards": {
-							"gold": {
-								"bound": 5000,
-								"unbound": 3000
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"aegir": {
-		"name": "Act 1: Aegir",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Akkan, Lord of Death",
-					"Abyss Monarch Aegir"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1660,
-						"rewards": {
-							"gold": {
-								"bound": 10000,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1660,
-						"rewards": {
-							"gold": {
-								"bound": 3000,
-								"unbound": 6000
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1680,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 10000
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Aegir, the Oppressor",
-					"Pulsating Giant's Heart"
-				],
-				"difficulties": {
-					"Solo": {
-						"itemlevel": 1660,
-						"rewards": {
-							"gold": {
-								"bound": 14000,
-								"unbound": 0
-							}
-						}
-					},
-					"Normal": {
-						"itemlevel": 1660,
-						"rewards": {
-							"gold": {
-								"bound": 4000,
-								"unbound": 11000
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1680,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 20000
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"brelshaza2": {
-		"name": "Act 2: Brelshaza",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Narok the Butcher"
-				],
-				"difficulties": {
-					"Normal": {
-						"itemlevel": 1670,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 9000
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1690,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 11000
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Phantom Legion Commander Brelshaza",
-					"Phantom Manifester Brelshaza"
-				],
-				"difficulties": {
-					"Normal": {
-						"itemlevel": 1670,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 18500
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1690,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 23000
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"mordum": {
-		"name": "Act 3: Mordum",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Thaemine, Master of Darkness",
-					"Infernas"
-				],
-				"difficulties": {
-					"Normal": {
-						"itemlevel": 1680,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 6000
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1700,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 7000
-							}
-						}
-					}
-				}
-			},
-			"G2": {
-				"bossName": [
-					"Blossoming Fear, Naitreya"
-				],
-				"difficulties": {
-					"Normal": {
-						"itemlevel": 1680,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 9500
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1700,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 11000
-							}
-						}
-					}
-				}
-			},
-			"G3": {
-				"bossName": [
-					"Mordum, the Abyssal Punisher",
-					"Mordum's Hammer",
-					"Flash of Punishment"
-				],
-				"difficulties": {
-					"Normal": {
-						"itemlevel": 1680,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 12500
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1700,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 20000
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"strike-raid-8p": {
-		"name": "Strike Raid - 8P",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Flame of Darkness, Tarkal"
-				],
-				"difficulties": {
-					"Normal": {
-						"itemlevel": 1680,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 20000
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1720,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 38000
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"strike-raid-4p": {
-		"name": "Strike Raid - 4P",
-		"gates": {
-			"G1": {
-				"bossName": [
-					"Abyssal Beast, Narhash"
-				],
-				"difficulties": {
-					"Normal": {
-						"itemlevel": 1660,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 0
-							}
-						}
-					},
-					"Hard": {
-						"itemlevel": 1700,
-						"rewards": {
-							"gold": {
-								"bound": 0,
-								"unbound": 0
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+  "valtan": {
+    "name": "Valtan",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Dark Mountain Predator",
+          "Destroyer Lucas",
+          "Leader Lugaru"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1415,
+            "rewards": {
+              "gold": {
+                "bound": 240,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1415,
+            "rewards": {
+              "gold": {
+                "bound": 250,
+                "unbound": 40
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1445,
+            "rewards": {
+              "gold": {
+                "bound": 330,
+                "unbound": 70
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Demon Beast Commander Valtan",
+          "Ravaged Tyrant of Beasts"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1415,
+            "rewards": {
+              "gold": {
+                "bound": 360,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1415,
+            "rewards": {
+              "gold": {
+                "bound": 400,
+                "unbound": 60
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1445,
+            "rewards": {
+              "gold": {
+                "bound": 570,
+                "unbound": 130
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "vykas": {
+    "name": "Vykas",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Covetous Devourer Vykas"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1430,
+            "rewards": {
+              "gold": {
+                "bound": 280,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1430,
+            "rewards": {
+              "gold": {
+                "bound": 300,
+                "unbound": 50
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1460,
+            "rewards": {
+              "gold": {
+                "bound": 420,
+                "unbound": 80
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Covetous Legion Commander Vykas"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1430,
+            "rewards": {
+              "gold": {
+                "bound": 520,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1430,
+            "rewards": {
+              "gold": {
+                "bound": 550,
+                "unbound": 100
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1460,
+            "rewards": {
+              "gold": {
+                "bound": 830,
+                "unbound": 170
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "kakul": {
+    "name": "Kakul-Saydon",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Saydon"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1475,
+            "rewards": {
+              "gold": {
+                "bound": 320,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1475,
+            "rewards": {
+              "gold": {
+                "bound": 330,
+                "unbound": 70
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Kakul"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1475,
+            "rewards": {
+              "gold": {
+                "bound": 480,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1475,
+            "rewards": {
+              "gold": {
+                "bound": 500,
+                "unbound": 100
+              }
+            }
+          }
+        }
+      },
+      "G3": {
+        "bossName": [
+          "Kakul-Saydon",
+          "Encore-Desiring Kakul-Saydon"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1475,
+            "rewards": {
+              "gold": {
+                "bound": 800,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1475,
+            "rewards": {
+              "gold": {
+                "bound": 820,
+                "unbound": 180
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "brel": {
+    "name": "Brelshaza",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Gehenna Helkasirs"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1490,
+            "rewards": {
+              "gold": {
+                "bound": 800,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1490,
+            "rewards": {
+              "gold": {
+                "bound": 810,
+                "unbound": 170
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1540,
+            "rewards": {
+              "gold": {
+                "bound": 970,
+                "unbound": 210
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Prokel",
+          "Prokel's Spiritual Echo",
+          "Ashtarot"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1490,
+            "rewards": {
+              "gold": {
+                "bound": 800,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1490,
+            "rewards": {
+              "gold": {
+                "bound": 820,
+                "unbound": 180
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1540,
+            "rewards": {
+              "gold": {
+                "bound": 980,
+                "unbound": 220
+              }
+            }
+          }
+        }
+      },
+      "G3": {
+        "bossName": [
+          "Primordial Nightmare"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1500,
+            "rewards": {
+              "gold": {
+                "bound": 800,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1500,
+            "rewards": {
+              "gold": {
+                "bound": 820,
+                "unbound": 200
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1550,
+            "rewards": {
+              "gold": {
+                "bound": 1000,
+                "unbound": 220
+              }
+            }
+          }
+        }
+      },
+      "G4": {
+        "bossName": [
+          "Phantom Legion Commander Brelshaza"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1520,
+            "rewards": {
+              "gold": {
+                "bound": 1300,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1520,
+            "rewards": {
+              "gold": {
+                "bound": 1300,
+                "unbound": 300
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1560,
+            "rewards": {
+              "gold": {
+                "bound": 1650,
+                "unbound": 350
+              }
+            }
+          }
+        },
+        "isBiWeekly": "even"
+      }
+    }
+  },
+  "kayangel": {
+    "name": "Kayangel",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Tienis"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1540,
+            "rewards": {
+              "gold": {
+                "bound": 1000,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1540,
+            "rewards": {
+              "gold": {
+                "bound": 900,
+                "unbound": 100
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1580,
+            "rewards": {
+              "gold": {
+                "bound": 1000,
+                "unbound": 150
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Prunya"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1540,
+            "rewards": {
+              "gold": {
+                "bound": 1100,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1540,
+            "rewards": {
+              "gold": {
+                "bound": 900,
+                "unbound": 200
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1580,
+            "rewards": {
+              "gold": {
+                "bound": 1200,
+                "unbound": 250
+              }
+            }
+          }
+        }
+      },
+      "G3": {
+        "bossName": [
+          "Lauriel"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1540,
+            "rewards": {
+              "gold": {
+                "bound": 1200,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1540,
+            "rewards": {
+              "gold": {
+                "bound": 900,
+                "unbound": 300
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1580,
+            "rewards": {
+              "gold": {
+                "bound": 1300,
+                "unbound": 400
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "akkan": {
+    "name": "Akkan",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Griefbringer Maurug",
+          "Evolved Maurug"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1580,
+            "rewards": {
+              "gold": {
+                "bound": 1300,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1580,
+            "rewards": {
+              "gold": {
+                "bound": 1000,
+                "unbound": 270
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1600,
+            "rewards": {
+              "gold": {
+                "bound": 1300,
+                "unbound": 200
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Lord of Degradation Akkan"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1580,
+            "rewards": {
+              "gold": {
+                "bound": 1600,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1580,
+            "rewards": {
+              "gold": {
+                "bound": 1300,
+                "unbound": 300
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1600,
+            "rewards": {
+              "gold": {
+                "bound": 1600,
+                "unbound": 450
+              }
+            }
+          }
+        }
+      },
+      "G3": {
+        "bossName": [
+          "Plague Legion Commander Akkan",
+          "Lord of Kartheon Akkan"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1580,
+            "rewards": {
+              "gold": {
+                "bound": 1800,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1580,
+            "rewards": {
+              "gold": {
+                "bound": 1500,
+                "unbound": 330
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1600,
+            "rewards": {
+              "gold": {
+                "bound": 1800,
+                "unbound": 650
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "voldis": {
+    "name": "Ivory  Tower",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Kaltaya, the Blooming Chaos"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1600,
+            "rewards": {
+              "gold": {
+                "bound": 1200,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1600,
+            "rewards": {
+              "gold": {
+                "bound": 1100,
+                "unbound": 250
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1610,
+            "rewards": {
+              "gold": {
+                "bound": 1600,
+                "unbound": 500
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Rakathus, the Lurking Arrogance"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1600,
+            "rewards": {
+              "gold": {
+                "bound": 1600,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1600,
+            "rewards": {
+              "gold": {
+                "bound": 1400,
+                "unbound": 350
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1610,
+            "rewards": {
+              "gold": {
+                "bound": 1800,
+                "unbound": 600
+              }
+            }
+          }
+        }
+      },
+      "G3": {
+        "bossName": [
+          "Lazaram, the Trailblazer",
+          "Subordinated Vertus",
+          "Subordinated Calventus",
+          "Subordinated Legoros",
+          "Brand of Subordination"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1600,
+            "rewards": {
+              "gold": {
+                "bound": 2400,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1600,
+            "rewards": {
+              "gold": {
+                "bound": 1600,
+                "unbound": 500
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1610,
+            "rewards": {
+              "gold": {
+                "bound": 2000,
+                "unbound": 700
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "thaemine": {
+    "name": "Thaemine",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Killineza the Dark Worshipper"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1610,
+            "rewards": {
+              "gold": {
+                "bound": 2200,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1610,
+            "rewards": {
+              "gold": {
+                "bound": 1300,
+                "unbound": 1100
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1620,
+            "rewards": {
+              "gold": {
+                "bound": 2000,
+                "unbound": 1800
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Valinak, Knight of Darkness",
+          "Valinak, Taboo Usurper",
+          "Valinak, Herald of the End"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1610,
+            "rewards": {
+              "gold": {
+                "bound": 2600,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1610,
+            "rewards": {
+              "gold": {
+                "bound": 1500,
+                "unbound": 1300
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1620,
+            "rewards": {
+              "gold": {
+                "bound": 2100,
+                "unbound": 2000
+              }
+            }
+          }
+        }
+      },
+      "G3": {
+        "bossName": [
+          "Thaemine the Lightqueller",
+          "Dark Greatsword"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1610,
+            "rewards": {
+              "gold": {
+                "bound": 3700,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1610,
+            "rewards": {
+              "gold": {
+                "bound": 1700,
+                "unbound": 1600
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1620,
+            "rewards": {
+              "gold": {
+                "bound": 2400,
+                "unbound": 2200
+              }
+            }
+          }
+        }
+      },
+      "G4": {
+        "bossName": [
+          "Darkness Legion Commander Thaemine",
+          "Thaemine Prokel",
+          "Thaemine, Conqueror of Stars"
+        ],
+        "difficulties": {
+          "Hard": {
+            "itemlevel": 1620,
+            "rewards": {
+              "gold": {
+                "bound": 250,
+                "unbound": 2500
+              }
+            }
+          }
+        },
+        "isBiWeekly": "odd"
+      }
+    }
+  },
+  "echidna": {
+    "name": "Overture: Echidna",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Red Doom Narkiel",
+          "Agris"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1620,
+            "rewards": {
+              "gold": {
+                "bound": 5000,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1620,
+            "rewards": {
+              "gold": {
+                "bound": 3000,
+                "unbound": 2000
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1630,
+            "rewards": {
+              "gold": {
+                "bound": 4000,
+                "unbound": 3000
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Echidna",
+          "Covetous Master Echidna",
+          "Desire in Full Bloom, Echidna",
+          "Alcaone, the Twisted Venom",
+          "Agris, the Devouring Bog"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1620,
+            "rewards": {
+              "gold": {
+                "bound": 8000,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1620,
+            "rewards": {
+              "gold": {
+                "bound": 4000,
+                "unbound": 3000
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1630,
+            "rewards": {
+              "gold": {
+                "bound": 5000,
+                "unbound": 4000
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "behemoth": {
+    "name": "Behemoth",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Behemoth, the Storm Commander",
+          "Despicable Skolakia",
+          "Untrue Crimson Yoho",
+          "Ruthless Lakadroff",
+          "Vicious Argeos"
+        ],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1620,
+            "rewards": {
+              "gold": {
+                "bound": 3000,
+                "unbound": 2000
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Behemoth, Cruel Storm Slayer"
+        ],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1620,
+            "rewards": {
+              "gold": {
+                "bound": 5000,
+                "unbound": 3000
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "aegir": {
+    "name": "Act 1: Aegir",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Akkan, Lord of Death",
+          "Abyss Monarch Aegir"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1660,
+            "rewards": {
+              "gold": {
+                "bound": 10000,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1660,
+            "rewards": {
+              "gold": {
+                "bound": 3000,
+                "unbound": 6000
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1680,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 10000
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Aegir, the Oppressor",
+          "Pulsating Giant's Heart"
+        ],
+        "difficulties": {
+          "Solo": {
+            "itemlevel": 1660,
+            "rewards": {
+              "gold": {
+                "bound": 14000,
+                "unbound": 0
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1660,
+            "rewards": {
+              "gold": {
+                "bound": 4000,
+                "unbound": 11000
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1680,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 20000
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "brelshaza2": {
+    "name": "Act 2: Brelshaza",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Narok the Butcher"
+        ],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1670,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 9000
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1690,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 11000
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Phantom Legion Commander Brelshaza",
+          "Phantom Manifester Brelshaza"
+        ],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1670,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 18500
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1690,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 23000
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "mordum": {
+    "name": "Act 3: Mordum",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Thaemine, Master of Darkness",
+          "Infernas"
+        ],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1680,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 6000
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1700,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 7000
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [
+          "Blossoming Fear, Naitreya"
+        ],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1680,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 9500
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1700,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 11000
+              }
+            }
+          }
+        }
+      },
+      "G3": {
+        "bossName": [
+          "Mordum, the Abyssal Punisher",
+          "Mordum's Hammer",
+          "Flash of Punishment"
+        ],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1680,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 12500
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1700,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 20000
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "strike-raid-8p": {
+    "name": "Strike Raid - 8P",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Flame of Darkness, Tarkal"
+        ],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1680,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 10000
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1720,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 18000
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "strike-raid-4p": {
+    "name": "Strike Raid - 4P",
+    "gates": {
+      "G1": {
+        "bossName": [
+          "Abyssal Beast, Narhash"
+        ],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1660,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 0
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1700,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "armoche": {
+    "name": "Act 4: Armoche",
+    "gates": {
+      "G1": {
+        "bossName": [],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1700,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 12500
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1720,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 15000
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1700,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 20500
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1720,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 27000
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "kazeros": {
+    "name": "Final Act: Kazeros",
+    "gates": {
+      "G1": {
+        "bossName": [],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1710,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 14000
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1730,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 17000
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [],
+        "difficulties": {
+          "Normal": {
+            "itemlevel": 1710,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 26000
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1730,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 35000
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
