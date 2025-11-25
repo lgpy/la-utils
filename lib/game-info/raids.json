@@ -1226,7 +1226,10 @@
     "name": "Act 4: Armoche",
     "gates": {
       "G1": {
-        "bossName": [],
+        "bossName": [
+          "Act 4: Covetous Master Echidna",
+          "Brelshaza, Ember in the Ashes"
+        ],
         "difficulties": {
           "Normal": {
             "itemlevel": 1700,
@@ -1249,7 +1252,9 @@
         }
       },
       "G2": {
-        "bossName": [],
+        "bossName": [
+          "Armoche, Sentinel of the Abyss"
+        ],
         "difficulties": {
           "Normal": {
             "itemlevel": 1700,
@@ -1277,7 +1282,10 @@
     "name": "Final Act: Kazeros",
     "gates": {
       "G1": {
-        "bossName": [],
+        "bossName": [
+          "Abyss Lord Kazeros",
+          "Abyssal Afterimage"
+        ],
         "difficulties": {
           "Normal": {
             "itemlevel": 1710,
@@ -1300,7 +1308,10 @@
         }
       },
       "G2": {
-        "bossName": [],
+        "bossName": [
+          "Archdemon Kazeros",
+          "Death Incarnate Kazeros"
+        ],
         "difficulties": {
           "Normal": {
             "itemlevel": 1710,
