@@ -19,6 +19,8 @@ async function fetchSheetCSV(url: string): Promise<string> {
 }
 
 const raidMatch: Record<string, string> = {
+	"Act 4: Armoche": "armoche",
+	"Denouement: Final Day": "kazeros",
 	"Strike Raid (1-4p)": "strike-raid-4p",
 	"Strike Raid (8p)": "strike-raid-8p",
 	"Act 1: Aegir": "aegir",
