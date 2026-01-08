@@ -63,6 +63,7 @@ export default function EditCardRaidDialog({
 	const filteredRaids = useMemo(() => {
 		return raidData.raids.entries().reduce(
 			(acc, [raidkey, raid]) => {
+				if (raid.hidden) return acc;
 				const hasGatesbellowilvl = raid.gates
 					.values()
 					.some((gate) =>

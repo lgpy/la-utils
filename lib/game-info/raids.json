@@ -1031,6 +1031,15 @@
           "Narok the Butcher"
         ],
         "difficulties": {
+          "Solo": {
+            "itemlevel": 1670,
+            "rewards": {
+              "gold": {
+                "bound": 9000,
+                "unbound": 0
+              }
+            }
+          },
           "Normal": {
             "itemlevel": 1670,
             "rewards": {
@@ -1057,6 +1066,15 @@
           "Phantom Manifester Brelshaza"
         ],
         "difficulties": {
+          "Solo": {
+            "itemlevel": 1670,
+            "rewards": {
+              "gold": {
+                "bound": 18500,
+                "unbound": 0
+              }
+            }
+          },
           "Normal": {
             "itemlevel": 1670,
             "rewards": {
@@ -1088,6 +1106,15 @@
           "Infernas"
         ],
         "difficulties": {
+          "Solo": {
+            "itemlevel": 1680,
+            "rewards": {
+              "gold": {
+                "bound": 6000,
+                "unbound": 0
+              }
+            }
+          },
           "Normal": {
             "itemlevel": 1680,
             "rewards": {
@@ -1113,6 +1140,15 @@
           "Blossoming Fear, Naitreya"
         ],
         "difficulties": {
+          "Solo": {
+            "itemlevel": 1680,
+            "rewards": {
+              "gold": {
+                "bound": 9500,
+                "unbound": 0
+              }
+            }
+          },
           "Normal": {
             "itemlevel": 1680,
             "rewards": {
@@ -1140,6 +1176,15 @@
           "Flash of Punishment"
         ],
         "difficulties": {
+          "Solo": {
+            "itemlevel": 1680,
+            "rewards": {
+              "gold": {
+                "bound": 12500,
+                "unbound": 0
+              }
+            }
+          },
           "Normal": {
             "itemlevel": 1680,
             "rewards": {
@@ -1164,6 +1209,7 @@
   },
   "strike-raid-8p": {
     "name": "Strike Raid - 8P",
+    "hidden": true,
     "gates": {
       "G1": {
         "bossName": [
@@ -1194,6 +1240,7 @@
   },
   "strike-raid-4p": {
     "name": "Strike Raid - 4P",
+    "hidden": true,
     "gates": {
       "G1": {
         "bossName": [
