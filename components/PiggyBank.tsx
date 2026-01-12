@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import type { Character } from "@/stores/main-store/provider";
 import PiggyBankProgressBar from "./PiggyBankProgressBar";
 import { raidData } from "@/lib/game-info";
+import { Fragment, useMemo } from "react";
 
 type Props = {
 	className?: string;
@@ -63,6 +64,21 @@ export default function PiggyBank(props: Props) {
 	const progressPercentage =
 		thisWeek.total > 0 ? (thisWeek.earned / thisWeek.total) * 100 : 0;
 
+	const raidsGold = useMemo(() => {
+		return Object.entries(highest3ThisWeek)
+			.sort(([aId], [bId]) => raidData.sortByRelease(aId, bId))
+			.map(([raidId, thisWeek]) => ({
+				raidId,
+				name: raidData.get(raidId)?.name,
+				earned: formatGold(
+					thisWeek.earnedGold.bound + thisWeek.earnedGold.unbound
+				),
+				total: formatGold(
+					thisWeek.totalGold.bound + thisWeek.totalGold.unbound
+				),
+			}));
+	}, []);
+
 	return (
 		<TooltipProvider>
 			<Tooltip>
@@ -74,10 +90,20 @@ export default function PiggyBank(props: Props) {
 				</TooltipTrigger>
 				<TooltipContent>
 					<div className="grid grid-cols-[auto_auto] gap-1">
-						<span className="font-extralight">This Week:</span>
-						<span>
+						<span className="font-light">This Week:</span>
+						<span className="text-ctp-yellow text-end">
 							{formatGold(thisWeek.earned)}/{formatGold(thisWeek.total)}
 						</span>
+
+						{raidsGold.map(({ raidId, name, earned, total }) => (
+							<Fragment key={raidId}>
+								<span className="font-extralight indent-2">{name}</span>
+								<span className="text-ctp-yellow text-end">
+									{earned}/{total}
+								</span>
+							</Fragment>
+						))}
+
 						{hasBiweekly && (
 							<>
 								<span className="font-extralight">Next Week:</span>
