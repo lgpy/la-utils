@@ -61,25 +61,36 @@ export default function EditCardRaidDialog({
 	});
 
 	const filteredRaids = useMemo(() => {
-		return raidData.raids.entries().reduce(
-			(acc, [raidkey, raid]) => {
-				const hasGatesbellowilvl = raid.gates
-					.values()
-					.some((gate) =>
-						gate.difficulties
-							.values()
-							.some((diff) => diff.itemlevel <= character.itemLevel)
-					);
-				if (
-					(character.assignedRaids[raidkey] === undefined &&
-						hasGatesbellowilvl) ||
-					raidkey === raidId
-				)
-					acc[raidkey] = raid;
-				return acc;
-			},
-			{} as Record<string, Raid>
+		const raidArr = Array.from(
+			raidData.raids
+				.entries()
+				.map(([raidkey, raid]) => ({ ...raid, id: raidkey }))
 		);
+
+		const filtered = raidArr.filter((raid) => {
+			if (raidId === raid.id) return true; // Always include the raid being edited
+
+			if (raid.hidden) return false; // Skip hidden raids
+
+			const hasGatesbellowilvl = raid.gates
+				.values()
+				.some((gate) =>
+					gate.difficulties
+						.values()
+						.some((diff) => diff.itemlevel <= character.itemLevel)
+				);
+
+			if (!hasGatesbellowilvl) return false; // Skip raids without accessible gates
+
+			const isAssigned = character.assignedRaids[raid.id] !== undefined;
+
+			if (isAssigned) return false; // Skip already assigned raids
+
+			return true;
+		});
+
+		const sorted = filtered.sort((a, b) => raidData.sortByRelease(b.id, a.id));
+		return sorted;
 	}, [raidId, character.assignedRaids, character.itemLevel]);
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
@@ -257,9 +268,9 @@ export default function EditCardRaidDialog({
 												<SelectValue placeholder="Select the raid" />
 											</SelectTrigger>
 										</FormControl>
-										<SelectContent>
-											{Object.entries(filteredRaids).map(([raidId, raid]) => (
-												<SelectItem key={raidId} value={raidId}>
+										<SelectContent className="max-h-60">
+											{filteredRaids.map((raid) => (
+												<SelectItem key={raid.id} value={raid.id}>
 													{raid.name}
 												</SelectItem>
 											))}

@@ -83,6 +83,7 @@ const gateSchema = z.object({
 
 const raidSchema = z.object({
 	name: z.string(),
+	hidden: z.boolean().optional(),
 	gates: z.record(z.string(), gateSchema),
 });
 
@@ -168,6 +169,7 @@ export class Raid {
 	readonly id: string;
 	readonly name: string;
 	readonly gates: ReadonlyMap<string, Gate>;
+	readonly hidden: boolean;
 
 	constructor(id: string, data: z.infer<typeof raidSchema>) {
 		this.id = id;
@@ -178,6 +180,7 @@ export class Raid {
 				new Gate(gateId, gateData),
 			])
 		);
+		this.hidden = data.hidden ?? false;
 	}
 
 	getGate(gateId: string): Gate | undefined {
@@ -209,6 +212,12 @@ class Raids {
 		const raid = this.raids.get(raidId);
 		if (raid === undefined) throw new Error(`Raid ${raidId} not found`);
 		return raid;
+	}
+
+
+	sortByRelease(aId: string, bId: string): number {
+		const raidKeys = Array.from(this.raids.keys());
+		return raidKeys.indexOf(aId) - raidKeys.indexOf(bId);
 	}
 }
 
