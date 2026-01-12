@@ -213,6 +213,12 @@ class Raids {
 		if (raid === undefined) throw new Error(`Raid ${raidId} not found`);
 		return raid;
 	}
+
+
+	sortByRelease(aId: string, bId: string): number {
+		const raidKeys = Array.from(this.raids.keys());
+		return raidKeys.indexOf(aId) - raidKeys.indexOf(bId);
+	}
 }
 
 export type ItemId = z.infer<typeof itemID>; // FIXME this is a string...
