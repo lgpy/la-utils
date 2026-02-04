@@ -53,9 +53,8 @@ model Session {
   impersonatedBy String?
 
   @@unique([token])
-  @@map("session")
-
   @@index([userId], name: "session_user_id_index")
+  @@map("session")
 }
 
 model Account {
@@ -74,9 +73,8 @@ model Account {
   createdAt             DateTime
   updatedAt             DateTime
 
-  @@map("account")
-
   @@index([userId], name: "account_user_id_index")
+  @@map("account")
 }
 
 model Verification {
@@ -87,9 +85,8 @@ model Verification {
   createdAt  DateTime?
   updatedAt  DateTime?
 
-  @@map("verification")
-
   @@index([identifier], name: "verification_identifier_index")
+  @@map("verification")
 }
 
 enum Class {
@@ -132,6 +129,9 @@ enum Class {
   Aeromancer
   Artist
   Wildsoul
+
+  //GuardianKnight
+  GuardianKnight
 }
 
 model Character {

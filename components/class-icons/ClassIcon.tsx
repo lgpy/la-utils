@@ -33,6 +33,7 @@ const SummonerIcon = lazy(() => import("./Summoner"));
 const WardancerIcon = lazy(() => import("./Wardancer"));
 const WildsoulIcon = lazy(() => import("./Wildsoul"));
 const ValkyrieIcon = lazy(() => import("./Valkyrie"));
+const GuardianKnightIcon = lazy(() => import("./GuardianKnight"));
 
 const icons: {
 	[key in Class]: React.LazyExoticComponent<
@@ -67,6 +68,7 @@ const icons: {
 	[Class.Wardancer]: WardancerIcon,
 	[Class.Wildsoul]: WildsoulIcon,
 	[Class.Valkyrie]: ValkyrieIcon,
+	[Class.GuardianKnight]: GuardianKnightIcon,
 };
 
 export default function ClassIcon(
