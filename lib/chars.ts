@@ -254,6 +254,7 @@ export function separateSupportAndDps<T extends { class: Class }>(
 			case Class.Souleater:
 			case Class.Aeromancer:
 			case Class.Wildsoul:
+			case Class.GuardianKnight:
 				ret.dps.push(cls);
 				break;
 			default: {
