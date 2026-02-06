@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
 	Tooltip,
 	TooltipContent,
@@ -11,7 +10,6 @@ import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { dragAndDrop } from "@formkit/drag-and-drop/react";
 import { isEqual } from "lodash";
 import { LockIcon, LockOpenIcon, PlusIcon } from "lucide-react";
-import { motion } from "motion/react";
 import { type RefObject, useEffect, useRef, useState } from "react";
 import EditCard from "./EditCard";
 import EditCardCharacterDialog from "./EditCardCharacterDialog";
@@ -22,6 +20,8 @@ import EditCardTaskDialog from "./EditCardTaskDialog";
 import EditCardSpacer from "./EditCardSpacer";
 import { showAlert } from "../AlertDialog.hooks";
 import { toast } from "sonner";
+import { ExpandableButton } from "../ExpandableButton";
+import { FabButtonWrapper } from "../FABs/FabButtonWrapper";
 
 type DialogState = {
 	type: "none" | "char" | "raid" | "taskManagement" | "taskEditing";
@@ -205,51 +205,42 @@ export default function EditCards() {
 					}
 				}}
 			/>
-			<motion.div
-				className="fixed right-4 bottom-4"
-				initial={{ scale: 0.8, opacity: 0 }}
-				animate={{
-					scale: 1,
-					opacity: 1,
-					transition: {
-						type: "spring",
-						stiffness: 260,
-						damping: 20,
-					},
-				}}
-			>
-				<div className="flex flex-col gap-2">
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Button
+
+			<div className="fixed right-4 bottom-4 flex flex-col gap-2 items-end">
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<FabButtonWrapper>
+								<ExpandableButton
 									variant="secondary"
-									size="icon"
+									label={isLocked ? "Unlock Characters" : "Lock Characters"}
 									onClick={() => setIsLocked(!isLocked)}
-									aria-label="Lock/Unlock Characters"
+									data-pw={"lock-characters"}
 								>
 									{isLocked ? (
 										<LockIcon className="size-6" />
 									) : (
 										<LockOpenIcon className="size-6" />
 									)}
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent side="left">
-								<p>Lock/Unlock Characters</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-					<Button
+								</ExpandableButton>
+							</FabButtonWrapper>
+						</TooltipTrigger>
+						<TooltipContent side="left">
+							<p>Lock/Unlock Characters</p>
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
+				<FabButtonWrapper>
+					<ExpandableButton
 						variant="default"
-						size="icon"
+						label="Create Character"
 						onClick={() => openCharacterEditDialog(undefined)}
 						data-pw={"create-character"}
 					>
 						<PlusIcon className="size-6" />
-					</Button>
-				</div>
-			</motion.div>
+					</ExpandableButton>
+				</FabButtonWrapper>
+			</div>
 		</>
 	);
 }
