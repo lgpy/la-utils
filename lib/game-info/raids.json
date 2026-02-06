@@ -13,7 +13,7 @@
             "itemlevel": 1415,
             "rewards": {
               "gold": {
-                "bound": 240,
+                "bound": 290,
                 "unbound": 0
               }
             }
@@ -48,7 +48,7 @@
             "itemlevel": 1415,
             "rewards": {
               "gold": {
-                "bound": 360,
+                "bound": 460,
                 "unbound": 0
               }
             }
@@ -87,7 +87,7 @@
             "itemlevel": 1430,
             "rewards": {
               "gold": {
-                "bound": 280,
+                "bound": 350,
                 "unbound": 0
               }
             }
@@ -121,7 +121,7 @@
             "itemlevel": 1430,
             "rewards": {
               "gold": {
-                "bound": 520,
+                "bound": 650,
                 "unbound": 0
               }
             }
@@ -160,7 +160,7 @@
             "itemlevel": 1475,
             "rewards": {
               "gold": {
-                "bound": 320,
+                "bound": 400,
                 "unbound": 0
               }
             }
@@ -185,7 +185,7 @@
             "itemlevel": 1475,
             "rewards": {
               "gold": {
-                "bound": 480,
+                "bound": 600,
                 "unbound": 0
               }
             }
@@ -211,7 +211,7 @@
             "itemlevel": 1475,
             "rewards": {
               "gold": {
-                "bound": 800,
+                "bound": 1000,
                 "unbound": 0
               }
             }
@@ -241,7 +241,7 @@
             "itemlevel": 1490,
             "rewards": {
               "gold": {
-                "bound": 800,
+                "bound": 980,
                 "unbound": 0
               }
             }
@@ -277,7 +277,7 @@
             "itemlevel": 1490,
             "rewards": {
               "gold": {
-                "bound": 800,
+                "bound": 1000,
                 "unbound": 0
               }
             }
@@ -311,7 +311,7 @@
             "itemlevel": 1500,
             "rewards": {
               "gold": {
-                "bound": 800,
+                "bound": 1020,
                 "unbound": 0
               }
             }
@@ -345,7 +345,7 @@
             "itemlevel": 1520,
             "rewards": {
               "gold": {
-                "bound": 1300,
+                "bound": 1600,
                 "unbound": 0
               }
             }
@@ -493,7 +493,7 @@
             "itemlevel": 1580,
             "rewards": {
               "gold": {
-                "bound": 1300,
+                "bound": 1270,
                 "unbound": 0
               }
             }
@@ -502,8 +502,8 @@
             "itemlevel": 1580,
             "rewards": {
               "gold": {
-                "bound": 1000,
-                "unbound": 270
+                "bound": 1015,
+                "unbound": 255
               }
             }
           },
@@ -545,8 +545,8 @@
             "itemlevel": 1600,
             "rewards": {
               "gold": {
-                "bound": 1600,
-                "unbound": 450
+                "bound": 1640,
+                "unbound": 410
               }
             }
           }
@@ -562,7 +562,7 @@
             "itemlevel": 1580,
             "rewards": {
               "gold": {
-                "bound": 1800,
+                "bound": 1830,
                 "unbound": 0
               }
             }
@@ -580,8 +580,8 @@
             "itemlevel": 1600,
             "rewards": {
               "gold": {
-                "bound": 1800,
-                "unbound": 650
+                "bound": 1960,
+                "unbound": 490
               }
             }
           }
@@ -601,7 +601,7 @@
             "itemlevel": 1600,
             "rewards": {
               "gold": {
-                "bound": 1200,
+                "bound": 1350,
                 "unbound": 0
               }
             }
@@ -619,8 +619,8 @@
             "itemlevel": 1610,
             "rewards": {
               "gold": {
-                "bound": 1600,
-                "unbound": 500
+                "bound": 1680,
+                "unbound": 420
               }
             }
           }
@@ -635,7 +635,7 @@
             "itemlevel": 1600,
             "rewards": {
               "gold": {
-                "bound": 1600,
+                "bound": 1750,
                 "unbound": 0
               }
             }
@@ -653,8 +653,8 @@
             "itemlevel": 1610,
             "rewards": {
               "gold": {
-                "bound": 1800,
-                "unbound": 600
+                "bound": 1920,
+                "unbound": 480
               }
             }
           }
@@ -673,7 +673,7 @@
             "itemlevel": 1600,
             "rewards": {
               "gold": {
-                "bound": 2400,
+                "bound": 2100,
                 "unbound": 0
               }
             }
@@ -682,8 +682,8 @@
             "itemlevel": 1600,
             "rewards": {
               "gold": {
-                "bound": 1600,
-                "unbound": 500
+                "bound": 1680,
+                "unbound": 420
               }
             }
           },
@@ -691,8 +691,8 @@
             "itemlevel": 1610,
             "rewards": {
               "gold": {
-                "bound": 2000,
-                "unbound": 700
+                "bound": 2160,
+                "unbound": 540
               }
             }
           }
@@ -712,7 +712,7 @@
             "itemlevel": 1610,
             "rewards": {
               "gold": {
-                "bound": 2200,
+                "bound": 1600,
                 "unbound": 0
               }
             }
@@ -721,8 +721,8 @@
             "itemlevel": 1610,
             "rewards": {
               "gold": {
-                "bound": 1300,
-                "unbound": 1100
+                "bound": 1280,
+                "unbound": 320
               }
             }
           },
@@ -730,8 +730,8 @@
             "itemlevel": 1620,
             "rewards": {
               "gold": {
-                "bound": 2000,
-                "unbound": 1800
+                "bound": 1600,
+                "unbound": 400
               }
             }
           }
@@ -748,7 +748,7 @@
             "itemlevel": 1610,
             "rewards": {
               "gold": {
-                "bound": 2600,
+                "bound": 2000,
                 "unbound": 0
               }
             }
@@ -757,8 +757,8 @@
             "itemlevel": 1610,
             "rewards": {
               "gold": {
-                "bound": 1500,
-                "unbound": 1300
+                "bound": 1600,
+                "unbound": 400
               }
             }
           },
@@ -766,8 +766,8 @@
             "itemlevel": 1620,
             "rewards": {
               "gold": {
-                "bound": 2100,
-                "unbound": 2000
+                "bound": 1920,
+                "unbound": 480
               }
             }
           }
@@ -783,7 +783,7 @@
             "itemlevel": 1610,
             "rewards": {
               "gold": {
-                "bound": 3700,
+                "bound": 2800,
                 "unbound": 0
               }
             }
@@ -792,8 +792,8 @@
             "itemlevel": 1610,
             "rewards": {
               "gold": {
-                "bound": 1700,
-                "unbound": 1600
+                "bound": 2240,
+                "unbound": 560
               }
             }
           },
@@ -801,8 +801,8 @@
             "itemlevel": 1620,
             "rewards": {
               "gold": {
-                "bound": 2400,
-                "unbound": 2200
+                "bound": 2880,
+                "unbound": 720
               }
             }
           }
@@ -819,8 +819,8 @@
             "itemlevel": 1620,
             "rewards": {
               "gold": {
-                "bound": 250,
-                "unbound": 2500
+                "bound": 4000,
+                "unbound": 1000
               }
             }
           }
@@ -842,7 +842,7 @@
             "itemlevel": 1620,
             "rewards": {
               "gold": {
-                "bound": 5000,
+                "bound": 3500,
                 "unbound": 0
               }
             }
@@ -851,8 +851,8 @@
             "itemlevel": 1620,
             "rewards": {
               "gold": {
-                "bound": 3000,
-                "unbound": 2000
+                "bound": 1750,
+                "unbound": 1750
               }
             }
           },
@@ -860,8 +860,8 @@
             "itemlevel": 1630,
             "rewards": {
               "gold": {
-                "bound": 4000,
-                "unbound": 3000
+                "bound": 2800,
+                "unbound": 2100
               }
             }
           }
@@ -880,7 +880,7 @@
             "itemlevel": 1620,
             "rewards": {
               "gold": {
-                "bound": 8000,
+                "bound": 5600,
                 "unbound": 0
               }
             }
@@ -889,8 +889,8 @@
             "itemlevel": 1620,
             "rewards": {
               "gold": {
-                "bound": 4000,
-                "unbound": 3000
+                "bound": 2800,
+                "unbound": 2800
               }
             }
           },
@@ -898,8 +898,8 @@
             "itemlevel": 1630,
             "rewards": {
               "gold": {
-                "bound": 5000,
-                "unbound": 4000
+                "bound": 3500,
+                "unbound": 2800
               }
             }
           }
@@ -923,8 +923,8 @@
             "itemlevel": 1620,
             "rewards": {
               "gold": {
-                "bound": 3000,
-                "unbound": 2000
+                "bound": 1750,
+                "unbound": 1750
               }
             }
           }
@@ -939,8 +939,8 @@
             "itemlevel": 1620,
             "rewards": {
               "gold": {
-                "bound": 5000,
-                "unbound": 3000
+                "bound": 2800,
+                "unbound": 2800
               }
             }
           }
@@ -961,7 +961,7 @@
             "itemlevel": 1660,
             "rewards": {
               "gold": {
-                "bound": 10000,
+                "bound": 7000,
                 "unbound": 0
               }
             }
@@ -970,8 +970,8 @@
             "itemlevel": 1660,
             "rewards": {
               "gold": {
-                "bound": 3000,
-                "unbound": 6000
+                "bound": 3500,
+                "unbound": 3500
               }
             }
           },
@@ -979,8 +979,8 @@
             "itemlevel": 1680,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 10000
+                "bound": 3500,
+                "unbound": 3500
               }
             }
           }
@@ -996,7 +996,7 @@
             "itemlevel": 1660,
             "rewards": {
               "gold": {
-                "bound": 14000,
+                "bound": 9800,
                 "unbound": 0
               }
             }
@@ -1005,8 +1005,8 @@
             "itemlevel": 1660,
             "rewards": {
               "gold": {
-                "bound": 4000,
-                "unbound": 11000
+                "bound": 4900,
+                "unbound": 4900
               }
             }
           },
@@ -1014,8 +1014,8 @@
             "itemlevel": 1680,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 20000
+                "bound": 7000,
+                "unbound": 7000
               }
             }
           }
@@ -1035,7 +1035,7 @@
             "itemlevel": 1670,
             "rewards": {
               "gold": {
-                "bound": 9000,
+                "bound": 6300,
                 "unbound": 0
               }
             }
@@ -1044,8 +1044,8 @@
             "itemlevel": 1670,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 9000
+                "bound": 3150,
+                "unbound": 3150
               }
             }
           },
@@ -1053,8 +1053,8 @@
             "itemlevel": 1690,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 11000
+                "bound": 3850,
+                "unbound": 3850
               }
             }
           }
@@ -1070,7 +1070,7 @@
             "itemlevel": 1670,
             "rewards": {
               "gold": {
-                "bound": 18500,
+                "bound": 12950,
                 "unbound": 0
               }
             }
@@ -1079,8 +1079,8 @@
             "itemlevel": 1670,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 18500
+                "bound": 6475,
+                "unbound": 6475
               }
             }
           },
@@ -1088,8 +1088,8 @@
             "itemlevel": 1690,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 23000
+                "bound": 8050,
+                "unbound": 8050
               }
             }
           }
@@ -1119,8 +1119,8 @@
             "itemlevel": 1680,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 6000
+                "bound": 1800,
+                "unbound": 4200
               }
             }
           },
@@ -1128,8 +1128,8 @@
             "itemlevel": 1700,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 7000
+                "bound": 2100,
+                "unbound": 4900
               }
             }
           }
@@ -1153,8 +1153,8 @@
             "itemlevel": 1680,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 9500
+                "bound": 2850,
+                "unbound": 6650
               }
             }
           },
@@ -1162,8 +1162,8 @@
             "itemlevel": 1700,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 11000
+                "bound": 3300,
+                "unbound": 7700
               }
             }
           }
@@ -1189,8 +1189,8 @@
             "itemlevel": 1680,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 12500
+                "bound": 3750,
+                "unbound": 8750
               }
             }
           },
@@ -1198,8 +1198,8 @@
             "itemlevel": 1700,
             "rewards": {
               "gold": {
-                "bound": 0,
-                "unbound": 20000
+                "bound": 6000,
+                "unbound": 14000
               }
             }
           }
