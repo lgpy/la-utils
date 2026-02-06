@@ -34,23 +34,20 @@ export default function EditCardTaskManagementDialog({
 	}, [character]);
 
 	const assignedTasks = useMemo(() => {
-		return assignedTaskIds.map((taskId) => {
-			const taskInfo = mainStore.tasks.find((t) => t.id === taskId);
-			if (taskInfo) {
-				return {
-					id: taskId,
-					name: taskInfo.name,
-					type: taskInfo.type,
-					timesToComplete: taskInfo.timesToComplete,
-				};
-			}
-			return {
-				id: taskId,
-				name: "Undefined",
-				type: TaskType.daily,
-				timesToComplete: 1,
-			};
-		});
+		return assignedTaskIds
+			.map((taskId) => {
+				const taskInfo = mainStore.tasks.find((t) => t.id === taskId);
+				if (taskInfo) {
+					return {
+						id: taskId,
+						name: taskInfo.name,
+						type: taskInfo.type,
+						timesToComplete: taskInfo.timesToComplete,
+					};
+				}
+				return null;
+			})
+			.filter((t) => t !== null);
 	}, [mainStore.tasks, assignedTaskIds]);
 
 	const availableTasks = useMemo(() => {
@@ -80,6 +77,11 @@ export default function EditCardTaskManagementDialog({
 				<div className="grid grid-cols-2 gap-2">
 					<div className="flex flex-col gap-2">
 						<h1>Available Tasks</h1>
+						{availableTasks.length === 0 && (
+							<span className="text-muted-foreground text-sm">
+								No available tasks
+							</span>
+						)}
 						{availableTasks.map((t) => (
 							<div key={t.id} className="flex items-center justify-between">
 								<div className="flex flex-col">
@@ -109,6 +111,11 @@ export default function EditCardTaskManagementDialog({
 					</div>
 					<div className="flex flex-col gap-2">
 						<h1>Assigned Tasks</h1>
+						{assignedTasks.length === 0 && (
+							<span className="text-muted-foreground text-sm">
+								No assigned tasks
+							</span>
+						)}
 						{assignedTasks.map((t) => (
 							<div key={t.id} className="flex items-center justify-between">
 								<div className="flex flex-row gap-1">
