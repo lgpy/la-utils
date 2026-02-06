@@ -23,7 +23,6 @@ const links = [
 	{ id: "characters", label: "Characters", href: "/characters" },
 	{ id: "prices", label: "Prices", href: "/prices" },
 	{ id: "crafting", label: "Crafting", href: "/crafting" },
-	{ id: "stone", label: "Stone", href: "/stone" },
 	{ id: "changelog", label: "Changelog", href: "/changelog" },
 ];
 
