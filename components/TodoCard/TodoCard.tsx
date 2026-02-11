@@ -24,22 +24,30 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface Props {
 	char: Character;
-	mode: "default" | "raids" | "tasks";
-	hideCompleted?: boolean;
 }
 
-export default function TodoCard({ char, mode, hideCompleted }: Props) {
+export default function TodoCard({ char }: Props) {
 	const mainStore = useMainStore();
-	const experimentsStore = useSettingsStore((store) => store);
+	const settingsStore = useSettingsStore((store) => store);
 	const highest3 = useMemo(() => {
 		const goldInfo = parseGoldInfo(char.assignedRaids);
 		const highest3 = getHighest3(
 			char.assignedRaids,
 			goldInfo,
-			experimentsStore.state.experiments.ignoreThaemineIfNoG4
+			settingsStore.state.experiments.ignoreThaemineIfNoG4
 		);
 		return highest3;
-	}, [char, experimentsStore.state.experiments.ignoreThaemineIfNoG4]);
+	}, [char, settingsStore.state.experiments.ignoreThaemineIfNoG4]);
+
+	const mode = settingsStore.state.uiSettings.separateTasks
+		? settingsStore.state.uiSettings.showSeparatedTasks
+			? "tasks"
+			: "raids"
+		: "default";
+
+	const hideCompleted = settingsStore.state.uiSettings.hideCompleted
+		? !settingsStore.state.uiSettings.forceShowCompleted
+		: false;
 
 	const [raidsParent] = useAutoAnimate({
 		disrespectUserMotionPreference: true,
@@ -120,7 +128,7 @@ export default function TodoCard({ char, mode, hideCompleted }: Props) {
 									Object.keys(char.assignedRaids).length
 							}
 						>
-							{experimentsStore.state.uiSettings.buttonV2 ? (
+							{settingsStore.state.uiSettings.buttonV2 ? (
 								<TodoCardCompleteButtonV2
 									assignedGates={char.assignedRaids[raidId]}
 									charId={char.id}
@@ -185,7 +193,7 @@ export default function TodoCard({ char, mode, hideCompleted }: Props) {
 		hideCompleted,
 		mainStore,
 		highest3,
-		experimentsStore.state.uiSettings.buttonV2,
+		settingsStore.state.uiSettings.buttonV2,
 	]);
 
 	return (
