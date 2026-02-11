@@ -1,7 +1,7 @@
 import type { Character } from "@/stores/main-store/provider";
 import { getLatestBiWeeklyReset, getLatestWeeklyReset } from "./dates";
 import { isGateCompleted } from "./raids";
-import { Class, Difficulty } from "@/generated/prisma";
+import { Class, Difficulty } from "@/prisma/generated/enums";
 import { raidData } from "./game-info";
 
 type RaidGoldInfo = Record<string, GoldInfo>;

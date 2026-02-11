@@ -22,7 +22,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Difficulty } from "@/generated/prisma";
+import { Difficulty } from "@/prisma/generated/enums";
 import { raidData, Raid } from "@/lib/game-info";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { useAutoAnimate } from "@formkit/auto-animate/react";

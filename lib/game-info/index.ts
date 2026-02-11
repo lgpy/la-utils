@@ -2,7 +2,7 @@ import z from "zod";
 import craftingItemsJson from "./craftingItems.json";
 import itemsJson from "./items.json";
 import raidsJson from "./raids.json";
-import { Difficulty } from "@/generated/prisma";
+import { Difficulty } from "@/prisma/generated/enums";
 
 const itemIds = Object.keys(itemsJson) as [string, ...string[]];
 

@@ -1,4 +1,4 @@
-import { Class, Difficulty } from "@/generated/prisma";
+import { Class, Difficulty } from "@/prisma/generated/enums";
 import type { MainState } from "@/stores/main-store/main-store";
 import { type Page, expect, test } from "@playwright/test";
 
@@ -179,7 +179,7 @@ test("delete character and undo", async ({ page }) => {
 	let characterCard = await page.getByTestId("character-0");
 	await characterCard.getByTestId("edit-character").click();
 	page.once("dialog", (dialog) => {
-		dialog.accept().catch(() => {});
+		dialog.accept().catch(() => { });
 	});
 	await page.getByTestId("char-delete-button").click();
 	characterCard = await page.getByTestId("character-0");

@@ -10,7 +10,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
 import { Fragment, useMemo } from "react";
 import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
-import { TaskType } from "@/generated/prisma";
+import { TaskType } from "@/prisma/generated/enums";
 
 type Props = {
 	char: Character;

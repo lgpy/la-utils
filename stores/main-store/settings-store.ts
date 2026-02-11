@@ -1,4 +1,4 @@
-import { ServerName } from "@/generated/prisma";
+import { ServerName } from "@/prisma/generated/enums";
 import { z } from "zod";
 import { createStore } from "zustand";
 import { persist } from "zustand/middleware";

@@ -1,4 +1,4 @@
-import { ServerRegion } from "@/generated/prisma";
+import { ServerRegion } from "@/prisma/generated/enums";
 import z from "zod";
 
 export const getMarketPricesSchema = z.object({

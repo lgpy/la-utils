@@ -1,4 +1,4 @@
-import { Difficulty } from "@/generated/prisma";
+import { Difficulty } from "@/prisma/generated/enums";
 import { MainState, StateActions, zodChars } from "../main-store";
 import { getGateResetDate } from "@/lib/dates";
 import { isGateCompleted } from "@/lib/raids";

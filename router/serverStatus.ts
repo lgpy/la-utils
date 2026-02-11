@@ -1,7 +1,7 @@
 import { ORPCError, os } from "@orpc/server";
 import { dbProviderMiddleware } from "./middleware/db";
 import { z } from "zod";
-import { ServerName, ServerStatus } from "@/generated/prisma";
+import { ServerName, ServerStatus } from "@/prisma/generated/enums";
 import * as cheerio from "cheerio";
 
 async function fetchServerStatus() {

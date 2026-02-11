@@ -1,4 +1,4 @@
-import { ChangelogDetailType } from "@/generated/prisma";
+import { ChangelogDetailType } from "@/prisma/generated/enums";
 import { z } from "zod";
 import { paginatedSchema } from "./general.schema";
 

@@ -4,7 +4,7 @@ import { useLoaLogsDb } from "./LoaLogUpdateRaidCompletion.hooks";
 import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
 import { DbEntry, ignoreBosses } from "./LoaLogUpdateRaidCompletion.utils";
 import { DatabaseBackup } from "lucide-react";
-import { Difficulty } from "@/generated/prisma";
+import { Difficulty } from "@/prisma/generated/enums";
 import { ExpandableButton } from "../ExpandableButton";
 import { FabButtonWrapper } from "./FabButtonWrapper";
 import { useEffect, useCallback, useRef } from "react";

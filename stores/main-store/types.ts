@@ -1,4 +1,4 @@
-import { Class, Difficulty, TaskType } from "@/generated/prisma";
+import { Class, Difficulty, TaskType } from "@/prisma/generated/enums";
 import z from "zod";
 
 export const zodTask = z.object({

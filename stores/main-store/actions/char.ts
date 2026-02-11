@@ -3,7 +3,7 @@ import { StateActions } from "../main-store";
 import z from "zod";
 import { getIndexOrThrow } from "@/lib/array";
 import { zodChar } from "../types";
-import { Class } from "@/generated/prisma";
+import { Class } from "@/prisma/generated/enums";
 
 export const zodNewChar = zodChar.pick({
 	name: true,

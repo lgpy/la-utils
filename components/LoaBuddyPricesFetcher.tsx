@@ -14,7 +14,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { ServerName, ServerRegion } from "@/generated/prisma";
+import { ServerName, ServerRegion } from "@/prisma/generated/enums";
 import { v4 as uuidv4 } from "uuid";
 import { useMemo, useState } from "react";
 

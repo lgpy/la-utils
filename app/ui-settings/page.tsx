@@ -6,7 +6,7 @@ import TodoCardRaidV2 from "@/components/TodoCard/TodoCardRaidV2";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Difficulty } from "@/generated/prisma";
+import { Difficulty } from "@/prisma/generated/enums";
 
 import { useSettingsStore } from "@/stores/main-store/provider";
 

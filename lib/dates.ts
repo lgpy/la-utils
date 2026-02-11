@@ -1,4 +1,4 @@
-import { TaskType } from "@/generated/prisma";
+import { TaskType } from "@/prisma/generated/enums";
 import { raidData } from "./game-info";
 
 export function getLatestBiWeeklyReset(
@@ -37,7 +37,7 @@ function _getLatestWeeklyReset(
 		const weekNumber = Math.floor(
 			(latestWednesday.getTime() -
 				new Date(latestWednesday.getUTCFullYear(), 0, 1).getTime()) /
-				(7 * 24 * 60 * 60 * 1000)
+			(7 * 24 * 60 * 60 * 1000)
 		);
 		if (BiWeekly === "odd" && weekNumber % 2 === 0) {
 			latestWednesday.setUTCDate(latestWednesday.getUTCDate() - 7);

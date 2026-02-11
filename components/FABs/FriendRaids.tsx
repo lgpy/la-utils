@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { Class, Difficulty } from "@/generated/prisma";
+import type { Class, Difficulty } from "@/prisma/generated/enums";
 import { separateSupportAndDps } from "@/lib/chars";
 import ClassIcon from "@/components/class-icons/ClassIcon";
 import {

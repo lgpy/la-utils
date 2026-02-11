@@ -25,7 +25,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Class } from "@/generated/prisma";
+import { Class } from "@/prisma/generated/enums";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InfoIcon, Trash2Icon } from "lucide-react";

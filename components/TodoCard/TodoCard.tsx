@@ -19,7 +19,7 @@ import TodoCardCompleteButton from "./TodoCardCompleteButton";
 import TodoCardCompleteButtonV2 from "./TodoCardCompleteButtonV2";
 import TodoCardRaidV2 from "./TodoCardRaidV2";
 import TodoCardTask from "./TodoCardTask";
-import { TaskType } from "@/generated/prisma";
+import { TaskType } from "@/prisma/generated/enums";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface Props {

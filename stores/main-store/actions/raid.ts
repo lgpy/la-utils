@@ -1,7 +1,7 @@
 import { getGateResetDate, getLatestWeeklyReset } from "@/lib/dates";
 import { isGateCompleted } from "@/lib/raids";
 import { StateActions } from "../main-store";
-import { Difficulty } from "@/generated/prisma";
+import { Difficulty } from "@/prisma/generated/enums";
 import { getIndexOrThrow, getOrThrow } from "@/lib/array";
 import { raidData } from "@/lib/game-info";
 import {
@@ -196,9 +196,9 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 			const isCompleted =
 				gate.completedDate !== undefined
 					? isGateCompleted(
-							new Date(gate.completedDate),
-							getGateResetDate(raidId, gateId)
-						)
+						new Date(gate.completedDate),
+						getGateResetDate(raidId, gateId)
+					)
 					: false;
 
 			const gateData = raidData.getOrThrow(raidId).getGateOrThrow(gateId);
@@ -215,9 +215,9 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 						const biweeklyGateIsCompleted =
 							assignedRaid[gateId].completedDate !== undefined
 								? isGateCompleted(
-										new Date(assignedRaid[gateId].completedDate),
-										getGateResetDate(raidId, gateId)
-									)
+									new Date(assignedRaid[gateId].completedDate),
+									getGateResetDate(raidId, gateId)
+								)
 								: false;
 						if (
 							biweeklyGateIsCompleted &&
@@ -241,9 +241,9 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 						const biweeklyGateIsCompleted =
 							completedDate !== undefined
 								? isGateCompleted(
-										new Date(completedDate),
-										getGateResetDate(raidId, gateId)
-									)
+									new Date(completedDate),
+									getGateResetDate(raidId, gateId)
+								)
 								: false;
 						if (biweeklyGateIsCompleted) {
 							continue;
@@ -456,9 +456,9 @@ export const createRaidActions: StateActions<RaidActions> = (set) => ({
 				const isCompleted =
 					gate.completedDate !== undefined
 						? isGateCompleted(
-								new Date(gate.completedDate),
-								getGateResetDate(raidId, gateId)
-							)
+							new Date(gate.completedDate),
+							getGateResetDate(raidId, gateId)
+						)
 						: false;
 
 				if (!isCompleted) {
