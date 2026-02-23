@@ -1,7 +1,10 @@
 import type { PricesStore } from "@/stores/prices-store";
 
 export function is_item_price_expired(
-	item: PricesStore["prices"][number] | undefined
+	item: {
+		price: number
+		updatedOn: number
+	} | undefined
 ) {
 	if (item === undefined || item.price === 0) return true;
 
@@ -14,7 +17,10 @@ export function is_item_price_expired(
 }
 
 export const isBadPriceItem = (
-	item: PricesStore["prices"][number] | undefined
+	item: {
+		price: number
+		updatedOn: number
+	} | undefined
 ) => {
 	if (item === undefined || item.price === 0) {
 		return "This item has a price of 0";

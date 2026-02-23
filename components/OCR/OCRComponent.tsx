@@ -29,7 +29,7 @@ type PricesOCRProps = {
 };
 
 export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
-	const { store } = usePriceStore();
+	const { state } = usePriceStore((state) => state);
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -152,7 +152,12 @@ export default function PricesOCR({ isOpen, onOpenChange }: PricesOCRProps) {
 	const applyChanges = () => {
 		if (!result) return;
 		for (const item of result) {
-			store.changePrice(item.itemId, item.lowestPrice);
+			state.changePrices([
+				{
+					itemId: item.itemId,
+					price: item.lowestPrice,
+				},
+			]);
 		}
 		resetStates();
 		toast.success("Prices updated successfully.");

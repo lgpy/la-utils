@@ -19,23 +19,24 @@ export default function CraftingItemCard({
 	id: string;
 	item: CraftingItem;
 }) {
-	const { store: pricesStore, hasHydrated: pricesHasHydrated } =
-		usePriceStore();
-	const { store, hasHydrated: craftHasHydrated } = useCraftingStore(
-		(store) => store
+	const { state: pricesStore, hasHydrated: pricesHasHydrated } = usePriceStore(
+		(state) => state
+	);
+	const { state: store, hasHydrated: craftHasHydrated } = useCraftingStore(
+		(state) => state
 	);
 
 	if (!pricesHasHydrated || !craftHasHydrated) {
 		return null;
 	}
 
-	const item_price = pricesStore?.prices.find((i) => i.id === id);
+	const item_price = pricesStore.prices.get(id);
 
 	const recipe_items_price = Object.values(item.recipes).reduce(
 		(acc, items) => {
 			for (const key of Object.keys(items)) {
 				if (acc[key] !== undefined) continue;
-				const price = pricesStore?.prices.find((i) => i.id === key)?.price || 0;
+				const price = pricesStore.prices.get(key)?.price || 0;
 				acc[key] = price;
 			}
 			return acc;
@@ -75,7 +76,7 @@ export default function CraftingItemCard({
 				0
 			);
 			const isPricesBad = Object.keys(recipe_items).some((key) =>
-				is_item_price_expired(pricesStore?.prices.find((i) => i.id === key))
+				is_item_price_expired(pricesStore.prices.get(key))
 			);
 			const craft_cost = recipe_item_cost + gold_craft_cost;
 			const profit = sellPrice - craft_cost;

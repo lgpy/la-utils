@@ -6,7 +6,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { TaskType } from "@/prisma/generated/enums";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { ArrowLeftIcon, ArrowRightIcon, PencilIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";

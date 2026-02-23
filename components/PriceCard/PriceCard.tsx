@@ -36,15 +36,23 @@ export const MariShopSection = ({
 	marketQty,
 	itemId,
 }: MariShopSectionProps) => {
-	const priceStore = usePriceStore();
+	const priceStore = usePriceStore((state) => state);
 
-	const marketPrice = useMemo(() => {
-		if (!priceStore.hasHydrated) return 0;
-		const item = priceStore.store.prices.find((i) => i.id === itemId);
-		return item?.price || 0;
+	const { marketPrice, single_bc_price } = useMemo(() => {
+		if (!priceStore.hasHydrated)
+			return {
+				marketPrice: 0,
+				single_bc_price: 0,
+			};
+		const item = priceStore.state.prices.get(itemId);
+		const bcItem = priceStore.state.prices.get("blue-crystal");
+		return {
+			marketPrice: item?.price || 0,
+			single_bc_price: (bcItem?.price || 0) / 95,
+		};
 	}, [priceStore, itemId]);
 
-	const blueCrystalValue = priceStore.single_bc_price * mari.bc;
+	const blueCrystalValue = single_bc_price * mari.bc;
 	const singleMarketValue = marketPrice / marketQty;
 	const singleMariValue = blueCrystalValue / mari.qty;
 	const profit = singleMarketValue - singleMariValue;
@@ -88,11 +96,11 @@ export const ExchangeSection = ({
 	itemId,
 	exchange,
 }: ExchangeSectionProps) => {
-	const priceStore = usePriceStore();
+	const priceStore = usePriceStore((state) => state);
 
 	const marketPrice = useMemo(() => {
 		if (!priceStore.hasHydrated) return 0;
-		const item = priceStore.store.prices.find((i) => i.id === itemId);
+		const item = priceStore.state.prices.get(itemId);
 		return item?.price || 0;
 	}, [priceStore, itemId]);
 
@@ -108,7 +116,7 @@ export const ExchangeSection = ({
 	}>(
 		(best, curr) => {
 			const exchangeItem = itemData.get(curr.id);
-			const storeItem = priceStore.store.prices.find((i) => i.id === curr.id);
+			const storeItem = priceStore.state.prices.get(curr.id);
 
 			if (!exchangeItem || !storeItem) return best;
 
@@ -175,14 +183,14 @@ export const ExchangeSection = ({
 };
 
 export function PriceCardPriceInput({ itemId }: { itemId: string }) {
-	const priceStore = usePriceStore();
+	const priceStore = usePriceStore((state) => state);
 
 	const { marketPrice, timeSinceUpdate } = useMemo(() => {
 		if (!priceStore.hasHydrated) {
 			return { marketPrice: 0, timeSinceUpdate: "Never" };
 		}
 
-		const item = priceStore.store.prices.find((i) => i.id === itemId);
+		const item = priceStore.state.prices.get(itemId);
 		const timeSinceUpdate = item?.updatedOn
 			? formatDistanceToNowStrict(item.updatedOn, { addSuffix: true })
 			: "Never";
@@ -202,7 +210,12 @@ export function PriceCardPriceInput({ itemId }: { itemId: string }) {
 				onChange={(event) => {
 					const num = Number(event.target.value);
 					if (!Number.isNaN(num)) {
-						priceStore.store.changePrice(itemId, num);
+						priceStore.state.changePrices([
+							{
+								itemId: itemId,
+								price: num,
+							},
+						]);
 					}
 				}}
 			/>

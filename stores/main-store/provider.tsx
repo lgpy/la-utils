@@ -19,7 +19,7 @@ import {
 	createContext,
 	useContext,
 	useMemo,
-	useRef,
+	useState,
 } from "react";
 import { useStore } from "zustand";
 import { raidData } from "@/lib/game-info";
@@ -41,19 +41,12 @@ export interface MainStoreProviderProps {
 }
 
 export const MainStoreProvider = ({ children }: MainStoreProviderProps) => {
-	const mainStoreRef = useRef<MainStoreApi>(null);
-	if (!mainStoreRef.current) {
-		mainStoreRef.current = createMainStore();
-	}
-
-	const settingsStoreRef = useRef<SettingsStoreApi>(null);
-	if (!settingsStoreRef.current) {
-		settingsStoreRef.current = createSettingsStore();
-	}
+	const [mainStore] = useState(() => createMainStore());
+	const [settingsStore] = useState(() => createSettingsStore());
 
 	return (
-		<MainStoreContext.Provider value={mainStoreRef.current}>
-			<SettingsStoreContext.Provider value={settingsStoreRef.current}>
+		<MainStoreContext.Provider value={mainStore}>
+			<SettingsStoreContext.Provider value={settingsStore}>
 				{children}
 			</SettingsStoreContext.Provider>
 		</MainStoreContext.Provider>
@@ -61,16 +54,16 @@ export const MainStoreProvider = ({ children }: MainStoreProviderProps) => {
 };
 
 export const useMainStore = () => {
-	const mainStoreContext = useContext(MainStoreContext);
+	const context = useContext(MainStoreContext);
 
-	if (!mainStoreContext) {
+	if (!context) {
 		throw new Error("useMainStore must be used within MainStoreProvider");
 	}
 
-	const hasHydrated = useHydration(mainStoreContext);
-	const isOldVersion = useVersionMismatch(mainStoreContext);
+	const hasHydrated = useHydration(context);
+	const isOldVersion = useVersionMismatch(context);
 
-	const store = useStore(mainStoreContext, (s) => s);
+	const store = useStore(context, (s) => s);
 
 	const characters = useMemo(() => {
 		if (!hasHydrated) return [];
@@ -182,7 +175,7 @@ export const useMainStore = () => {
 		...store,
 		characters,
 		hasHydrated,
-		rehydrate: mainStoreContext.persist?.rehydrate,
+		rehydrate: context.persist?.rehydrate,
 		isOldVersion,
 	};
 };
@@ -193,18 +186,20 @@ export const useSettingsStore = <T,>(
 	state: T;
 	hasHydrated: boolean;
 } => {
-	const settingsStoreContext = useContext(SettingsStoreContext);
+	const context = useContext(SettingsStoreContext);
 
-	if (!settingsStoreContext) {
+	if (!context) {
 		throw new Error(
 			`useSettingsStore must be used within SettingsStoreProvider`
 		);
 	}
 
-	const hasHydrated = useHydration(settingsStoreContext);
+	const hasHydrated = useHydration(context);
+
+	const store = useStore(context, selector);
 
 	return {
-		state: useStore(settingsStoreContext, selector),
+		state: store,
 		hasHydrated,
 	};
 };

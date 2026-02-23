@@ -1,15 +1,9 @@
 "use client";
 
 import { useHydration } from "@/lib/hooks/use-hydration";
-import { type PricesStore, createPriceStore } from "@/stores/prices-store";
-import {
-	type ReactNode,
-	createContext,
-	useContext,
-	useMemo,
-	useRef,
-} from "react";
-import { useStore } from "zustand";
+import { createPriceStore } from "@/stores/prices-store";
+import { type ReactNode, createContext, useContext, useState } from "react";
+import { ExtractState, useStore } from "zustand";
 
 export type PriceStoreApi = ReturnType<typeof createPriceStore>;
 
@@ -22,21 +16,18 @@ export interface PriceStoreProviderProps {
 }
 
 export const PriceStoreProvider = ({ children }: PriceStoreProviderProps) => {
-	const storeRef = useRef<PriceStoreApi>(null);
-	if (!storeRef.current) {
-		storeRef.current = createPriceStore();
-	}
+	const [store] = useState(() => createPriceStore());
 
 	return (
-		<PriceStoreContext.Provider value={storeRef.current}>
+		<PriceStoreContext.Provider value={store}>
 			{children}
 		</PriceStoreContext.Provider>
 	);
 };
 
-const _usePriceStore = <T,>(
-	selector: (store: PricesStore) => T
-): { store: T; hasHydrated: boolean } => {
+export const usePriceStore = <T,>(
+	selector: (store: ExtractState<PriceStoreApi>) => T
+): { state: T; hasHydrated: boolean } => {
 	const priceStoreContext = useContext(PriceStoreContext);
 
 	if (!priceStoreContext) {
@@ -48,26 +39,7 @@ const _usePriceStore = <T,>(
 	const store = useStore(priceStoreContext, selector);
 
 	return {
-		store,
+		state: store,
 		hasHydrated,
-	};
-};
-
-export const usePriceStore = () => {
-	const priceStore = _usePriceStore((store) => store);
-
-	const single_bc_price = useMemo(() => {
-		if (!priceStore.hasHydrated) return 0;
-
-		const bcItem = priceStore.store.prices.find(
-			(item) => item.id === "blue-crystal"
-		);
-		return (bcItem?.price || 0) / 95;
-	}, [priceStore]);
-
-	return {
-		store: priceStore.store,
-		single_bc_price,
-		hasHydrated: priceStore.hasHydrated,
 	};
 };

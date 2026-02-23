@@ -5,7 +5,7 @@ import {
 	type CraftingStore,
 	createCraftingStore,
 } from "@/stores/crafting-store";
-import { type ReactNode, createContext, useContext, useRef } from "react";
+import { type ReactNode, createContext, useContext, useState } from "react";
 import { useStore } from "zustand";
 
 export type CraftingStoreApi = ReturnType<typeof createCraftingStore>;
@@ -21,13 +21,10 @@ export interface CraftingStoreProviderProps {
 export const CraftingStoreProvider = ({
 	children,
 }: CraftingStoreProviderProps) => {
-	const storeRef = useRef<CraftingStoreApi>(null);
-	if (!storeRef.current) {
-		storeRef.current = createCraftingStore();
-	}
+	const [store] = useState(() => createCraftingStore());
 
 	return (
-		<CraftingStoreContext.Provider value={storeRef.current}>
+		<CraftingStoreContext.Provider value={store}>
 			{children}
 		</CraftingStoreContext.Provider>
 	);
@@ -35,21 +32,21 @@ export const CraftingStoreProvider = ({
 
 export const useCraftingStore = <T,>(
 	selector: (store: CraftingStore) => T
-): { store: T; hasHydrated: boolean } => {
-	const craftingStoreContext = useContext(CraftingStoreContext);
+): { state: T; hasHydrated: boolean } => {
+	const context = useContext(CraftingStoreContext);
 
-	if (!craftingStoreContext) {
+	if (!context) {
 		throw new Error(
 			"useCraftingStore must be used within CraftingStoreProvider"
 		);
 	}
 
-	const hasHydrated = useHydration(craftingStoreContext);
+	const hasHydrated = useHydration(context);
 
-	const store = useStore(craftingStoreContext, selector);
+	const store = useStore(context, selector);
 
 	return {
-		store,
+		state: store,
 		hasHydrated,
 	};
 };

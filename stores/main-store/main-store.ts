@@ -39,7 +39,7 @@ export type MainStore = MainState &
 	MiscActions;
 
 export type StateActions<T> = StateCreator<
-	MainState,
+	MainStore,
 	[["zustand/immer", never]],
 	[],
 	T
