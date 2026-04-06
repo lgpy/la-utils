@@ -1,6 +1,6 @@
-"server only";
+import 'server-only'
 
-import { ServerRegion } from "@/generated/prisma";
+import { ServerRegion } from "@/prisma/generated/enums";
 import { itemSlugs } from "./loabuddy";
 
 const marketDataApiUrl =

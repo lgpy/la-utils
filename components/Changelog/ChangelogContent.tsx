@@ -35,10 +35,9 @@ export default function ChangelogContent({
 	);
 
 	const {
-		setLastViewedDate,
-		lastViewedDate: lastViewedDateString,
+		state: { lastViewedDate: lastViewedDateString, setLastViewedDate },
 		hasHydrated,
-	} = useChangelogStore();
+	} = useChangelogStore((state) => state);
 
 	const lastViewedDate = useRef<Date | undefined>(undefined);
 	const hasScrolledToHash = useRef(false);

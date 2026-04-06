@@ -14,7 +14,7 @@
 		"node_modules/",
 		".next/",
 		".vercel/",
-		"generated/",
+		"prisma/generated/",
 		"test-results/",
 		"lib/wa-sqlite/dist",
 		"lib/wa-sqlite/src"

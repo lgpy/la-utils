@@ -1,7 +1,7 @@
 // scripts/raidRewardExtractor.ts
 // Fetches and parses raid reward data from a public Google Sheet
 // Usage: bun run scripts/raidRewardExtractor.ts
-import { Difficulty } from "@/generated/prisma";
+import { Difficulty } from "@/prisma/generated/enums";
 import { raidData as raids, raidsSchema } from "@/lib/game-info";
 import raidsJson from "@/lib/game-info/raids.json";
 import { parse } from "csv-parse/sync";

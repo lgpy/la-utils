@@ -1,4 +1,4 @@
-import { Class } from "@/generated/prisma";
+import { Class } from "@/prisma/generated/enums";
 import { cn } from "@/lib/utils";
 import { Loader2Icon } from "lucide-react";
 import type React from "react";

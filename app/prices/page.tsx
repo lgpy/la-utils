@@ -15,7 +15,6 @@ import {
 	MariShopSection,
 	PriceCardPriceInput,
 } from "@/components/PriceCard/PriceCard";
-
 export const metadata: Metadata = {
 	title: "Prices",
 	description: "",

@@ -29,7 +29,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../ui/select";
-import { ChangelogDetailType } from "@/generated/prisma";
+import { ChangelogDetailType } from "@/prisma/generated/enums";
 import { showAlert } from "../AlertDialog.hooks";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

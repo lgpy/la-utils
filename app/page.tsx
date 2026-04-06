@@ -3,11 +3,13 @@ import FriendRaidsFAB from "@/components/FABs/FriendRaidsFAB";
 import LoaLogUpdateRaidCompletion from "@/components/FABs/LoaLogUpdateRaidCompletion";
 import RosterGold from "@/components/RosterGold";
 import TodoCards from "@/components/TodoCard/TodoCards";
+import TodoCardsMovableMenu from "@/components/TodoCard/TodoCardsMovableMenu";
 import VersionMismatchAlert from "@/components/VersionMismatchAlert";
 
 export default function Home() {
 	return (
 		<>
+			<TodoCardsMovableMenu />
 			<TodoCards />
 			<RosterGold />
 

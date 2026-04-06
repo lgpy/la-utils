@@ -1,7 +1,7 @@
 import { os } from "@orpc/server";
 import { dbProviderMiddleware } from "./middleware/db";
 import { requiredAuthMiddleware } from "./middleware/auth";
-import { Difficulty } from "@/generated/prisma";
+import { Difficulty } from "@/prisma/generated/enums";
 import { getGateResetDate } from "@/lib/dates";
 import { isGateCompleted } from "@/lib/raids";
 

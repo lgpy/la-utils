@@ -23,7 +23,7 @@ export default function CraftingOptions({
 	parent: CraftingParents;
 }) {
 	const craftingStore = useCraftingStore((store) => store);
-	const options = craftingStore.store[parent];
+	const options = craftingStore.state[parent];
 	const label = getLabel(parent);
 
 	return (
@@ -39,7 +39,7 @@ export default function CraftingOptions({
 					className="text-center no-spinner"
 					value={options.costReduction}
 					onChange={(e) =>
-						craftingStore.store.changeKey(
+						craftingStore.state.changeKey(
 							parent,
 							"costReduction",
 							Number(e.target.value)
@@ -54,7 +54,7 @@ export default function CraftingOptions({
 					className="text-center no-spinner"
 					value={options.greatSuccessChance}
 					onChange={(e) =>
-						craftingStore.store.changeKey(
+						craftingStore.state.changeKey(
 							parent,
 							"greatSuccessChance",
 							Number(e.target.value)

@@ -14,7 +14,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { ServerName, ServerRegion } from "@/generated/prisma";
+import { ServerName, ServerRegion } from "@/prisma/generated/enums";
 import { v4 as uuidv4 } from "uuid";
 import { useMemo, useState } from "react";
 
@@ -48,7 +48,7 @@ function ServerRegionFromServerName(serverName: ServerName): ServerRegion {
 }
 
 export default function LoaBuddyPricesFetcher() {
-	const priceStore = usePriceStore();
+	const priceStore = usePriceStore((state) => state);
 	const settingsStore = useSettingsStore((state) => state);
 	const [fetching, setFetching] = useState(false);
 
@@ -56,7 +56,7 @@ export default function LoaBuddyPricesFetcher() {
 
 	const hasFetchedIn3Hours = useMemo(() => {
 		if (!priceStore.hasHydrated) return false;
-		const lastFetch = priceStore.store.lastFetch;
+		const lastFetch = priceStore.state.lastFetch;
 		if (!lastFetch) return false;
 		const lastFetchDate = new Date(lastFetch);
 		const now = new Date();
@@ -113,14 +113,15 @@ export default function LoaBuddyPricesFetcher() {
 						const prices = await client.market.getMarketPrices({
 							server: ServerRegionFromServerName(settingsStore.state.server),
 						});
-						for (const item of prices) {
-							priceStore.store.changePrice(
-								item.itemId,
-								item.price,
-								item.updatedAt
-							);
-						}
-						priceStore.store.setLastFetch(new Date());
+
+						priceStore.state.changePrices(
+							prices.map((p) => ({
+								itemId: p.itemId,
+								price: p.price,
+								updatedOn: p.updatedAt,
+							}))
+						);
+						priceStore.state.setLastFetch(new Date());
 						toast.success("Fetched prices successfully", {
 							id: `loaBuddyPrices-${uuid}`,
 							description: "Prices updated.",

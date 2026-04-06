@@ -1,4 +1,4 @@
-import { ServerName } from "@/generated/prisma";
+import { ServerName } from "@/prisma/generated/enums";
 import { z } from "zod";
 import { createStore } from "zustand";
 import { persist } from "zustand/middleware";
@@ -30,6 +30,8 @@ const zodSettings = z.object({
 			y: z.number(),
 		}),
 		hideCompleted: z.boolean(),
+		forceShowCompleted: z.boolean(),
+		showSeparatedTasks: z.boolean(),
 	}),
 });
 
@@ -50,6 +52,8 @@ export type SettingsActions = {
 	removeIgnoreRaid: (cId: string, rId: string) => void;
 	togglefilterByRaids: (value: boolean) => void;
 	setFriendFilter: (ids: string[]) => void;
+	setForceShowCompleted: (value: boolean) => void;
+	setShowSeparatedTasks: (value: boolean) => void;
 };
 
 export type SettingsStore = SettingsState & SettingsActions;
@@ -79,6 +83,8 @@ export const createSettingsStore = () =>
 						y: 80,
 					},
 					hideCompleted: false,
+					forceShowCompleted: false,
+					showSeparatedTasks: false,
 				},
 				setServer(server) {
 					set({ server });
@@ -141,6 +147,22 @@ export const createSettingsStore = () =>
 						},
 					}));
 				},
+				setForceShowCompleted(value) {
+					set((state) => ({
+						uiSettings: {
+							...state.uiSettings,
+							forceShowCompleted: value,
+						},
+					}));
+				},
+				setShowSeparatedTasks(value) {
+					set((state) => ({
+						uiSettings: {
+							...state.uiSettings,
+							showSeparatedTasks: value,
+						},
+					}));
+				},
 			}),
 			{
 				name: "settings",
@@ -192,6 +214,19 @@ export const createSettingsStore = () =>
 						ps.uiSettings.hideCompleted = false;
 					}
 					return ps;
+				},
+				partialize(state) {
+					return {
+						server: state.server,
+						experiments: state.experiments,
+						uiSettings: {
+							...state.uiSettings,
+							forceShowCompleted: undefined,
+							showSeparatedTasks: undefined,
+						},
+						upload: state.upload,
+						friendRaids: state.friendRaids,
+					};
 				}
 			}
 		)

@@ -1,13 +1,15 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createChangelogStore } from "@/stores/changelog-store";
+import { ChangelogStore, createChangelogStore } from "@/stores/changelog-store";
 import { useHydration } from "@/lib/hooks/use-hydration";
 
-const ChangelogStoreContext = createContext<ReturnType<
-	typeof createChangelogStore
-> | null>(null);
+export type ChangelogStoreApi = ReturnType<typeof createChangelogStore>;
+
+const ChangelogStoreContext = createContext<ChangelogStoreApi | undefined>(
+	undefined
+);
 
 export interface ChangelogStoreProviderProps {
 	children: ReactNode;
@@ -16,7 +18,7 @@ export interface ChangelogStoreProviderProps {
 export const ChangelogStoreProvider = ({
 	children,
 }: ChangelogStoreProviderProps) => {
-	const store = createChangelogStore();
+	const [store] = useState(() => createChangelogStore());
 
 	return (
 		<ChangelogStoreContext.Provider value={store}>
@@ -25,7 +27,12 @@ export const ChangelogStoreProvider = ({
 	);
 };
 
-export const useChangelogStore = () => {
+export const useChangelogStore = <T,>(
+	selector: (store: ChangelogStore) => T
+): {
+	state: T;
+	hasHydrated: boolean;
+} => {
 	const context = useContext(ChangelogStoreContext);
 
 	if (!context) {
@@ -36,10 +43,10 @@ export const useChangelogStore = () => {
 
 	const hasHydrated = useHydration(context);
 
-	const store = useStore(context);
+	const store = useStore(context, selector);
 
 	return {
-		...store,
+		state: store,
 		hasHydrated,
 	};
 };

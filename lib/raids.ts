@@ -1,4 +1,4 @@
-import { Difficulty } from "@/generated/prisma";
+import { Difficulty } from "@/prisma/generated/enums";
 
 export const shortenDifficulty = (difficulty: Difficulty) => {
 	switch (difficulty) {

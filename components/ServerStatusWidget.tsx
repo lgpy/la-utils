@@ -10,7 +10,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "./ui/tooltip";
-import { ServerStatus } from "@/generated/prisma";
+import { ServerStatus } from "@/prisma/generated/enums";
 import { useQuery } from "@tanstack/react-query";
 import { orpc } from "@/lib/orpc";
 

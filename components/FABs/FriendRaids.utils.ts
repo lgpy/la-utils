@@ -1,4 +1,4 @@
-import { Difficulty } from "@/generated/prisma";
+import { Difficulty } from "@/prisma/generated/enums";
 import { sortDifficulties, sortRaidKeys } from "@/lib/chars";
 import { raidData } from "@/lib/game-info";
 import { OrpcOutputs } from "@/lib/orpc";

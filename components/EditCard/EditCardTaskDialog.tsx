@@ -22,7 +22,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { TaskType } from "@/generated/prisma";
+import { TaskType } from "@/prisma/generated/enums";
 import { useMainStore } from "@/stores/main-store/provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash2Icon } from "lucide-react";
