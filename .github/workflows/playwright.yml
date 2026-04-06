@@ -39,6 +39,9 @@ jobs:
           export CI=true
           bun install
 
+      - name: Generate Prisma Client
+        run: bunx prisma generate
+
       - name: Build app
         run: bun run build
 
