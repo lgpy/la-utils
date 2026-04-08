@@ -120,7 +120,10 @@ export function useLoaLogsDb(onResponse?: (data: DbEntry[]) => void) {
 				});
 				// Launch worker and send init message
 				workerRef.current = new Worker(
-					new URL("../../workers/dbWorker.ts", import.meta.url)
+					new URL("../../workers/dbWorker.ts", import.meta.url),
+					{
+						type: "module",
+					}
 				);
 
 				workerRef.current.addEventListener("message", handleWorkerMessage);

@@ -40,12 +40,35 @@ let db: number | null = null;
 // biome-ignore lint/suspicious/noExplicitAny: We need to use `any` for dynamic module loading
 let wasmModule: any = null;
 
+let wasmUrl: string;
+try {
+	const resolvedUrl = new URL(
+		"../lib/wa-sqlite/dist/wa-sqlite-async.wasm",
+		import.meta.url
+	).href;
+
+	if (resolvedUrl.startsWith("/")) {
+		wasmUrl = `${self.location.origin}${resolvedUrl}`;
+	} else {
+		wasmUrl = resolvedUrl;
+	}
+} catch {
+	wasmUrl = `${self.location.origin}/_next/static/media/wa-sqlite-async.wasm`;
+}
+
 addEventListener("message", async (event: MessageEvent<MessageType>) => {
 	const { type, payload } = event.data;
 	console.debug("Worker received message:", type, payload);
 	try {
 		if (type === "init") {
-			wasmModule = await moduleFactory();
+			wasmModule = await moduleFactory({
+				locateFile: (path: string, _prefix: string) => {
+					if (path.endsWith(".wasm")) {
+						return wasmUrl;
+					}
+					return _prefix + path;
+				},
+			});
 			sqlite3 = SQLite.Factory(wasmModule);
 			const vfs = await OPFSReadOnlyVFS.create(
 				IDBName,
