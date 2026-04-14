@@ -203,9 +203,10 @@ export function sortRaidKeys(a: string, b: string) {
 }
 
 const difficultyOrder: Record<Difficulty, number> = {
-	[Difficulty.Hard]: 0,
-	[Difficulty.Normal]: 1,
-	[Difficulty.Solo]: 2,
+	[Difficulty.Nightmare]: 0,
+	[Difficulty.Hard]: 1,
+	[Difficulty.Normal]: 2,
+	[Difficulty.Solo]: 3,
 };
 
 export function sortDifficulties(a: Difficulty, b: Difficulty) {

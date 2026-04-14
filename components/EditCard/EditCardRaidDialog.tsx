@@ -230,7 +230,7 @@ export default function EditCardRaidDialog({
 						.map(
 							(gateId) =>
 								character.assignedRaids[raidId]?.[gateId]?.difficulty || "none"
-						) || ([] as ("none" | "Solo" | "Normal" | "Hard" | undefined)[])
+						) || ([] as ("none" | Difficulty | undefined)[])
 				),
 			});
 		}

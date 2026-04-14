@@ -104,32 +104,6 @@ class GateDifficulty {
 		this.itemlevel = data.itemlevel;
 		this.rewards = data.rewards;
 	}
-
-	shortDifficulty(difficulty: Difficulty) {
-		switch (difficulty) {
-			case Difficulty.Normal:
-				return "NM";
-			case Difficulty.Hard:
-				return "HM";
-			case Difficulty.Solo:
-				return "SO";
-			default:
-				const _: never = difficulty; // Ensure all cases are handled
-		}
-	}
-
-	shortestDifficulty(difficulty: Difficulty) {
-		switch (difficulty) {
-			case Difficulty.Normal:
-				return "N";
-			case Difficulty.Hard:
-				return "H";
-			case Difficulty.Solo:
-				return "S";
-			default:
-				const _: never = difficulty; // Ensure all cases are handled
-		}
-	}
 }
 
 class Gate {
