@@ -27,7 +27,7 @@ import { raidData } from "@/lib/game-info";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useMemo } from "react";
+import { useEffect, useEffectEvent, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -186,13 +186,12 @@ export default function EditCardRaidDialog({
 		);
 	}, [character.itemLevel, form.control, watchRaidId]);
 
-	useEffect(() => {
-		if (raidId !== undefined && watchRaidId !== raidId) return;
-		const actualRaid = raidData.get(watchRaidId);
+	const setToLastAvailableDifficulty = useEffectEvent((raidId: string) => {
+		const actualRaid = raidData.get(raidId);
 		if (actualRaid) {
-			form.reset({
-				raidId: actualRaid ? watchRaidId : "",
-				gates: Array.from(
+			form.setValue(
+				"gates",
+				Array.from(
 					actualRaid.gates
 						.values()
 						.map(
@@ -201,19 +200,22 @@ export default function EditCardRaidDialog({
 									([, diffData]) => diffData.itemlevel <= character.itemLevel
 								)?.[0] ?? "none"
 						)
-				),
-			});
+				) as ("none" | Difficulty)[]
+			);
 		}
-	}, [form, watchRaidId, character.itemLevel, raidId]);
+	});
+
+	const lastRaidId = useRef<string | null>(null);
 
 	useEffect(() => {
-		if (!isOpen) {
-			form.reset({
-				raidId: raidId || "",
-				gates: [],
-			});
-			return;
-		}
+		if (raidId !== undefined) return;
+		if (lastRaidId.current === watchRaidId) return;
+		lastRaidId.current = watchRaidId;
+		setToLastAvailableDifficulty(watchRaidId);
+	}, [raidId, watchRaidId]);
+
+	useEffect(() => {
+		if (!isOpen) return;
 
 		if (raidId === undefined) {
 			form.reset({
@@ -237,7 +239,13 @@ export default function EditCardRaidDialog({
 	}, [isOpen, raidId, form, character.assignedRaids]);
 
 	return (
-		<Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
+		<Dialog open={isOpen} onOpenChange={(open) => {
+			if (!open) {
+				close();
+				lastRaidId.current = null;
+				form.reset();
+			}
+		}}>
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle className="text-primary">
