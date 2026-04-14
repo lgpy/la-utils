@@ -8,6 +8,11 @@ export const shortenDifficulty = (difficulty: Difficulty) => {
 			return "HM";
 		case Difficulty.Solo:
 			return "SO";
+		case Difficulty.Nightmare:
+			return "NT";
+		default:
+			const _exhaustive: never = difficulty;
+			return _exhaustive;
 	}
 };
 
@@ -19,6 +24,11 @@ export const shortestDifficulty = (difficulty: Difficulty) => {
 			return "H";
 		case Difficulty.Solo:
 			return "S";
+		case Difficulty.Nightmare:
+			return "T";
+		default:
+			const _exhaustive: never = difficulty;
+			return _exhaustive;
 	}
 };
 
