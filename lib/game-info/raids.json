@@ -1312,7 +1312,7 @@
 		"name": "SR: Serca",
 		"gates": {
 			"G1": {
-				"bossName": [],
+				"bossName": ["Witch of Agony, Serca"],
 				"difficulties": {
 					"Normal": {
 						"itemlevel": 1710,
@@ -1344,7 +1344,7 @@
 				}
 			},
 			"G2": {
-				"bossName": [],
+				"bossName": ["Corvus Tul Rak"],
 				"difficulties": {
 					"Normal": {
 						"itemlevel": 1710,
