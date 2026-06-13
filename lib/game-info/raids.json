@@ -1455,14 +1455,14 @@
 		"name": "AD: Horizon Cathedral",
 		"gates": {
 			"G1": {
-				"bossName": [],
+				"bossName": ["Archbishop Arcenos"],
 				"difficulties": {
 					"Normal": {
 						"itemlevel": 1700,
 						"rewards": {
 							"gold": {
-								"bound": 0,
-								"unbound": 14000
+								"bound": 13500,
+								"unbound": 0
 							}
 						}
 					},
@@ -1470,8 +1470,8 @@
 						"itemlevel": 1720,
 						"rewards": {
 							"gold": {
-								"bound": 0,
-								"unbound": 17500
+								"bound": 16000,
+								"unbound": 0
 							}
 						}
 					},
@@ -1479,22 +1479,22 @@
 						"itemlevel": 1750,
 						"rewards": {
 							"gold": {
-								"bound": 0,
-								"unbound": 21000
+								"bound": 20000,
+								"unbound": 0
 							}
 						}
 					}
 				}
 			},
 			"G2": {
-				"bossName": [],
+				"bossName": ["Arcenos, Vanguard of Fanaticism"],
 				"difficulties": {
 					"Normal": {
 						"itemlevel": 1700,
 						"rewards": {
 							"gold": {
-								"bound": 0,
-								"unbound": 21000
+								"bound": 16500,
+								"unbound": 0
 							}
 						}
 					},
@@ -1502,8 +1502,8 @@
 						"itemlevel": 1720,
 						"rewards": {
 							"gold": {
-								"bound": 0,
-								"unbound": 26500
+								"bound": 24000,
+								"unbound": 0
 							}
 						}
 					},
@@ -1511,8 +1511,8 @@
 						"itemlevel": 1750,
 						"rewards": {
 							"gold": {
-								"bound": 0,
-								"unbound": 33000
+								"bound": 30000,
+								"unbound": 0
 							}
 						}
 					}
