@@ -23,7 +23,6 @@ const links = [
 	{ id: "characters", label: "Characters", href: "/characters" },
 	{ id: "prices", label: "Prices", href: "/prices" },
 	{ id: "crafting", label: "Crafting", href: "/crafting" },
-	{ id: "changelog", label: "Changelog", href: "/changelog" },
 ];
 
 export default function NavBar() {
@@ -100,7 +99,6 @@ export default function NavBar() {
 				</SheetContent>
 			</Sheet>
 			<div className="ml-auto flex flex-row gap-2">
-				<NotificationDropdown />
 				<SettingsButton />
 			</div>
 		</header>

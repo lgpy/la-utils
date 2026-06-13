@@ -19,6 +19,8 @@ async function fetchSheetCSV(url: string): Promise<string> {
 }
 
 const raidMatch: Record<string, string> = {
+	"Abyssal Dungeon: Horizon Cathedral": "horizon-cathedral",
+	"Shadow Raid: Serca": "serca",
 	"Act 4: Armoche": "armoche",
 	"Denouement: Final Day": "kazeros",
 	"Strike Raid (1-4p)": "strike-raid-4p",
@@ -36,6 +38,14 @@ const raidMatch: Record<string, string> = {
 	Thaemine: "thaemine",
 	Valtan: "valtan",
 	Vykas: "vykas",
+};
+
+const diffMatch: Record<string, Record<string, Difficulty>> = {
+	"horizon-cathedral": {
+		"Level 1": Difficulty.Normal,
+		"Level 2": Difficulty.Hard,
+		"Level 3": Difficulty.Nightmare,
+	}
 };
 
 async function main() {
@@ -117,11 +127,16 @@ async function main() {
 					console.warn(`Gate "${gateId}" not found for raid "${raidKey}"`);
 					return;
 				}
-				const diffData = gateData.getDifficulty(difficulty as Difficulty);
+				let diffData = gateData.getDifficulty(difficulty as Difficulty);
 				if (!diffData) {
-					console.warn(
-						`Difficulty "${difficulty}" not found for raid "${raidKey}" and gate "${gateId}"`
-					);
+					try {
+						const resolvedDiff = diffMatch[raidKey][difficulty]
+						diffData = gateData.getDifficulty(resolvedDiff)
+					} catch {
+						console.warn(
+							`Difficulty "${difficulty}" not found for raid "${raidKey}" and gate "${gateId}"`
+						);
+					}
 					return;
 				}
 				if (diffData.itemlevel !== itemLevel) {
@@ -150,7 +165,7 @@ async function main() {
 			raidsSchema.parse(raidsDataToUpdate); // Validate the updated data
 			const fs = require("fs");
 			fs.writeFileSync(
-				"lib\\game-info\\raids.json",
+				"lib/game-info/raids.json",
 				JSON.stringify(raidsDataToUpdate, null, 2)
 			);
 		}
