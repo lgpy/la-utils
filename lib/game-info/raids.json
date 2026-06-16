@@ -1386,7 +1386,9 @@
     "name": "SR: Serca",
     "gates": {
       "G1": {
-        "bossName": [],
+        "bossName": [
+          "Witch of Agony, Serca"
+        ],
         "difficulties": {
           "Normal": {
             "itemlevel": 1710,
@@ -1418,7 +1420,9 @@
         }
       },
       "G2": {
-        "bossName": [],
+        "bossName": [
+          "Corvus Tul Rak"
+        ],
         "difficulties": {
           "Normal": {
             "itemlevel": 1710,
@@ -1455,7 +1459,9 @@
     "name": "AD: Horizon Cathedral",
     "gates": {
       "G1": {
-        "bossName": [],
+        "bossName": [
+          "Archbishop Arcenos"
+        ],
         "difficulties": {
           "Normal": {
             "itemlevel": 1700,
@@ -1487,7 +1493,9 @@
         }
       },
       "G2": {
-        "bossName": [],
+        "bossName": [
+          "Arcenos, Vanguard of Fanaticism"
+        ],
         "difficulties": {
           "Normal": {
             "itemlevel": 1700,
