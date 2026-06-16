@@ -58,7 +58,7 @@ async function main() {
 			trim: true,
 		});
 		// Slice from row 5 (index 4), and columns C (2) to H (7)
-		const data = rows.slice(4).map((row) => row.slice(2, 8));
+		const data = rows.slice(4).map((row) => row.slice(2, 9));
 		// Filter out rows where all cells are empty
 		const filtered = data.filter((row) =>
 			row.some((cell) => cell && cell.trim() !== "")
@@ -68,7 +68,7 @@ async function main() {
 		let itemLevel = 0;
 		const raidDifficultyGate = [];
 		for (const row of filtered) {
-			const [raid, difficulty, iLvl, gate, gold, boundGold] = row.map((cell) =>
+			const [raid, difficulty, iLvl, gate, gold, boundGold, cBoundGold] = row.map((cell) =>
 				cell.trim().replaceAll("\n", " ")
 			);
 			if (gate === "Total") continue; // Skip total rows
@@ -78,7 +78,20 @@ async function main() {
 			}
 
 			if (difficulty) {
-				diff = difficulty;
+				if (difficulty in Difficulty) {
+					diff = difficulty;
+
+				} else {
+					try {
+						const raidKey = raidMatch[raidName]
+						diff = diffMatch[raidKey][difficulty]
+					} catch {
+						console.warn(
+							`Difficulty "${difficulty}" not found for raid "${raidName}" and gate "${gate}"`
+						);
+						continue
+					}
+				}
 			}
 
 			if (iLvl) {
@@ -91,7 +104,7 @@ async function main() {
 				itemLevel: itemLevel,
 				gate: gate,
 				gold: {
-					bound: Number.parseInt(boundGold, 10) || 0,
+					bound: (Number.parseInt(boundGold, 10) || 0) + (Number.parseInt(cBoundGold, 10) || 0),
 					unbound: Number.parseInt(gold, 10) || 0,
 				},
 			});
