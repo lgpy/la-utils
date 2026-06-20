@@ -1,4 +1,4 @@
-import type { RedisClient } from 'bun';
+import type Valkey from 'iovalkey';
 
 interface BetterAuthSecondaryStorage {
 	get: (key: string) => Promise<any>;
@@ -8,9 +8,9 @@ interface BetterAuthSecondaryStorage {
 
 class ValkeyAuthModule implements BetterAuthSecondaryStorage {
 	private readonly prefix: string;
-	private readonly client: RedisClient;
+	private readonly client: Valkey;
 
-	constructor(prefix: string, client: RedisClient) {
+	constructor(prefix: string, client: Valkey) {
 		this.prefix = prefix;
 		this.client = client;
 	}

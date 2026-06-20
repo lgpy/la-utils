@@ -1,11 +1,14 @@
-import { RedisClient, type RedisOptions } from 'bun';
 import { ValkeyAuthModule } from './modules';
+import Redis, { RedisOptions } from "iovalkey";
 
-class ValkeyClient extends RedisClient {
+class ValkeyClient extends Redis {
 	public readonly authModule: ValkeyAuthModule;
 
-	constructor(url?: string, options?: RedisOptions) {
-		super(url, options);
+	constructor(path: string, options?: RedisOptions) {
+		if (options)
+			super(path, options);
+		else
+			super(path)
 		this.authModule = new ValkeyAuthModule('auth:', this);
 	}
 }
