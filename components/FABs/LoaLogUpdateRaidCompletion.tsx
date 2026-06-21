@@ -4,17 +4,12 @@ import { useLoaLogsDb } from "./LoaLogUpdateRaidCompletion.hooks";
 import { useMainStore, useSettingsStore } from "@/stores/main-store/provider";
 import { DbEntry, ignoreBosses } from "./LoaLogUpdateRaidCompletion.utils";
 import { DatabaseBackup } from "lucide-react";
-import { Difficulty } from "@/prisma/generated/enums";
 import { ExpandableButton } from "../ExpandableButton";
 import { FabButtonWrapper } from "./FabButtonWrapper";
 import { useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 
 function filterRaidData(raidData: DbEntry) {
-	if (!Object.values(Difficulty).includes(raidData.difficulty as Difficulty))
-		// Check if the difficulty is supported
-		return false;
-
 	if (ignoreBosses.has(raidData.current_boss)) return false; // Ignore guardian raids
 
 	return true;
