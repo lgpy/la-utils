@@ -1,5 +1,5 @@
 import { raidData } from "@/lib/game-info";
-import { z } from "zod";
+import * as v from 'valibot';
 
 // File System Access API utilities for LOA Logs
 declare global {
@@ -117,16 +117,14 @@ export function isFileSystemAccessSupported(): boolean {
 	);
 }
 
-export const zEntries = z
-	.object({
-		current_boss: z.string(),
-		difficulty: z.string(),
-		local_player: z.string(),
-		fight_start: z.number(),
-	})
-	.array();
+export const zEntries = v.array(v.object({
+	current_boss: v.string(),
+	difficulty: v.string(),
+	local_player: v.string(),
+	fight_start: v.number(),
+}));
 
-export type DbEntry = z.infer<typeof zEntries.element>;
+export type DbEntry = v.InferOutput<typeof zEntries.item>;
 
 // guardian raids: https://github.com/snoww/loa-logs/blob/master/src/lib/constants/encounters.ts
 export const ignoreBosses = new Set([

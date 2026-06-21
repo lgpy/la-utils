@@ -1,6 +1,12 @@
-import z from "zod";
+import * as v from 'valibot';
 
-export const paginatedSchema = z.object({
-	limit: z.number().int().min(1).max(100).default(10),
-	cursor: z.number().int().min(0).default(0),
+export const paginatedSchema = v.object({
+	limit: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
+		10
+	),
+	cursor: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		0
+	),
 });

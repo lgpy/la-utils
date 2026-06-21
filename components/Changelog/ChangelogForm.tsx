@@ -2,9 +2,9 @@
 
 import { client, orpc, OrpcOutputs } from "@/lib/orpc";
 import { changelogEntrySchema } from "@/router/changelog.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import * as v from "valibot";
 import {
 	Form,
 	FormControl,
@@ -39,21 +39,19 @@ interface Props {
 	data?: OrpcOutputs["changelog"]["getChangelogEntry"];
 }
 
-const formSchema = changelogEntrySchema
-	.omit({
-		id: true,
-	})
-	.extend({
-		details: changelogEntrySchema.shape.details.element
-			.extend({
-				id: z.string(),
-			})
-			.array(),
-	});
+const formSchema = v.object({
+	...v.omit(changelogEntrySchema, ["id"]).entries,
+	details: v.array(
+		v.object({
+			...changelogEntrySchema.entries.details.item.entries,
+			id: v.string(),
+		})
+	),
+});
 
 export default function ChangelogForm({ data }: Props) {
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+	const form = useForm<v.InferOutput<typeof formSchema>>({
+		resolver: valibotResolver(formSchema),
 		defaultValues: {
 			title: data?.title || "",
 			date: data?.date || new Date(),
@@ -71,7 +69,7 @@ export default function ChangelogForm({ data }: Props) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	function onSubmit(values: v.InferOutput<typeof formSchema>) {
 		const uuid = crypto.randomUUID();
 		toast.loading("Saving changelog entry...", { id: uuid });
 		client.changelog

@@ -1,8 +1,8 @@
-import type { z } from "zod";
+import * as v from 'valibot';
 import { getTaskResetDate } from "./dates";
 import { zodTask } from "@/stores/main-store/types";
 
-export type Task = z.infer<typeof zodTask>;
+export type Task = v.InferOutput<typeof zodTask>;
 
 export function getTaskCompletionState(
 	task: Task,

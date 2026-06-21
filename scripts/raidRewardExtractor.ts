@@ -5,8 +5,9 @@ import { Difficulty } from "@/prisma/generated/enums";
 import { raidData as raids, raidsSchema } from "@/lib/game-info";
 import raidsJson from "@/lib/game-info/raids.json";
 import { parse } from "csv-parse/sync";
+import * as v from "valibot"
 
-const raidsDataToUpdate = raidsSchema.parse(raidsJson);
+const raidsDataToUpdate = v.parse(raidsSchema, raidsJson);
 
 const SHEET_ID = "1YQpWt8iOK6yO5_7r3rvZZKkoRy8Z0aEAPHy11gYZZQ8";
 const SHEET_GID = "582062442"; // Updated to target the correct sheet
@@ -175,7 +176,7 @@ async function main() {
 
 		if (didUpdate) {
 			// Write updated data back to JSON file
-			raidsSchema.parse(raidsDataToUpdate); // Validate the updated data
+			v.parse(raidsSchema, raidsDataToUpdate); // Validate the updated data
 			const fs = require("fs");
 			fs.writeFileSync(
 				"lib/game-info/raids.json",

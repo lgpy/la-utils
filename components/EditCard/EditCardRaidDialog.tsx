@@ -26,15 +26,15 @@ import { Difficulty } from "@/prisma/generated/enums";
 import { raidData } from "@/lib/game-info";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useEffect, useEffectEvent, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
+import * as v from "valibot";
 
-const formSchema = z.object({
-	raidId: z.string().min(2).max(50),
-	gates: z.array(z.nativeEnum(Difficulty).or(z.literal("none"))),
+const formSchema = v.object({
+	raidId: v.pipe(v.string(), v.minLength(2), v.maxLength(50)),
+	gates: v.array(v.union([v.enum(Difficulty), v.literal("none")])),
 });
 
 interface Props {
@@ -52,8 +52,8 @@ export default function EditCardRaidDialog({
 }: Props) {
 	const [parent] = useAutoAnimate();
 	const mainStore = useMainStore();
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+	const form = useForm<v.InferOutput<typeof formSchema>>({
+		resolver: valibotResolver(formSchema),
 		defaultValues: {
 			raidId: raidId || "",
 			gates: [],
@@ -93,7 +93,7 @@ export default function EditCardRaidDialog({
 		return sorted;
 	}, [raidId, character.assignedRaids, character.itemLevel]);
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	function onSubmit(values: v.InferOutput<typeof formSchema>) {
 		try {
 			const raid = raidData.get(values.raidId);
 			if (!raid) throw new Error("Raid not found!");
@@ -239,13 +239,16 @@ export default function EditCardRaidDialog({
 	}, [isOpen, raidId, form, character.assignedRaids]);
 
 	return (
-		<Dialog open={isOpen} onOpenChange={(open) => {
-			if (!open) {
-				close();
-				lastRaidId.current = null;
-				form.reset();
-			}
-		}}>
+		<Dialog
+			open={isOpen}
+			onOpenChange={(open) => {
+				if (!open) {
+					close();
+					lastRaidId.current = null;
+					form.reset();
+				}
+			}}
+		>
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle className="text-primary">

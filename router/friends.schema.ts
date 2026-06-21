@@ -1,18 +1,18 @@
-import { z } from "zod";
+import * as v from 'valibot';
 
-export const respondSchema = z.object({
-	userId: z.string(),
-	action: z.enum(["accept", "reject"]),
+export const respondSchema = v.object({
+	userId: v.string(),
+	action: v.picklist(["accept", "reject"]),
 });
 
-export const revokeRequestSchema = z.object({
-	userId: z.string(),
+export const revokeRequestSchema = v.object({
+	userId: v.string(),
 });
 
-export const sendRequestSchema = z.object({
-	userId: z.string(),
+export const sendRequestSchema = v.object({
+	userId: v.string(),
 });
 
-export const revokeFriendshipSchema = z.object({
-	friendId: z.string(),
+export const revokeFriendshipSchema = v.object({
+	friendId: v.string(),
 });

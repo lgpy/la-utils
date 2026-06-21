@@ -1,28 +1,29 @@
-import { z } from "zod";
+
+import * as v from 'valibot';
 import { persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 
-const zodCrafting = z.object({
-	general: z.object({
-		costReduction: z.number(),
-		greatSuccessChance: z.number(),
-		timeReduction: z.number(),
-		energyReduction: z.number(),
+const zodCrafting = v.object({
+	general: v.object({
+		costReduction: v.number(),
+		greatSuccessChance: v.number(),
+		timeReduction: v.number(),
+		energyReduction: v.number(),
 	}),
-	special: z.object({
-		costReduction: z.number(),
-		greatSuccessChance: z.number(),
-		timeReduction: z.number(),
-		energyReduction: z.number(),
+	special: v.object({
+		costReduction: v.number(),
+		greatSuccessChance: v.number(),
+		timeReduction: v.number(),
+		energyReduction: v.number(),
 	}),
-	battleItem: z.object({
-		costReduction: z.number(),
-		greatSuccessChance: z.number(),
-		timeReduction: z.number(),
-		energyReduction: z.number(),
+	battleItem: v.object({
+		costReduction: v.number(),
+		greatSuccessChance: v.number(),
+		timeReduction: v.number(),
+		energyReduction: v.number(),
 	}),
 });
-export type CraftingState = z.infer<typeof zodCrafting>;
+export type CraftingState = v.InferOutput<typeof zodCrafting>;
 export type CraftingParents = keyof CraftingState;
 export type CraftingKeys = keyof CraftingState[CraftingParents];
 

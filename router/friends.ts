@@ -1,5 +1,5 @@
 import { ORPCError, os } from "@orpc/server";
-import { z } from "zod";
+import * as v from 'valibot';
 import { dbProviderMiddleware } from "./middleware/db";
 import { requiredAuthMiddleware } from "./middleware/auth";
 import {
@@ -135,7 +135,12 @@ export const getFriendRequests = os
 export const getRecommendedFriends = os
 	.use(dbProviderMiddleware)
 	.use(requiredAuthMiddleware)
-	.input(z.object({ count: z.number().min(1).max(20).default(5) }))
+	.input(v.object({
+		count: v.optional(
+			v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(20)),
+			5
+		)
+	}))
 	.handler(
 		async ({
 			context: {

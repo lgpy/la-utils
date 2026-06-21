@@ -4,6 +4,7 @@ import prisma from "@/lib/db";
 import { getUncompressedBody } from "@/lib/requests.server";
 import { headers } from "next/headers";
 import { zodChar } from "@/stores/main-store/types";
+import * as v from "valibot";
 
 export async function POST(request: NextRequest) {
 	if (auth === null) {
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
 
 	const body = await getUncompressedBody(request);
 
-	const chars = zodChar.array().safeParse(body);
+	const chars = v.safeParse(v.array(zodChar), body);
 
 	if (!chars.success) {
 		return NextResponse.json(
@@ -46,14 +47,14 @@ export async function POST(request: NextRequest) {
 		where: {
 			AND: [
 				{ userId: session.user.id },
-				{ id: { notIn: chars.data.map((char) => char.id) } },
+				{ id: { notIn: chars.output.map((char) => char.id) } },
 			],
 		},
 	});
 
 	// Then, upsert each character individually (not in a transaction)
 	await Promise.all(
-		chars.data.map(async (char) => {
+		chars.output.map(async (char) => {
 			await prisma.character.upsert({
 				where: { userId_id: { userId: session.user.id, id: char.id } },
 				update: {

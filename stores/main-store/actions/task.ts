@@ -1,19 +1,15 @@
 import { v4 as uuidv4 } from "uuid";
 import { StateActions } from "../main-store";
-import z from "zod";
+import * as v from 'valibot';
 import { getTaskCompletionState } from "@/lib/tasks";
 import { getIndexOrThrow, getOrThrow } from "@/lib/array";
 import { zodTask } from "../types";
 
-export const zodNewTask = zodTask.pick({
-	name: true,
-	type: true,
-	timesToComplete: true,
-});
+export const zodNewTask = v.pick(zodTask, ["name", "type", "timesToComplete"])
 
 export type TaskActions = {
-	addTask: (task: z.infer<typeof zodNewTask>) => void;
-	editTask: (taskId: string, task: z.infer<typeof zodNewTask>) => void;
+	addTask: (task: v.InferOutput<typeof zodNewTask>) => void;
+	editTask: (taskId: string, task: v.InferOutput<typeof zodNewTask>) => void;
 	delTask: (taskId: string) => void;
 	charAssignTasks: (charId: string, taskIds: string[]) => void;
 	charCompleteTask: (charId: string, taskId: string, fully?: boolean) => void;
@@ -23,7 +19,7 @@ export type TaskActions = {
 export const createTaskActions: StateActions<TaskActions> = (set) => ({
 	addTask(task) {
 		set((state) => {
-			const parsedTask = zodNewTask.parse(task);
+			const parsedTask = v.parse(zodNewTask, task);
 			state.tasks.push({
 				...parsedTask,
 				id: uuidv4(),
@@ -37,7 +33,7 @@ export const createTaskActions: StateActions<TaskActions> = (set) => ({
 				(t) => t.id === taskId,
 				"Task not found"
 			);
-			const parsedTask = zodNewTask.parse(task);
+			const parsedTask = v.parse(zodNewTask, task);
 			state.tasks[taskIndex] = {
 				...parsedTask,
 				id: taskId,
