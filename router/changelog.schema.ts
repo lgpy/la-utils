@@ -1,47 +1,46 @@
 import { ChangelogDetailType } from "@/prisma/generated/enums";
-import { z } from "zod";
+import * as v from 'valibot';
 import { paginatedSchema } from "./general.schema";
 
 export const paginatedChangelogSchema = paginatedSchema;
 
-export const paginatedChangelogOutputSchema = z.object({
-	entries: z
-		.object({
-			id: z.number(),
-			title: z.string(),
-			date: z.date(),
-			description: z.string(),
-			details: z.array(
-				z.object({
-					id: z.number(),
-					description: z.string(),
-					type: z.nativeEnum(ChangelogDetailType),
-				})
-			),
-			isVisible: z.boolean().optional(),
-		})
-		.array(),
-	nextCursor: z.number().optional(),
+export const paginatedChangelogOutputSchema = v.object({
+	entries:
+		v.array(
+			v.object({
+				id: v.number(),
+				title: v.string(),
+				date: v.date(),
+				description: v.string(),
+				details: v.array(
+					v.object({
+						id: v.number(),
+						description: v.string(),
+						type: v.enum(ChangelogDetailType),
+					})
+				),
+				isVisible: v.optional(v.boolean()),
+			})
+		),
+	nextCursor: v.optional(v.number()),
 });
 
-export const last5ChangelogSchema = z.object({
-	lastViewedDate: z.string().datetime(),
+export const last5ChangelogSchema = v.object({
+	lastViewedDate: v.pipe(v.string(), v.isoDateTime()),
 });
 
-export const getChangelogEntrySchema = z.object({
-	id: z.number().int(),
+export const getChangelogEntrySchema = v.object({
+	id: v.pipe(v.number(), v.integer()),
 });
 
-export const changelogEntrySchema = z.object({
-	id: z.number().int().optional(),
-	date: z.date(),
-	title: z.string(),
-	description: z.string(),
-	details: z
-		.object({
-			type: z.nativeEnum(ChangelogDetailType),
-			description: z.string().min(1).max(255),
-		})
-		.array(),
-	isVisible: z.boolean(),
+export const changelogEntrySchema = v.object({
+	id: v.optional(v.pipe(v.number(), v.integer())),
+	date: v.date(),
+	title: v.string(),
+	description: v.string(),
+	details: v.array(v.object({
+		type: v.enum(ChangelogDetailType),
+		description: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+	})),
+	isVisible: v.boolean(),
 });

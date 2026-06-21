@@ -1,6 +1,6 @@
 import { ORPCError, os } from "@orpc/server";
 import { dbProviderMiddleware } from "./middleware/db";
-import { z } from "zod";
+import * as v from 'valibot';
 import { ServerName, ServerStatus } from "@/prisma/generated/enums";
 import * as cheerio from "cheerio";
 
@@ -89,7 +89,7 @@ function isStatusOld(updatedAt: Date, status: ServerStatus): boolean {
 
 export const getServerStatus = os
 	.use(dbProviderMiddleware)
-	.input(z.nativeEnum(ServerName))
+	.input(v.enum(ServerName))
 	.handler(async ({ context: { db }, input }) => {
 		const isServerNameValid = Object.values(ServerName).includes(
 			input as ServerName

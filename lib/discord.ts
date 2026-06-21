@@ -1,6 +1,6 @@
 import 'server-only'
 
-import z from "zod";
+import * as v from 'valibot';
 
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN as string;
 
@@ -19,12 +19,12 @@ export function getAvatarUrl(userId: string, hash: string): string {
 	return `https://cdn.discordapp.com/avatars/${userId}/${hash}.png`;
 }
 
-const discordUserSchema = z.object({
-	id: z.string(),
-	username: z.string(),
-	discriminator: z.string(),
-	avatar: z.string().nullable(),
-	global_name: z.string().nullable(),
+const discordUserSchema = v.object({
+	id: v.string(),
+	username: v.string(),
+	discriminator: v.string(),
+	avatar: v.nullable(v.string()),
+	global_name: v.nullable(v.string()),
 });
 
 export async function fetchDiscordUser(userId: string) {
@@ -38,5 +38,5 @@ export async function fetchDiscordUser(userId: string) {
 	});
 	if (!res.ok) return null;
 	const data = await res.json();
-	return discordUserSchema.parse(data);
+	return v.parse(discordUserSchema, data);
 }

@@ -24,17 +24,17 @@ import {
 } from "@/components/ui/select";
 import { TaskType } from "@/prisma/generated/enums";
 import { useMainStore } from "@/stores/main-store/provider";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { Trash2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
+import * as v from "valibot";
 
-const formSchema = z.object({
-	name: z.string().min(2).max(100),
-	type: z.nativeEnum(TaskType),
-	timesToComplete: z.string(),
+const formSchema = v.object({
+	name: v.pipe(v.string(), v.minLength(2), v.minLength(100)),
+	type: v.enum(TaskType),
+	timesToComplete: v.string(),
 });
 
 interface Props {
@@ -45,8 +45,8 @@ interface Props {
 
 export default function EditCardTaskDialog({ isOpen, close, taskId }: Props) {
 	const mainStore = useMainStore();
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+	const form = useForm<v.InferOutput<typeof formSchema>>({
+		resolver: valibotResolver(formSchema),
 		defaultValues: {
 			name: "",
 			type: "daily",
@@ -54,7 +54,7 @@ export default function EditCardTaskDialog({ isOpen, close, taskId }: Props) {
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	function onSubmit(values: v.InferOutput<typeof formSchema>) {
 		try {
 			if (taskId !== undefined)
 				mainStore.editTask(taskId, {

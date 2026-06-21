@@ -27,12 +27,12 @@ import {
 } from "@/components/ui/select";
 import { Class } from "@/prisma/generated/enums";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { InfoIcon, Trash2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
+import * as v from "valibot";
 
 import {
 	HoverCard,
@@ -40,11 +40,11 @@ import {
 	HoverCardTrigger,
 } from "@/components/ui/hover-card";
 
-const formSchema = z.object({
-	name: z.string().min(2).max(50),
-	itemLevel: z.number().int().min(0).max(9999),
-	class: z.nativeEnum(Class),
-	isGoldEarner: z.boolean(),
+const formSchema = v.object({
+	name: v.pipe(v.string(), v.minLength(2), v.maxLength(50)),
+	itemLevel: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(9999)),
+	class: v.enum(Class),
+	isGoldEarner: v.boolean(),
 });
 
 const classes = Object.values(Class);
@@ -60,8 +60,8 @@ export default function EditCardCharacterDialog({
 	close,
 	existingCharacter,
 }: Props) {
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+	const form = useForm<v.InferOutput<typeof formSchema>>({
+		resolver: valibotResolver(formSchema),
 		defaultValues: {
 			class: classes[0],
 			itemLevel: 0,
@@ -71,7 +71,7 @@ export default function EditCardCharacterDialog({
 	});
 	const mainStore = useMainStore();
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	function onSubmit(values: v.InferOutput<typeof formSchema>) {
 		try {
 			if (existingCharacter !== undefined)
 				mainStore.updateCharacter(existingCharacter.id, values);

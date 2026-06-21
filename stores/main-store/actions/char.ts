@@ -1,35 +1,26 @@
 import { v4 as uuidv4 } from "uuid";
 import { StateActions } from "../main-store";
-import z from "zod";
+import * as v from 'valibot';
 import { getIndexOrThrow } from "@/lib/array";
 import { zodChar } from "../types";
 import { Class } from "@/prisma/generated/enums";
 
-export const zodNewChar = zodChar.pick({
-	name: true,
-	class: true,
-	itemLevel: true,
-	isGoldEarner: true,
-});
-export const zodEditChar = zodChar.pick({
-	name: true,
-	class: true,
-	itemLevel: true,
-	isGoldEarner: true,
-});
+export const zodNewChar = v.pick(zodChar, ["name", "class", "itemLevel", "isGoldEarner"])
+
+export const zodEditChar = v.pick(zodChar, ["name", "class", "itemLevel", "isGoldEarner"])
 
 export type CharacterActions = {
-	createCharacter: (char: z.infer<typeof zodNewChar>) => void;
+	createCharacter: (char: v.InferOutput<typeof zodNewChar>) => void;
 	createSpacerChar: () => void;
-	updateCharacter: (charId: string, char: z.infer<typeof zodEditChar>) => void;
+	updateCharacter: (charId: string, char: v.InferOutput<typeof zodEditChar>) => void;
 	deleteCharacter: (charId: string) => void;
-	restoreCharacter: (char: z.infer<typeof zodChar>, index: number) => void;
+	restoreCharacter: (char: v.InferOutput<typeof zodChar>, index: number) => void;
 	reorderChars: (charIds: string[]) => void;
 };
 
 export const createCharActions: StateActions<CharacterActions> = (set) => ({
 	createCharacter(char) {
-		const newc = zodNewChar.parse(char);
+		const newc = v.parse(zodNewChar, char);
 		set((state) => {
 			state.characters.push({
 				name: newc.name.trim(),
@@ -59,7 +50,7 @@ export const createCharActions: StateActions<CharacterActions> = (set) => ({
 		});
 	},
 	updateCharacter(charId, char) {
-		const updatedChar = zodEditChar.parse(char);
+		const updatedChar = v.parse(zodEditChar, char);
 		set((state) => {
 			const charIndex = getIndexOrThrow(
 				state.characters,
@@ -85,7 +76,7 @@ export const createCharActions: StateActions<CharacterActions> = (set) => ({
 	},
 	restoreCharacter(char, index) {
 		set((state) => {
-			const restoredChar = zodChar.parse(char);
+			const restoredChar = v.parse(zodChar, char);
 			state.characters = [
 				...state.characters.slice(0, index),
 				restoredChar,

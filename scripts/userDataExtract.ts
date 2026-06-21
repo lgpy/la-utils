@@ -1,8 +1,8 @@
 import prisma from "@/lib/db";
 import { zodChar } from "@/stores/main-store/types";
-import z from "zod";
+import * as v from 'valibot';
 
-async function extractUserData(userId: string): Promise<z.infer<typeof zodChar>[]> {
+async function extractUserData(userId: string): Promise<v.InferOutput<typeof zodChar>[]> {
   // Fetch user data from the database
   const characters = await prisma.character.findMany({
     where: { userId },

@@ -1,41 +1,41 @@
 import { ServerName } from "@/prisma/generated/enums";
-import { z } from "zod";
+import * as v from 'valibot';
 import { createStore } from "zustand";
 import { persist } from "zustand/middleware";
 
-const zodSettings = z.object({
-	server: z.nativeEnum(ServerName).optional(),
-	experiments: z.object({
-		ignoreThaemineIfNoG4: z.boolean(),
-		autoUpdateRaids: z.boolean(),
+const zodSettings = v.object({
+	server: v.optional(v.enum(ServerName)),
+	experiments: v.object({
+		ignoreThaemineIfNoG4: v.boolean(),
+		autoUpdateRaids: v.boolean(),
 	}),
-	upload: z.object({
-		ignoreRaids: z
-			.object({
-				cId: z.string(),
-				rId: z.string(),
-			})
-			.array(),
+	upload: v.object({
+		ignoreRaids:
+			v.array(v
+				.object({
+					cId: v.string(),
+					rId: v.string(),
+				})),
 	}),
-	friendRaids: z.object({
-		filterByRaids: z.boolean(),
-		friendFilter: z.string().array(),
+	friendRaids: v.object({
+		filterByRaids: v.boolean(),
+		friendFilter: v.array(v.string()),
 	}),
-	uiSettings: z.object({
-		buttonV2: z.boolean(),
-		compactRaidCard: z.boolean(),
-		separateTasks: z.boolean(),
-		separateTasksPos: z.object({
-			x: z.number(),
-			y: z.number(),
+	uiSettings: v.object({
+		buttonV2: v.boolean(),
+		compactRaidCard: v.boolean(),
+		separateTasks: v.boolean(),
+		separateTasksPos: v.object({
+			x: v.number(),
+			y: v.number(),
 		}),
-		hideCompleted: z.boolean(),
-		forceShowCompleted: z.boolean(),
-		showSeparatedTasks: z.boolean(),
+		hideCompleted: v.boolean(),
+		forceShowCompleted: v.boolean(),
+		showSeparatedTasks: v.boolean(),
 	}),
 });
 
-export type SettingsState = z.infer<typeof zodSettings>;
+export type SettingsState = v.InferOutput<typeof zodSettings>;
 
 export type SettingsActions = {
 	setServer: (server: ServerName) => void;

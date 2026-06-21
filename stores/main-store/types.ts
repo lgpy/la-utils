@@ -1,35 +1,33 @@
 import { Class, Difficulty, TaskType } from "@/prisma/generated/enums";
-import z from "zod";
+import * as v from 'valibot';
 
-export const zodTask = z.object({
-	id: z.string(),
-	name: z.string(),
-	type: z.nativeEnum(TaskType),
-	timesToComplete: z.number().min(1),
+export const zodTask = v.object({
+	id: v.string(),
+	name: v.string(),
+	type: v.enum(TaskType),
+	timesToComplete: v.pipe(v.number(), v.minValue(1)),
 });
 
-export const zodChar = z.object({
-	id: z.string(),
-	name: z.string(),
-	class: z.nativeEnum(Class),
-	itemLevel: z.number(),
-	isGoldEarner: z.boolean(),
-	isSpacer: z.boolean().optional(),
-	assignedRaids: z.record(
-		//raidId
-		z.record(
-			//gateId
-			z.object({
-				difficulty: z.nativeEnum(Difficulty),
-				completedDate: z.number().optional(),
+export const zodChar = v.object({
+	id: v.string(),
+	name: v.string(),
+	class: v.enum(Class),
+	itemLevel: v.number(),
+	isGoldEarner: v.boolean(),
+	isSpacer: v.optional(v.boolean()),
+	assignedRaids: v.record(
+		v.string(),
+		v.record(
+			v.string(),
+			v.object({
+				difficulty: v.enum(Difficulty),
+				completedDate: v.optional(v.number()),
 			})
 		)
 	),
-	tasks: z
-		.object({
-			id: z.string(),
-			completions: z.number(),
-			completionDate: z.number().optional(),
-		})
-		.array(),
+	tasks: v.array(v.object({
+		id: v.string(),
+		completions: v.number(),
+		completionDate: v.optional(v.number()),
+	}))
 });

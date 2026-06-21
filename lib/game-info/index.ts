@@ -1,4 +1,4 @@
-import z from "zod";
+import * as v from 'valibot';
 import craftingItemsJson from "./craftingItems.json";
 import itemsJson from "./items.json";
 import raidsJson from "./raids.json";
@@ -6,13 +6,13 @@ import { Difficulty } from "@/prisma/generated/enums";
 
 const itemIds = Object.keys(itemsJson) as [string, ...string[]];
 
-const itemID = z.enum(itemIds);
+const itemID = v.picklist(itemIds);
 
-const itemRarities = z.enum(["common", "uncommon", "rare", "epic"]);
-const craftingItemTypes = z.enum(["general", "special", "battleItem"]);
+const itemRarities = v.picklist(["common", "uncommon", "rare", "epic"]);
+const craftingItemTypes = v.picklist(["general", "special", "battleItem"]);
 
-const itemType = z.enum(["store", "honing", "honing-t4", "tradeskills"]);
-const itemSubtype = z.enum([
+const itemType = v.picklist(["store", "honing", "honing-t4", "tradeskills"]);
+const itemSubtype = v.picklist([
 	"fishing",
 	"excavating",
 	"logging",
@@ -21,73 +21,69 @@ const itemSubtype = z.enum([
 	"hunting",
 ]);
 
-const itemSchema = z.object({
+const itemSchema = v.object({
 	type: itemType,
-	subtype: itemSubtype.optional(),
-	name: z.string(),
-	rarity: itemRarities.optional(),
-	marketQty: z.number(),
-	mari: z
+	subtype: v.optional(itemSubtype),
+	name: v.string(),
+	rarity: v.optional(itemRarities),
+	marketQty: v.number(),
+	mari: v.optional(v
 		.object({
-			qty: z.number(),
-			bc: z.number(),
-		})
-		.optional(),
-	exchange: z
-		.object({
-			id: itemID,
-			rate: z.number(),
-		})
-		.array()
-		.optional(),
+			qty: v.number(),
+			bc: v.number(),
+		})),
+	exchange: v.optional(v.array(v.object({
+		id: itemID,
+		rate: v.number(),
+	})))
 });
 
-const itemsSchema = z.record(itemID, itemSchema);
+const itemsSchema = v.record(itemID, itemSchema);
 
-const itemsMap = new Map<string, z.infer<typeof itemSchema>>(
-	Object.entries(itemsSchema.parse(itemsJson))
+const itemsMap = new Map<string, v.InferOutput<typeof itemSchema>>(
+	Object.entries(v.parse(itemsSchema, itemsJson))
 );
 
-const craftingItemSchema = z.object({
-	name: z.string(),
+const craftingItemSchema = v.object({
+	name: v.string(),
 	rarity: itemRarities,
 	type: craftingItemTypes,
-	craftCost: z.number(),
-	craftTime: z.number(),
-	craftEnergy: z.number(),
-	returns: z.number(),
-	recipes: z.array(z.record(itemID, z.number())),
+	craftCost: v.number(),
+	craftTime: v.number(),
+	craftEnergy: v.number(),
+	returns: v.number(),
+	recipes: v.array(v.record(itemID, v.number())),
 });
 
-const craftingItemsSchema = z.record(itemID, craftingItemSchema);
+const craftingItemsSchema = v.record(itemID, craftingItemSchema);
 
-const craftingItemsMap = new Map<string, z.infer<typeof craftingItemSchema>>(
-	Object.entries(craftingItemsSchema.parse(craftingItemsJson))
+const craftingItemsMap = new Map<string, v.InferOutput<typeof craftingItemSchema>>(
+	Object.entries(v.parse(craftingItemsSchema, craftingItemsJson))
 );
 
-const gateDiffSchema = z.object({
-	itemlevel: z.number(),
-	rewards: z.object({
-		gold: z.object({
-			bound: z.number(),
-			unbound: z.number(),
+const gateDiffSchema = v.object({
+	itemlevel: v.number(),
+	rewards: v.object({
+		gold: v.object({
+			bound: v.number(),
+			unbound: v.number(),
 		}),
 	}),
 });
 
-const gateSchema = z.object({
-	bossName: z.array(z.string()),
-	difficulties: z.record(z.nativeEnum(Difficulty), gateDiffSchema),
-	isBiWeekly: z.enum(["odd", "even"]).optional(),
+const gateSchema = v.object({
+	bossName: v.array(v.string()),
+	difficulties: v.record(v.enum(Difficulty), gateDiffSchema),
+	isBiWeekly: v.optional(v.picklist(["odd", "even"])),
 });
 
-const raidSchema = z.object({
-	name: z.string(),
-	hidden: z.boolean().optional(),
-	gates: z.record(z.string(), gateSchema),
+const raidSchema = v.object({
+	name: v.string(),
+	hidden: v.optional(v.boolean()),
+	gates: v.record(v.string(), gateSchema),
 });
 
-export const raidsSchema = z.record(z.string(), raidSchema);
+export const raidsSchema = v.record(v.string(), raidSchema);
 
 class GateDifficulty {
 	readonly difficulty: Difficulty;
@@ -99,7 +95,7 @@ class GateDifficulty {
 		};
 	};
 
-	constructor(difficulty: Difficulty, data: z.infer<typeof gateDiffSchema>) {
+	constructor(difficulty: Difficulty, data: v.InferOutput<typeof gateDiffSchema>) {
 		this.difficulty = difficulty;
 		this.itemlevel = data.itemlevel;
 		this.rewards = data.rewards;
@@ -112,7 +108,7 @@ class Gate {
 	readonly difficulties: ReadonlyMap<Difficulty, GateDifficulty>;
 	readonly isBiWeekly?: "odd" | "even";
 
-	constructor(id: string, data: z.infer<typeof gateSchema>) {
+	constructor(id: string, data: v.InferOutput<typeof gateSchema>) {
 		this.id = id;
 		this.bossName = data.bossName;
 		this.difficulties = new Map(
@@ -145,7 +141,7 @@ export class Raid {
 	readonly gates: ReadonlyMap<string, Gate>;
 	readonly hidden: boolean;
 
-	constructor(id: string, data: z.infer<typeof raidSchema>) {
+	constructor(id: string, data: v.InferOutput<typeof raidSchema>) {
 		this.id = id;
 		this.name = data.name;
 		this.gates = new Map(
@@ -172,7 +168,7 @@ export class Raid {
 class Raids {
 	readonly raids: ReadonlyMap<string, Raid>;
 
-	constructor(data: z.infer<typeof raidsSchema>) {
+	constructor(data: v.InferOutput<typeof raidsSchema>) {
 		this.raids = new Map(
 			Object.entries(data).map(([id, data]) => [id, new Raid(id, data)])
 		);
@@ -195,15 +191,15 @@ class Raids {
 	}
 }
 
-export type ItemId = z.infer<typeof itemID>; // FIXME this is a string...
+export type ItemId = v.InferOutput<typeof itemID>; // FIXME this is a string...
 
-export type CraftingItem = z.infer<typeof craftingItemSchema>;
+export type CraftingItem = v.InferOutput<typeof craftingItemSchema>;
 export const craftingData = craftingItemsMap as ReadonlyMap<
 	string,
 	CraftingItem
 >;
 
-export type Item = z.infer<typeof itemSchema>;
+export type Item = v.InferOutput<typeof itemSchema>;
 export const itemData = itemsMap as ReadonlyMap<string, Item>;
 
-export const raidData = new Raids(raidsSchema.parse(raidsJson));
+export const raidData = new Raids(v.parse(raidsSchema, raidsJson));

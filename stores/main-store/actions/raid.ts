@@ -9,11 +9,11 @@ import {
 	getGateInfoFromClearBossName,
 } from "@/components/FABs/LoaLogUpdateRaidCompletion.utils";
 import { zodChar } from "../types";
-import z from "zod";
+import * as v from 'valibot';
 
 function assignCharIdsToLocalPlayers(
 	raidDataArr: DbEntry[],
-	characters: readonly z.infer<typeof zodChar>[]
+	characters: readonly v.InferOutput<typeof zodChar>[]
 ) {
 	const uniqueCharacters = new Set<string>(
 		raidDataArr

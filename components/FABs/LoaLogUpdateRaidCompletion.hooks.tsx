@@ -8,6 +8,7 @@ import { getLatestWeeklyReset } from "@/lib/dates";
 import { toast } from "sonner";
 import { DBWorkerResponse } from "@/workers/dbWorker";
 import Link from "next/link";
+import * as v from "valibot";
 
 interface FileAccessState {
 	fileHandle: FileSystemFileHandle | null;
@@ -56,12 +57,12 @@ export function useLoaLogsDb(onResponse?: (data: DbEntry[]) => void) {
 					query[0].columns.map((col, index) => [col, row[index]])
 				)
 			);
-			const parsed = zEntries.safeParse(resToObjArray);
+			const parsed = v.safeParse(zEntries, resToObjArray);
 			if (!parsed.success) {
-				console.error("Failed to parse weekly raids data:", parsed.error);
+				console.error("Failed to parse weekly raids data:", parsed.issues);
 				throw new Error("Invalid data format in encounter_preview table");
 			}
-			onResponseRef.current?.(parsed.data);
+			onResponseRef.current?.(parsed.output);
 		} else if (event.data.type === "error") {
 			const errorMessage = event.data.payload.message;
 			console.error("Worker error:", errorMessage);

@@ -4,6 +4,7 @@ import { getGateResetDate } from "@/lib/dates";
 import { isGateCompleted } from "@/lib/raids";
 import { sortDifficulties } from "@/lib/chars";
 import { raidData } from "@/lib/game-info";
+import * as v from "valibot"
 
 export type MiscActions = {
 	restoreData: (data: MainState) => void;
@@ -15,8 +16,8 @@ export type MiscActions = {
 
 export const createMiscActions: StateActions<MiscActions> = (set, get) => ({
 	restoreData: (data) => {
-		const d = zodChars.safeParse(data);
-		if (d.success) set(d.data);
+		const d = v.safeParse(zodChars, data);
+		if (d.success) set(d.output);
 		else throw new Error("Data is not valid");
 	},
 	availableRaids: () => {

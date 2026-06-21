@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as v from 'valibot';
 import { CELL_COUNT_PER_LINE } from "./constants";
 import ResData from "./resolutions.json";
 import type { CellPosition, PixelCoordinate, Resolution } from "./types";
@@ -15,31 +15,31 @@ function generateLineCellPositions(
 	}));
 }
 
-const resolutionConfSchema = z.object({
-	line1: z.object({
-		baseX: z.number(),
-		y: z.number(),
+const resolutionConfSchema = v.object({
+	line1: v.object({
+		baseX: v.number(),
+		y: v.number(),
 	}),
-	line2: z.object({
-		baseX: z.number(),
-		y: z.number(),
+	line2: v.object({
+		baseX: v.number(),
+		y: v.number(),
 	}),
-	line3: z.object({
-		baseX: z.number(),
-		y: z.number(),
+	line3: v.object({
+		baseX: v.number(),
+		y: v.number(),
 	}),
-	successRateRegion: z.object({
-		x: z.number(),
-		y: z.number(),
-		width: z.number(),
-		height: z.number(),
+	successRateRegion: v.object({
+		x: v.number(),
+		y: v.number(),
+		width: v.number(),
+		height: v.number(),
 	}),
-	spacing: z.number(),
+	spacing: v.number(),
 });
 
-const resolutionConfFileSchema = z.record(z.string(), resolutionConfSchema);
+const resolutionConfFileSchema = v.record(v.string(), resolutionConfSchema);
 
-const parsedConfig = resolutionConfFileSchema.parse(ResData);
+const parsedConfig = v.parse(resolutionConfFileSchema, ResData);
 
 class ResolutionConfigs {
 	private resolutionConfigs: Map<string, ResolutionConfig>;
@@ -62,7 +62,7 @@ class ResolutionConfigs {
 	}
 }
 
-type ResolutionConfigData = z.infer<typeof resolutionConfSchema>;
+type ResolutionConfigData = v.InferOutput<typeof resolutionConfSchema>;
 
 class ResolutionConfig implements ResolutionConfigData {
 	line1: ResolutionConfigData["line1"];

@@ -1,6 +1,6 @@
 import { ServerRegion } from "@/prisma/generated/enums";
-import z from "zod";
+import * as v from 'valibot';
 
-export const getMarketPricesSchema = z.object({
-	server: z.nativeEnum(ServerRegion),
+export const getMarketPricesSchema = v.object({
+	server: v.enum(ServerRegion),
 });

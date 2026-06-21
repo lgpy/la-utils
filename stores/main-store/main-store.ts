@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as v from 'valibot';
 import { persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 import { CharacterActions, createCharActions } from "./actions/char";
@@ -25,12 +25,12 @@ import {
 	migrateCharV6ToV7,
 } from "./migrations";
 
-export const zodChars = z.object({
-	characters: z.array(zodChar),
-	tasks: z.array(zodTask),
+export const zodChars = v.object({
+	characters: v.array(zodChar),
+	tasks: v.array(zodTask),
 });
 
-export type MainState = z.infer<typeof zodChars>;
+export type MainState = v.InferOutput<typeof zodChars>;
 
 export type MainStore = MainState &
 	CharacterActions &
@@ -82,14 +82,14 @@ export const createMainStore = () =>
 						persistedState = migrateCharV6ToV7(persistedState as CharV6);
 					}
 
-					const parse = zodChars.safeParse(persistedState);
+					const parse = v.safeParse(zodChars, persistedState);
 
 					if (!parse.success) {
-						console.error("Zod validation failed:", parse.error);
+						console.error("Zod validation failed:", parse.issues);
 						throw new Error("Failed to migrate state: Zod validation failed");
 					}
 
-					return parse.data;
+					return parse.output;
 				},
 			}
 		)
