@@ -44,6 +44,7 @@ jobs:
         env:
           DATABASE_URL: "postgresql://user:password@localhost:5432/dummy"
           DATABASE_URL_UNPOOLED: "postgresql://user:password@localhost:5432/dummy"
+          DATABASE_CA_CERT: "dummy"
 
       - name: Build app
         run: bun run build
