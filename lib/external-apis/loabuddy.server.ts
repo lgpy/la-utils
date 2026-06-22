@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { ServerRegion } from "@/prisma/generated/enums";
 import { itemSlugs } from "./loabuddy";
 

@@ -1,10 +1,3 @@
-import {
-	deleteChangelogEntry,
-	getChangelogEntry,
-	last5Changelog,
-	paginatedChangelog,
-	upsertChangelogEntry,
-} from "./changelog";
 import { getFriendsRaids } from "./friendRaids";
 import {
 	getFriends,
@@ -16,7 +9,6 @@ import {
 	getRecommendedFriends,
 } from "./friends";
 import { getMarketPrices } from "./market";
-import { getServerStatus } from "./serverStatus";
 import { listUsersInfinite, count, graphData } from "./users";
 
 export const router = {
@@ -31,16 +23,6 @@ export const router = {
 	},
 	friendRaids: {
 		getFriendsRaids,
-	},
-	serverStatus: {
-		getServerStatus,
-	},
-	changelog: {
-		paginatedChangelog,
-		last5Changelog,
-		getChangelogEntry,
-		upsertChangelogEntry,
-		deleteChangelogEntry,
 	},
 	market: {
 		getMarketPrices,

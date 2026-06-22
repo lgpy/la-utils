@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { StateActions } from "../main-store";
 import * as v from 'valibot';
 import { getIndexOrThrow } from "@/lib/array";
@@ -27,14 +26,14 @@ export const createCharActions: StateActions<CharacterActions> = (set) => ({
 				class: newc.class,
 				itemLevel: newc.itemLevel,
 				isGoldEarner: newc.isGoldEarner,
-				id: uuidv4(),
+				id: crypto.randomUUID(),
 				assignedRaids: {},
 				tasks: [],
 			});
 		});
 	},
 	createSpacerChar() {
-		const id = uuidv4();
+		const id = crypto.randomUUID();
 		const name = `Spacer ${id.slice(0, 4)}`;
 		set((state) => {
 			state.characters.push({

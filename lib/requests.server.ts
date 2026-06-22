@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { gunzip } from "node:zlib";
 
 export async function getUncompressedBody(request: Request): Promise<unknown> {

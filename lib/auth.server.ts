@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./db";
@@ -7,7 +5,7 @@ import prisma from "./db";
 import { admin as adminPlugin } from "better-auth/plugins";
 import { ac, admin, user } from "./auth.permissions";
 import { fetchDiscordUser, getAvatarUrl } from "./discord";
-import valkey from './valkey.server';
+import valkey from "./valkey.server";
 
 let baseUrl: string;
 

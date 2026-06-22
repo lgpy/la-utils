@@ -7,10 +7,8 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { type Character, useMainStore } from "@/stores/main-store/provider";
-import { dragAndDrop } from "@formkit/drag-and-drop/react";
-import { isEqual } from "lodash";
 import { LockIcon, LockOpenIcon, PlusIcon } from "lucide-react";
-import { type RefObject, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import EditCard from "./EditCard";
 import EditCardCharacterDialog from "./EditCardCharacterDialog";
 import EditCardRaidDialog from "./EditCardRaidDialog";
@@ -22,6 +20,7 @@ import { showAlert } from "../AlertDialog.hooks";
 import { toast } from "sonner";
 import { ExpandableButton } from "../ExpandableButton";
 import { FabButtonWrapper } from "../FABs/FabButtonWrapper";
+import { DragDropProvider } from "@dnd-kit/react";
 
 type DialogState = {
 	type: "none" | "char" | "raid" | "taskManagement" | "taskEditing";
@@ -29,6 +28,65 @@ type DialogState = {
 	raidId: string | undefined;
 	taskId: string | undefined;
 };
+
+import { isSortable, useSortable } from "@dnd-kit/react/sortable";
+
+function SortableCharCard({
+	char,
+	index,
+	deleteCharacter,
+	openCharacterEditDialog,
+	openRaidDialog,
+	openTaskDialog,
+	isLocked,
+}: {
+	char: Character;
+	index: number;
+	deleteCharacter: (charId: string) => void;
+	openCharacterEditDialog: (char?: Character) => void;
+	openRaidDialog: (char: Character, raidId?: string) => void;
+	openTaskDialog: (char: Character) => void;
+	isLocked: boolean;
+}) {
+	const [element, setElement] = useState<Element | null>(null);
+	const handleRef = useRef<SVGSVGElement | null>(null);
+	const { isDragging } = useSortable({
+		id: char.id,
+		index,
+		element,
+		handle: handleRef,
+		disabled: isLocked,
+	});
+
+	return (
+		<li ref={setElement}>
+			{char.isSpacer ? (
+				<EditCardSpacer
+					char={char}
+					deleteCharacter={() => deleteCharacter(char.id)}
+					drag={{
+						disabled: isLocked,
+						moveRef: handleRef,
+						isDragging,
+					}}
+				/>
+			) : (
+				<EditCard
+					char={char}
+					editCharacter={() => openCharacterEditDialog(char)}
+					openRaidDialog={(raidId) => openRaidDialog(char, raidId)}
+					openTaskDialog={() => openTaskDialog(char)}
+					data-pw={`character-${index}`}
+					drag={{
+						disabled: isLocked,
+						moveRef: handleRef,
+						isDragging,
+					}}
+				/>
+			)}
+		</li>
+	);
+}
 
 export default function EditCards() {
 	const mainStore = useMainStore();
@@ -70,49 +128,6 @@ export default function EditCards() {
 			taskId: taskId ? taskId : undefined,
 		}));
 
-	const parent = useRef(null) as RefObject<HTMLUListElement | null>;
-	const [chars, setChars] = useState(mainStore.characters);
-	const prevCharactersRef = useRef<Character[] | undefined>(undefined);
-
-	dragAndDrop({
-		disabled: isLocked,
-		parent: parent,
-		state: [chars, setChars],
-		dragHandle: ".mover",
-		handleEnd(data) {
-			const charId = data.targetData.node.data.value.id;
-			const oldIndex = mainStore.characters.findIndex((c) => c.id === charId);
-			if (oldIndex === -1) return;
-			const newindex = data.targetData.node.data.index;
-			//change character to new index state.charaters
-			const newCharacters = [...mainStore.characters];
-			newCharacters.splice(oldIndex, 1);
-			newCharacters.splice(newindex, 0, mainStore.characters[oldIndex]);
-			prevCharactersRef.current = structuredClone(newCharacters);
-			mainStore.reorderChars(newCharacters.map((c) => c.id));
-			// remove z-index from all li elements in parent
-			if (parent.current) {
-				const lis = parent.current.querySelectorAll("li");
-				lis.forEach((li) => {
-					li.style.zIndex = "";
-					//also remove style if empty
-					if (li.style.length === 0) {
-						li.removeAttribute("style");
-					}
-				});
-			}
-		},
-	});
-
-	useEffect(() => {
-		if (!mainStore.hasHydrated) return;
-
-		if (!isEqual(prevCharactersRef.current, mainStore.characters)) {
-			setChars(structuredClone(mainStore.characters));
-			prevCharactersRef.current = structuredClone(mainStore.characters);
-		}
-	}, [mainStore.characters, mainStore.hasHydrated, setChars]);
-
 	if (!mainStore.hasHydrated) {
 		return null;
 	}
@@ -136,33 +151,42 @@ export default function EditCards() {
 
 	return (
 		<>
-			<ul
-				className="mt-6 grid xl:grid-cols-[auto_auto_auto_auto_auto_auto] md:grid-cols-[auto_auto_auto] sm:grid-cols-[auto_auto] gap-3 justify-center"
-				ref={parent}
-				data-pw="character-list"
+			<DragDropProvider
+				onDragEnd={(event) => {
+					if (event.canceled) return;
+					const { source } = event.operation;
+
+					if (!isSortable(source)) return;
+
+					const { initialIndex, index } = source;
+
+					if (initialIndex == index) return;
+
+					const newcharIds = mainStore.characters.map((c) => c.id);
+					const [removed] = newcharIds.splice(initialIndex, 1);
+					newcharIds.splice(index, 0, removed);
+					mainStore.reorderChars(newcharIds);
+				}}
 			>
-				{chars.map((char, index) => (
-					<li data-label={char.id} key={char.id}>
-						{char.isSpacer ? (
-							<EditCardSpacer
-								char={char}
-								deleteCharacter={() => deleteCharacter(char.id)}
-								movable={!isLocked}
-							/>
-						) : (
-							<EditCard
-								char={char}
-								editCharacter={() => openCharacterEditDialog(char)}
-								openRaidDialog={(raidId) => openRaidDialog(char, raidId)}
-								openTaskDialog={() => openTaskDialog(char)}
-								movable={!isLocked}
-								data-pw={`character-${index}`}
-							/>
-						)}
-					</li>
-				))}
-				{chars.length === 0 && <EditCardsNoCharactersCard />}
-			</ul>
+				<ul
+					className="mt-6 grid xl:grid-cols-[auto_auto_auto_auto_auto_auto] md:grid-cols-[auto_auto_auto] sm:grid-cols-[auto_auto] gap-3 justify-center"
+					data-pw="character-list"
+				>
+					{mainStore.characters.map((char, index) => (
+						<SortableCharCard
+							key={char.id}
+							char={char}
+							index={index}
+							deleteCharacter={deleteCharacter}
+							openCharacterEditDialog={openCharacterEditDialog}
+							openRaidDialog={openRaidDialog}
+							openTaskDialog={openTaskDialog}
+							isLocked={isLocked}
+						/>
+					))}
+					{mainStore.characters.length === 0 && <EditCardsNoCharactersCard />}
+				</ul>
+			</DragDropProvider>
 			<EditCardCharacterDialog
 				isOpen={dialogState.type === "char"}
 				close={() => setDialogState((prev) => ({ ...prev, type: "none" }))}

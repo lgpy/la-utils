@@ -1,6 +1,4 @@
-import 'server-only'
-
-import * as v from 'valibot';
+import * as v from "valibot";
 
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN as string;
 

@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { StateActions } from "../main-store";
 import * as v from 'valibot';
 import { getTaskCompletionState } from "@/lib/tasks";
@@ -22,7 +21,7 @@ export const createTaskActions: StateActions<TaskActions> = (set) => ({
 			const parsedTask = v.parse(zodNewTask, task);
 			state.tasks.push({
 				...parsedTask,
-				id: uuidv4(),
+				id: crypto.randomUUID(),
 			});
 		});
 	},

@@ -2,7 +2,6 @@ import NavBar from "@/components/NavBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { cn } from "@/lib/utils";
 import { MainStoreProvider } from "@/stores/main-store/provider";
-import { ChangelogStoreProvider } from "@/stores/changelog-store.provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -37,7 +36,6 @@ export default async function RootLayout({
 			>
 				<OrpcProvider>
 					<MainStoreProvider>
-						<ChangelogStoreProvider>
 							<ThemeProvider
 								attribute="class"
 								defaultTheme="system"
@@ -64,7 +62,6 @@ export default async function RootLayout({
 								<GlobalAlertDialog />
 								<UserInfoUpdater />
 							</ThemeProvider>
-						</ChangelogStoreProvider>
 					</MainStoreProvider>
 				</OrpcProvider>
 			</body>
