@@ -7,8 +7,8 @@ import { sortRaidKeys } from "@/lib/chars";
 import { cn } from "@/lib/utils";
 import type { Character } from "@/stores/main-store/provider";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { MoveIcon, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
-import { Fragment, useMemo } from "react";
+import { GripHorizontal, PencilIcon, PlusIcon, SwordsIcon } from "lucide-react";
+import { Fragment, RefObject, useMemo } from "react";
 import CharacterCardAssignedRaid from "./EditCardAssignedRaid";
 import { TaskType } from "@/prisma/generated/enums";
 
@@ -17,7 +17,11 @@ type Props = {
 	editCharacter: () => void;
 	openRaidDialog: (raidId?: string) => void;
 	openTaskDialog: () => void;
-	movable?: boolean;
+	drag: {
+		disabled: boolean;
+		moveRef: RefObject<SVGSVGElement | null>;
+		isDragging: boolean;
+	};
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export default function EditCard(props: Props) {
@@ -28,7 +32,7 @@ export default function EditCard(props: Props) {
 		editCharacter,
 		openRaidDialog,
 		openTaskDialog,
-		movable = false,
+		drag,
 		...divProps
 	} = props;
 
@@ -59,7 +63,12 @@ export default function EditCard(props: Props) {
 	);
 
 	return (
-		<Card className="h-fit w-56 py-0 gap-0 overflow-hidden" {...divProps}>
+		<Card
+			className={cn("h-fit w-56 py-0 gap-0 overflow-hidden", {
+				"shadow-2xl opacity-75": drag.isDragging,
+			})}
+			{...divProps}
+		>
 			<div className="p-4 flex flex-row gap-2 items-center relative">
 				<ClassIcon c={char.class} className="size-10" />
 				<div className="flex flex-col">
@@ -82,8 +91,11 @@ export default function EditCard(props: Props) {
 						{char.itemLevel}
 					</div>
 				</div>
-				{movable && (
-					<MoveIcon className="mover size-4 absolute top-1 mx-auto right-0 left-0 mt-0! cursor-move" />
+				{!drag.disabled && (
+					<GripHorizontal
+						className="size-4 absolute top-1 mx-auto right-0 left-0 mt-0! cursor-grab"
+						ref={drag.moveRef}
+					/>
 				)}
 				<Button
 					variant="ghost"

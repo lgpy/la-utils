@@ -15,7 +15,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { ServerName, ServerRegion } from "@/prisma/generated/enums";
-import { v4 as uuidv4 } from "uuid";
 import { useMemo, useState } from "react";
 
 function ServerRegionFromServerName(serverName: ServerName): ServerRegion {
@@ -104,7 +103,7 @@ export default function LoaBuddyPricesFetcher() {
 						return;
 					}
 					setFetching(true);
-					const uuid = uuidv4();
+					const uuid = crypto.randomUUID();
 					toast.loading("Fetching LoaBuddy prices...", {
 						id: `loaBuddyPrices-${uuid}`,
 						description: "This may take a few seconds",

@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { authClient } from "@/lib/auth";
 import { orpc } from "@/lib/orpc";
-import { useChangelogStore } from "@/stores/changelog-store.provider";
 import { useQuery } from "@tanstack/react-query";
 import { Bell, BellRing } from "lucide-react";
 import Link from "next/link";
@@ -25,9 +24,6 @@ type NotificationEntry = {
 };
 
 export default function NotificationDropdown() {
-	const { state: lastViewedDate, hasHydrated } = useChangelogStore(
-		(state) => state.lastViewedDate
-	);
 	const session = authClient.useSession();
 
 	const friendRequestQuery = useQuery(
@@ -35,18 +31,6 @@ export default function NotificationDropdown() {
 			enabled: session.data !== null,
 			refetchOnWindowFocus: false,
 			refetchOnMount: false,
-		})
-	);
-
-	const changelogEntries = useQuery(
-		orpc.changelog.last5Changelog.queryOptions({
-			input: {
-				lastViewedDate: lastViewedDate ?? new Date(0).toISOString(),
-			},
-			enabled: hasHydrated,
-			refetchOnWindowFocus: false,
-			refetchOnMount: false,
-			refetchOnReconnect: false,
 		})
 	);
 
@@ -61,12 +45,6 @@ export default function NotificationDropdown() {
 
 	const entries: NotificationEntry[] = useMemo(() => {
 		return [
-			...(changelogEntries.data?.map((entry) => ({
-				type: "changelog" as const,
-				id: `cl-${entry.id}`,
-				title: entry.title,
-				date: entry.date,
-			})) ?? []),
 			...friendRequestNotifications.map((request) => ({
 				type: "friendRequest" as const,
 				id: `fr-${request.id}`,
@@ -74,7 +52,7 @@ export default function NotificationDropdown() {
 				date: request.date,
 			})),
 		].sort((a, b) => b.date.getTime() - a.date.getTime());
-	}, [changelogEntries.data, friendRequestNotifications]);
+	}, [friendRequestNotifications]);
 
 	const hasUnread = entries.length > 0;
 	const totalCount = entries.length;
