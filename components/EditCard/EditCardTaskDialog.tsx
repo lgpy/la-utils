@@ -32,7 +32,7 @@ import { toast } from "sonner";
 import * as v from "valibot";
 
 const formSchema = v.object({
-	name: v.pipe(v.string(), v.minLength(2), v.minLength(100)),
+	name: v.pipe(v.string(), v.minLength(2), v.maxLength(100)),
 	type: v.enum(TaskType),
 	timesToComplete: v.string(),
 });
