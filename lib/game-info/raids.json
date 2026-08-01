@@ -1295,6 +1295,15 @@
                 "unbound": 15000
               }
             }
+          },
+          "Solo": {
+            "itemlevel": 1700,
+            "rewards": {
+              "gold": {
+                "bound": 6250,
+                "unbound": 6250
+              }
+            }
           }
         }
       },
@@ -1318,6 +1327,15 @@
               "gold": {
                 "bound": 0,
                 "unbound": 27000
+              }
+            }
+          },
+          "Solo": {
+            "itemlevel": 1700,
+            "rewards": {
+              "gold": {
+                "bound": 10250,
+                "unbound": 10250
               }
             }
           }
@@ -1351,6 +1369,15 @@
                 "unbound": 17000
               }
             }
+          },
+          "Solo": {
+            "itemlevel": 1710,
+            "rewards": {
+              "gold": {
+                "bound": 7000,
+                "unbound": 7000
+              }
+            }
           }
         }
       },
@@ -1375,6 +1402,15 @@
               "gold": {
                 "bound": 0,
                 "unbound": 35000
+              }
+            }
+          },
+          "Solo": {
+            "itemlevel": 1710,
+            "rewards": {
+              "gold": {
+                "bound": 13000,
+                "unbound": 13000
               }
             }
           }

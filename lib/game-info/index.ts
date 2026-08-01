@@ -85,7 +85,7 @@ const raidSchema = v.object({
 
 export const raidsSchema = v.record(v.string(), raidSchema);
 
-class GateDifficulty {
+export class GateDifficulty {
 	readonly difficulty: Difficulty;
 	readonly itemlevel: number;
 	readonly rewards: {

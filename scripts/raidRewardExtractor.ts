@@ -2,7 +2,7 @@
 // Fetches and parses raid reward data from a public Google Sheet
 // Usage: bun run scripts/raidRewardExtractor.ts
 import { Difficulty } from "@/prisma/generated/enums";
-import { raidData as raids, raidsSchema } from "@/lib/game-info";
+import { GateDifficulty, raidData as raids, raidsSchema } from "@/lib/game-info";
 import raidsJson from "@/lib/game-info/raids.json";
 import { parse } from "csv-parse/sync";
 import * as v from "valibot"
@@ -124,7 +124,7 @@ async function main() {
 		let didUpdate = false;
 
 		raidDifficultyGate.forEach(
-			({ raid, difficulty, itemLevel, gate, gold }) => {
+			({ raid, difficulty: diff_str, itemLevel, gate, gold }) => {
 				const raidKey = raidMatch[raid];
 				if (!raidKey) {
 					console.warn(`Raid "${raid}" not found in match map`);
@@ -141,21 +141,59 @@ async function main() {
 					console.warn(`Gate "${gateId}" not found for raid "${raidKey}"`);
 					return;
 				}
-				let diffData = gateData.getDifficulty(difficulty as Difficulty);
-				if (!diffData) {
+				const difficulty = Object.values(Difficulty).includes(diff_str as Difficulty) ? diff_str as Difficulty : null
+				let diffData: GateDifficulty | undefined
+				if (!difficulty) {
 					try {
-						const resolvedDiff = diffMatch[raidKey][difficulty]
+						const resolvedDiff = diffMatch[raidKey][diff_str]
 						diffData = gateData.getDifficulty(resolvedDiff)
 					} catch {
 						console.warn(
-							`Difficulty "${difficulty}" not found for raid "${raidKey}" and gate "${gateId}"`
+							`Difficulty "${diff_str}" not found for raid "${raidKey}" and gate "${gateId}"`
 						);
 					}
-					return;
+				} else {
+					diffData = gateData.getDifficulty(difficulty);
+					if (!diffData) {
+
+						diffData = {
+							difficulty,
+							itemlevel: itemLevel,
+							rewards: {
+								gold: {
+									bound: 0,
+									unbound: 0
+								}
+							}
+						}
+
+						if (raidsDataToUpdate[raidKey].gates[gateId] === undefined)
+							raidsDataToUpdate[raidKey].gates[gateId] = {
+								bossName: [],
+								difficulties: {},
+							}
+
+						raidsDataToUpdate[raidKey].gates[gateId].difficulties[
+							diffData.difficulty
+						] = {
+							itemlevel: itemLevel,
+							rewards: {
+								gold: {
+									bound: 0,
+									unbound: 0
+								}
+							}
+						}
+
+						console.log(`Added Difficulty "${difficulty}" to raid "${raidKey}", gate "${gateId}"`)
+					}
 				}
+
+				if (!diffData) return
+
 				if (diffData.itemlevel !== itemLevel) {
 					raidsDataToUpdate[raidKey].gates[gateId].difficulties[
-						difficulty as Difficulty
+						diffData.difficulty
 					]!.itemlevel = itemLevel;
 					if (!didUpdate) didUpdate = true;
 				}
@@ -164,7 +202,7 @@ async function main() {
 					diffData.rewards.gold.unbound !== gold.unbound
 				) {
 					raidsDataToUpdate[raidKey].gates[gateId].difficulties[
-						difficulty as Difficulty
+						diffData.difficulty
 					]!.rewards.gold = {
 						bound: gold.bound,
 						unbound: gold.unbound,
