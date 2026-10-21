@@ -1356,8 +1356,8 @@
             "itemlevel": 1710,
             "rewards": {
               "gold": {
-                "bound": 6500,
-                "unbound": 6500
+                "bound": 5500,
+                "unbound": 5500
               }
             }
           },
@@ -1374,8 +1374,8 @@
             "itemlevel": 1710,
             "rewards": {
               "gold": {
-                "bound": 6500,
-                "unbound": 6500
+                "bound": 5500,
+                "unbound": 5500
               }
             }
           }
@@ -1391,8 +1391,8 @@
             "itemlevel": 1710,
             "rewards": {
               "gold": {
-                "bound": 9500,
-                "unbound": 9500
+                "bound": 10500,
+                "unbound": 10500
               }
             }
           },
@@ -1409,8 +1409,8 @@
             "itemlevel": 1710,
             "rewards": {
               "gold": {
-                "bound": 9500,
-                "unbound": 9500
+                "bound": 10500,
+                "unbound": 10500
               }
             }
           }
@@ -1557,6 +1557,75 @@
               "gold": {
                 "bound": 30000,
                 "unbound": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "belgardin": {
+    "name": "AD: Belgardin",
+    "gates": {
+      "G1": {
+        "bossName": [],
+        "difficulties": {
+          "Nightmare": {
+            "itemlevel": 1780,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 30000
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1770,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 25000
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1750,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 20000
+              }
+            }
+          }
+        }
+      },
+      "G2": {
+        "bossName": [],
+        "difficulties": {
+          "Nightmare": {
+            "itemlevel": 1780,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 45000
+              }
+            }
+          },
+          "Hard": {
+            "itemlevel": 1770,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 37000
+              }
+            }
+          },
+          "Normal": {
+            "itemlevel": 1750,
+            "rewards": {
+              "gold": {
+                "bound": 0,
+                "unbound": 30000
               }
             }
           }
