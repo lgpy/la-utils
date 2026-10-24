@@ -1565,10 +1565,12 @@
     }
   },
   "belgardin": {
-    "name": "AD: Belgardin",
+    "name": "SR: Belgardin",
     "gates": {
       "G1": {
-        "bossName": [],
+        "bossName": [
+          "Belgardin, Arbiter of Death"
+        ],
         "difficulties": {
           "Nightmare": {
             "itemlevel": 1780,
@@ -1600,7 +1602,9 @@
         }
       },
       "G2": {
-        "bossName": [],
+        "bossName": [
+          "Phaetus An Kragma"
+        ],
         "difficulties": {
           "Nightmare": {
             "itemlevel": 1780,

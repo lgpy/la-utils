@@ -14,6 +14,12 @@ const SHEET_ID = "1z63hd2RolhcT6UMoSbuWejYi6dxBJ2wiWnz-AUNNEpQ";
 const SHEET_GID = "972540646";
 const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
 
+// Boss names come from loa-logs. The encounters.ts file is the source it is
+// authored in, and the JSON file is generated from it in the same commit, so
+// the JSON is the safer one to fetch and parse.
+const BOSS_NAMES_URL =
+	"https://raw.githubusercontent.com/snoww/loa-logs/master/src-tauri/meter-data/encounters.json";
+
 // Rows 1-3 hold the title and header rows, data starts at row 4 (index 3)
 const FIRST_DATA_ROW = 3;
 
@@ -53,6 +59,7 @@ function normalizeName(name: string): string {
 
 const raidMatch: Record<string, string> = {
 	// T4.1 / T4 content on the sheet
+	"Shadow Raid: Belgardin": "belgardin",
 	"Abyssal Dungeon: Belgardin (KR only)": "belgardin",
 	"Abyssal Dungeon: Horizon Cathedral": "horizon-cathedral",
 	"Shadow Raid: Serca": "serca",
@@ -84,11 +91,6 @@ const raidMatch: Record<string, string> = {
 };
 
 // Difficulty labels used on the sheet that do not match a Difficulty value
-const globalDifficultyAliases: Record<string, Difficulty> = {
-	// Matchmaking has the same rewards as Normal, and the app has no Matching difficulty
-	Matching: Difficulty.Normal,
-};
-
 const difficultyAliases: Record<string, Record<string, Difficulty>> = {
 	"horizon-cathedral": {
 		"Level 1": Difficulty.Normal,
@@ -101,13 +103,101 @@ function resolveDifficulty(
 	raidKey: string,
 	label: string
 ): Difficulty | undefined {
-	const aliased =
-		difficultyAliases[raidKey]?.[label] ?? globalDifficultyAliases[label];
+	const aliased = difficultyAliases[raidKey]?.[label];
 	if (aliased) return aliased;
 	return (Object.values(Difficulty) as string[]).includes(label)
 		? (label as Difficulty)
 		: undefined;
 }
+
+// Raid names used by loa-logs and the matching key in raids.json
+const bossRaidMatch: Record<string, string> = {
+	Valtan: "valtan",
+	Vykas: "vykas",
+	Clown: "kakul",
+	Brelshaza: "brel",
+	Kayangel: "kayangel",
+	Akkan: "akkan",
+	"Ivory Tower": "voldis",
+	Thaemine: "thaemine",
+	Echidna: "echidna",
+	Behemoth: "behemoth",
+	Aegir: "aegir",
+	"Act 2: Brelshaza": "brelshaza2",
+	"Act 3: Mordum": "mordum",
+	"Act 4: Armoche": "armoche",
+	"Final Act: Kazeros": "kazeros",
+	Serca: "serca",
+	"Horizon Cathedral": "horizon-cathedral",
+	Belgardin: "belgardin",
+};
+
+type EncounterMap = Record<string, Record<string, string[]>>;
+
+async function fetchEncounters(url: string): Promise<EncounterMap> {
+	const res = await fetch(url);
+	if (!res.ok) throw new Error(`Failed to fetch boss names: ${res.status}`);
+	return (await res.json()) as EncounterMap;
+}
+
+// Copies boss names into gates that already exist in raids.json. Gates that
+// only exist in loa-logs are reported and skipped, because adding a gate also
+// needs item levels and rewards.
+function updateBossNames(encounters: EncounterMap): boolean {
+	let didUpdate = false;
+
+	for (const [loaRaid, gates] of Object.entries(encounters)) {
+		const raidKey = bossRaidMatch[loaRaid];
+		if (!raidKey) continue;
+		const raidJson = raidsDataToUpdate[raidKey];
+		if (!raidJson) {
+			console.warn(`Raid "${loaRaid}" not found in local data`);
+			continue;
+		}
+
+		for (const [loaGate, bossNames] of Object.entries(gates)) {
+			const gateMatch = /G(\d+)$/.exec(loaGate);
+			if (!gateMatch) {
+				console.warn(`Gate "${loaGate}" has no gate number`);
+				continue;
+			}
+			const gateId = `G${gateMatch[1]}`;
+			const gateJson = raidJson.gates[gateId];
+			if (!gateJson) {
+				console.warn(
+					`Gate "${gateId}" for raid "${raidKey}" not found in local data, skipping boss names (loa-logs may list a gate the game removed)`
+				);
+				continue;
+			}
+
+			const unchanged =
+				gateJson.bossName.length === bossNames.length &&
+				gateJson.bossName.every((name, i) => name === bossNames[i]);
+			if (unchanged) continue;
+
+			// loa-logs keeps the original gate numbers, but this app renumbers
+			// gates when the game removes one. Existing names are therefore left
+			// alone and only empty gates are filled.
+			if (gateJson.bossName.length > 0) {
+				console.log(
+					`Boss names for raid "${raidKey}", gate "${gateId}" differ from loa-logs, keeping local names`
+				);
+				continue;
+			}
+
+			gateJson.bossName = [...bossNames];
+			didUpdate = true;
+			console.log(`Added boss names for raid "${raidKey}", gate "${gateId}"`);
+		}
+	}
+
+	return didUpdate;
+}
+
+// Matchmaking rows are a game mode, not a Difficulty. They can split the gold
+// between bound and unbound, and the app has no Matching difficulty, so they
+// are skipped in favour of the Normal rows.
+const ignoredDifficultyLabels = new Set(["Matching"]);
 
 function parseRows(rows: string[][]): RaidRewardRow[] {
 	const rewards: RaidRewardRow[] = [];
@@ -185,6 +275,8 @@ async function main() {
 				continue;
 			}
 
+			if (ignoredDifficultyLabels.has(difficultyLabel)) continue;
+
 			const difficulty = resolveDifficulty(raidKey, difficultyLabel);
 			if (!difficulty) {
 				console.warn(
@@ -224,6 +316,13 @@ async function main() {
 				diffJson.rewards.gold = { ...gold };
 				didUpdate = true;
 			}
+		}
+
+		try {
+			const encounters = await fetchEncounters(BOSS_NAMES_URL);
+			if (updateBossNames(encounters)) didUpdate = true;
+		} catch (err) {
+			console.warn("Could not update boss names:", err);
 		}
 
 		if (didUpdate) {
