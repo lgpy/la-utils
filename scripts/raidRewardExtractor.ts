@@ -165,7 +165,7 @@ function updateBossNames(encounters: EncounterMap): boolean {
 			const gateJson = raidJson.gates[gateId];
 			if (!gateJson) {
 				console.warn(
-					`Gate "${gateId}" for raid "${raidKey}" not found in local data, skipping boss names`
+					`Gate "${gateId}" for raid "${raidKey}" not found in local data, skipping boss names (loa-logs may list a gate the game removed)`
 				);
 				continue;
 			}
@@ -175,9 +175,19 @@ function updateBossNames(encounters: EncounterMap): boolean {
 				gateJson.bossName.every((name, i) => name === bossNames[i]);
 			if (unchanged) continue;
 
+			// loa-logs keeps the original gate numbers, but this app renumbers
+			// gates when the game removes one. Existing names are therefore left
+			// alone and only empty gates are filled.
+			if (gateJson.bossName.length > 0) {
+				console.log(
+					`Boss names for raid "${raidKey}", gate "${gateId}" differ from loa-logs, keeping local names`
+				);
+				continue;
+			}
+
 			gateJson.bossName = [...bossNames];
 			didUpdate = true;
-			console.log(`Updated boss names for raid "${raidKey}", gate "${gateId}"`);
+			console.log(`Added boss names for raid "${raidKey}", gate "${gateId}"`);
 		}
 	}
 
