@@ -80,7 +80,8 @@
     "gates": {
       "G1": {
         "bossName": [
-          "Covetous Devourer Vykas"
+          "Incubus Morphe",
+          "Nightmarish Morphe"
         ],
         "difficulties": {
           "Solo": {
@@ -114,7 +115,7 @@
       },
       "G2": {
         "bossName": [
-          "Covetous Legion Commander Vykas"
+          "Covetous Devourer Vykas"
         ],
         "difficulties": {
           "Solo": {
@@ -662,11 +663,7 @@
       },
       "G3": {
         "bossName": [
-          "Lazaram, the Trailblazer",
-          "Subordinated Vertus",
-          "Subordinated Calventus",
-          "Subordinated Legoros",
-          "Brand of Subordination"
+          "Firehorn, Trampler of Earth"
         ],
         "difficulties": {
           "Solo": {
@@ -1565,10 +1562,12 @@
     }
   },
   "belgardin": {
-    "name": "AD: Belgardin",
+    "name": "SR: Belgardin",
     "gates": {
       "G1": {
-        "bossName": [],
+        "bossName": [
+          "Belgardin, Arbiter of Death"
+        ],
         "difficulties": {
           "Nightmare": {
             "itemlevel": 1780,
@@ -1600,7 +1599,9 @@
         }
       },
       "G2": {
-        "bossName": [],
+        "bossName": [
+          "Phaetus An Kragma"
+        ],
         "difficulties": {
           "Nightmare": {
             "itemlevel": 1780,
