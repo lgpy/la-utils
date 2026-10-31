@@ -26,7 +26,8 @@ import {
 } from "@/components/FABs/LoaLogUpdateRaidCompletion.utils";
 
 function formatSize(size: number | null | undefined) {
-	if (!size) return "Unknown";
+	if (size == null) return "Unknown";
+	if (size < 1024) return `${size} B`;
 	if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
 	return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 }
@@ -53,32 +54,37 @@ export default function LoaLogsConfigPage() {
 
 	const refreshStatus = useCallback(async () => {
 		setError(null);
-		const handle = await getStoredLoaLogsFileHandle();
-		setStoredHandle(handle);
+		try {
+			const handle = await getStoredLoaLogsFileHandle();
+			setStoredHandle(handle);
 
-		if (!handle) {
+			if (!handle) {
+				setLiveFile(null);
+				setLastRead(null);
+				return;
+			}
+
+			const probe = await probeHandleReadable(handle);
+			if (!probe.readable) {
+				// A granted permission is not enough: the browser can still refuse reads
+				// (file moved or replaced, access revoked, ...).
+				setLiveFile(null);
+				return;
+			}
+
+			setLiveFile({ name: probe.file.name, size: probe.file.size });
+			setLastRead(Date.now());
+		} catch (err) {
+			setError(
+				describeFileAccessError(err) ?? "Failed to check the file access status"
+			);
 			setLiveFile(null);
-			setLastRead(null);
-			return;
 		}
-
-		const probe = await probeHandleReadable(handle);
-		if (!probe.readable) {
-			// A granted permission is not enough: the browser can still refuse reads
-			// (file moved or replaced, access revoked, ...).
-			setLiveFile(null);
-			return;
-		}
-
-		const file = await handle.getFile();
-		setLiveFile({ name: file.name, size: file.size });
-		setLastRead(Date.now());
 	}, []);
 
 	/**
-	 * Registers a dropped/selected file. The file is read in place when the browser
-	 * allows it (no copy is made). Only when direct reads are refused (or no file
-	 * handle is available) does it fall back to storing a copy of the database.
+	 * Registers a dropped/pasted file. Only the handle is stored: the database is
+	 * always read in place, so nothing is copied into the browser.
 	 */
 	const applyFile = useCallback(
 		async (file: File, handle: FileSystemFileHandle | null) => {
@@ -87,7 +93,7 @@ export default function LoaLogsConfigPage() {
 			setNotice(null);
 
 			try {
-				if (!file.name.toLowerCase().includes("encounters.db")) {
+				if (file.name.toLowerCase() !== "encounters.db") {
 					throw new Error(
 						"Please select the encounters.db file from your LOA Logs database folder."
 					);
@@ -123,7 +129,7 @@ export default function LoaLogsConfigPage() {
 
 				await storeLoaLogsFileHandle(handle);
 				setStoredHandle(handle);
-				setLiveFile({ name: file.name, size: file.size });
+				setLiveFile({ name: probe.file.name, size: probe.file.size });
 				setLastRead(Date.now());
 				toast.success("LOA Logs database connected", {
 					id: "loa-logs-config",
@@ -239,8 +245,7 @@ export default function LoaLogsConfigPage() {
 				return;
 			}
 
-			const file = await storedHandle.getFile();
-			setLiveFile({ name: file.name, size: file.size });
+			setLiveFile({ name: probe.file.name, size: probe.file.size });
 			setLastRead(Date.now());
 		} catch (err) {
 			setError(
@@ -302,9 +307,9 @@ export default function LoaLogsConfigPage() {
 					<Alert>
 						<AlertTriangle className="h-4 w-4" />
 						<AlertDescription>
-							Automatic (live) updates require the File System Access API, which
-							is only available in Chrome and Edge. Importing the database file
-							still works in other browsers.
+							Live updates require the File System Access API, which is only
+							available in Chrome and Edge. Other browsers cannot connect the
+							database yet.
 						</AlertDescription>
 					</Alert>
 				)}
@@ -491,13 +496,14 @@ export default function LoaLogsConfigPage() {
 				{/* File Drop Area */}
 				<Card>
 					<CardHeader>
-						<CardTitle>Import Database</CardTitle>
+						<CardTitle>Connect Database</CardTitle>
 						<CardDescription>
 							Drag and drop your encounters.db file here to enable integration
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4">
 						<div
+							data-pw="loa-logs-drop-zone"
 							className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
 								isDragOver
 									? "border-primary bg-primary/5"

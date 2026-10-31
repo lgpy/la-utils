@@ -31,13 +31,24 @@ function openLoaLogsDb(): Promise<IDBDatabase> {
 	return new Promise((resolve, reject) => {
 		const request = indexedDB.open(IDB_NAME, IDB_VERSION);
 		request.onerror = () => reject(request.error);
+		request.onblocked = () =>
+			reject(
+				new Error(
+					"Another tab is holding an older version of the LOA Logs database. Close the other tabs of this site and try again."
+				)
+			);
 		request.onupgradeneeded = () => {
 			const db = request.result;
 			if (!db.objectStoreNames.contains(HANDLE_STORE)) {
 				db.createObjectStore(HANDLE_STORE);
 			}
 		};
-		request.onsuccess = () => resolve(request.result);
+		request.onsuccess = () => {
+			const db = request.result;
+			// An older tab that upgrades the schema would otherwise block forever.
+			db.onversionchange = () => db.close();
+			resolve(db);
+		};
 	});
 }
 
@@ -126,20 +137,22 @@ export async function clearStoredLoaLogsFileHandle(): Promise<void> {
 }
 
 export type HandleProbeResult =
-	| { readable: true }
+	| { readable: true; file: File }
 	| { readable: false; reason: "blocked" | "missing" | "denied" | "unknown" };
 
 /**
  * Checks whether a handle can actually be read. This is the only reliable
  * capability check for the File System Access API: a browser can reject a read
  * with a SecurityError even when permission has been reported as granted.
+ *
+ * Returns the probed `File` so callers do not have to call `getFile()` twice.
  */
 export async function probeHandleReadable(
 	fileHandle: FileSystemFileHandle
 ): Promise<HandleProbeResult> {
 	try {
-		await fileHandle.getFile();
-		return { readable: true };
+		const file = await fileHandle.getFile();
+		return { readable: true, file };
 	} catch (error) {
 		const name = error instanceof DOMException ? error.name : "";
 		if (name === "SecurityError") return { readable: false, reason: "blocked" };

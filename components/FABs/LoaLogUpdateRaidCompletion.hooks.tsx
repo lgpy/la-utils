@@ -12,8 +12,7 @@ import Link from "next/link";
 import * as v from "valibot";
 
 export interface LoaLogsDbSource {
-	fileName: string | null;
-	fileSize: number | null;
+	fileName: string;
 }
 
 export function useLoaLogsDb(onResponse?: (data: DbEntry[]) => void) {
@@ -62,8 +61,13 @@ export function useLoaLogsDb(onResponse?: (data: DbEntry[]) => void) {
 		} else if (event.data.type === "error") {
 			const errorMessage = event.data.payload.message;
 			console.error("Worker error:", errorMessage);
-			toast.error("Worker error, check console for more details");
-			setIsWorkerReady(false);
+			// A failed query must not disable the update button: the database is read
+			// live, so the next attempt may well succeed. `isWorkerReady` is only set
+			// once initialization actually succeeds.
+			toast.error("Failed to read the LOA Logs database", {
+				id: "loa-logs-worker-error",
+				description: `${errorMessage} If LOA Logs is writing right now, try again in a moment.`,
+			});
 		}
 	};
 
@@ -92,24 +96,34 @@ export function useLoaLogsDb(onResponse?: (data: DbEntry[]) => void) {
 		};
 
 		async function setupFileAccessAndWorker() {
-			// The database is read in place through the stored handle; there is no
-			// local copy. Probe instead of trusting queryPermission(), which can report
-			// "granted" while the browser still refuses to read the file.
-			const storedHandle = await getStoredLoaLogsFileHandle();
-			if (cancelled) return;
-
-			if (storedHandle) {
-				const probe = await probeHandleReadable(storedHandle);
+			try {
+				// The database is read in place through the stored handle; there is no
+				// local copy. Probe instead of trusting queryPermission(), which can report
+				// "granted" while the browser still refuses to read the file.
+				const storedHandle = await getStoredLoaLogsFileHandle();
 				if (cancelled) return;
-				if (probe.readable) {
-					const file = await storedHandle.getFile();
-					setSource({ fileName: file.name, fileSize: file.size });
-					startWorker(storedHandle);
-					return;
+
+				if (storedHandle) {
+					const probe = await probeHandleReadable(storedHandle);
+					if (cancelled) return;
+					if (probe.readable) {
+						setSource({ fileName: probe.file.name });
+						startWorker(storedHandle);
+						return;
+					}
+					console.debug(
+						"Stored LOA Logs handle is not readable:",
+						probe.reason
+					);
 				}
-				console.debug("Stored LOA Logs handle is not readable:", probe.reason);
+			} catch (error) {
+				// Anything thrown while setting up (a blocked Worker, a revoked handle)
+				// must end in the "not readable" branch instead of an unhandled rejection.
+				if (cancelled) return;
+				console.warn("Failed to set up the LOA Logs database:", error);
 			}
 
+			if (cancelled) return;
 			setSource(null);
 			toast(
 				<>
