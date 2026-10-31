@@ -40,6 +40,23 @@ let db: number | null = null;
 // biome-ignore lint/suspicious/noExplicitAny: We need to use `any` for dynamic module loading
 let wasmModule: any = null;
 
+async function openDb(): Promise<number> {
+	if (!sqlite3) throw new Error("SQLite not initialized");
+	db = await sqlite3.open_v2(
+		DBName,
+		SQLite.SQLITE_OPEN_READONLY | SQLite.SQLITE_OPEN_MAIN_DB,
+		IDBName
+	);
+	return db;
+}
+
+async function closeDb() {
+	if (!sqlite3 || db === null) return;
+	const handle = db;
+	db = null;
+	await sqlite3.close(handle);
+}
+
 let wasmUrl: string;
 try {
 	const resolvedUrl = new URL(
@@ -78,23 +95,29 @@ addEventListener("message", async (event: MessageEvent<MessageType>) => {
 			);
 			// @ts-ignore
 			sqlite3.vfs_register(vfs, true);
-			db = await sqlite3.open_v2(
-				DBName,
-				SQLite.SQLITE_OPEN_READONLY | SQLite.SQLITE_OPEN_MAIN_DB,
-				IDBName
-			);
+			await openDb();
 			postMessage({ type: "init", payload: { success: true } } as InitResponse);
 			return;
 		}
 		if (type === "query") {
-			if (!sqlite3 || !db) {
+			if (!sqlite3) {
 				throw new Error(
 					"Database not initialized. Please send an 'init' message first."
 				);
 			}
+
+			// Re-open the database for every query so the worker reads the current
+			// file contents. LOA Logs writes to the database continuously; the VFS
+			// caches a File snapshot per open file, so a long-lived connection would
+			// keep serving stale pages. This is a metadata-only operation: the file
+			// itself is not copied.
+			const startedAt = performance.now();
+			await closeDb();
+			const connection = await openDb();
+
 			const results: QueryResult[] = [];
 			await sqlite3.exec(
-				db,
+				connection,
 				payload.query,
 				(row: unknown[], columns: string[]) => {
 					if (columns !== results.at(-1)?.columns) {
@@ -102,6 +125,9 @@ addEventListener("message", async (event: MessageEvent<MessageType>) => {
 					}
 					results.at(-1)?.rows.push(row);
 				}
+			);
+			console.debug(
+				`Query finished in ${(performance.now() - startedAt).toFixed(1)} ms`
 			);
 			postMessage({
 				type: "query",

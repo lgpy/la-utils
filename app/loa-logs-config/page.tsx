@@ -12,156 +12,129 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 import { CheckCircle, XCircle, FileIcon, AlertTriangle } from "lucide-react";
 import {
-	storeLoaLogsFileHandle,
-	getStoredLoaLogsFileHandle,
+	BLOCKED_PATH_HINT,
 	clearStoredLoaLogsFileHandle,
+	describeFileAccessError,
+	getStoredLoaLogsFileHandle,
 	isFileSystemAccessSupported,
+	probeHandleReadable,
 	requestPersistentPermission,
-	type LoaLogsFileAccess,
+	storeLoaLogsFileHandle,
 } from "@/components/FABs/LoaLogUpdateRaidCompletion.utils";
 
+function formatSize(size: number | null | undefined) {
+	if (!size) return "Unknown";
+	if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+	return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export default function LoaLogsConfigPage() {
-	const [fileAccess, setFileAccess] = useState<LoaLogsFileAccess>({
-		fileHandle: null,
-		hasPermission: false,
-		lastAccessed: null,
-		fileSize: null,
-	});
+	// Set when the browser can read the original file on demand. The file is never
+	// copied: it is read in place whenever data is needed.
+	const [liveFile, setLiveFile] = useState<{
+		name: string;
+		size: number;
+	} | null>(null);
+	const [storedHandle, setStoredHandle] = useState<FileSystemFileHandle | null>(
+		null
+	);
+	const [lastRead, setLastRead] = useState<number | null>(null);
+
 	const [isDragOver, setIsDragOver] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [notice, setNotice] = useState<string | null>(null);
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [isClient, setIsClient] = useState(false);
-	const [hasStoredHandle, setHasStoredHandle] = useState(false);
 
 	const supported = isClient && isFileSystemAccessSupported();
 
-	const checkStoredFileAccess = useCallback(async () => {
-		try {
-			const handle = await getStoredLoaLogsFileHandle();
-			setHasStoredHandle(!!handle);
+	const refreshStatus = useCallback(async () => {
+		setError(null);
+		const handle = await getStoredLoaLogsFileHandle();
+		setStoredHandle(handle);
 
-			if (handle) {
-				// First check current permission status
-				const currentPermission = await handle.queryPermission();
-
-				if (currentPermission === "granted") {
-					// Permission is already granted, verify file access
-					try {
-						const file = await handle.getFile();
-						setFileAccess({
-							fileHandle: handle,
-							hasPermission: true,
-							lastAccessed: new Date(),
-							fileSize: file.size,
-						});
-						return;
-					} catch (error) {
-						console.warn("File no longer accessible:", error);
-					}
-				}
-			}
-
-			// No valid stored file handle found or permission not granted
-			setFileAccess({
-				fileHandle: handle,
-				hasPermission: false,
-				lastAccessed: null,
-				fileSize: null,
-			});
-		} catch (error) {
-			console.warn("Failed to check stored file access:", error);
-			// Clear the file access state on error
-			setFileAccess({
-				fileHandle: null,
-				hasPermission: false,
-				lastAccessed: null,
-				fileSize: null,
-			});
-			setHasStoredHandle(false);
+		if (!handle) {
+			setLiveFile(null);
+			setLastRead(null);
+			return;
 		}
+
+		const probe = await probeHandleReadable(handle);
+		if (!probe.readable) {
+			// A granted permission is not enough: the browser can still refuse reads
+			// (file moved or replaced, access revoked, ...).
+			setLiveFile(null);
+			return;
+		}
+
+		const file = await handle.getFile();
+		setLiveFile({ name: file.name, size: file.size });
+		setLastRead(Date.now());
 	}, []);
 
-	const requestPersistentAccess = useCallback(async () => {
-		if (!fileAccess.fileHandle) return;
-
-		try {
+	/**
+	 * Registers a dropped/selected file. The file is read in place when the browser
+	 * allows it (no copy is made). Only when direct reads are refused (or no file
+	 * handle is available) does it fall back to storing a copy of the database.
+	 */
+	const applyFile = useCallback(
+		async (file: File, handle: FileSystemFileHandle | null) => {
 			setIsProcessing(true);
 			setError(null);
+			setNotice(null);
 
-			// Request persistent permission (this triggers the three-way prompt)
-			const granted = await requestPersistentPermission(fileAccess.fileHandle);
-
-			if (granted) {
-				try {
-					const file = await fileAccess.fileHandle.getFile();
-					setFileAccess((prev) => ({
-						...prev,
-						hasPermission: true,
-						lastAccessed: new Date(),
-						fileSize: file.size,
-					}));
-				} catch {
-					setError("File access failed after permission granted");
-				}
-			} else {
-				setError(
-					"Permission denied. Please try again and allow persistent access."
-				);
-			}
-		} catch (error) {
-			setError(
-				error instanceof Error
-					? error.message
-					: "Failed to request persistent access"
-			);
-		} finally {
-			setIsProcessing(false);
-		}
-	}, [fileAccess.fileHandle]);
-
-	useEffect(() => {
-		setIsClient(true);
-	}, []);
-
-	useEffect(() => {
-		// Check for stored file access when the component mounts
-		if (isClient) {
-			checkStoredFileAccess();
-		}
-	}, [isClient, checkStoredFileAccess]);
-
-	const handleFileAccess = useCallback(
-		async (fileHandle: FileSystemFileHandle) => {
 			try {
-				setIsProcessing(true);
-				setError(null);
-
-				if (!fileHandle.name.toLowerCase().includes("encounters.db")) {
+				if (!file.name.toLowerCase().includes("encounters.db")) {
 					throw new Error(
-						"Please select the encounters.db file from LOA Logs directory"
+						"Please select the encounters.db file from your LOA Logs database folder."
 					);
 				}
 
-				const permission = await fileHandle.requestPermission();
+				if (!handle) {
+					throw new Error(
+						"This browser did not expose file access for the dropped file. " +
+							"Drag encounters.db from your file manager, or copy it and press Ctrl+V " +
+							"here, so it can be read in place. (The database is never copied.)"
+					);
+				}
+
+				const permission = await handle
+					.requestPermission()
+					.catch(() => "denied" as const);
 				if (permission !== "granted") {
 					throw new Error(
-						"Permission denied. Please allow access to the file."
+						"Permission denied. Allow access to the file and try again."
 					);
 				}
 
-				const file = await fileHandle.getFile();
-				setFileAccess({
-					fileHandle,
-					hasPermission: true,
-					lastAccessed: new Date(),
-					fileSize: file.size,
-				});
+				// The database is read in place - no copy is created, so nothing goes
+				// stale and no extra disk space is used.
+				const probe = await probeHandleReadable(handle);
+				if (!probe.readable) {
+					throw new Error(
+						probe.reason === "blocked"
+							? BLOCKED_PATH_HINT
+							: "The file could not be read. It may have been moved or deleted."
+					);
+				}
 
-				await storeLoaLogsFileHandle(fileHandle);
+				await storeLoaLogsFileHandle(handle);
+				setStoredHandle(handle);
+				setLiveFile({ name: file.name, size: file.size });
+				setLastRead(Date.now());
+				toast.success("LOA Logs database connected", {
+					id: "loa-logs-config",
+					description:
+						"The file is read in place, so new encounters show up automatically.",
+				});
 			} catch (err) {
-				setError(err instanceof Error ? err.message : "Failed to access file");
+				setError(
+					describeFileAccessError(err) ??
+						(err instanceof Error ? err.message : "Failed to access file")
+				);
 			} finally {
 				setIsProcessing(false);
 			}
@@ -174,39 +147,133 @@ export default function LoaLogsConfigPage() {
 			e.preventDefault();
 			setIsDragOver(false);
 
-			if (!supported) {
-				setError("File System Access API is not supported in this browser");
+			const items = Array.from(e.dataTransfer.items).filter(
+				(item) => item.kind === "file"
+			);
+
+			if (items.length === 0) {
+				setError(
+					"No file found in the drop. Drag the encounters.db file itself."
+				);
 				return;
 			}
 
-			const items = Array.from(e.dataTransfer.items);
 			for (const item of items) {
-				if (item.kind === "file" && item.getAsFileSystemHandle) {
-					try {
-						const handle = await item.getAsFileSystemHandle();
-						if (handle) {
-							await handleFileAccess(handle as FileSystemFileHandle);
-							break;
-						}
-					} catch (err) {
-						console.warn("Failed to get file system handle:", err);
-					}
+				// Both calls have to happen synchronously, while the event is handled.
+				const file = item.getAsFile();
+				const handlePromise = item.getAsFileSystemHandle?.();
+
+				if (!file) {
+					// Dropping the LOA Logs folder instead of the file.
+					setError(
+						"Please drop the encounters.db file itself, not the folder that contains it."
+					);
+					return;
 				}
+
+				const handle = handlePromise
+					? await handlePromise.catch(() => null)
+					: null;
+
+				await applyFile(file, handle as FileSystemFileHandle | null);
+				return;
 			}
 		},
-		[handleFileAccess, supported]
+		[applyFile]
 	);
 
+	// Pasting a file copied in Explorer (Ctrl+V) works like a drop and is often
+	// easier than dragging the file out of %LOCALAPPDATA%.
+	useEffect(() => {
+		const onPaste = async (e: ClipboardEvent) => {
+			const target = e.target as HTMLElement | null;
+			if (target?.closest("input, textarea, [contenteditable='true']")) return;
+
+			const items = Array.from(e.clipboardData?.items ?? []).filter(
+				(item) => item.kind === "file"
+			);
+			if (items.length === 0) return;
+
+			e.preventDefault();
+			const item = items[0];
+			const file = item.getAsFile();
+			const handlePromise = item.getAsFileSystemHandle?.();
+			if (!file) return;
+
+			const handle = handlePromise
+				? await handlePromise.catch(() => null)
+				: null;
+			await applyFile(file, handle as FileSystemFileHandle | null);
+		};
+
+		document.addEventListener("paste", onPaste);
+		return () => document.removeEventListener("paste", onPaste);
+	}, [applyFile]);
+
+	const requestPersistentAccess = useCallback(async () => {
+		if (!storedHandle) return;
+
+		setIsProcessing(true);
+		setError(null);
+		setNotice(null);
+
+		try {
+			const granted = await requestPersistentPermission(storedHandle);
+			if (!granted) {
+				setError(
+					"Permission denied. Please try again and allow persistent access."
+				);
+				return;
+			}
+
+			const probe = await probeHandleReadable(storedHandle);
+			if (!probe.readable) {
+				await clearStoredLoaLogsFileHandle();
+				setStoredHandle(null);
+				setLiveFile(null);
+				setNotice(
+					probe.reason === "blocked"
+						? BLOCKED_PATH_HINT
+						: "The file could not be read. It may have been moved or deleted."
+				);
+				return;
+			}
+
+			const file = await storedHandle.getFile();
+			setLiveFile({ name: file.name, size: file.size });
+			setLastRead(Date.now());
+		} catch (err) {
+			setError(
+				describeFileAccessError(err) ?? "Failed to request persistent access"
+			);
+		} finally {
+			setIsProcessing(false);
+		}
+	}, [storedHandle]);
+
 	const clearAccess = useCallback(async () => {
-		setFileAccess({
-			fileHandle: null,
-			hasPermission: false,
-			lastAccessed: null,
-			fileSize: null,
-		});
-		setHasStoredHandle(false);
-		await clearStoredLoaLogsFileHandle();
+		setIsProcessing(true);
+		setError(null);
+		setNotice(null);
+		try {
+			await clearStoredLoaLogsFileHandle();
+			setLiveFile(null);
+			setStoredHandle(null);
+			setLastRead(null);
+		} finally {
+			setIsProcessing(false);
+		}
 	}, []);
+
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
+
+	useEffect(() => {
+		if (isClient) {
+			refreshStatus();
+		}
+	}, [isClient, refreshStatus]);
 
 	if (!isClient) {
 		return (
@@ -235,9 +302,9 @@ export default function LoaLogsConfigPage() {
 					<Alert>
 						<AlertTriangle className="h-4 w-4" />
 						<AlertDescription>
-							File System Access API is not supported in this browser. Please
-							use Chrome, Edge, or another Chromium-based browser to access LOA
-							Logs files.
+							Automatic (live) updates require the File System Access API, which
+							is only available in Chrome and Edge. Importing the database file
+							still works in other browsers.
 						</AlertDescription>
 					</Alert>
 				)}
@@ -247,14 +314,11 @@ export default function LoaLogsConfigPage() {
 						<AlertTriangle className="h-4 w-4" />
 						<AlertDescription>
 							<p>
-								<strong>Disclaimer:</strong> This feature has only been tested
-								on <span className="font-semibold">Chrome</span> and{" "}
-								<span className="font-semibold">Edge</span>.<br />
-								If you encounter any issues, please drag and drop the file again
-								and use <span className="font-semibold">Clear Access</span> to
-								reset permissions.
-								<br />
-								<span className="text-xs text-muted-foreground">
+								<strong>Note:</strong> the database is read in place, so nothing
+								is copied and every read sees the current file. If connecting
+								fails, use <span className="font-semibold">Clear Access</span>{" "}
+								and connect the file again.
+								<span className="text-xs text-muted-foreground block mt-1">
 									Brave browser can also work by enabling the{" "}
 									<code className="bg-muted">file-system-access-api</code> flag
 									in <code className="bg-muted">brave://flags</code>.
@@ -271,11 +335,18 @@ export default function LoaLogsConfigPage() {
 					</Alert>
 				)}
 
+				{notice && (
+					<Alert>
+						<AlertTriangle className="h-4 w-4" />
+						<AlertDescription>{notice}</AlertDescription>
+					</Alert>
+				)}
+
 				{/* File Access Status Card */}
 				<Card>
 					<CardHeader>
 						<CardTitle className="flex items-center gap-2">
-							{fileAccess.hasPermission ? (
+							{liveFile ? (
 								<CheckCircle className="h-5 w-5 text-green-500" />
 							) : (
 								<XCircle className="h-5 w-5 text-red-500" />
@@ -283,52 +354,44 @@ export default function LoaLogsConfigPage() {
 							File Access Status
 						</CardTitle>
 						<CardDescription>
-							Current status of LOA Logs encounters.db file access
+							The database is read in place - no copy is stored in this browser
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4">
 						<div className="grid grid-cols-2 gap-4">
 							<div>
-								<div className="text-sm font-medium">Permission Status</div>
+								<div className="text-sm font-medium">Access</div>
 								<div className="mt-1">
-									<Badge
-										variant={fileAccess.hasPermission ? "default" : "secondary"}
-									>
-										{fileAccess.hasPermission ? "Granted" : "Not Granted"}
-									</Badge>
-								</div>
-							</div>
-							<div>
-								<div className="text-sm font-medium">File Size</div>
-								<div className="mt-1 text-sm">
-									{fileAccess.fileSize
-										? `${(fileAccess.fileSize / 1024).toFixed(2)} KB`
-										: "Unknown"}
-								</div>
-							</div>
-							<div>
-								<div className="text-sm font-medium">Last Accessed</div>
-								<div className="mt-1 text-sm">
-									{fileAccess.lastAccessed
-										? fileAccess.lastAccessed.toLocaleString()
-										: "Never"}
+									{liveFile ? (
+										<Badge>Readable (live)</Badge>
+									) : (
+										<Badge variant="secondary">Not configured</Badge>
+									)}
 								</div>
 							</div>
 							<div>
 								<div className="text-sm font-medium">File Name</div>
 								<div className="mt-1 text-sm">
-									{fileAccess.fileHandle?.name || "No file selected"}
+									{liveFile?.name ?? "No file selected"}
+								</div>
+							</div>
+							<div>
+								<div className="text-sm font-medium">Database Size</div>
+								<div className="mt-1 text-sm">{formatSize(liveFile?.size)}</div>
+							</div>
+							<div>
+								<div className="text-sm font-medium">Last Read</div>
+								<div className="mt-1 text-sm">
+									{lastRead ? new Date(lastRead).toLocaleString() : "Never"}
 								</div>
 							</div>
 						</div>
 					</CardContent>
-					{fileAccess.hasPermission && (
-						<CardFooter className="flex justify-between">
+					{(liveFile || storedHandle) && (
+						<CardFooter className="flex flex-wrap justify-between gap-2">
 							<Button
 								variant="outline"
-								onClick={() => {
-									checkStoredFileAccess();
-								}}
+								onClick={refreshStatus}
 								disabled={isProcessing}
 							>
 								{isProcessing ? "Checking..." : "Refresh Status"}
@@ -345,17 +408,17 @@ export default function LoaLogsConfigPage() {
 				</Card>
 
 				{/* Persistent Permissions Card */}
-				{hasStoredHandle && !fileAccess.hasPermission && (
+				{storedHandle && !liveFile && (
 					<Card>
 						<CardHeader>
 							<CardTitle className="flex items-center gap-2">
 								<AlertTriangle className="h-5 w-5 text-amber-500" />
-								Enable Persistent Permissions
+								Enable Automatic Updates
 							</CardTitle>
 							<CardDescription>
-								A previous file access was found but permissions have been
-								revoked. Click below to enable persistent permissions for future
-								visits.
+								A previous file access was found, but the file cannot be read
+								right now. Click below to grant persistent permissions to the
+								file again.
 							</CardDescription>
 						</CardHeader>
 						<CardFooter>
@@ -391,86 +454,76 @@ export default function LoaLogsConfigPage() {
 						<div className="space-y-2">
 							<h4 className="font-semibold">2. Locate the Database File</h4>
 							<p className="text-sm text-muted-foreground">
-								Find the encounters.db file in your LOA Logs directory:
-							</p>
-							<code className="block bg-muted p-2 rounded text-sm">
-								%localappdata%/LOA Logs/
-							</code>
-							<p className="text-sm text-muted-foreground">
-								This is typically located at:{" "}
-								<code>
+								Open LOA Logs and go to{" "}
+								<span className="font-semibold">
+									Settings &rarr; DB Settings &rarr; Open database folder
+								</span>
+								. The file is named{" "}
+								<code className="bg-muted">encounters.db</code> and lives in{" "}
+								<code className="bg-muted">%LOCALAPPDATA%\LOA Logs\</code>, i.e.{" "}
+								<code className="bg-muted">
 									C:\Users\[Username]\AppData\Local\LOA Logs\encounters.db
 								</code>
+								.
 							</p>
 						</div>
 						<div className="space-y-2">
-							<h4 className="font-semibold">3. Grant File Access</h4>
+							<h4 className="font-semibold">3. Connect the file</h4>
 							<p className="text-sm text-muted-foreground">
-								Drag and drop the encounters.db file onto the area below to
-								grant initial access to your raid data.
+								Drag <code className="bg-muted">encounters.db</code> onto the
+								area below, or copy the file in your file manager and press{" "}
+								<span className="font-semibold">Ctrl+V</span> here. Nothing is
+								copied - the database is read in place, so every read sees the
+								current contents.
 							</p>
 						</div>
 						<div className="space-y-2">
-							<h4 className="font-semibold">
-								4. Enable Persistent Permissions
-							</h4>
+							<h4 className="font-semibold">4. Keep the access</h4>
 							<p className="text-sm text-muted-foreground">
-								After granting initial access,{" "}
-								<span className="font-bold">refresh the page</span> and enable
-								persistent permissions to avoid re-authorizing file access on
-								every visit. When prompted, choose &quot;Allow on every
-								visit&quot; for the best experience.
-							</p>
-						</div>
-						<div className="space-y-2">
-							<h4 className="font-semibold">5. After completing the setup</h4>
-							<p className="text-sm text-muted-foreground">
-								Navigate to the home page and there should be a button to update
-								the raid completion in the bottom right corner.
+								When asked, choose <q>Allow on every visit</q> so the file can
+								be re-read after reloads. Raid updates re-open the database each
+								time, so new encounters are picked up without reconnecting.
 							</p>
 						</div>
 					</CardContent>
 				</Card>
 
 				{/* File Drop Area */}
-				{supported && (
-					<Card>
-						<CardHeader>
-							<CardTitle>Grant File Access</CardTitle>
-							<CardDescription>
-								Drag and drop your encounters.db file here to enable integration
-							</CardDescription>
-						</CardHeader>
-						<CardContent className="space-y-4">
-							<div
-								className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-									isDragOver
-										? "border-primary bg-primary/5"
-										: "border-muted-foreground/25 hover:border-muted-foreground/50"
-								}`}
-								onDragOver={(e) => {
-									e.preventDefault();
-									setIsDragOver(true);
-								}}
-								onDragLeave={(e) => {
-									e.preventDefault();
-									setIsDragOver(false);
-								}}
-								onDrop={handleDrop}
-							>
-								<div className="space-y-2">
-									<FileIcon className="h-12 w-12 mx-auto text-muted-foreground" />
-									<p className="text-lg font-medium">
-										Drop encounters.db file here
-									</p>
-									<p className="text-sm text-muted-foreground">
-										The file will be accessible for reading raid completion data
-									</p>
-								</div>
+				<Card>
+					<CardHeader>
+						<CardTitle>Import Database</CardTitle>
+						<CardDescription>
+							Drag and drop your encounters.db file here to enable integration
+						</CardDescription>
+					</CardHeader>
+					<CardContent className="space-y-4">
+						<div
+							className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+								isDragOver
+									? "border-primary bg-primary/5"
+									: "border-muted-foreground/25"
+							}`}
+							onDragOver={(e) => {
+								e.preventDefault();
+								setIsDragOver(true);
+							}}
+							onDragLeave={(e) => {
+								e.preventDefault();
+								setIsDragOver(false);
+							}}
+							onDrop={handleDrop}
+						>
+							<div className="space-y-2">
+								<FileIcon className="h-12 w-12 mx-auto text-muted-foreground" />
+								<p className="text-lg font-medium">Drop encounters.db here</p>
+								<p className="text-sm text-muted-foreground">
+									or copy the file and press Ctrl+V. It is read in place - no
+									copy is stored in this browser.
+								</p>
 							</div>
-						</CardContent>
-					</Card>
-				)}
+						</div>
+					</CardContent>
+				</Card>
 			</div>
 		</div>
 	);

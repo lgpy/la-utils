@@ -1,5 +1,5 @@
 import { raidData } from "@/lib/game-info";
-import * as v from 'valibot';
+import * as v from "valibot";
 
 // File System Access API utilities for LOA Logs
 declare global {
@@ -14,64 +14,92 @@ declare global {
 	}
 }
 
-export interface LoaLogsFileAccess {
-	fileHandle: FileSystemFileHandle | null;
-	hasPermission: boolean;
-	lastAccessed: Date | null;
-	fileSize: number | null;
+const IDB_NAME = "LoaLogsDB";
+// Kept at 2 even though only `fileHandles` is used: an earlier build created the
+// database at version 2, and reopening it with a lower version throws.
+const IDB_VERSION = 2;
+const HANDLE_STORE = "fileHandles";
+const DB_KEY = "encounters.db";
+
+export const BLOCKED_PATH_HINT =
+	"Your browser refused to read the file even though access was granted. This can happen when " +
+	"the browser lost access to the folder, or when the file is locked or being replaced. " +
+	"The database is read in place and never copied. Click Clear Access and connect the file " +
+	"again; if it keeps failing, try Chrome or Edge and rerun the setup.";
+
+function openLoaLogsDb(): Promise<IDBDatabase> {
+	return new Promise((resolve, reject) => {
+		const request = indexedDB.open(IDB_NAME, IDB_VERSION);
+		request.onerror = () => reject(request.error);
+		request.onupgradeneeded = () => {
+			const db = request.result;
+			if (!db.objectStoreNames.contains(HANDLE_STORE)) {
+				db.createObjectStore(HANDLE_STORE);
+			}
+		};
+		request.onsuccess = () => resolve(request.result);
+	});
 }
 
-// IndexedDB utilities for persistent file handle storage
+async function idbGet<T>(storeName: string): Promise<T | null> {
+	const db = await openLoaLogsDb();
+	try {
+		return await new Promise<T | null>((resolve, reject) => {
+			const transaction = db.transaction([storeName], "readonly");
+			const request = transaction.objectStore(storeName).get(DB_KEY);
+			request.onsuccess = () => resolve((request.result as T) ?? null);
+			request.onerror = () => reject(request.error);
+		});
+	} finally {
+		db.close();
+	}
+}
+
+async function idbPut(storeName: string, value: unknown): Promise<void> {
+	const db = await openLoaLogsDb();
+	try {
+		await new Promise<void>((resolve, reject) => {
+			const transaction = db.transaction([storeName], "readwrite");
+			transaction.objectStore(storeName).put(value, DB_KEY);
+			transaction.oncomplete = () => resolve();
+			transaction.onerror = () => reject(transaction.error);
+		});
+	} finally {
+		db.close();
+	}
+}
+
+async function idbDelete(storeName: string): Promise<void> {
+	const db = await openLoaLogsDb();
+	try {
+		await new Promise<void>((resolve, reject) => {
+			const transaction = db.transaction([storeName], "readwrite");
+			transaction.objectStore(storeName).delete(DB_KEY);
+			transaction.oncomplete = () => resolve();
+			transaction.onerror = () => reject(transaction.error);
+		});
+	} finally {
+		db.close();
+	}
+}
+
+// --- Live file handle --------------------------------------------------------
+// The database is always read in place through the stored handle: no copy is
+// made, nothing is duplicated on disk, and reads see the current file contents.
+// Always probe a handle with `probeHandleReadable()` before trusting it:
+// `queryPermission()` can report "granted" while reads still fail.
+
 export async function storeLoaLogsFileHandle(
 	fileHandle: FileSystemFileHandle
 ): Promise<void> {
-	const request = indexedDB.open("LoaLogsDB", 1);
-	return new Promise<void>((resolve, reject) => {
-		request.onerror = () => reject(request.error);
-		request.onsuccess = () => {
-			const db = request.result;
-			const transaction = db.transaction(["fileHandles"], "readwrite");
-			const store = transaction.objectStore("fileHandles");
-			store.put(fileHandle, "encounters.db");
-			transaction.oncomplete = () => resolve();
-			transaction.onerror = () => reject(transaction.error);
-		};
-		request.onupgradeneeded = () => {
-			const db = request.result;
-			if (!db.objectStoreNames.contains("fileHandles")) {
-				db.createObjectStore("fileHandles");
-			}
-		};
-	});
+	await idbPut(HANDLE_STORE, fileHandle);
 }
 
 export async function getStoredLoaLogsFileHandle(): Promise<FileSystemFileHandle | null> {
 	try {
-		const request = indexedDB.open("LoaLogsDB", 1);
-		const fileHandle = await new Promise<FileSystemFileHandle | null>(
-			(resolve, reject) => {
-				request.onerror = () => reject(request.error);
-				request.onsuccess = () => {
-					const db = request.result;
-					const transaction = db.transaction(["fileHandles"], "readonly");
-					const store = transaction.objectStore("fileHandles");
-					const getRequest = store.get("encounters.db");
-					getRequest.onsuccess = () => resolve(getRequest.result || null);
-					getRequest.onerror = () => reject(getRequest.error);
-				};
-				request.onupgradeneeded = () => {
-					const db = request.result;
-					if (!db.objectStoreNames.contains("fileHandles")) {
-						db.createObjectStore("fileHandles");
-					}
-				};
-			}
-		);
-
-		// Return the stored handle directly without validation
-		// The validation and permission request should be done by the caller
-		// to properly trigger the persistent permissions flow
-		return fileHandle;
+		// The caller validates the handle; validation triggers the persistent
+		// permissions flow, which must happen on a user gesture.
+		return await idbGet<FileSystemFileHandle>(HANDLE_STORE);
 	} catch (error) {
 		console.warn("Failed to retrieve stored file handle:", error);
 		return null;
@@ -94,18 +122,51 @@ export async function requestPersistentPermission(
 }
 
 export async function clearStoredLoaLogsFileHandle(): Promise<void> {
-	const request = indexedDB.open("LoaLogsDB", 1);
-	return new Promise<void>((resolve, reject) => {
-		request.onerror = () => reject(request.error);
-		request.onsuccess = () => {
-			const db = request.result;
-			const transaction = db.transaction(["fileHandles"], "readwrite");
-			const store = transaction.objectStore("fileHandles");
-			store.delete("encounters.db");
-			transaction.oncomplete = () => resolve();
-			transaction.onerror = () => reject(transaction.error);
-		};
-	});
+	await idbDelete(HANDLE_STORE);
+}
+
+export type HandleProbeResult =
+	| { readable: true }
+	| { readable: false; reason: "blocked" | "missing" | "denied" | "unknown" };
+
+/**
+ * Checks whether a handle can actually be read. This is the only reliable
+ * capability check for the File System Access API: a browser can reject a read
+ * with a SecurityError even when permission has been reported as granted.
+ */
+export async function probeHandleReadable(
+	fileHandle: FileSystemFileHandle
+): Promise<HandleProbeResult> {
+	try {
+		await fileHandle.getFile();
+		return { readable: true };
+	} catch (error) {
+		const name = error instanceof DOMException ? error.name : "";
+		if (name === "SecurityError") return { readable: false, reason: "blocked" };
+		if (name === "NotFoundError") return { readable: false, reason: "missing" };
+		if (name === "NotAllowedError")
+			return { readable: false, reason: "denied" };
+		return { readable: false, reason: "unknown" };
+	}
+}
+
+/** Maps File System Access failures to something a user can act on. */
+export function describeFileAccessError(error: unknown): string | null {
+	if (error instanceof DOMException) {
+		if (
+			error.name === "SecurityError" ||
+			/security policy of the user agent/i.test(error.message)
+		) {
+			return BLOCKED_PATH_HINT;
+		}
+		if (error.name === "NotFoundError") {
+			return "The encounters.db file could not be found. It may have been moved, renamed or deleted by LOA Logs.";
+		}
+		if (error.name === "NotAllowedError") {
+			return "File access was denied. Allow access to the file and try again.";
+		}
+	}
+	return null;
 }
 
 export function isFileSystemAccessSupported(): boolean {
@@ -117,12 +178,14 @@ export function isFileSystemAccessSupported(): boolean {
 	);
 }
 
-export const zEntries = v.array(v.object({
-	current_boss: v.string(),
-	difficulty: v.string(),
-	local_player: v.string(),
-	fight_start: v.number(),
-}));
+export const zEntries = v.array(
+	v.object({
+		current_boss: v.string(),
+		difficulty: v.string(),
+		local_player: v.string(),
+		fight_start: v.number(),
+	})
+);
 
 export type DbEntry = v.InferOutput<typeof zEntries.item>;
 
